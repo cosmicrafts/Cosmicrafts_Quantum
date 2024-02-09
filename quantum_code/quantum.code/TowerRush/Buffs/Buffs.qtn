@@ -1,0 +1,47 @@
+﻿component Buffs
+{
+	[ExcludeFromPrototype] list<EntityRef> BuffList;
+}
+
+component Buff
+{
+	[ExcludeFromPrototype] long               ID;
+	[ExcludeFromPrototype] byte               Flags;
+	[ExcludeFromPrototype] EntityRef          Owner;
+	[ExcludeFromPrototype] EntityRef          Target;
+	
+	                       list<BuffBehavior> Behaviors;
+}
+
+union BuffBehavior
+{
+	BuffBehavior_Duration       Duration;
+	BuffBehavior_HealthOverTime HealthOverTime;
+	BuffBehavior_Stats          Stats;
+}
+
+struct BuffBehavior_Duration
+{
+	[ExcludeFromPrototype] FP Duration;
+	                       FP MaxDuration;
+	                       FP DurationPerLevelIncrease;
+}
+
+struct BuffBehavior_HealthOverTime
+{
+	[ExcludeFromPrototype] FP               TimeToTick;
+	[ExcludeFromPrototype] byte             RemainingTicks;
+	                       FP               ValuePerTick;
+	                       FP               ValuePerLevelIncrease;
+	                       EHealthAction    Action;
+	                       FP               TickTime;
+	                       byte             TickCount;
+}
+
+struct BuffBehavior_Stats
+{
+	EStatType StatType;
+	FP        AbsoluteValue;
+	FP        PercentValue;
+	FP        ValuePerLevelIncrease;
+}

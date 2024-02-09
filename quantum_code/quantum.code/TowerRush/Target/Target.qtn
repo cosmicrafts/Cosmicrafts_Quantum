@@ -1,0 +1,23 @@
+﻿component Target
+{
+	[ExcludeFromPrototype] PlayerRef   OwnerPlayerRef;
+	[ExcludeFromPrototype] FP          Size;
+	[ExcludeFromPrototype] ETargetType Type;
+}
+
+enum ETargetType : Byte
+{
+	None,
+	Building,
+	UnitGround,
+	UnitAir,
+}
+
+[Flags]
+enum ETargetTypeFlags
+{
+	None       = 0,
+	Building   = 1,
+	UnitGround = 2,
+	UnitAir    = 4,
+}

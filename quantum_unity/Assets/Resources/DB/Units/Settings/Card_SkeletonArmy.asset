@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
+  m_Name: Card_SkeletonArmy
+  m_EditorClassIdentifier: 
+  GhostPrefab: {fileID: 8983308183295441551, guid: 82710332de1a20a48b56f2671a9a952a,
+    type: 3}
+  Sprite: {fileID: 21300000, guid: 106421421298772428e8c245ba1d9772, type: 3}
+  DisplayName: SkeletonArmy
+  Settings:
+    Identifier:
+      Path: Resources/DB/Units/Settings/Card_SkeletonArmy
+      Guid:
+        Value: 2687644677085913692
+    Prefab:
+      Id:
+        Value: 1505107370595890116
+    Rarity: 4
+    EnergyCost: 6
+    ActivationDelay:
+      RawValue: 19660
+    UnitCount: 12
+    UnitBehaviors: []
+    BaseHealth:
+      RawValue: 6553600
+    HealthPerLevelPercent:
+      RawValue: 655360
+    DestroyOnDeath: 1
+    TargetType: 2
+    UnitSize:
+      RawValue: 32768
+    AttackTarget: 3
+    WeaponBehavior:
+      _field_used_: SINGLETARGET
+      SingleTarget:
+        Damage:
+          RawValue: 1638400
+        DamagePerLevelPercent:
+          RawValue: 655360
+      Projectile:
+        Prototype:
+          Id:
+            Value: 0
+        Speed:
+          RawValue: 0
+        Behavior:
+          _field_used_: 
+          SingleTarget:
+            Damage:
+              RawValue: 0
+            DamagePerLevelPercent:
+              RawValue: 0
+          AoE:
+            Prototype:
+              Id:
+                Value: 0
+            Radius:
+              RawValue: 0
+            Damage:
+              RawValue: 0
+            DamagePerLevelPercent:
+              RawValue: 0
+    AttackRange:
+      RawValue: 65536
+    AttackSpeed:
+      RawValue: 39321
+    StartAttackDelay:
+      RawValue: 19660
+    MovementSpeed:
+      RawValue: 98304

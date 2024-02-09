@@ -1,0 +1,63 @@
+﻿asset GameplaySettings;
+
+singleton component Gameplay
+{
+	[ExcludeFromPrototype]   EGameplayState  State;
+	[ExcludeFromPrototype]   FP              StateTime;
+	[HideInInspector]        byte            AlphaScore;
+	[HideInInspector]        byte            BetaScore;
+	                         EntityRef       AlphaCastle;
+	                         EntityRef       BetaCastle;
+	[FreeOnComponentRemoved] list<EntityRef> AlphaTowers;
+	[FreeOnComponentRemoved] list<EntityRef> BetaTowers;
+
+	                         PlayerArea      AlphaArea;
+	                         PlayerArea      BetaArea;
+}
+
+struct PlayerArea
+{
+	sbyte     MinX;
+	sbyte     MaxX;
+	sbyte     MinY;
+	sbyte     MaxY;
+
+	[FreeOnComponentRemoved] list<BlockedArea> BlockedAreas;
+}
+
+struct BlockedArea
+{
+	EntityRef Entity;
+	sbyte     MinX;
+	sbyte     MaxX;
+	sbyte     MinY;
+	sbyte     MaxY;
+	bool      Enabled;
+}
+
+enum EGameplayState
+{
+	WaitingForPlayers,
+	Warmup,
+	Match,
+	Overtime,
+	MatchEnd,
+	Deactivate,
+}
+
+synced event GameplayStateChanged
+{
+	EGameplayState State;
+}
+
+synced event ScoreGained
+{
+	PlayerRef PlayerRef;
+	byte      TotalScore;
+	Byte      Change;
+}
+
+synced event GameplayResult
+{
+	int Winner;
+}

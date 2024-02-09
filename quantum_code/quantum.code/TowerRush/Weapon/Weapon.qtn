@@ -1,0 +1,47 @@
+﻿component Weapon
+{
+	[ExcludeFromPrototype] bool           Enabled;
+	[ExcludeFromPrototype] PlayerRef      Owner;
+	[ExcludeFromPrototype] WeaponBehavior Behavior;
+	[ExcludeFromPrototype] FP             Damage;
+	[ExcludeFromPrototype] FP             AttackRange;
+	[ExcludeFromPrototype] EntityRef      PendingTarget;
+	[ExcludeFromPrototype] EntityRef      Target;
+	[ExcludeFromPrototype] FP             TargetSize;
+	[ExcludeFromPrototype] FP             AttackSpeed;
+	[ExcludeFromPrototype] FP             StartAttackDelay;
+	[ExcludeFromPrototype] EWeaponState   State;
+	[ExcludeFromPrototype] FP             StateTimer;
+	[ExcludeFromPrototype] byte           Level;
+}
+
+union WeaponBehavior
+{
+	WeaponBehavior_SingleTarget SingleTarget;
+	WeaponBehavior_Projectile   Projectile;
+}
+
+struct WeaponBehavior_SingleTarget
+{
+	FP Damage;
+	FP DamagePerLevelPercent;
+}
+
+struct WeaponBehavior_Projectile
+{
+	AssetRefEntityPrototype Prototype;
+	FP                      Speed;
+	ProjectileBehavior      Behavior;
+}
+
+enum EWeaponState
+{
+	Idle,
+	AttackStart,
+	AttackCooldown
+}
+
+synced event AttackStart
+{
+	EntityRef Entity;
+}

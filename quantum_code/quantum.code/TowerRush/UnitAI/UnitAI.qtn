@@ -1,0 +1,9 @@
+﻿component UnitAI
+{
+	[ExcludeFromPrototype] bool             Enabled;
+	[ExcludeFromPrototype] PlayerRef        Owner;
+	[ExcludeFromPrototype] EntityRef        Target;
+	[ExcludeFromPrototype] ETargetTypeFlags TargetingFlags;
+	[ExcludeFromPrototype] FP               TargetingRange;
+	[ExcludeFromPrototype] FP               TargetingUpdateTimer;
+}

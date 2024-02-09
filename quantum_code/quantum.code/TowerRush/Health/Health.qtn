@@ -1,0 +1,33 @@
+﻿component Health
+{
+	[ExcludeFromPrototype] byte Flags;
+	[ExcludeFromPrototype] FP   CurrentHealth;
+	[ExcludeFromPrototype] FP   MaxHealth;
+}
+
+struct HealthData
+{
+	FP            Value;
+	EntityRef     Target;
+	EntityRef     Source;
+	EHealthAction Action;
+}
+
+enum EHealthAction : Byte
+{
+	None,
+	Add,
+	Remove,
+}
+
+signal OnDeath(EntityRef entity, EntityRef killer);
+
+synced event Death
+{
+	EntityRef Entity;
+}
+
+synced event OnHealthChanged
+{
+	HealthData Data;
+}

@@ -1,0 +1,42 @@
+﻿component EffectArea
+{
+	[ExcludeFromPrototype] list<EffectAreaBehavior> Behaviors;
+	[ExcludeFromPrototype] PlayerRef                Owner;
+	[ExcludeFromPrototype] FP                       Radius;
+	[ExcludeFromPrototype] FP                       StateTime;
+	[ExcludeFromPrototype] EEffectAreaState         State;
+	[ExcludeFromPrototype] FP                       TickTime;
+	[ExcludeFromPrototype] byte                     TickCount;
+	[ExcludeFromPrototype] byte                     Level;
+	[ExcludeFromPrototype] EEffectAreaTarget        TargetType;
+}
+
+enum EEffectAreaState : Byte
+{
+	Init,
+	Active,
+	Finished,
+}
+
+enum EEffectAreaTarget : Byte
+{
+	Enemy,
+	Friendly,
+}
+
+union EffectAreaBehavior
+{
+	EffectAreaBehavior_Damage Damage;
+	EffectAreaBehavior_Buff   Buff;
+}
+
+struct EffectAreaBehavior_Damage
+{
+	FP Damage;
+	FP DamagePerLevelPercent;
+}
+
+struct EffectAreaBehavior_Buff
+{
+	AssetRefEntityPrototype Buff;
+}

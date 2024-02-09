@@ -1,0 +1,469 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a366507de6e4aa44aea490bd69adace, type: 3}
+  m_Name: GameScene
+  m_EditorClassIdentifier: 
+  Settings:
+    Identifier:
+      Path: Resources/DB/GameScene
+      Guid:
+        Value: 2177321242012577863
+    UserAsset:
+      Id:
+        Value: 0
+    Scene: GameCosmic
+    ScenePath: Assets/1._ Nuevo/Scenes/GameCosmic.unity
+    SceneGuid: c702bbac8d90de34097a99bde35f878b
+    WorldSize: 256
+    BucketsCount: 16
+    BucketsSubdivisions: 8
+    BucketingAxis: 0
+    SortingAxis: 1
+    TriangleMeshCellSize: 4
+    StaticColliders3DTrianglesData:
+      Id:
+        Value: 267896059314370836
+    OptionalTriangleMetadataSerializationEnabled: 1
+    SerializeTrianglesMetadata: 0
+    StaticColliders3DTrianglesBinaryFile: 
+    GridSizeX: 32
+    GridSizeY: 32
+    GridNodeSize: 2
+    NavMeshLinks:
+    - Id:
+        Value: 3776961685241929006
+    Regions: []
+    StaticColliders2D: []
+    StaticColliders3D: []
+    MapEntities: []
+  Prototypes:
+  - Buff: []
+    Buffs:
+    - _empty_prototype_dummy_field_: 0
+    EffectArea: []
+    Gameplay: []
+    Health:
+    - _empty_prototype_dummy_field_: 0
+    Movement: []
+    Projectile: []
+    Target:
+    - _empty_prototype_dummy_field_: 0
+    Unit:
+    - _empty_prototype_dummy_field_: 0
+    UnitAI:
+    - _empty_prototype_dummy_field_: 0
+    UnitStats:
+    - _empty_prototype_dummy_field_: 0
+    Weapon:
+    - _empty_prototype_dummy_field_: 0
+    CharacterController2D: []
+    CharacterController3D: []
+    NavMeshAvoidanceAgent: []
+    NavMeshAvoidanceObstacle: []
+    NavMeshPathfinder: []
+    NavMeshSteeringAgent: []
+    PhysicsBody2D: []
+    PhysicsBody3D: []
+    PhysicsCollider2D: []
+    PhysicsCollider3D: []
+    PhysicsCallbacks2D: []
+    PhysicsCallbacks3D: []
+    Transform2D:
+    - Position:
+        X:
+          RawValue: -425984
+        Y:
+          RawValue: 622592
+      Rotation:
+        RawValue: 0
+    Transform2DVertical: []
+    Transform3D: []
+    View: []
+    PhysicsJoints2D: []
+    PhysicsJoints3D: []
+  - Buff: []
+    Buffs:
+    - _empty_prototype_dummy_field_: 0
+    EffectArea: []
+    Gameplay: []
+    Health:
+    - _empty_prototype_dummy_field_: 0
+    Movement: []
+    Projectile: []
+    Target:
+    - _empty_prototype_dummy_field_: 0
+    Unit:
+    - _empty_prototype_dummy_field_: 0
+    UnitAI:
+    - _empty_prototype_dummy_field_: 0
+    UnitStats:
+    - _empty_prototype_dummy_field_: 0
+    Weapon:
+    - _empty_prototype_dummy_field_: 0
+    CharacterController2D: []
+    CharacterController3D: []
+    NavMeshAvoidanceAgent: []
+    NavMeshAvoidanceObstacle: []
+    NavMeshPathfinder: []
+    NavMeshSteeringAgent: []
+    PhysicsBody2D: []
+    PhysicsBody3D: []
+    PhysicsCollider2D: []
+    PhysicsCollider3D: []
+    PhysicsCallbacks2D: []
+    PhysicsCallbacks3D: []
+    Transform2D:
+    - Position:
+        X:
+          RawValue: 425984
+        Y:
+          RawValue: 622592
+      Rotation:
+        RawValue: 0
+    Transform2DVertical: []
+    Transform3D: []
+    View: []
+    PhysicsJoints2D: []
+    PhysicsJoints3D: []
+  - Buff: []
+    Buffs:
+    - _empty_prototype_dummy_field_: 0
+    EffectArea: []
+    Gameplay: []
+    Health:
+    - _empty_prototype_dummy_field_: 0
+    Movement: []
+    Projectile: []
+    Target:
+    - _empty_prototype_dummy_field_: 0
+    Unit:
+    - _empty_prototype_dummy_field_: 0
+    UnitAI:
+    - _empty_prototype_dummy_field_: 0
+    UnitStats:
+    - _empty_prototype_dummy_field_: 0
+    Weapon:
+    - _empty_prototype_dummy_field_: 0
+    CharacterController2D: []
+    CharacterController3D: []
+    NavMeshAvoidanceAgent: []
+    NavMeshAvoidanceObstacle: []
+    NavMeshPathfinder: []
+    NavMeshSteeringAgent: []
+    PhysicsBody2D: []
+    PhysicsBody3D: []
+    PhysicsCollider2D: []
+    PhysicsCollider3D: []
+    PhysicsCallbacks2D: []
+    PhysicsCallbacks3D: []
+    Transform2D:
+    - Position:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 851968
+      Rotation:
+        RawValue: 0
+    Transform2DVertical: []
+    Transform3D: []
+    View: []
+    PhysicsJoints2D: []
+    PhysicsJoints3D: []
+  - Buff: []
+    Buffs:
+    - _empty_prototype_dummy_field_: 0
+    EffectArea: []
+    Gameplay: []
+    Health:
+    - _empty_prototype_dummy_field_: 0
+    Movement: []
+    Projectile: []
+    Target:
+    - _empty_prototype_dummy_field_: 0
+    Unit:
+    - _empty_prototype_dummy_field_: 0
+    UnitAI:
+    - _empty_prototype_dummy_field_: 0
+    UnitStats:
+    - _empty_prototype_dummy_field_: 0
+    Weapon:
+    - _empty_prototype_dummy_field_: 0
+    CharacterController2D: []
+    CharacterController3D: []
+    NavMeshAvoidanceAgent: []
+    NavMeshAvoidanceObstacle: []
+    NavMeshPathfinder: []
+    NavMeshSteeringAgent: []
+    PhysicsBody2D: []
+    PhysicsBody3D: []
+    PhysicsCollider2D: []
+    PhysicsCollider3D: []
+    PhysicsCallbacks2D: []
+    PhysicsCallbacks3D: []
+    Transform2D:
+    - Position:
+        X:
+          RawValue: -425984
+        Y:
+          RawValue: -622592
+      Rotation:
+        RawValue: -11796480
+    Transform2DVertical: []
+    Transform3D: []
+    View: []
+    PhysicsJoints2D: []
+    PhysicsJoints3D: []
+  - Buff: []
+    Buffs:
+    - _empty_prototype_dummy_field_: 0
+    EffectArea: []
+    Gameplay: []
+    Health:
+    - _empty_prototype_dummy_field_: 0
+    Movement: []
+    Projectile: []
+    Target:
+    - _empty_prototype_dummy_field_: 0
+    Unit:
+    - _empty_prototype_dummy_field_: 0
+    UnitAI:
+    - _empty_prototype_dummy_field_: 0
+    UnitStats:
+    - _empty_prototype_dummy_field_: 0
+    Weapon:
+    - _empty_prototype_dummy_field_: 0
+    CharacterController2D: []
+    CharacterController3D: []
+    NavMeshAvoidanceAgent: []
+    NavMeshAvoidanceObstacle: []
+    NavMeshPathfinder: []
+    NavMeshSteeringAgent: []
+    PhysicsBody2D: []
+    PhysicsBody3D: []
+    PhysicsCollider2D: []
+    PhysicsCollider3D: []
+    PhysicsCallbacks2D: []
+    PhysicsCallbacks3D: []
+    Transform2D:
+    - Position:
+        X:
+          RawValue: 425984
+        Y:
+          RawValue: -622592
+      Rotation:
+        RawValue: -11796480
+    Transform2DVertical: []
+    Transform3D: []
+    View: []
+    PhysicsJoints2D: []
+    PhysicsJoints3D: []
+  - Buff: []
+    Buffs:
+    - _empty_prototype_dummy_field_: 0
+    EffectArea: []
+    Gameplay: []
+    Health:
+    - _empty_prototype_dummy_field_: 0
+    Movement: []
+    Projectile: []
+    Target:
+    - _empty_prototype_dummy_field_: 0
+    Unit:
+    - _empty_prototype_dummy_field_: 0
+    UnitAI:
+    - _empty_prototype_dummy_field_: 0
+    UnitStats:
+    - _empty_prototype_dummy_field_: 0
+    Weapon:
+    - _empty_prototype_dummy_field_: 0
+    CharacterController2D: []
+    CharacterController3D: []
+    NavMeshAvoidanceAgent: []
+    NavMeshAvoidanceObstacle: []
+    NavMeshPathfinder: []
+    NavMeshSteeringAgent: []
+    PhysicsBody2D: []
+    PhysicsBody3D: []
+    PhysicsCollider2D: []
+    PhysicsCollider3D: []
+    PhysicsCallbacks2D: []
+    PhysicsCallbacks3D: []
+    Transform2D:
+    - Position:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: -851968
+      Rotation:
+        RawValue: -11796480
+    Transform2DVertical: []
+    Transform3D: []
+    View: []
+    PhysicsJoints2D: []
+    PhysicsJoints3D: []
+  - Buff: []
+    Buffs: []
+    EffectArea: []
+    Gameplay:
+    - AlphaScore: 0
+      BetaScore: 0
+      AlphaCastle:
+        SceneIndexPlusOne: 3
+      BetaCastle:
+        SceneIndexPlusOne: 6
+      AlphaTowers:
+      - SceneIndexPlusOne: 1
+      - SceneIndexPlusOne: 2
+      BetaTowers:
+      - SceneIndexPlusOne: 4
+      - SceneIndexPlusOne: 5
+      AlphaArea:
+        MinX: -9
+        MaxX: 9
+        MinY: -16
+        MaxY: 16
+        BlockedAreas:
+        - Entity:
+            SceneIndexPlusOne: 0
+          MinX: 7
+          MaxX: 9
+          MinY: -1
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 0
+          MinX: -9
+          MaxX: -7
+          MinY: -1
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 0
+          MinX: -6
+          MaxX: 6
+          MinY: -1
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 4
+          MinX: -9
+          MaxX: 0
+          MinY: -6
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 5
+          MinX: 0
+          MaxX: 9
+          MinY: -6
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 6
+          MinX: -9
+          MaxX: 9
+          MinY: -16
+          MaxY: -6
+          Enabled:
+            Value: 1
+      BetaArea:
+        MinX: -9
+        MaxX: 9
+        MinY: -16
+        MaxY: 16
+        BlockedAreas:
+        - Entity:
+            SceneIndexPlusOne: 0
+          MinX: -9
+          MaxX: -7
+          MinY: -1
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 0
+          MinX: 7
+          MaxX: 9
+          MinY: -1
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 0
+          MinX: -6
+          MaxX: 6
+          MinY: -1
+          MaxY: 1
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 1
+          MinX: -9
+          MaxX: 0
+          MinY: -1
+          MaxY: 6
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 2
+          MinX: 0
+          MaxX: 9
+          MinY: -1
+          MaxY: 6
+          Enabled:
+            Value: 1
+        - Entity:
+            SceneIndexPlusOne: 2
+          MinX: -9
+          MaxX: 9
+          MinY: 6
+          MaxY: 16
+          Enabled:
+            Value: 1
+    Health: []
+    Movement: []
+    Projectile: []
+    Target: []
+    Unit: []
+    UnitAI: []
+    UnitStats: []
+    Weapon: []
+    CharacterController2D: []
+    CharacterController3D: []
+    NavMeshAvoidanceAgent: []
+    NavMeshAvoidanceObstacle: []
+    NavMeshPathfinder: []
+    NavMeshSteeringAgent: []
+    PhysicsBody2D: []
+    PhysicsBody3D: []
+    PhysicsCollider2D: []
+    PhysicsCollider3D: []
+    PhysicsCallbacks2D: []
+    PhysicsCallbacks3D: []
+    Transform2D:
+    - Position:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      Rotation:
+        RawValue: 0
+    Transform2DVertical: []
+    Transform3D: []
+    View: []
+    PhysicsJoints2D: []
+    PhysicsJoints3D: []

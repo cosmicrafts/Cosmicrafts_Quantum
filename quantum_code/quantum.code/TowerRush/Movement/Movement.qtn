@@ -1,0 +1,10 @@
+﻿component Movement
+{
+	[ExcludeFromPrototype] byte      Flags;
+	[ExcludeFromPrototype] FPVector2 MovePosition;
+	[ExcludeFromPrototype] FPVector2 LookPosition;
+	[ExcludeFromPrototype] FP        BusyTime;
+	[ExcludeFromPrototype] FP        MovementSpeed;
+
+	[ExcludeFromPrototype] FPVector2 DesiredPosition;
+}
