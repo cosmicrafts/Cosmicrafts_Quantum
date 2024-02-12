@@ -61,6 +61,14 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<OptionalValue<Models.Player>>(this.Converter);
 		}
 
+		public async Task<double> GetPlayerElo(Principal arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getPlayerElo", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<double>(this.Converter);
+		}
+
 		public async Task<OptionalValue<Models.PlayerPreferences>> GetPlayerPreferences()
 		{
 			CandidArg arg = CandidArg.FromCandid();
@@ -86,6 +94,13 @@ namespace CanisterPK.CanisterLogin
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "savePlayerName", arg);
+			return reply.ToObjects<bool>(this.Converter);
+		}
+
+		public async Task<bool> UpdatePlayerElo(Principal arg0, double arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updatePlayerElo", arg);
 			return reply.ToObjects<bool>(this.Converter);
 		}
 

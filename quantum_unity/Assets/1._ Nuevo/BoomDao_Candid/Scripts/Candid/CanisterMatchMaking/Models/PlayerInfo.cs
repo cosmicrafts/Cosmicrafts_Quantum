@@ -1,5 +1,4 @@
 using EdjCase.ICP.Candid.Mapping;
-using EdjCase.ICP.Candid.Models;
 using UserId = EdjCase.ICP.Candid.Models.Principal;
 
 namespace CanisterPK.CanisterMatchMaking.Models
@@ -7,7 +6,7 @@ namespace CanisterPK.CanisterMatchMaking.Models
 	public class PlayerInfo
 	{
 		[CandidName("elo")]
-		public UnboundedUInt Elo { get; set; }
+		public double Elo { get; set; }
 
 		[CandidName("id")]
 		public UserId Id { get; set; }
@@ -21,7 +20,7 @@ namespace CanisterPK.CanisterMatchMaking.Models
 		[CandidName("playerGameData")]
 		public string PlayerGameData { get; set; }
 
-		public PlayerInfo(UnboundedUInt elo, UserId id, ulong lastPlayerActive, bool matchAccepted, string playerGameData)
+		public PlayerInfo(double elo, UserId id, ulong lastPlayerActive, bool matchAccepted, string playerGameData)
 		{
 			this.Elo = elo;
 			this.Id = id;

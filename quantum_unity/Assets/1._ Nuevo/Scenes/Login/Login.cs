@@ -7,7 +7,6 @@ using EdjCase.ICP.Candid.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.UI;
 
 using UnityEngine.SceneManagement;

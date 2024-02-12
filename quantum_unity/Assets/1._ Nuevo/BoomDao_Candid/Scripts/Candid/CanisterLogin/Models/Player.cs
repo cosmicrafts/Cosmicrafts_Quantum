@@ -7,6 +7,9 @@ namespace CanisterPK.CanisterLogin.Models
 {
 	public class Player
 	{
+		[CandidName("elo")]
+		public double Elo { get; set; }
+
 		[CandidName("id")]
 		public PlayerId Id { get; set; }
 
@@ -16,8 +19,9 @@ namespace CanisterPK.CanisterLogin.Models
 		[CandidName("name")]
 		public PlayerName Name { get; set; }
 
-		public Player(PlayerId id, Level level, PlayerName name)
+		public Player(double elo, PlayerId id, Level level, PlayerName name)
 		{
+			this.Elo = elo;
 			this.Id = id;
 			this.Level = level;
 			this.Name = name;
