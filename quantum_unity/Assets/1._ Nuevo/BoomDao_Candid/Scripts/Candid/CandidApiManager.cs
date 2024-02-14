@@ -56,71 +56,92 @@ namespace Candid
 
         private void Awake()
         {
+            Debug.Log("[CandidApiManager] Awake called. Initializing instance.");
+            if (Instance != null)
+            {
+                Debug.LogWarning("[CandidApiManager] Instance already exists. Destroying the new one.");
+                Destroy(this);
+                return;
+            }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
+            Debug.Log("[CandidApiManager] Instance set and marked as DontDestroyOnLoad.");
         }
 
         private void Start()
         {
-            
+            Debug.Log("[CandidApiManager] Start called.");
             if (PlayerPrefs.HasKey("authTokenId") && autoLogin)
             {
-                Debug.Log("Ya tenía login guardado, estoy registrando ApiCandis");
+                Debug.Log("[CandidApiManager] Saved login found. Registering Candid APIs.");
                 LoadingPanel.Instance.ActiveLoadingPanel();
                 OnLoginCompleted(PlayerPrefs.GetString("authTokenId"));
             }
             else
             {
-                Debug.Log("No tengo login guardado");
+                Debug.Log("[CandidApiManager] No saved login found.");
             }
-            
-            
         }
 
 
         public void StartLogin()
         {
-            if (loginData.state == DataState.Ready) { return; }
+            Debug.Log("[CandidApiManager] StartLogin called.");
+            if (loginData.state == DataState.Ready) 
+            {
+                Debug.Log("[CandidApiManager] Login data is already ready. Aborting StartLogin.");
+                return;
+            }
             
-
             #if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("[CandidApiManager] Starting WebGL login flow.");
             LoginManager.Instance.StartLoginFlowWebGl(OnLoginCompleted);
-            return;
-            #endif
-
+            #else
+            Debug.Log("[CandidApiManager] Starting login flow.");
             LoginManager.Instance.StartLoginFlow(OnLoginCompleted);
+            #endif
         }
         
         public void OnLoginCompleted(string json)
         {
+            Debug.Log("[CandidApiManager] OnLoginCompleted called. Login completed. Creating agent...");
             CreateAgentUsingIdentityJson(json, false).Forget();
-            
         }
+
         public async UniTaskVoid CreateAgentUsingIdentityJson(string json, bool useLocalHost = false)
         {
+            Debug.Log($"[CandidApiManager] Attempting to create agent with JSON. LocalHost: {useLocalHost}");
             await UniTask.SwitchToMainThread();
             try
             {
                 var identity = Identity.DeserializeJsonToIdentity(json);
+                Debug.Log("[CandidApiManager] Identity deserialized successfully.");
 
                 var httpClient = new UnityHttpClient();
 
-                if (useLocalHost) await InitializeCandidApis(new HttpAgent(identity, new Uri("http://localhost:4943")));
-                else await InitializeCandidApis(new HttpAgent(httpClient, identity));
+                if (useLocalHost) 
+                {
+                    Debug.Log("[CandidApiManager] Initializing Candid APIs using localhost.");
+                    await InitializeCandidApis(new HttpAgent(identity, new Uri("http://localhost:4943")));
+                }
+                else 
+                {
+                    Debug.Log("[CandidApiManager] Initializing Candid APIs.");
+                    await InitializeCandidApis(new HttpAgent(httpClient, identity));
+                }
 
-                Debug.Log("Terminé de crear el agente, ahora estoy logueado");
+                Debug.Log("[CandidApiManager] Agent creation finished. Logged in successfully.");
                 PlayerPrefs.SetString("authTokenId", json);
 
                 if (Login.Instance != null)
                 {
                     Login.Instance.UpdateWindow(loginData);
                 }
-                
+                Debug.Log("[CandidApiManager] Exiting CreateAgentUsingIdentityJson.");
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
+                Debug.LogError($"[CandidApiManager] Agent creation error: {e.Message}");
             }
         }
 
@@ -131,52 +152,71 @@ namespace Candid
         }
         public async UniTaskVoid CreateAgentRandom()
         {
+            Debug.Log("[CandidApiManager] Starting creation of a random agent. Entering CreateAgentRandom method.");
             await UniTask.SwitchToMainThread();
             
             try
             {
+                // Define a local function to encapsulate the agent creation logic.
                 IAgent CreateAgentWithRandomIdentity(bool useLocalHost = false)
                 {
+                    Debug.Log($"[CandidApiManager] Attempting to create a random agent. LocalHost: {useLocalHost}");
                     IAgent randomAgent = null;
-
                     var httpClient = new UnityHttpClient();
 
                     try
                     {
+                        string uri = useLocalHost ? "http://localhost:4943" : "Using default agent URI";
+                        Debug.Log($"[CandidApiManager] Creating HttpAgent with URI: {uri}");
+
                         if (useLocalHost)
                             randomAgent = new HttpAgent(Ed25519Identity.Generate(), new Uri("http://localhost:4943"));
                         else
                             randomAgent = new HttpAgent(httpClient, Ed25519Identity.Generate());
+
+                        Debug.Log("[CandidApiManager] Random agent created successfully.");
                     }
                     catch (Exception e)
                     {
-                        Debug.Log(e.ToString());
+                        Debug.LogError($"[CandidApiManager] Failed to create random agent. Error: {e.Message}");
                     }
 
                     return randomAgent;
                 }
-                await InitializeCandidApis(CreateAgentWithRandomIdentity(), true);
 
-                Debug.Log("Terminé de crear el agente random, ahora estoy logueado");
+                // Initiate the creation of a random agent and its initialization within Candid APIs.
+                var createdAgent = CreateAgentWithRandomIdentity(useLocalHost: false); // Adjust useLocalHost as needed.
+                if (createdAgent != null)
+                {
+                    Debug.Log("[CandidApiManager] Random agent creation succeeded. Proceeding to initialize Candid APIs.");
+                    await InitializeCandidApis(createdAgent, asAnon: true); // Assuming random agents are always treated as anonymous.
+                    Debug.Log("[CandidApiManager] Candid APIs initialized for random agent.");
+                }
+                else
+                {
+                    Debug.LogError("[CandidApiManager] Random agent creation failed. Unable to proceed with Candid API initialization.");
+                }
 
                 if (Login.Instance != null)
                 {
                     Login.Instance.UpdateWindow(loginData);
+                    Debug.Log("[CandidApiManager] Login window updated with new random agent data.");
                 }
-                
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
+                Debug.LogError($"[CandidApiManager] Exception caught in CreateAgentRandom. Error: {e.Message}");
             }
+            Debug.Log("[CandidApiManager] Exiting CreateAgentRandom method.");
         }
-
         
         public void LogOut( )
         {
+            Debug.Log("[CandidApiManager] Initiating logout process.");
             PlayerPrefs.DeleteKey("authTokenId");
             DesInitializeCandidApis();
             SceneManager.LoadScene(0);
+            Debug.Log("[CandidApiManager] Logout process completed. Scene reloaded.");
             //NowCanLogin
         }
 
@@ -188,6 +228,7 @@ namespace Candid
         /// <returns></returns>
         private async UniTask InitializeCandidApis(IAgent agent, bool asAnon = false)
         {
+            Debug.Log($"[CandidApiManager] Initializing Candid APIs. Anonymous: {asAnon}");
             var userPrincipal = agent.Identity.GetPublicKey().ToPrincipal().ToText();
             string userAccountIdentity;
             //Check if anon setup is required
@@ -209,29 +250,19 @@ namespace Candid
                 CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
-
-                
-                
             }
-            
+            Debug.Log("[CandidApiManager] Candid APIs initialized successfully.");
         }
         
         private void DesInitializeCandidApis()
         {
+            Debug.Log("[CandidApiManager] Deinitializing Candid APIs and resetting login data.");
             CanisterLogin = null;
             CanisterMatchMaking = null;
             CanisterStats = null;
             //Set Login Data
             loginData = new LoginData(null, null, null, false, DataState.None);
+            Debug.Log("[CandidApiManager] Candid APIs deinitialized.");
         }
-
-       
-        
-
-
-
-
-
-
     }
 }

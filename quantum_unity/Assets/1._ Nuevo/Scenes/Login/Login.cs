@@ -14,7 +14,6 @@ public class Login : MonoBehaviour
 {
 
     public static Login Instance { get; private set; }
-    
     public TMP_InputField inputNameField;
     public TMP_Text infoTxt;
     string mainScene = "Menu";
@@ -24,100 +23,107 @@ public class Login : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Debug.LogWarning("[Login] Instance already exists. Destroying duplicate.");
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        Debug.Log("[Login] Component Awake() - Login instance initialized.");
     }
+
     private void OnDestroy()
     {
-        LoginManager.Instance.CancelLogin();
+        Debug.Log("[Login] Component OnDestroy() - Cleaning up before destruction.");
+        if (LoginManager.Instance != null) LoginManager.Instance.CancelLogin();
     }
     
     
     public void UpdateWindow(CandidApiManager.LoginData state)
     {
+        Debug.Log($"[Login] UpdateWindow called with state: {state.state}, IsAnon: {state.asAnon}, Principal: {state.principal}, AccountId: {state.accountIdentifier}");
         bool isLoading = state.state == CandidApiManager.DataState.Loading; ;
 
         if(!state.asAnon)
         {
-            Debug.Log("Logged In");
-            Debug.Log($"Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
+            Debug.Log("[Login]Logged In");
+            Debug.Log($"[Login]Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
             UserLoginSuccessfull();
         }
         else//Logged In As Anon
         {
-            Debug.Log("Logged in as Anon");
-            Debug.Log($"Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
+            Debug.Log("[Login]Logged in as Anon");
+            Debug.Log($"[Login]Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
             UserLoginSuccessfull();
         }
-        
     }
-
 
     public void StartWebLogin()
     {
+        Debug.Log("[Login] Initiating Web login process...");
         LoadingPanel.Instance.ActiveLoadingPanel();
-        //chooseLoginAnim.Play("ChooseLogin_Outro");
-        
         CandidApiManager.Instance.StartLogin();
     }
     
     public async void UserLoginSuccessfull()
     {
-        Debug.Log("Antes de getPlayer");
+        Debug.Log("[Login] Checking player information post-login...");
         var playerInfo = await CandidApiManager.Instance.CanisterLogin.GetPlayer();
-        Debug.Log("despues de getPlayer");
+        Debug.Log("[Login] Player information retrieved.");
         if (playerInfo.HasValue)
         {
             CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
-            Debug.Log(" ID: " + player.Id + " Lv: "+player.Level + " Name: " + player.Name);
-            await Task.Delay(2000);
+            Debug.Log($"[Login] Player Info - ID: {player.Id}, Level: {player.Level}, Name: {player.Name}");
+            // await Task.Delay(2000); //Why the delay here?
             GoToMenuScene();
 
         }
         else
         {
-            Debug.Log("Player 2 Dont has value");
+            Debug.LogWarning("[Login] No player information available. Prompting user for username.");
             LoadingPanel.Instance.DesactiveLoadingPanel();
             chooseUserAnim.Play("ChooseUsername_Intro");
         }
     }
 
-    public void GoToMenuScene()
+     public void GoToMenuScene()
     {
-        Debug.Log("Antes de cambiar de escena");
+        Debug.Log("[Login] Transitioning to the main menu scene...");
         LoadingPanel.Instance.ActiveLoadingPanel();
         SceneManager.LoadScene(1);
     }
     
     public async void SetPlayerName()
     {
-        if (inputNameField.text != null)
+        if (!string.IsNullOrEmpty(inputNameField.text))
         {
+            Debug.Log($"[Login] Attempting to create a new player with name: {inputNameField.text}");
             LoadingPanel.Instance.ActiveLoadingPanel();
-            var request =  await CandidApiManager.Instance.CanisterLogin.CreatePlayer(inputNameField.text);
+            var request = await CandidApiManager.Instance.CanisterLogin.CreatePlayer(inputNameField.text);
+
             if (request.ReturnArg0)
             {
-                Debug.Log(request.ReturnArg1);
+                Debug.Log($"[Login] Player creation successful. Player ID: {request.ReturnArg1}");
                 GoToMenuScene();
             }
             else
             {
-                infoTxt.text = request.ReturnArg1;
+                Debug.LogError($"[Login] Player creation failed. Error: {request.ReturnArg1}");
+                infoTxt.text = "Error: " + request.ReturnArg1;
                 LoadingPanel.Instance.DesactiveLoadingPanel();
             }
-            
+        }
+        else
+        {
+            Debug.LogWarning("[Login] No name entered. Player name creation aborted.");
         }
     }
     
-    
     public void BackLoginMenu()
     {
-        chooseUserAnim.Play("ChooseUsername_Outro"); 
-        //chooseLoginAnim.Play("ChooseLogin_Intro");
+        Debug.Log("[Login] User selected to return to the login menu.");
+        chooseUserAnim.Play("ChooseUsername_Outro");
     }
-
-    
-
-    
-   
-
 }
