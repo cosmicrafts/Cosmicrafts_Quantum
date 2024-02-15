@@ -10,52 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: efa30a7cf1b263f40a06cd5bbe8cbb65, type: 3}
-  m_Name: Card_Graveyard
+  m_Name: Card_Pulverizer
   m_EditorClassIdentifier: 
-  GhostPrefab: {fileID: 6392000950141635838, guid: 1975fd945175d15498c8adf9ee1afd57,
+  GhostPrefab: {fileID: 4688490960375429978, guid: ac50a406ee638db4e950ef5b217874fd,
     type: 3}
-  Sprite: {fileID: 21300000, guid: c1326617dab482246b07fa3a8105efd4, type: 3}
-  DisplayName: Graveyard
+  Sprite: {fileID: 21300000, guid: 1f8f759bcf31b6a45bf13afdde15cbd0, type: 3}
+  DisplayName: Pulverizer
   Settings:
     Identifier:
-      Path: Resources/DB/Units/Settings/TowerOGSO/Card_Graveyard
+      Path: Resources/DB/Units/Settings/Card_Pulverizer
       Guid:
-        Value: 1795863368017165089
+        Value: 4191418444106479073
     Prefab:
       Id:
-        Value: 3388195211426765328
+        Value: 287906476713270138
     Rarity: 2
-    EnergyCost: 5
+    EnergyCost: 1
     ActivationDelay:
-      RawValue: 196608
+      RawValue: 131072
     UnitCount: 1
     UnitBehaviors:
-    - _field_used_: SPAWNER
-      Spawner:
-        Card:
-          Id:
-            Value: 3710764512078469461
-        SpawnTime:
-          RawValue: 327680
-        Offset:
-          X:
-            RawValue: 0
-          Y:
-            RawValue: -131072
-      Lifetime:
-        Duration:
-          RawValue: 0
-        RemoveHealth:
-          Value: 0
-      SpawnOnDeath:
-        Card:
-          Id:
-            Value: 0
-        Offset:
-          X:
-            RawValue: 0
-          Y:
-            RawValue: 0
     - _field_used_: LIFETIME
       Spawner:
         Card:
@@ -89,10 +63,10 @@ MonoBehaviour:
     DestroyOnDeath: 1
     TargetType: 1
     UnitSize:
-      RawValue: 131072
-    AttackTarget: 0
+      RawValue: 65536
+    AttackTarget: -1
     WeaponBehavior:
-      _field_used_: 
+      _field_used_: PROJECTILE
       SingleTarget:
         Damage:
           RawValue: 0
@@ -101,16 +75,16 @@ MonoBehaviour:
       Projectile:
         Prototype:
           Id:
-            Value: 0
+            Value: 215130353549231272
         Speed:
-          RawValue: 0
+          RawValue: 393216
         Behavior:
-          _field_used_: 
+          _field_used_: SINGLETARGET
           SingleTarget:
             Damage:
-              RawValue: 0
+              RawValue: 5242880
             DamagePerLevelPercent:
-              RawValue: 0
+              RawValue: 655360
           AoE:
             Prototype:
               Id:
@@ -122,10 +96,10 @@ MonoBehaviour:
             DamagePerLevelPercent:
               RawValue: 0
     AttackRange:
-      RawValue: 0
+      RawValue: 393216
     AttackSpeed:
-      RawValue: 0
+      RawValue: 98304
     StartAttackDelay:
-      RawValue: 0
+      RawValue: 19660
     MovementSpeed:
       RawValue: 0

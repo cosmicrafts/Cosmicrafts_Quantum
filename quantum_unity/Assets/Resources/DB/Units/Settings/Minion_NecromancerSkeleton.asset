@@ -10,25 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
-  m_Name: Farragut
+  m_Name: Minion_NecromancerSkeleton
   m_EditorClassIdentifier: 
-  GhostPrefab: {fileID: 8640539555780014602, guid: 0809300d976bbe247bbafff35209d6c6,
-    type: 3}
-  Sprite: {fileID: 21300000, guid: 895a1de612d2f364bb7c6e7ebf34854d, type: 3}
-  DisplayName: Farragut
+  Sprite: {fileID: 0}
+  DisplayName: 
   Settings:
     Identifier:
-      Path: Resources/DB/Units/Settings/Farragut
+      Path: Resources/DB/Units/Settings/Minion_NecromancerSkeleton
       Guid:
-        Value: 1494247296560875294
+        Value: 3138514180479730506
     Prefab:
       Id:
-        Value: 1966959409311960491
-    Rarity: 0
-    EnergyCost: 3
+        Value: 1505107370595890116
+    EnergyCost: 100
     ActivationDelay:
-      RawValue: 32768
-    UnitCount: 1
+      RawValue: 0
+    UnitCount: 2
     UnitBehaviors: []
     BaseHealth:
       RawValue: 13107200
@@ -37,28 +34,28 @@ MonoBehaviour:
     DestroyOnDeath: 1
     TargetType: 2
     UnitSize:
-      RawValue: 39321
-    AttackTarget: -1
+      RawValue: 32768
+    AttackTarget: 3
     WeaponBehavior:
-      _field_used_: PROJECTILE
+      _field_used_: SINGLETARGET
       SingleTarget:
         Damage:
-          RawValue: 0
+          RawValue: 1638400
         DamagePerLevelPercent:
-          RawValue: 0
+          RawValue: 655360
       Projectile:
         Prototype:
           Id:
-            Value: 446631643286641162
+            Value: 0
         Speed:
-          RawValue: 393216
+          RawValue: 0
         Behavior:
-          _field_used_: SINGLETARGET
+          _field_used_: 
           SingleTarget:
             Damage:
-              RawValue: 3276800
+              RawValue: 0
             DamagePerLevelPercent:
-              RawValue: 655360
+              RawValue: 0
           AoE:
             Prototype:
               Id:
@@ -70,10 +67,10 @@ MonoBehaviour:
             DamagePerLevelPercent:
               RawValue: 0
     AttackRange:
-      RawValue: 327680
+      RawValue: 65536
     AttackSpeed:
-      RawValue: 78643
+      RawValue: 39321
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:
-      RawValue: 91750
+      RawValue: 98304
