@@ -13,12 +13,9 @@ namespace TowerRush
 		
 		protected override void OnInitialize()
 		{
-			var userID = PlayerPrefs.GetString("UserID", "");
-			if (userID.IsNullOrEmpty() == true)
-			{
-				userID = System.Guid.NewGuid().ToString().ToLowerInvariant();
-				PlayerPrefs.SetString("UserID", userID);
-			}
+			string userID = GlobalGameData.Instance.GetUserData().WalletId;
+			Debug.Log("My Wallet id is: " + userID);
+			if (userID.IsNullOrEmpty() == true) { userID = System.Guid.NewGuid().ToString().ToLowerInvariant(); }
 
 			Game.QuantumServices.Network.Connect(Configuration.NetworkAppID, Configuration.Version, null, userID);
 			Game.QuantumServices.Network.Client.ConnectionCallbackTargets.Add(this);
