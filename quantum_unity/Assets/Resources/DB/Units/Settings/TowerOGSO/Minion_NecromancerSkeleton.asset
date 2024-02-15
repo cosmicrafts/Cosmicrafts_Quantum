@@ -10,40 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
-  m_Name: Card_Knight
+  m_Name: Minion_NecromancerSkeleton
   m_EditorClassIdentifier: 
-  GhostPrefab: {fileID: 8190649817952115965, guid: 4c1ee4d74b99ec84eb4df6c48afaa33f,
-    type: 3}
-  Sprite: {fileID: 21300000, guid: d10040737999f9942959d7eb04557316, type: 3}
-  DisplayName: Knight
+  GhostPrefab: {fileID: 0}
+  Sprite: {fileID: 0}
+  DisplayName: 
   Settings:
     Identifier:
-      Path: Resources/DB/Units/Settings/Card_Knight
+      Path: Resources/DB/Units/Settings/TowerOGSO/Minion_NecromancerSkeleton
       Guid:
-        Value: 3837786326293357903
+        Value: 3138514180479730506
     Prefab:
       Id:
-        Value: 3747775972399437701
-    Rarity: 2
-    EnergyCost: 5
+        Value: 1505107370595890116
+    Rarity: 0
+    EnergyCost: 100
     ActivationDelay:
-      RawValue: 32768
-    UnitCount: 1
+      RawValue: 0
+    UnitCount: 2
     UnitBehaviors: []
     BaseHealth:
-      RawValue: 32768000
+      RawValue: 13107200
     HealthPerLevelPercent:
       RawValue: 655360
     DestroyOnDeath: 1
     TargetType: 2
     UnitSize:
-      RawValue: 39321
+      RawValue: 32768
     AttackTarget: 3
     WeaponBehavior:
       _field_used_: SINGLETARGET
       SingleTarget:
         Damage:
-          RawValue: 3276800
+          RawValue: 1638400
         DamagePerLevelPercent:
           RawValue: 655360
       Projectile:
@@ -72,7 +71,7 @@ MonoBehaviour:
     AttackRange:
       RawValue: 65536
     AttackSpeed:
-      RawValue: 98304
+      RawValue: 39321
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:

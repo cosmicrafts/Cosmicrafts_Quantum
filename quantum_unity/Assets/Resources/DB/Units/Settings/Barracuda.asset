@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
-  m_Name: Card_Farragut
+  m_Name: Barracuda
   m_EditorClassIdentifier: 
-  GhostPrefab: {fileID: 8640539555780014602, guid: 0809300d976bbe247bbafff35209d6c6,
+  GhostPrefab: {fileID: 6812821254429961534, guid: 97110944a49d6ff41992a139a1255ded,
     type: 3}
-  Sprite: {fileID: 21300000, guid: 895a1de612d2f364bb7c6e7ebf34854d, type: 3}
-  DisplayName: Farragut
+  Sprite: {fileID: 21300000, guid: 2cc4dab451797304fbdc7cdffc5ab784, type: 3}
+  DisplayName: Barracuda
   Settings:
     Identifier:
-      Path: Resources/DB/Units/Settings/Card_Farragut
+      Path: Resources/DB/Units/Settings/Barracuda
       Guid:
-        Value: 1494247296560875294
+        Value: 1724645512975723239
     Prefab:
       Id:
-        Value: 1966959409311960491
-    Rarity: 0
-    EnergyCost: 3
+        Value: 871962454678939545
+    Rarity: 3
+    EnergyCost: 4
     ActivationDelay:
       RawValue: 32768
     UnitCount: 1
     UnitBehaviors: []
     BaseHealth:
-      RawValue: 13107200
+      RawValue: 32768000
     HealthPerLevelPercent:
       RawValue: 655360
     DestroyOnDeath: 1
@@ -49,31 +49,31 @@ MonoBehaviour:
       Projectile:
         Prototype:
           Id:
-            Value: 446631643286641162
+            Value: 2210417644035088212
         Speed:
           RawValue: 393216
         Behavior:
-          _field_used_: SINGLETARGET
+          _field_used_: AOE
           SingleTarget:
             Damage:
-              RawValue: 3276800
+              RawValue: 0
             DamagePerLevelPercent:
-              RawValue: 655360
+              RawValue: 0
           AoE:
             Prototype:
               Id:
-                Value: 0
+                Value: 2867976968352079687
             Radius:
-              RawValue: 0
+              RawValue: 98304
             Damage:
-              RawValue: 0
+              RawValue: 4587520
             DamagePerLevelPercent:
-              RawValue: 0
+              RawValue: 655360
     AttackRange:
       RawValue: 327680
     AttackSpeed:
-      RawValue: 78643
+      RawValue: 98304
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:
-      RawValue: 91750
+      RawValue: 98304

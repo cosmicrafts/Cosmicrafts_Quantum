@@ -10,55 +10,55 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
-  m_Name: Card_Archer
+  m_Name: TigerShark_Army
   m_EditorClassIdentifier: 
-  GhostPrefab: {fileID: 3531337190225251080, guid: 743559b2a85be884db1f37e2b70fa62f,
+  GhostPrefab: {fileID: 8983308183295441551, guid: f0b02a51128b79e4e83483abf6f71160,
     type: 3}
-  Sprite: {fileID: 21300000, guid: a16e25439cccc60478e09c6d9fe89760, type: 3}
-  DisplayName: Archer
+  Sprite: {fileID: 21300000, guid: 0b42503218a9539468d926ee9ca0309b, type: 3}
+  DisplayName: Army_TigerShark
   Settings:
     Identifier:
-      Path: Resources/DB/Units/Settings/Card_Archer
+      Path: Resources/DB/Units/Settings/TigerShark_Army
       Guid:
-        Value: 2157618657166198391
+        Value: 3103776340019565811
     Prefab:
       Id:
-        Value: 1351173296029426079
-    Rarity: 0
-    EnergyCost: 3
+        Value: 41749797434438980
+    Rarity: 4
+    EnergyCost: 6
     ActivationDelay:
-      RawValue: 32768
-    UnitCount: 1
+      RawValue: 19660
+    UnitCount: 4
     UnitBehaviors: []
     BaseHealth:
-      RawValue: 13107200
+      RawValue: 6553600
     HealthPerLevelPercent:
       RawValue: 655360
     DestroyOnDeath: 1
     TargetType: 2
     UnitSize:
-      RawValue: 39321
-    AttackTarget: -1
+      RawValue: 32768
+    AttackTarget: 3
     WeaponBehavior:
-      _field_used_: PROJECTILE
+      _field_used_: SINGLETARGET
       SingleTarget:
         Damage:
-          RawValue: 0
+          RawValue: 1638400
         DamagePerLevelPercent:
-          RawValue: 0
+          RawValue: 655360
       Projectile:
         Prototype:
           Id:
-            Value: 3715970747543238441
+            Value: 0
         Speed:
-          RawValue: 393216
+          RawValue: 0
         Behavior:
-          _field_used_: SINGLETARGET
+          _field_used_: 
           SingleTarget:
             Damage:
-              RawValue: 3276800
+              RawValue: 0
             DamagePerLevelPercent:
-              RawValue: 655360
+              RawValue: 0
           AoE:
             Prototype:
               Id:
@@ -70,10 +70,10 @@ MonoBehaviour:
             DamagePerLevelPercent:
               RawValue: 0
     AttackRange:
-      RawValue: 327680
+      RawValue: 65536
     AttackSpeed:
-      RawValue: 78643
+      RawValue: 39321
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:
-      RawValue: 91750
+      RawValue: 98304

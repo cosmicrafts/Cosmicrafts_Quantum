@@ -10,26 +10,52 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
-  m_Name: Card_Wizard
+  m_Name: Card_Necromancer
   m_EditorClassIdentifier: 
-  GhostPrefab: {fileID: 1552954191209825259, guid: 5f45656e63c35a343bb5d33b5c14a2ba,
+  GhostPrefab: {fileID: 1947447735764309881, guid: bef49a09028190a4b8272faaf4bf7a53,
     type: 3}
-  Sprite: {fileID: 21300000, guid: 3e45ef3e114ce3548a640d06e01a1dd5, type: 3}
-  DisplayName: Wizard
+  Sprite: {fileID: 21300000, guid: acd8e4713eee4fd4baf9219700496108, type: 3}
+  DisplayName: Necromancer
   Settings:
     Identifier:
-      Path: Resources/DB/Units/Settings/Card_Wizard
+      Path: Resources/DB/Units/Settings/TowerOGSO/Card_Necromancer
       Guid:
-        Value: 1275259251633500899
+        Value: 2498436911070262716
     Prefab:
       Id:
-        Value: 1506629648492590037
-    Rarity: 3
+        Value: 3270313526079419367
+    Rarity: 4
     EnergyCost: 7
     ActivationDelay:
-      RawValue: 32768
+      RawValue: 65536
     UnitCount: 1
-    UnitBehaviors: []
+    UnitBehaviors:
+    - _field_used_: SPAWNER
+      Spawner:
+        Card:
+          Id:
+            Value: 3138514180479730506
+        SpawnTime:
+          RawValue: 524288
+        Offset:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 0
+      Lifetime:
+        Duration:
+          RawValue: 0
+        RemoveHealth:
+          Value: 0
+      SpawnOnDeath:
+        Card:
+          Id:
+            Value: 0
+        Offset:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 0
     BaseHealth:
       RawValue: 32768000
     HealthPerLevelPercent:
@@ -37,19 +63,19 @@ MonoBehaviour:
     DestroyOnDeath: 1
     TargetType: 2
     UnitSize:
-      RawValue: 39321
-    AttackTarget: -1
+      RawValue: 65536
+    AttackTarget: 2147483647
     WeaponBehavior:
       _field_used_: PROJECTILE
       SingleTarget:
         Damage:
-          RawValue: 0
+          RawValue: 13107200
         DamagePerLevelPercent:
-          RawValue: 0
+          RawValue: 655360
       Projectile:
         Prototype:
           Id:
-            Value: 446631643286641162
+            Value: 2210417644035088212
         Speed:
           RawValue: 393216
         Behavior:
@@ -64,9 +90,9 @@ MonoBehaviour:
               Id:
                 Value: 2867976968352079687
             Radius:
-              RawValue: 98304
+              RawValue: 58982
             Damage:
-              RawValue: 4587520
+              RawValue: 2621440
             DamagePerLevelPercent:
               RawValue: 655360
     AttackRange:
@@ -76,4 +102,4 @@ MonoBehaviour:
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:
-      RawValue: 98304
+      RawValue: 72089
