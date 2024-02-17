@@ -1,6 +1,18 @@
 using CanisterPK.CanisterLogin;
 using CanisterPK.CanisterMatchMaking;
 using CanisterPK.CanisterStats;
+using CanisterPK.CanisterNFTsCollectionsICHub;
+using CanisterPK.CoreICHubCanister;
+using CanisterPK.PrivateChatsICHub;
+using CanisterPK.ReportsICHubCanister;
+using CanisterPK.UserGeekICHubCanister;
+using CanisterPK.ImagesICHub;
+using CanisterPK.ProjectsICHub;
+using CanisterPK.PublicChatICHubCanister;
+using CanisterPK.testnft;
+using CanisterPK.testicrc1;
+using CanisterPK.validator;
+
 using UnityEngine.SceneManagement;
 
 namespace Candid
@@ -30,8 +42,18 @@ namespace Candid
         public CanisterLoginApiClient CanisterLogin { get; private set; }
         public CanisterMatchMakingApiClient CanisterMatchMaking { get; private set; }
         public CanisterStatsApiClient CanisterStats { get; private set; }
-
-        // Login Data
+        public TestnftApiClient testnft { get; private set; }
+        public Testicrc1ApiClient testicrc1{ get; private set; }
+        public CanisterNFTsCollectionsICHubApiClient CanisterNFTsCollectionsICHub { get; private set; }
+        public CoreICHubCanisterApiClient CoreICHubCanister { get; private set; }
+        public PrivateChatsICHubApiClient PrivateChatsICHub { get; private set; }
+        public ReportsICHubCanisterApiClient ReportsICHubCanister { get; private set; }
+        public UserGeekICHubCanisterApiClient UserGeekICHubCanister { get; private set; }
+        public ImagesICHubApiClient ImagesICHub { get; private set; }
+        public ProjectsICHubApiClient ProjectsICHub { get; private set; }
+        public PublicChatICHubCanisterApiClient PublicChatICHubCanister { get; private set; }
+        public ValidatorApiClient Validator { get; private set; }
+            // Login Data
         public enum DataState { None, Loading, Ready }
         public struct LoginData 
         {

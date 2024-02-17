@@ -1,0 +1,77 @@
+namespace = "CanisterPK"
+output-directory = "./Candid"
+
+[[clients]]
+name = "CanisterLogin"
+type = "canister"
+canister-id = "woimf-oyaaa-aaaan-qegia-cai"
+
+[[clients]]
+name = "CanisterMatchMaking"
+type = "canister"
+canister-id = "vqzll-jiaaa-aaaan-qegba-cai"
+
+[[clients]]
+name = "CanisterStats"
+type = "canister"
+canister-id = "jybso-3iaaa-aaaan-qeima-cai"
+
+[[clients]]
+name = "testnft"
+type = "canister"
+canister-id = "phgme-naaaa-aaaap-abwda-cai"
+
+[[clients]]
+name = "testicrc1"
+type = "canister"
+canister-id = "svcoe-6iaaa-aaaam-ab4rq-cai"
+
+[[clients]]
+name = "validator"
+type = "canister"
+canister-id = "2dzox-tqaaa-aaaan-qlphq-cai"
+
+[[clients]]
+name = "CoreICHubCanister"
+type = "canister"
+canister-id = "2nfjo-7iaaa-aaaag-qawaq-cai"
+
+[[clients]]
+name = "PublicChatICHubCanister"
+type = "canister"
+canister-id = "yq4sl-yyaaa-aaaag-aaxcq-cai"
+
+[[clients]]
+name = "UserGeekICHubCanister"
+type = "canister"
+canister-id = "fbbjb-oyaaa-aaaah-qaojq-cai"
+
+[[clients]]
+name = "PrivateChatsICHub"
+type = "canister"
+canister-id = "ofcrb-2aaaa-aaaan-qcz2q-cai"
+
+[[clients]]
+name = "ImagesICHub"
+type = "canister"
+canister-id = "avnm2-3aaaa-aaaaj-qacba-cai"
+
+[[clients]]
+name = "ProjectsICHub"
+type = "canister"
+canister-id = "ey7h6-4iaaa-aaaak-aepka-cai"
+
+[[clients]]
+name = "NFTsICHub"
+type = "canister"
+canister-id = "fdaor-cqaaa-aaaao-ai7nq-cai"
+
+[[clients]]
+name = "CanisterNFTsCollectionsICHub"
+type = "canister"
+canister-id = "4nxsr-yyaaa-aaaaj-aaboq-cai"
+
+[[clients]]
+name = "ReportsICHubCanister"
+type = "canister"
+canister-id = "opcce-byaaa-aaaak-qcgda-cai"
