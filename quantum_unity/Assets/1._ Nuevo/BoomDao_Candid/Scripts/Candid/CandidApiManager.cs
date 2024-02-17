@@ -53,7 +53,9 @@ namespace Candid
         public ProjectsICHubApiClient ProjectsICHub { get; private set; }
         public PublicChatICHubCanisterApiClient PublicChatICHubCanister { get; private set; }
         public ValidatorApiClient Validator { get; private set; }
-            // Login Data
+            
+            
+        // Login Data
         public enum DataState { None, Loading, Ready }
         public struct LoginData 
         {
@@ -260,6 +262,18 @@ namespace Candid
                 CanisterLogin =  new CanisterLoginApiClient(agent, Principal.FromText("woimf-oyaaa-aaaan-qegia-cai"));
                 CanisterMatchMaking =  new CanisterMatchMakingApiClient(agent, Principal.FromText("vqzll-jiaaa-aaaan-qegba-cai"));
                 CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
+                testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
+                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                CoreICHubCanister = new CoreICHubCanisterApiClient(agent, Principal.FromText("2nfjo-7iaaa-aaaag-qawaq-cai"));
+                PublicChatICHubCanister = new PublicChatICHubCanisterApiClient(agent, Principal.FromText("yq4sl-yyaaa-aaaag-aaxcq-cai"));
+                UserGeekICHubCanister = new UserGeekICHubCanisterApiClient(agent, Principal.FromText("fbbjb-oyaaa-aaaah-qaojq-cai"));
+                PrivateChatsICHub = new PrivateChatsICHubApiClient(agent, Principal.FromText("ofcrb-2aaaa-aaaan-qcz2q-cai"));
+                ImagesICHub = new ImagesICHubApiClient(agent, Principal.FromText("avnm2-3aaaa-aaaaj-qacba-cai"));
+                ProjectsICHub = new ProjectsICHubApiClient(agent, Principal.FromText("ey7h6-4iaaa-aaaak-aepka-cai"));
+                CanisterNFTsCollectionsICHub = new CanisterNFTsCollectionsICHubApiClient(agent, Principal.FromText("4nxsr-yyaaa-aaaaj-aaboq-cai"));                CanisterNFTsCollectionsICHub = new CanisterNFTsCollectionsICHubApiClient(agent, Principal.FromText("4nxsr-yyaaa-aaaaj-aaboq-cai"));
+                ReportsICHubCanister = new ReportsICHubCanisterApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
+
+
+                
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
                 
