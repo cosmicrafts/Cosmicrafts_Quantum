@@ -13,52 +13,66 @@ public class icrc1token : MonoBehaviour
     public TMP_InputField principalInputField;
     public TMP_InputField tokenAmountInputField;
     public Button sendTokenButton;
-    
+    public TMP_Text transferStatusText; 
 
+    private const int DECIMAL_PLACES = 6;
     void Start()
     {
-        // Add click listener for the send token button
         sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
-
-        // Automatically fetch and update balance when the script starts
         FetchBalance();
     }
 
     public async void FetchBalance()
-{
-    if (!GlobalGameData.Instance.userDataLoaded || string.IsNullOrEmpty(GlobalGameData.Instance.GetUserData().WalletId) || GlobalGameData.Instance.GetUserData().WalletId == "TestWalletId")
     {
-        Debug.LogError("Wallet ID not initialized with actual principal ID. Aborting fetch.");
-        return;
+        if (!GlobalGameData.Instance.userDataLoaded || string.IsNullOrEmpty(GlobalGameData.Instance.GetUserData().WalletId) || GlobalGameData.Instance.GetUserData().WalletId == "TestWalletId")
+        {
+            Debug.LogError("Wallet ID not initialized with actual principal ID. Aborting fetch.");
+            return;
+        }
+
+        string principalId = GlobalGameData.Instance.GetUserData().WalletId;
+        Debug.Log($"Fetching balance for Principal ID: {principalId}");
+
+        try
+        {
+            var account = new CanisterPK.testicrc1.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
+            var balance = await CandidApiManager.Instance.testicrc1.Icrc1BalanceOf(account);
+
+            // Format balance to display decimal places
+            balanceText.text = FormatBalance(balance);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error fetching balance: {ex.Message}");
+        }
     }
 
-    string principalId = GlobalGameData.Instance.GetUserData().WalletId;
-    Debug.Log($"Fetching balance for Principal ID: {principalId}");
-
-    try
+    private string FormatBalance(UnboundedUInt balance)
     {
-        var account = new CanisterPK.testicrc1.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
-        var balance = await CandidApiManager.Instance.testicrc1.Icrc1BalanceOf(account);
-        balanceText.text = $"Balance: {balance.ToString()}";
+        string balanceString = balance.ToString().PadLeft(DECIMAL_PLACES + 1, '0'); // Add one to account for the integer part
+        return balanceString.Substring(0, balanceString.Length - DECIMAL_PLACES);
     }
-    catch (Exception ex)
-    {
-        Debug.LogError($"Error fetching balance: {ex.Message}");
-    }
-}
 
 
     private void SendTokenButtonClicked()
     {
-        // Parse the token amount input by the user
-        if (!BigInteger.TryParse(tokenAmountInputField.text, out BigInteger tokenAmount))
+        if (!decimal.TryParse(tokenAmountInputField.text, out decimal tokenAmount))
         {
             Debug.LogError("Invalid token amount");
             return;
         }
 
-        // Call send token method with user inputs
-        tranferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmount));
+        BigInteger tokenAmountBigInt = ConvertToBigInteger(tokenAmount);
+
+        SetTransferStatus("Sending...");
+
+        tranferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt));
+    }
+
+    private BigInteger ConvertToBigInteger(decimal value)
+    {
+        // Scale the decimal value to the appropriate number of decimal places and convert to BigInteger
+        return new BigInteger(value * (decimal)Math.Pow(10, DECIMAL_PLACES));
     }
 
     public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
@@ -66,25 +80,27 @@ public class icrc1token : MonoBehaviour
         try
         {
             var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
-            
+
             var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
                 UnboundedUInt.FromBigInteger(1000000),
                 null,
                 new OptionalValue<UnboundedUInt>(fee),
-                null, 
-                null, 
+                null,
+                null,
                 new Account(Principal.FromText(recipientPrincipalId), null)
             );
-            
+
             var transferResult = await CandidApiManager.Instance.testicrc1.Icrc1Transfer(transfer);
-            
-            // Log the result of the transfer
+
+            // Update status text based on transfer result
             if (transferResult.Tag == TransferResultTag.Err)
             {
+                SetTransferStatus("Transfer failed");
                 Debug.LogError(JsonUtility.ToJson(transferResult.Value));
             }
             else
             {
+                SetTransferStatus("Transfer successful");
                 Debug.Log("Transfer successful");
             }
 
@@ -93,7 +109,13 @@ public class icrc1token : MonoBehaviour
         }
         catch (Exception ex)
         {
+            SetTransferStatus($"Failed to send tokens: {ex.Message}");
             Debug.LogError($"Failed to send tokens: {ex.Message}");
         }
+    }
+
+    private void SetTransferStatus(string status)
+    {
+        transferStatusText.text = status;
     }
 }
