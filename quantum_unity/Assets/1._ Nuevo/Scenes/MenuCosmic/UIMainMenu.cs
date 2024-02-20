@@ -19,7 +19,7 @@ using UnityEngine.Networking;
 
 public class UIMainMenu : MonoBehaviour
 {
-    public bool getInfoFromCanister = true;
+    private bool getInfoFromCanister = false;
     //UI User data references
     List<UIPTxtInfo> UIPropertys;
     
@@ -31,14 +31,12 @@ public class UIMainMenu : MonoBehaviour
         UIPropertys = new List<UIPTxtInfo>();
         foreach (UIPTxtInfo prop in FindObjectsOfType<UIPTxtInfo>()) { UIPropertys.Add(prop); }
         
-        //If the essential data doesn't exist...
-        if (!GlobalGameData.Instance.userDataLoaded) { SaveData.LoadGameUser(); }
-        else { Debug.Log("UserData is Already loaded in GGD"); }
-
-        if (getInfoFromCanister) { GetInfoUserFromCanister(); }
+        
+        if (getInfoFromCanister) { /*GetInfoUserFromCanister();*/ }
         else { LoadingPanel.Instance.DesactiveLoadingPanel(); }
     }
-    public async void GetInfoUserFromCanister()
+   
+    /*public async void GetInfoUserFromCanister()
     {
         var playerDataRequest = await CandidApiManager.Instance.CanisterLogin.GetMyPlayerData();
 
@@ -55,7 +53,7 @@ public class UIMainMenu : MonoBehaviour
         else { Debug.Log("playerDataRequest Dont HasValue"); }
         
         LoadingPanel.Instance.DesactiveLoadingPanel();
-    }
+    }*/
     
     public void ChangeLang(int lang)
     {

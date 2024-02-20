@@ -75,10 +75,7 @@ public class Login : MonoBehaviour
         if (playerInfo.HasValue)
         {
             CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
-            Debug.Log($"[Login] Player Info - ID: {player.Id}, Level: {player.Level}, Name: {player.Name}");
-            // await Task.Delay(2000); //Why the delay here?
-            GoToMenuScene();
-
+            GoToMenuScene(player);
         }
         else
         {
@@ -88,8 +85,20 @@ public class Login : MonoBehaviour
         }
     }
 
-     public void GoToMenuScene()
+     public void GoToMenuScene(CanisterPK.CanisterLogin.Models.Player player)
     {
+        Debug.Log($"[Login] Player Info - ID: {player.Id}, Level: {player.Level}, Name: {player.Name}");
+        
+        //If the essential data doesn't exist...
+        if (!GlobalGameData.Instance.userDataLoaded) { SaveData.LoadGameUser(); }
+        else { Debug.Log("UserData is Already loaded in GGD"); }
+        
+        UserData user = GlobalGameData.Instance.GetUserData();
+        user.Level = (int)player.Level;
+        user.NikeName = player.Name;
+        user.WalletId = player.Id.ToString();
+        //End load info
+        
         Debug.Log("[Login] Transitioning to the main menu scene...");
         LoadingPanel.Instance.ActiveLoadingPanel();
         SceneManager.LoadScene(1);
@@ -106,7 +115,22 @@ public class Login : MonoBehaviour
             if (request.ReturnArg0)
             {
                 Debug.Log($"[Login] Player creation successful. Player ID: {request.ReturnArg1}");
-                GoToMenuScene();
+                var playerInfo = await CandidApiManager.Instance.CanisterLogin.GetPlayer();
+                Debug.Log("[LoginPostCreate] Player information retrieved.");
+                if (playerInfo.HasValue)
+                {
+                    CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
+                    GoToMenuScene(player);
+                }
+                else
+                {
+                    Debug.LogWarning("[LoginPostCreate] No player information available. Prompting user for username.");
+                    Debug.LogWarning("ERROR ON Retrieve info from created user");
+                    LoadingPanel.Instance.DesactiveLoadingPanel();
+                    chooseUserAnim.Play("ChooseUsername_Intro");
+                }
+                
+               
             }
             else
             {
