@@ -24,17 +24,25 @@ public class PruebaCanisters : MonoBehaviour
     
     public async void sendICPInfo()
     {
+
+        var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
+        
         var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
             UnboundedUInt.FromBigInteger(1000000),
             null,
-            null, 
+            new OptionalValue<UnboundedUInt>(fee),
             null, 
             null, 
             new Account(Principal.FromText("5dnhr-udp4w-qtu2u-lbz46-wvyqh-oj2fn-uddhe-7d76y-h3az3-c4veb-6qe"), null)
         );
         
         var infoTransfer = await CandidApiManager.Instance.testicrc1.Icrc1Transfer(transfer);
-
+        
+        if (infoTransfer.Tag == TransferResultTag.Err)
+        {
+            Debug.Log( JsonUtility.ToJson(infoTransfer.Value));
+            Debug.Log(infoTransfer.AsErr().Value.ToString());
+        }
         text2.text = infoTransfer.Value.ToString();
         text3.text = infoTransfer.Tag.ToString();
     }
