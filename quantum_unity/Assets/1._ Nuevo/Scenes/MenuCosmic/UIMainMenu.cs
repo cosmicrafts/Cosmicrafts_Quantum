@@ -11,26 +11,35 @@ using EdjCase.ICP.Candid.Models;
 using TMPro;
 using UnityEngine.Networking;
 
-/*
- * This is the UI Main menu controller
- * Manages the UI references and windows to navigate through the game menus and start the in-game scenes
- * Also recive the back-end functions to initialize the player data
- */
-
 public class UIMainMenu : MonoBehaviour
 {
+    public TMP_Text walletIdText; // Public TMP_Text variable for WalletID
+    public TMP_Text usernameText; // Public TMP_Text variable for username
+    public TMP_Text levelText; 
+
     private bool getInfoFromCanister = false;
-    //UI User data references
     List<UIPTxtInfo> UIPropertys;
-    
     public UIMatchMaking uiMatchMaking;
     
-   private void Awake()
-   {
-        //Find and save all the UI player properties
+    private void Awake()
+    {
         UIPropertys = new List<UIPTxtInfo>();
         foreach (UIPTxtInfo prop in FindObjectsOfType<UIPTxtInfo>()) { UIPropertys.Add(prop); }
         
+        // Get WalletID and username from GlobalGameData and assign them to the TMP_Text variables
+        UserData userData = GlobalGameData.Instance.GetUserData();
+        if (userData != null)
+        {
+            string walletId = userData.WalletId;
+            if (walletId.Length > 8) // Check if WalletID is long enough to shorten
+            {
+                walletId = walletId.Substring(0, 5) + "..." + walletId.Substring(walletId.Length - 3);
+            }
+            walletIdText.text = walletId;
+            usernameText.text = userData.NikeName;
+            levelText.text = userData.Level.ToString();
+        }
+
         
         if (getInfoFromCanister) { /*GetInfoUserFromCanister();*/ }
         else { LoadingPanel.Instance.DesactiveLoadingPanel(); }

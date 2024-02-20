@@ -24,12 +24,6 @@ public class icrc1token : MonoBehaviour
 
     public async void FetchBalance()
     {
-        if (!GlobalGameData.Instance.userDataLoaded || string.IsNullOrEmpty(GlobalGameData.Instance.GetUserData().WalletId) || GlobalGameData.Instance.GetUserData().WalletId == "TestWalletId")
-        {
-            Debug.LogError("Wallet ID not initialized with actual principal ID. Aborting fetch.");
-            return;
-        }
-
         string principalId = GlobalGameData.Instance.GetUserData().WalletId;
         Debug.Log($"Fetching balance for Principal ID: {principalId}");
 
