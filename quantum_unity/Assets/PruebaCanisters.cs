@@ -11,6 +11,7 @@ public class PruebaCanisters : MonoBehaviour
     public TMP_Text text;
     public TMP_Text text2;
     public TMP_Text text3;
+
     public async void getICPInfo()
     {
         var Account = new CanisterPK.testicrc1.Models.Account1(
@@ -46,5 +47,6 @@ public class PruebaCanisters : MonoBehaviour
         text2.text = infoTransfer.Value.ToString();
         text3.text = infoTransfer.Tag.ToString();
     }
-    
+
+
 }
