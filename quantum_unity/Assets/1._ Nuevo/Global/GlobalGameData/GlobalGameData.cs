@@ -1,39 +1,47 @@
 using UnityEngine;
-using System.Linq;
-
+using System;
 
 public class GlobalGameData : MonoBehaviour
 {
     private static GlobalGameData _instance;
-    public static GlobalGameData Instance {
-        get 
+
+    public static GlobalGameData Instance => _instance ??= FindObjectOfType<GlobalGameData>();
+
+
+    void Awake()
+    {
+        if (_instance == null)
         {
-            if (_instance == null) { _instance = Instantiate( ResourcesServices.LoadGlobalManager().GetComponent<GlobalGameData>() ); }
-            return _instance;
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
-    private void Awake() {  
-        if(!_instance){ _instance = this; DontDestroyOnLoad(gameObject); }
-        else { Destroy(gameObject); }
-    }
-    
+
     public bool UserIsInit() { return userData != null; }
     public bool userDataLoaded = false;
-    
+
     UserData userData;
     public string actualRoom = "TestingRoom";
-    
+    public int avatarId = 1;
+
+    public event Action<int> OnAvatarIdChanged;
+
     public UserData GetUserData() { if (userData == null) { userData = new UserData(); } return userData; }
     public void SetUserData(UserData _userData) { userData = _userData; }
-    
-    
+
+
     public Language GetGameLanguage() { return (Language)GetUserData().config.language; }
-    public void SetGameLanguage(Language language) {
+    public void SetGameLanguage(Language language)
+    {
         Lang.SetLang(language);
         GetUserData().config.language = (int)language;
         SaveData.SaveGameUser();
     }
-    
+
     public void SetUserCharacterNFTId(int NFTid)
     {
         GetUserData().CharacterNFTId = NFTid;
@@ -41,7 +49,7 @@ public class GlobalGameData : MonoBehaviour
     }
     public void SetUserAvatar(int AvatarID)
     {
-        GetUserData().AvatarID = AvatarID;
+        SetAvatarId(AvatarID);
         SaveData.SaveGameUser();
     }
     public void SetCurrentMatch(TypeMatch typeMatch)
@@ -51,12 +59,14 @@ public class GlobalGameData : MonoBehaviour
     }
     public void ClearUser() { userData = null; }
     public string GetVersion() { return Application.version; }
-    
-    
-    
-    
-    
-    
-    
-}
 
+    public void SetAvatarId(int id)
+    {
+        if (avatarId != id)
+        {
+            avatarId = id;
+            OnAvatarIdChanged?.Invoke(id);
+        }
+    }
+
+}

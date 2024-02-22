@@ -12,13 +12,10 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class Login : MonoBehaviour
 {
-
     public static Login Instance { get; private set; }
     public TMP_InputField inputNameField;
     public TMP_Text infoTxt;
     string mainScene = "Menu";
-    
-    //[SerializeField] private Animator chooseLoginAnim;
     [SerializeField] private Animator chooseUserAnim;
 
     private void Awake()

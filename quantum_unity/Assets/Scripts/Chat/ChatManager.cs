@@ -12,15 +12,27 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private GameObject messageContainer;
     [SerializeField] private TMP_Text messageText; 
     [SerializeField] private ScrollRect scrollRect;
+    [SerializeField] private TMP_Text usernameText;
 
     private WebSocket webSocket;
     public string serverUrl = "ws://74.208.246.177:8080";
     private Queue<Action> mainThreadActions = new Queue<Action>();
+    public string username;
 
     private void Start()
     {
         ConnectToServer();
         messageInputField.Select();
+        SetUsername(GlobalGameData.Instance.GetUserData().NikeName);
+    }
+
+    public void SetUsername(string username)
+    {
+        this.username = username;
+        if (usernameText != null)
+        {
+            usernameText.text = username;
+        }
     }
 
     private void Update()
@@ -82,12 +94,14 @@ public class ChatManager : MonoBehaviour
     }
 
     public void SendMessage(string message)
+{
+    if (webSocket != null && webSocket.ReadyState == WebSocketState.Open)
     {
-        if (webSocket != null && webSocket.ReadyState == WebSocketState.Open)
-        {
-            webSocket.Send(message);
-        }
+        
+        string messageToSend = $"{username}: {message}";
+        webSocket.Send(messageToSend);
     }
+}
 
     public void OnMessageSubmit()
 {
@@ -100,24 +114,36 @@ public class ChatManager : MonoBehaviour
     }
 }
 
-
     private void DisplayMessage(string message)
+{
+    if (messageContainer != null && scrollRect.content != null)
     {
-        if (messageContainer != null && scrollRect.content != null)
+        GameObject messageInstance = Instantiate(messageContainer, scrollRect.content.transform);
+        messageInstance.SetActive(true);
+
+        // Split the received message into username and message parts
+        string[] messageParts = message.Split(new string[] { ": " }, 2, StringSplitOptions.None);
+        string senderUsername = messageParts[0];
+        string actualMessage = messageParts.Length > 1 ? messageParts[1] : "";
+
+        // Find the TMP_Text components for username and message within the instantiated message prefab
+        TMP_Text[] tmpTextComponents = messageInstance.GetComponentsInChildren<TMP_Text>();
+        if (tmpTextComponents.Length >= 2)
         {
-            GameObject messageInstance = Instantiate(messageContainer, scrollRect.content.transform);
-            messageInstance.SetActive(true);
-
-            TMP_Text tmpTextComponent = messageInstance.GetComponentInChildren<TMP_Text>();
-            if (tmpTextComponent != null)
-            {
-                tmpTextComponent.text = message;
-            }
-
-            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
-            StartCoroutine(ScrollToBottom());
+            tmpTextComponents[0].text = senderUsername; // Assuming the first TMP_Text is for the username
+            tmpTextComponents[1].text = actualMessage; // Assuming the second TMP_Text is for the message
         }
+        else if (tmpTextComponents.Length == 1)
+        {
+            // Fallback in case there's only one TMP_Text component, display the whole message
+            tmpTextComponents[0].text = message;
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
+        StartCoroutine(ScrollToBottom());
     }
+}
+
 
     private IEnumerator<object> ScrollToBottom()
     {
