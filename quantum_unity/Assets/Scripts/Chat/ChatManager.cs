@@ -2,40 +2,56 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using WebSocketSharp;
+using TMPro;
+using UnityEngine.UI;
+using System.Collections;
 
 public class ChatManager : MonoBehaviour
 {
+    [SerializeField] private TMP_InputField messageInputField;
+    [SerializeField] private GameObject messageContainer;
+    [SerializeField] private TMP_Text messageText; 
+    [SerializeField] private ScrollRect scrollRect;
+
     private WebSocket webSocket;
     public string serverUrl = "ws://74.208.246.177:8080";
-    public event Action<string> OnMessageReceived;
-    private Queue<string> messageQueue = new Queue<string>();
+    private Queue<Action> mainThreadActions = new Queue<Action>();
 
-    void Start()
+    private void Start()
     {
         ConnectToServer();
+        messageInputField.Select();
     }
 
-    void ConnectToServer()
+    private void Update()
+    {
+        while (mainThreadActions.Count > 0)
+        {
+            Action action = null;
+            lock (mainThreadActions)
+            {
+                if (mainThreadActions.Count > 0)
+                {
+                    action = mainThreadActions.Dequeue();
+                }
+            }
+            action?.Invoke();
+        }
+
+        if (Input.anyKeyDown)
+        {
+            messageInputField.Select();
+        }
+    }
+
+    private void ConnectToServer()
     {
         webSocket = new WebSocket(serverUrl);
         webSocket.OnOpen += OnOpen;
         webSocket.OnMessage += OnMessage;
         webSocket.OnError += OnError;
         webSocket.OnClose += OnClose;
-        webSocket.Connect();
-    }
-
-    public void SendMessage(string message)
-    {
-        if (webSocket != null && webSocket.ReadyState == WebSocketState.Open)
-        {
-            webSocket.Send(message);
-            Debug.Log("Message sent: " + message);
-        }
-        else
-        {
-            Debug.LogWarning("WebSocket is not open. Cannot send message.");
-        }
+        webSocket.ConnectAsync();
     }
 
     private void OnOpen(object sender, EventArgs e)
@@ -45,25 +61,14 @@ public class ChatManager : MonoBehaviour
 
     private void OnMessage(object sender, MessageEventArgs e)
     {
-        try
+        if (e.IsBinary)
         {
-            string message = System.Text.Encoding.UTF8.GetString(e.RawData);
-            Debug.Log("Received message from server: " + message);
-            EnqueueMessage(message);
+            string decodedMessage = System.Text.Encoding.UTF8.GetString(e.RawData);
+            lock (mainThreadActions)
+            {
+                mainThreadActions.Enqueue(() => DisplayMessage(decodedMessage));
+            }
         }
-        catch (Exception ex)
-        {
-            Debug.LogError("Exception in OnMessage: " + ex.Message);
-        }
-    }
-
-    private void EnqueueMessage(string message)
-    {
-        lock (messageQueue)
-        {
-            messageQueue.Enqueue(message);
-        }
-        MainThreadDispatcher.Enqueue(() => OnMessageReceived?.Invoke(message));
     }
 
     private void OnError(object sender, ErrorEventArgs e)
@@ -76,11 +81,55 @@ public class ChatManager : MonoBehaviour
         Debug.Log("WebSocket connection closed. Code: " + e.Code + ", Reason: " + e.Reason);
     }
 
-    void OnDestroy()
+    public void SendMessage(string message)
+    {
+        if (webSocket != null && webSocket.ReadyState == WebSocketState.Open)
+        {
+            webSocket.Send(message);
+        }
+    }
+
+    public void OnMessageSubmit()
+{
+    string message = messageInputField.text;
+    if (!string.IsNullOrEmpty(message))
+    {
+        SendMessage(message);
+        messageInputField.text = ""; 
+        messageInputField.ActivateInputField();
+    }
+}
+
+
+    private void DisplayMessage(string message)
+    {
+        if (messageContainer != null && scrollRect.content != null)
+        {
+            GameObject messageInstance = Instantiate(messageContainer, scrollRect.content.transform);
+            messageInstance.SetActive(true);
+
+            TMP_Text tmpTextComponent = messageInstance.GetComponentInChildren<TMP_Text>();
+            if (tmpTextComponent != null)
+            {
+                tmpTextComponent.text = message;
+            }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
+            StartCoroutine(ScrollToBottom());
+        }
+    }
+
+    private IEnumerator<object> ScrollToBottom()
+    {
+        yield return new WaitForEndOfFrame();
+        scrollRect.normalizedPosition = new Vector2(0, 0);
+    }
+
+    private void OnDestroy()
     {
         if (webSocket != null)
         {
-            webSocket.Close();
+            webSocket.CloseAsync();
         }
     }
 }
