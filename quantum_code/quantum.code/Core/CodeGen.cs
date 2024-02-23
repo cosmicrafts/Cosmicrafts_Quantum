@@ -883,22 +883,28 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HealthData {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public EHealthAction Action;
     [FieldOffset(8)]
-    public EntityRef Source;
+    public QBoolean HideToStats;
     [FieldOffset(16)]
-    public EntityRef Target;
+    public EntityRef Source;
     [FieldOffset(24)]
+    public EntityRef Target;
+    [FieldOffset(4)]
+    public PlayerRef TargetOwner;
+    [FieldOffset(32)]
     public FP Value;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 107;
         hash = hash * 31 + (Byte)Action;
+        hash = hash * 31 + HideToStats.GetHashCode();
         hash = hash * 31 + Source.GetHashCode();
         hash = hash * 31 + Target.GetHashCode();
+        hash = hash * 31 + TargetOwner.GetHashCode();
         hash = hash * 31 + Value.GetHashCode();
         return hash;
       }
@@ -906,6 +912,8 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (HealthData*)ptr;
         serializer.Stream.Serialize((Byte*)&p->Action);
+        PlayerRef.Serialize(&p->TargetOwner, serializer);
+        QBoolean.Serialize(&p->HideToStats, serializer);
         EntityRef.Serialize(&p->Source, serializer);
         EntityRef.Serialize(&p->Target, serializer);
         FP.Serialize(&p->Value, serializer);
@@ -3452,13 +3460,17 @@ namespace Quantum.Prototypes {
   public sealed unsafe partial class HealthData_Prototype : StructPrototype {
     public FP Value;
     public MapEntityId Target;
+    public PlayerRef TargetOwner;
     public MapEntityId Source;
     public EHealthAction_Prototype Action;
+    public QBoolean HideToStats;
     partial void MaterializeUser(Frame frame, ref HealthData result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref HealthData result, in PrototypeMaterializationContext context) {
       result.Action = this.Action;
+      result.HideToStats = this.HideToStats;
       PrototypeValidator.FindMapEntity(this.Source, in context, out result.Source);
       PrototypeValidator.FindMapEntity(this.Target, in context, out result.Target);
+      result.TargetOwner = this.TargetOwner;
       result.Value = this.Value;
       MaterializeUser(frame, ref result, in context);
     }

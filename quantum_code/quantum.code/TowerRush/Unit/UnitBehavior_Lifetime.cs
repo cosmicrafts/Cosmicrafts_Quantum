@@ -24,6 +24,7 @@
 						Source = entity,
 						Target = entity,
 						Value  = health->MaxHealth / Duration,
+						HideToStats  = true,
 					});
 
 					TickTime += FP._1;

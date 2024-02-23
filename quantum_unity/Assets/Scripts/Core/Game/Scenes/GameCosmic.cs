@@ -39,6 +39,7 @@ namespace TowerRush
 			gmt.InitMetrics();
 			QuantumEvent.Subscribe<EventGameplayResult>(this, OnGameplayResult);
 			QuantumEvent.Subscribe<EventUnitDestroyed>(this, OnUnitDestroyed);
+			QuantumEvent.Subscribe<EventOnHealthChanged>(this, OnHealthChanged);
 		}
 
 		protected override void OnDeinitialize()
@@ -47,6 +48,8 @@ namespace TowerRush
 			QuantumEvent.UnsubscribeListener<EventGameplayStateChanged>(this);
 			
 			QuantumEvent.UnsubscribeListener<EventGameplayResult>(this);
+			QuantumEvent.UnsubscribeListener<EventUnitDestroyed>(this);
+			QuantumEvent.UnsubscribeListener<EventOnHealthChanged>(this);
 		}
 
 		protected override void OnActivate()
@@ -157,7 +160,6 @@ namespace TowerRush
 		
 		private void OnUnitDestroyed(EventUnitDestroyed e)
 		{
-
 			Debug.LogWarning("Se destruyo una nave" + e.killer.ToString());
 			// Aquí puedes rastrear qué tropa destruyó a qué otra tropa
 			// e.Unit es la entidad destruida
@@ -173,6 +175,41 @@ namespace TowerRush
 			else if (gameplayResult.Winner == Entities.LocalPlayer) { isWin = true; }
 			else { isWin = false; }
 			SendStats(isWin);
+		}
+		private void OnHealthChanged(EventOnHealthChanged e)
+		{
+			
+			if (e.Data.HideToStats)
+			{
+				Debug.Log($"HideToStats: {e.Data.Value} a la entidad {e.Data.Target}");
+				return;
+			}
+			
+			if (e.Data.TargetOwner == Entities.LocalPlayerRef)
+			{
+				if (e.Data.Action == EHealthAction.Add)
+				{
+					Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
+				}
+				else if (e.Data.Action == EHealthAction.Remove)
+				{
+					Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+					gmt.AddDamageReceived(e.Data.Value.AsFloat);
+				}
+			}
+			else
+			{
+				if (e.Data.Action == EHealthAction.Add)
+				{
+					Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
+				}
+				else if (e.Data.Action == EHealthAction.Remove)
+				{
+					Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+					gmt.AddDamage(e.Data.Value.AsFloat);
+				}
+			}
+			
 		}
 
 		public async void SendStats(bool isWin)

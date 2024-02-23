@@ -105,7 +105,7 @@
 			}
 			
 			
-			frame.Events.UnitDestroyed(owner,entity, killer);
+			frame.Events.UnitDestroyed(owner, entity, killer);
 
 		}
 

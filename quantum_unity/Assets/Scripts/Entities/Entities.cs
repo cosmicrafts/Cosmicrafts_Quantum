@@ -26,6 +26,7 @@
 
 		public static int       LocalPlayer       { get; private set; } = -1;
 		public static EntityRef LocalPlayerEntity { get; private set; }
+		public static PlayerRef LocalPlayerRef { get; private set; }
 
 		// PRIVATE MEMBERS
 
@@ -52,6 +53,7 @@
 				{
 					LocalPlayer       = index;
 					LocalPlayerEntity = pair.Entity;
+					LocalPlayerRef = pair.Component->PlayerRef;
 
 					Signals.LocalPlayerChanged.Emit(LocalPlayer, LocalPlayerEntity);
 					return true;

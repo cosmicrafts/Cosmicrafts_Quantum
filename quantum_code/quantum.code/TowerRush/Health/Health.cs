@@ -37,7 +37,14 @@
 		{
 			if (IsAlive == false)
 				return false;
-
+			
+			if (frame.Unsafe.TryGetPointer<Unit>(data.Target, out var unit))
+			{
+				data.TargetOwner = unit-> Owner;
+			}
+			else { data.TargetOwner = default; }
+			
+			
 			switch (data.Action)
 			{
 				case EHealthAction.Add:    return AddHealth(frame, data);

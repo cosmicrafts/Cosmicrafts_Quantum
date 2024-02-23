@@ -9,8 +9,10 @@ struct HealthData
 {
 	FP            Value;
 	EntityRef     Target;
+    PlayerRef     TargetOwner;
 	EntityRef     Source;
 	EHealthAction Action;
+    bool     HideToStats;
 }
 
 enum EHealthAction : Byte
