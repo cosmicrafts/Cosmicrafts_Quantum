@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using EdjCase.ICP.Candid.Models;
 
 public class GlobalGameData : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class GlobalGameData : MonoBehaviour
     UserData userData;
     public string actualRoom = "TestingRoom";
     public int avatarId = 1;
+    public UnboundedUInt actualNumberRoom = 0;
 
     public event Action<int> OnAvatarIdChanged;
 
