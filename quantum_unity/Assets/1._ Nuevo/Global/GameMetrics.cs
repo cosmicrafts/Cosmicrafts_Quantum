@@ -54,20 +54,6 @@ public class GameMetrics
 
         //Score = (int)Damage + (Kills * 10) + (Deploys * 10) + (SecRemaining * 3) + (int)EnergyUsed - (int) EnergyWasted;
 
-        
-        //Mandar datos a Web
-        
-        /*if (GlobalManager.GMD.CurrentMatch == Match.bots)
-        {
-            if (GlobalManager.GMD.IsProductionWeb())
-            {
-                GameNetwork.JSSaveScore(Score);
-            }
-            GlobalManager.GMD.GetUserProgress().AddBattlePoints(Score);
-        }
-        */
-        
-        
     }
 
   

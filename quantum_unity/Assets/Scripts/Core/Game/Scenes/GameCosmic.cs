@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using Candid;
+using CanisterPK.CanisterStats.Models;
+using EdjCase.ICP.Candid.Models;
 using Quantum.Services;
 
 namespace TowerRush
@@ -11,6 +14,9 @@ namespace TowerRush
 
 	public class GameCosmic : Scene
 	{
+		
+		private GameMetrics gmt = new GameMetrics();
+		
 		// CONFIGURATION
 
 		[SerializeField] Transform m_AlphaCameraPosition;
@@ -29,12 +35,18 @@ namespace TowerRush
 			QuantumCallback.Subscribe<CallbackGameStarted>(this, OnGameStarted);
 			QuantumEvent.Subscribe<EventGameplayStateChanged>(this, OnGameplayStateChanged);
 			UIMatchLoading.Instance.OnInitMatch();
+			
+			gmt.InitMetrics();
+			QuantumEvent.Subscribe<EventGameplayResult>(this, OnGameplayResult);
+			QuantumEvent.Subscribe<EventUnitDestroyed>(this, OnUnitDestroyed);
 		}
 
 		protected override void OnDeinitialize()
 		{
 			QuantumCallback.UnsubscribeListener<CallbackGameStarted>(this);
 			QuantumEvent.UnsubscribeListener<EventGameplayStateChanged>(this);
+			
+			QuantumEvent.UnsubscribeListener<EventGameplayResult>(this);
 		}
 
 		protected override void OnActivate()
@@ -53,7 +65,6 @@ namespace TowerRush
 				m_State = EState.Active;
 			}
 		}
-
 		protected override void OnDeactivate()
 		{
 			QuantumRunner.ShutdownAll(true);
@@ -134,7 +145,6 @@ namespace TowerRush
 
 			m_Started = true;
 		}
-
 		private void OnGameplayStateChanged(EventGameplayStateChanged stateChanged)
 		{
 			Debug.Log("ChageState: " + stateChanged.State);
@@ -144,5 +154,55 @@ namespace TowerRush
 			}
 			
 		}
+		
+		private void OnUnitDestroyed(EventUnitDestroyed e)
+		{
+
+			Debug.LogWarning("Se destruyo una nave" + e.killer.ToString());
+			// Aquí puedes rastrear qué tropa destruyó a qué otra tropa
+			// e.Unit es la entidad destruida
+			// e.Destroyer es la entidad que causó la destrucción
+
+			// Por ejemplo, podrías incrementar un contador o actualizar una estadística
+			// que rastree las unidades destruidas por cada tipo de tropa
+		}
+		private void OnGameplayResult(EventGameplayResult gameplayResult)
+		{
+			bool isWin;
+			if (gameplayResult.Winner < 0) { Debug.Log("Draw"); isWin = true; }
+			else if (gameplayResult.Winner == Entities.LocalPlayer) { isWin = true; }
+			else { isWin = false; }
+			SendStats(isWin);
+		}
+
+		public async void SendStats(bool isWin)
+		{
+			BasicStats basicStats = new BasicStats();
+			basicStats.EnergyUsed = gmt.GetEnergyUsed();
+			basicStats.EnergyGenerated = gmt.GetEnergyGenerated();
+			basicStats.EnergyWasted = gmt.GetEnergyWasted();
+			basicStats.EnergyChargeRate = gmt.GetEnergyChargeRatePerSec();
+			basicStats.XpEarned = gmt.GetScore();
+			basicStats.DamageDealt = gmt.GetDamage();
+			basicStats.DamageTaken = gmt.GetDamageReceived(); 
+			basicStats.DamageCritic = gmt.GetDamageCritic();
+			basicStats.DamageEvaded = gmt.GetDamageEvaded();
+			basicStats.Kills = gmt.GetKills();
+			basicStats.Deploys = gmt.GetDeploys();
+			basicStats.SecRemaining = gmt.GetSecRemaining();
+			basicStats.WonGame = isWin;
+			basicStats.Faction = (UnboundedUInt) 0;
+			basicStats.CharacterID = "0";
+			basicStats.GameMode = (UnboundedUInt)0;
+			basicStats.BotMode = (UnboundedUInt) 0;
+			basicStats.BotDifficulty = (UnboundedUInt) 0;
+	    
+	    
+			var statsSend = await CandidApiManager.Instance.CanisterStats.SaveFinishedGame(GlobalGameData.Instance.actualNumberRoom, basicStats);
+			Debug.Log(statsSend);
+		}
+
+
+
 	}
 }

@@ -64,6 +64,7 @@ public class UIMatchLoading : MonoBehaviour
             CanisterPK.CanisterMatchMaking.Models.FullMatchData matchData = matchDataRequest.ReturnArg0.ValueOrDefault;
 
             GlobalGameData.Instance.actualRoom = "GameCosmicQuantum: " + matchData.GameId;
+            GlobalGameData.Instance.actualNumberRoom = matchData.GameId;
             
             UserData UserData1 = new UserData();
             UserData UserData2 = new UserData();

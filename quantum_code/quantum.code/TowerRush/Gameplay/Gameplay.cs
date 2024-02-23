@@ -66,7 +66,7 @@
 			}
 		}
 
-		public void OnDeath(Frame frame, EntityRef entity)
+		public void OnDeath(Frame frame, EntityRef entity, EntityRef killer)
 		{
 			if (frame.IsVerified == false)
 				return;
@@ -97,6 +97,16 @@
 					BetaArea.RefreshArea(frame);
 				}
 			}
+
+			PlayerRef owner = default;
+			if (frame.Unsafe.TryGetPointer<Unit>(entity, out var unit))
+			{
+				owner = unit-> Owner;
+			}
+			
+			
+			frame.Events.UnitDestroyed(owner,entity, killer);
+
 		}
 
 		public bool IsValidUnitPosition(Frame frame, PlayerRef playerRef, FPVector2 position)

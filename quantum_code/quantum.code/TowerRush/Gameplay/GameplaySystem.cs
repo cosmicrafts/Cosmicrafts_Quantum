@@ -41,7 +41,7 @@
 
 		void ISignalOnDeath.OnDeath(Frame frame, EntityRef entity, EntityRef killer)
 		{
-			frame.Unsafe.GetPointerSingleton<Gameplay>()->OnDeath(frame, entity);
+			frame.Unsafe.GetPointerSingleton<Gameplay>()->OnDeath(frame, entity, killer);
 		}
 	}
 }

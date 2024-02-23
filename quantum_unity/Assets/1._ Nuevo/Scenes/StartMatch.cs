@@ -108,7 +108,7 @@ public class StartMatch : MonoBehaviour
 
 			var match = Game.QuantumServices.Matchmaking.Run(matchRequest);
 			match.Connected    += OnConnectedToMatch;
-			
+
 		}
 		
 		private void OnConnectedToMatch(Match match)

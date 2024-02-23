@@ -61,3 +61,10 @@ synced event GameplayResult
 {
 	int Winner;
 }
+
+synced event UnitDestroyed
+{
+    PlayerRef Owner; // El propietario de la unidad destruida
+    EntityRef UnitEntity; // La unidad destruida
+    EntityRef killer; // La unidad que causó la destrucción
+}
