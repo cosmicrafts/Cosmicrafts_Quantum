@@ -6,8 +6,23 @@ public class GlobalGameData : MonoBehaviour
 {
     private static GlobalGameData _instance;
 
-    public static GlobalGameData Instance => _instance ??= FindObjectOfType<GlobalGameData>();
-
+     public static GlobalGameData Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<GlobalGameData>();
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("GlobalGameData");
+                    _instance = go.AddComponent<GlobalGameData>();
+                }
+                DontDestroyOnLoad(_instance.gameObject);
+            }
+            return _instance;
+        }
+    }
 
     void Awake()
     {
