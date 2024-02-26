@@ -4302,7 +4302,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 175688102}
   m_HandleRect: {fileID: 175688101}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -26479,8 +26479,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 24134921}
   m_HandleRect: {fileID: 24134920}
   m_Direction: 2
-  m_Value: 1.0000002
-  m_Size: 0.7285665
+  m_Value: 1
+  m_Size: 0.72856647
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -36138,6 +36138,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 478144103315443327, guid: c264c50b8b77eb4439b737c643985dc0, type: 3}
+    - {fileID: 1104940751492961621, guid: c264c50b8b77eb4439b737c643985dc0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c264c50b8b77eb4439b737c643985dc0, type: 3}
 --- !u!1 &1391717055 stripped
 GameObject:
@@ -47016,10 +47017,10 @@ RectTransform:
   m_Father: {fileID: 1756160283}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.2576725, y: 0.5261279}
+  m_AnchorMin: {x: 0.26232755, y: 0.5261279}
   m_AnchorMax: {x: 0.6773922, y: 0.8951636}
-  m_AnchoredPosition: {x: -0.045944214, y: 0.09740639}
-  m_SizeDelta: {x: -0.091568, y: 0.19}
+  m_AnchoredPosition: {x: -0.09100342, y: 0.09740639}
+  m_SizeDelta: {x: -0.0014998913, y: 0.19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1865055514
 MonoBehaviour:
@@ -47069,7 +47070,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.75
+  m_fontSize: 16.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
