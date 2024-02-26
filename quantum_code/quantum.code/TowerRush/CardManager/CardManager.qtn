@@ -34,3 +34,8 @@ synced event CardsChanged
 {
 	EntityRef Entity;
 }
+synced event CardSpawned
+{
+    PlayerRef Owner; // El propietario de la unidad destruida
+    byte EnergyCost;
+}

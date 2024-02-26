@@ -40,6 +40,7 @@ namespace TowerRush
 			QuantumEvent.Subscribe<EventGameplayResult>(this, OnGameplayResult);
 			QuantumEvent.Subscribe<EventUnitDestroyed>(this, OnUnitDestroyed);
 			QuantumEvent.Subscribe<EventOnHealthChanged>(this, OnHealthChanged);
+			QuantumEvent.Subscribe<EventCardSpawned>(this, OnSpawnedCard);
 		}
 
 		protected override void OnDeinitialize()
@@ -50,6 +51,7 @@ namespace TowerRush
 			QuantumEvent.UnsubscribeListener<EventGameplayResult>(this);
 			QuantumEvent.UnsubscribeListener<EventUnitDestroyed>(this);
 			QuantumEvent.UnsubscribeListener<EventOnHealthChanged>(this);
+			QuantumEvent.UnsubscribeListener<EventCardSpawned>(this);
 		}
 
 		protected override void OnActivate()
@@ -174,7 +176,7 @@ namespace TowerRush
 			if (gameplayResult.Winner < 0) { Debug.Log("Draw"); isWin = true; }
 			else if (gameplayResult.Winner == Entities.LocalPlayer) { isWin = true; }
 			else { isWin = false; }
-			SendStats(isWin);
+			//SendStats(isWin);
 		}
 		private void OnHealthChanged(EventOnHealthChanged e)
 		{
@@ -210,6 +212,20 @@ namespace TowerRush
 				}
 			}
 			
+		}
+		private void OnSpawnedCard(EventCardSpawned e)
+		{
+			
+			if (e.Owner == Entities.LocalPlayerRef)
+			{
+				Debug.Log("CardSpawned Iam Owner");
+				gmt.AddDeploys(1);
+				gmt.AddEnergyUsed(e.EnergyCost);
+			}
+			else
+			{
+				Debug.Log("CardSpawned Not Owner");
+			}
 		}
 
 		public async void SendStats(bool isWin)
