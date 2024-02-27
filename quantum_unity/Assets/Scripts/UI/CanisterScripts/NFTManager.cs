@@ -10,6 +10,7 @@ using System.Collections.Generic;
 public class NFTManager : MonoBehaviour
 {
     public TMP_Text nftListText;
+    public GameObject nftPrefab; // Asegúrate de asignar el prefab en el Inspector
 
     async void Start()
     {
@@ -29,51 +30,49 @@ public class NFTManager : MonoBehaviour
 
         try
         {
-            Debug.Log("Fetching NFT tokens...");
             var account = new Account(Principal.FromText(userPrincipalId), null);
             var nftListResult = await CandidApiManager.Instance.testnft.Icrc7TokensOf(account);
 
             if (nftListResult.Tag == TokensOfResultTag.Ok)
             {
                 var tokens = nftListResult.AsOk();
-                string displayText = "Owned NFTs:\n";
-
                 foreach (var tokenId in tokens)
                 {
-                    Debug.Log($"Fetching metadata for token ID: {tokenId}");
                     var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
 
                     if (metadataResult.Tag == MetadataResultTag.Ok)
-                    {
-                        var metadata = metadataResult.AsOk();
+{
+    var metadataDict = metadataResult.AsOk(); // Esto debería darte Dictionary<string, Metadata>
 
-                        // Serialize the metadata to a JSON string for readability
-                        string jsonMetadata = JsonConvert.SerializeObject(metadata, Formatting.Indented);
+    foreach (KeyValuePair<string, Metadata> entry in metadataDict)
+    {
+        string key = entry.Key;
+        Metadata metadataValue = entry.Value;
 
-                        // Deserialize the JSON metadata into a dictionary
-                        var metadataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonMetadata);
+        // Ahora debes verificar el tipo de cada metadataValue
+        switch (metadataValue.Tag)
+        {
+            case MetadataTag.Blob:
+                // Procesar Blob
+                break;
+            case MetadataTag.Int:
+                // Procesar Int
+                break;
+            case MetadataTag.Nat:
+                // Procesar Nat
+                break;
+            case MetadataTag.Text:
+                string textValue = metadataValue.AsText(); // Correcto uso de AsText()
+                // Utiliza 'textValue' como necesites, por ejemplo:
+                Debug.Log($"{key}: {textValue}");
+                break;
+        }
+    }
+}
 
-                        // Add the token ID to the display text
-                        displayText += $"Token ID: {tokenId}\n";
-
-                        // Add each metadata field and value to the display text
-                        foreach (var kvp in metadataDict)
-                        {
-                            displayText += $"{kvp.Key}: {kvp.Value}\n";
-                            Debug.Log($"Metadata for token ID {tokenId}:\n{displayText}");
-                        }
-
-                        displayText += "\n";
-                    }
-                    else
-                    {
-                        displayText += $"Token ID: {tokenId}\nFailed to fetch metadata.\n\n";
-                    }
                 }
-
-                nftListText.text = displayText;
             }
-            else if (nftListResult.Tag == TokensOfResultTag.Err)
+            else
             {
                 Debug.LogError("Error fetching NFT tokens.");
                 nftListText.text = "Error fetching NFTs.";

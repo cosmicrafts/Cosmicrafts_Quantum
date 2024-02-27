@@ -76,6 +76,20 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<OptionalValue<Models.PlayerPreferences>>(this.Converter);
 		}
 
+		public async Task<(bool ReturnArg0, string ReturnArg1)> MergeSkinNFTs(UnboundedUInt arg0, UnboundedUInt arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mergeSkinNFTs", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> MintNFT(Principal arg0, UnboundedUInt arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintNFT", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1)> SavePlayerChar(string arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
