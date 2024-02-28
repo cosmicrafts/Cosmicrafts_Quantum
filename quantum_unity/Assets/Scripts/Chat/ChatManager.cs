@@ -153,9 +153,11 @@ public class ChatManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        Debug.Log("ChatManager OnDestroy called.");
         if (webSocket != null)
         {
             webSocket.CloseAsync();
         }
     }
+
 }

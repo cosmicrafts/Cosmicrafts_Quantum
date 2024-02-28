@@ -44,7 +44,7 @@ namespace Cysharp.Threading.Tasks.Linq
         {
             if (sources.Length <= 0)
             {
-                Error.ThrowArgumentException("No source async enumerable to merge");
+                Error.ThrowArgumentException<T>("No source async enumerable to merge");
             }
             this.sources = sources;
         }

@@ -1,0 +1,14 @@
+Current Version: 0.2.6
+======================
+
+> Version 0.2.6 Changes:
+
+Issue: Unable to NFID login on the builds
+
+Fix: added BypassedBlsCryptography.cs and used it instead of WebGlBlsCryptography.cs
+
+> Version 0.2.5 Changes:
+
+Issue: When there was an outcome of type delete entity, it would set the entity outcome's fields as null
+
+Fix: if fields was null, set it as a new object

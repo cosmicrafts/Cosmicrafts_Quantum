@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using WebSocketSharp.Server;
 using WebSocketSharp;
+using Newtonsoft.Json;
 
 namespace Candid
 {
@@ -9,6 +10,7 @@ namespace Candid
     {
         public static LoginManager  Instance;
         private Action<string> callback = null;
+        
 
         [SerializeField]
         string url = "https://7p3gx-jaaaa-aaaal-acbda-cai.raw.ic0.app/";
@@ -116,11 +118,25 @@ namespace Candid
         }
     }
 
+    public class WebsocketMessage
+    {
+        public string type;
+        public string content;
+    }
+
+
     public class Data : WebSocketBehavior
     {
         protected override void OnMessage(MessageEventArgs e)
         {
-            Debug.Log("[Data] WebSocket OnMessage: " + e.Data);
+            Debug.Log("Received message: " + e.Data);
+            WebsocketMessage message = JsonConvert.DeserializeObject<WebsocketMessage>(e.Data);
+            if (message == null)
+            {
+                Debug.LogError("Error: Unable to parse websocket message.");
+                return;
+            }
+
             LoginManager.Instance.CloseSocket(e.Data);
         }
 
