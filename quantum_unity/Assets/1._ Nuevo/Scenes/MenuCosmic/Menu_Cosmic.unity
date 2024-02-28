@@ -2097,6 +2097,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98fc729ee829439468947181bd3bc33b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &57801233
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2393423864867871020, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: <WORLD_CANISTER_ID>k__BackingField
+      value: b3p3u-dqaaa-aaaap-ab3na-cai
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 938.3497
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 563.4335
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.36021423
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871022, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: m_Name
+      value: BoomManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bb357f1634528a149871a2f38d213b8b, type: 3}
 --- !u!1 &61178355
 GameObject:
   m_ObjectHideFlags: 0
@@ -4302,7 +4376,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 175688102}
   m_HandleRect: {fileID: 175688101}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -31796,7 +31870,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 273602817}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

@@ -31,6 +31,21 @@ public class Login : MonoBehaviour
         Debug.Log("[Login] Component Awake() - Login instance initialized.");
     }
 
+    private void Update()
+    {
+        // Check if Enter key is pressed
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SetPlayerName(); // Trigger OK action
+        }
+        // Check if Escape key is pressed
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            BackLoginMenu(); // Trigger Cancel action
+        }
+    }
+
+
     private void OnDestroy()
     {
         Debug.Log("[Login] Component OnDestroy() - Cleaning up before destruction.");
