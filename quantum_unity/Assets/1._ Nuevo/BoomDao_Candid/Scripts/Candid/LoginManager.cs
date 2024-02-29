@@ -19,6 +19,7 @@ namespace Candid
         void Awake()
         {
             Instance = this;
+            Debug.Log("[LoginManager] Awake - Instance initialized.");
         }
 
         public void StartLoginRandom()
@@ -40,6 +41,7 @@ namespace Candid
 
         public void CreateIdentityWithJson(string identityJson)
         {
+            Debug.Log("[LoginManager] Creating identity with JSON.");
             createIdentityCallback?.Invoke(identityJson);
             createIdentityCallback = null;
             BrowserUtils.ToggleLoginIframe(false);
@@ -55,11 +57,16 @@ namespace Candid
 
         public void CancelLogin()
         {
+            Debug.Log("[LoginManager] Cancelling login and closing WebSocket server if active.");
             BrowserUtils.ToggleLoginIframe(false);
             if (wssv != null)
             {
                 wssv.Stop();
                 wssv = null;
+            }
+            else
+            {
+                Debug.Log("[LoginManager] No WebSocket server to stop.");
             }
         }
 
@@ -68,9 +75,10 @@ namespace Candid
         /// </summary>
         public void StartLoginFlow(Action<string> _createIdentityCallback = null)
         {
+            Debug.Log("[LoginManager] Starting Login Flow (WebSocket-based)");
             createIdentityCallback = _createIdentityCallback;
             StartSocket();
-
+            Debug.Log("[LoginManager] Opening login URL in default browser: " + url);
             Application.OpenURL(url);
         }
 
@@ -85,10 +93,12 @@ namespace Candid
 
         public void CloseSocket()
         {
+            Debug.Log("[LoginManager] CloseSocket called. Stopping WebSocket server.");
             "CloseWebSocket".Log();
 
             wssv.Stop();
             wssv = null;
+            Debug.Log("[LoginManager] WebSocket server stopped successfully.");
         }
     }
 

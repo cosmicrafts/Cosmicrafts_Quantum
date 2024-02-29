@@ -23,7 +23,7 @@ namespace Boom
     {
         [SerializeField] bool enableBoomLogs = true;
         [field: SerializeField] public string WORLD_HUB_CANISTER_ID { private set; get; } = "fgpem-ziaaa-aaaag-abi2q-cai";
-        [field: SerializeField] public string WORLD_CANISTER_ID { private set; get; } = "j4n55-giaaa-aaaap-qb3wq-cai";
+        [field: SerializeField] public string WORLD_CANISTER_ID { private set; get; } = "b3p3u-dqaaa-aaaap-ab3na-cai";
         [field: SerializeField] public string WORLD_COLLECTION_CANISTER_ID { private set; get; } = "6uvic-diaaa-aaaap-abgca-cai";
 
         public enum GameType { SinglePlayer, Multiplayer, WebsocketMultiplayer }
@@ -61,6 +61,7 @@ namespace Boom
 
         protected override void _Awake()
         {
+            Debug.Log("[BoomManager] Awake - Starting initialization.");
             BroadcastState.Invoke(new WaitingForResponse(true));
 
             IAgent CreateAgentWithRandomIdentity(bool useLocalHost = false)
@@ -68,11 +69,11 @@ namespace Boom
                 IAgent randomAgent = null;
 
                 var httpClient = new UnityHttpClient();
-#if UNITY_WEBGL && !UNITY_EDITOR
-                var bls = new BypassedBlsCryptography (); 
-#else
-                var bls = new WasmBlsCryptography();
-#endif
+                #if UNITY_WEBGL && !UNITY_EDITOR
+                                var bls = new BypassedBlsCryptography (); 
+                #else
+                                var bls = new WasmBlsCryptography();
+                #endif
 
                 try
                 {
@@ -92,6 +93,7 @@ namespace Boom
             instance = this;
 
             Broadcast.Register<UserLoginRequest>(FetchHandler);
+            Debug.Log("[BoomManager] Registered for UserLoginRequest event.");
 
             Broadcast.Register<UserLogout>(UserLogoutHandler);
 
@@ -140,6 +142,8 @@ namespace Boom
 
         private void HandleLoginCompletion()
         {
+            Debug.Log($"[BoomManager] Checking login completion. Current state: {loginCompleted}");
+
             if (loginCompleted) return;
 
             loginCompleted =
@@ -152,6 +156,7 @@ namespace Boom
 
             if (loginCompleted)
             {
+                Debug.Log("[BoomManager] Login completed successfully.");
                 var loginDataResult = UserUtil.GetLogInData();
 
                 if (loginDataResult.IsErr)
@@ -795,6 +800,7 @@ namespace Boom
         }
         private void FetchHandler(UserLoginRequest arg)
         {
+            Debug.Log("[BoomManager] UserLoginRequest event received. Processing...");
             if (UserUtil.IsLoginRequestedPending() || UserUtil.IsLoggedIn()) return;
 
             UserUtil.SetAsLoginIn();

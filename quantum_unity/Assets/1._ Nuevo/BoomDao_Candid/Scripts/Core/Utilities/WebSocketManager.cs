@@ -51,11 +51,11 @@ public class WebSocketManager : MonoBehaviour
 
     void OnOpen()
     {
-        Debug.Log("Open");
+        Debug.Log("[WebSocketManager] Open");
     }
     async void OnMessage(AppMessage message)
     {
-        Debug.Log("C: " + message.Text);
+        Debug.Log("[WebSocketManager] C: " + message.Text);
         //ICTimestamp.Now().NanoSeconds.TryToUInt64(out ulong now);
         //var replyMessage = new AppMessage
         //{
@@ -67,11 +67,11 @@ public class WebSocketManager : MonoBehaviour
     }
     void OnError(Exception ex)
     {
-        Debug.Log("Error: " + ex);
+        Debug.Log("[WebSocketManager] Error: " + ex);
     }
     void OnClose()
     {
-        Debug.Log("Close");
+        Debug.Log("[WebSocketManager] Close");
     }
 
     async void OnDestroy()
