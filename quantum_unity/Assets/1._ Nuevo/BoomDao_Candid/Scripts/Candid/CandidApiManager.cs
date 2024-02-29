@@ -1,42 +1,45 @@
-using CanisterPK.CanisterLogin;
-using CanisterPK.CanisterMatchMaking;
-using CanisterPK.CanisterStats;
-using CanisterPK.CanisterNFTsCollectionsICHub;
-using CanisterPK.CoreICHubCanister;
-using CanisterPK.PrivateChatsICHub;
-using CanisterPK.ReportsICHubCanister;
-using CanisterPK.UserGeekICHubCanister;
-using CanisterPK.ImagesICHub;
-using CanisterPK.ProjectsICHub;
-using CanisterPK.PublicChatICHubCanister;
-using CanisterPK.testnft;
-using CanisterPK.testicrc1;
-using CanisterPK.validator;
-
-using UnityEngine.SceneManagement;
-
 namespace Candid
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    
+    using Candid.Extv2Standard;
+    using Candid.Extv2Boom;
+    using Candid.IcpLedger;
+    using Candid.IcpLedger.Models;
+    using Candid.World;
+    using Candid.WorldHub;
     using Cysharp.Threading.Tasks;
     using EdjCase.ICP.Agent.Agents;
     using EdjCase.ICP.Agent.Identities;
     using EdjCase.ICP.Candid.Models;
-   
+    using Boom.Patterns.Broadcasts;
+    using Boom.Utility;
+    using Boom.Values;
+    using UnityEngine;
+    using Candid.IcrcLedger;
+    using Unity.VisualScripting;
+    using Boom;
+    using EdjCase.ICP.BLS;
+    using Newtonsoft.Json;
+    using UnityEngine.Events;
+    using CanisterPK.CanisterLogin;
+    using CanisterPK.CanisterMatchMaking;
+    using CanisterPK.CanisterStats;
+    using CanisterPK.testnft;
+    using CanisterPK.testicrc1;
+    using CanisterPK.validator;
+    using UnityEngine.SceneManagement;
     using UnityEngine;
     //using WebSocketSharp;
-  
-
-    using Unity.VisualScripting;
+    
 
     public class CandidApiManager : MonoBehaviour
     {
 
         public bool autoLogin = true;
         public static CandidApiManager Instance { get; private set; }
+        public UnityEvent onLoginCompleted;
         
         // Canister APIs
         public CanisterLoginApiClient CanisterLogin { get; private set; }
@@ -44,14 +47,6 @@ namespace Candid
         public CanisterStatsApiClient CanisterStats { get; private set; }
         public TestnftApiClient testnft { get; private set; }
         public Testicrc1ApiClient testicrc1{ get; private set; }
-        public CanisterNFTsCollectionsICHubApiClient CanisterNFTsCollectionsICHub { get; private set; }
-        public CoreICHubCanisterApiClient CoreICHubCanister { get; private set; }
-        public PrivateChatsICHubApiClient PrivateChatsICHub { get; private set; }
-        public ReportsICHubCanisterApiClient ReportsICHubCanister { get; private set; }
-        public UserGeekICHubCanisterApiClient UserGeekICHubCanister { get; private set; }
-        public ImagesICHubApiClient ImagesICHub { get; private set; }
-        public ProjectsICHubApiClient ProjectsICHub { get; private set; }
-        public PublicChatICHubCanisterApiClient PublicChatICHubCanister { get; private set; }
         public ValidatorApiClient Validator { get; private set; }
             
             
@@ -80,6 +75,9 @@ namespace Candid
 
         private void Awake()
         {
+            if (onLoginCompleted == null) {
+                onLoginCompleted = new UnityEvent();
+            }
             Debug.Log("[CandidApiManager] Awake called. Initializing instance.");
             if (Instance != null)
             {
@@ -91,7 +89,7 @@ namespace Candid
             DontDestroyOnLoad(gameObject);
             Debug.Log("[CandidApiManager] Instance set and marked as DontDestroyOnLoad.");
         }
-
+        
         private void Start()
         {
             Debug.Log("[CandidApiManager] Start called.");
@@ -130,6 +128,7 @@ namespace Candid
         {
             Debug.Log("[CandidApiManager] OnLoginCompleted called. Login completed. Creating agent...");
             CreateAgentUsingIdentityJson(json, false).Forget();
+            onLoginCompleted.Invoke();
         }
 
         public async UniTaskVoid CreateAgentUsingIdentityJson(string json, bool useLocalHost = false)
@@ -265,15 +264,7 @@ namespace Candid
                 CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
                 testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
-                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                
-                CoreICHubCanister = new CoreICHubCanisterApiClient(agent, Principal.FromText("2nfjo-7iaaa-aaaag-qawaq-cai"));
-                PublicChatICHubCanister = new PublicChatICHubCanisterApiClient(agent, Principal.FromText("yq4sl-yyaaa-aaaag-aaxcq-cai"));
-                UserGeekICHubCanister = new UserGeekICHubCanisterApiClient(agent, Principal.FromText("fbbjb-oyaaa-aaaah-qaojq-cai"));
-                PrivateChatsICHub = new PrivateChatsICHubApiClient(agent, Principal.FromText("ofcrb-2aaaa-aaaan-qcz2q-cai"));
-                ImagesICHub = new ImagesICHubApiClient(agent, Principal.FromText("avnm2-3aaaa-aaaaj-qacba-cai"));
-                ProjectsICHub = new ProjectsICHubApiClient(agent, Principal.FromText("ey7h6-4iaaa-aaaak-aepka-cai"));
-                CanisterNFTsCollectionsICHub = new CanisterNFTsCollectionsICHubApiClient(agent, Principal.FromText("4nxsr-yyaaa-aaaaj-aaboq-cai"));                CanisterNFTsCollectionsICHub = new CanisterNFTsCollectionsICHubApiClient(agent, Principal.FromText("4nxsr-yyaaa-aaaaj-aaboq-cai"));
-                ReportsICHubCanister = new ReportsICHubCanisterApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
+                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
@@ -286,14 +277,6 @@ namespace Candid
                 testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
                 Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                
-                CoreICHubCanister = new CoreICHubCanisterApiClient(agent, Principal.FromText("2nfjo-7iaaa-aaaag-qawaq-cai"));
-                PublicChatICHubCanister = new PublicChatICHubCanisterApiClient(agent, Principal.FromText("yq4sl-yyaaa-aaaag-aaxcq-cai"));
-                UserGeekICHubCanister = new UserGeekICHubCanisterApiClient(agent, Principal.FromText("fbbjb-oyaaa-aaaah-qaojq-cai"));
-                PrivateChatsICHub = new PrivateChatsICHubApiClient(agent, Principal.FromText("ofcrb-2aaaa-aaaan-qcz2q-cai"));
-                ImagesICHub = new ImagesICHubApiClient(agent, Principal.FromText("avnm2-3aaaa-aaaaj-qacba-cai"));
-                ProjectsICHub = new ProjectsICHubApiClient(agent, Principal.FromText("ey7h6-4iaaa-aaaak-aepka-cai"));
-                CanisterNFTsCollectionsICHub = new CanisterNFTsCollectionsICHubApiClient(agent, Principal.FromText("4nxsr-yyaaa-aaaaj-aaboq-cai"));                CanisterNFTsCollectionsICHub = new CanisterNFTsCollectionsICHubApiClient(agent, Principal.FromText("4nxsr-yyaaa-aaaaj-aaboq-cai"));
-                ReportsICHubCanister = new ReportsICHubCanisterApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
@@ -309,15 +292,6 @@ namespace Candid
             testnft = null;              
             testicrc1 = null;
             Validator = null;                
-            CoreICHubCanister = null;
-            PublicChatICHubCanister = null;
-            UserGeekICHubCanister = null;
-            PrivateChatsICHub = null;
-            ImagesICHub = null;
-            ProjectsICHub = null;
-            CanisterNFTsCollectionsICHub = null;                
-            CanisterNFTsCollectionsICHub = null;
-            ReportsICHubCanister = null;
             
             //Set Login Data
             loginData = new LoginData(null, null, null, false, DataState.None);
