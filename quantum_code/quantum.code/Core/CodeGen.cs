@@ -2559,11 +2559,11 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventCardSpawned CardSpawned(PlayerRef Owner, Byte EnergyCost) {
+      public EventCardSpawned CardSpawned(PlayerRef Owner, AssetRefCardSettings assetRefCardSettings) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventCardSpawned>(EventCardSpawned.ID);
         ev.Owner = Owner;
-        ev.EnergyCost = EnergyCost;
+        ev.assetRefCardSettings = assetRefCardSettings;
         _f.AddEvent(ev);
         return ev;
       }
@@ -2664,7 +2664,7 @@ namespace Quantum {
   public unsafe partial class EventCardSpawned : EventBase {
     public new const Int32 ID = 1;
     public PlayerRef Owner;
-    public Byte EnergyCost;
+    public AssetRefCardSettings assetRefCardSettings;
     protected EventCardSpawned(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -2683,7 +2683,7 @@ namespace Quantum {
       unchecked {
         var hash = 41;
         hash = hash * 31 + Owner.GetHashCode();
-        hash = hash * 31 + EnergyCost.GetHashCode();
+        hash = hash * 31 + assetRefCardSettings.GetHashCode();
         return hash;
       }
     }

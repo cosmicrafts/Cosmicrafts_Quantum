@@ -99,7 +99,7 @@
 			}
 
 			frame.SpawnCard(settings, owner, position, rotation, card.Level);
-			frame.Events.CardSpawned(owner, settings.EnergyCost);
+			frame.Events.CardSpawned(owner, card.CardSettings);
 				
 			AddCardToQueue(frame, card);
 
