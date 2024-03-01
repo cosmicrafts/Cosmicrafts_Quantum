@@ -1,5 +1,3 @@
-namespace Boom
-{
     using Boom.Utility;
     using Boom.Values;
     using Boom;
@@ -14,10 +12,6 @@ namespace Boom
     using Candid.World.Models;
     using UnityEngine.SceneManagement;
     using Newtonsoft.Json;
-using System.Threading.Tasks;
-using EdjCase.ICP.Candid.Models;
-using UnityEngine.InputSystem;
-
 
     public class BoomLogin : MonoBehaviour
     {
@@ -31,51 +25,12 @@ using UnityEngine.InputSystem;
             actionButton.onClick.RemoveAllListeners();
             actionButton.onClick.AddListener(ActionButtonClickHandler);
             UserUtil.AddListenerMainDataChange<MainDataTypes.LoginData>(LoginDataChangeHandler);
-            CandidApiManager.OnLoginCompletedEvent += HandleLoginCompleted;
-        }
-        private void HandleLoginCompleted(CandidApiManager.LoginData loginData)
-    {
-        // Handle login completion, e.g., transition scenes, update UI
-        Debug.Log("Login Completed in BoomLogin");
-        UpdateWindow(loginData);
-    }
-
-        public void StartWebLogin()
-    {
-        Debug.Log("[Login] Initiating Web login process...");
-        LoadingPanel.Instance.ActiveLoadingPanel();
-        CandidApiManager.Instance.StartLogin();
-    }
-
-        public void UpdateWindow(CandidApiManager.LoginData state)
-        {
-            Debug.Log($"[Login] UpdateWindow called with state: {state.state}, IsAnon: {state.asAnon}, Principal: {state.principal}, AccountId: {state.accountIdentifier}");
-            bool isLoading = state.state == CandidApiManager.DataState.Loading; ;
-
-            if(!state.asAnon)
-            {
-                Debug.Log("[Login]Logged In");
-                Debug.Log($"[Login]Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
-                UserLoginSuccessfull();
-            }
-            else//Logged In As Anon
-            {
-                Debug.Log("[Login]Logged in as Anon");
-                Debug.Log($"[Login]Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
-                UserLoginSuccessfull();
-            }
-        }
-
-        public async void UserLoginSuccessfull()
-        {
-           
         }
 
         private void OnDestroy()
         {
             actionButton.onClick.RemoveListener(ActionButtonClickHandler);
             UserUtil.RemoveListenerMainDataChange<MainDataTypes.LoginData>(LoginDataChangeHandler);
-            CandidApiManager.OnLoginCompletedEvent -= HandleLoginCompleted;
         }
 
         public void ActionButtonClickHandler()
@@ -129,4 +84,3 @@ using UnityEngine.InputSystem;
             SaveData.SaveGameUser();
         }
     }
-}

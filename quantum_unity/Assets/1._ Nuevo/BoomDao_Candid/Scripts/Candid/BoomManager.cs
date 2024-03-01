@@ -273,6 +273,7 @@ namespace Boom
             UserUtil.ClearData<DataTypes.NftCollection>();
 
             PlayerPrefs.SetString("authTokenId", string.Empty);
+            
             InitializeCandidApis(cachedAnonAgent.Value, true).Forget();
 
             configsRequested = false;

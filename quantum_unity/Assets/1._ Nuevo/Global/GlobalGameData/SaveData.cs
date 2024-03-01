@@ -45,7 +45,7 @@ public static class SaveData
     //Load the configuration data
     public static void LoadGameUser()
     {
-        Debug.Log("Load Game User");
+        Debug.Log("[SaveData]Load Game User to GlobalGameData");
         UserData userData = JsonConvert.DeserializeObject<UserData>(PlayerPrefs.GetString(keyUser));
         
         if (userData == null)

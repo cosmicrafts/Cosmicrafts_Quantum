@@ -42,7 +42,7 @@ public class SimpleTimer : MonoBehaviour
     {
         if (timerText != null)
             timerText.text = "0:00";
-        Debug.Log("Timer reset");
+        Debug.Log("[SimpleTimer] Matchmaking Timer reset");
     }
 
     void UpdateTimer()

@@ -30,7 +30,6 @@ namespace Candid
     using CanisterPK.testicrc1;
     using CanisterPK.validator;
     using UnityEngine.SceneManagement;
-    using UnityEngine;
     //using WebSocketSharp;
     
 
@@ -49,7 +48,6 @@ namespace Candid
         public Testicrc1ApiClient testicrc1{ get; private set; }
         public ValidatorApiClient Validator { get; private set; }
             
-        public static event Action<LoginData> OnLoginCompletedEvent;
             
         // Login Data
         public enum DataState { None, Loading, Ready }
@@ -60,7 +58,6 @@ namespace Candid
             public string accountIdentifier;
             public bool asAnon;
             public DataState state ;
-            
             
             public LoginData(IAgent agent, string principal, string accountIdentifier, bool asAnon, DataState state)
             {
@@ -127,12 +124,11 @@ namespace Candid
         }
         
         public void OnLoginCompleted(string json)
-    {
-        Debug.Log("[CandidApiManager] OnLoginCompleted called. Creating agent...");
-        CreateAgentUsingIdentityJson(json, false).Forget();
-        // Make sure to convert or get LoginData properly here
-        OnLoginCompletedEvent?.Invoke(loginData);
-    }
+        {
+            Debug.Log("[CandidApiManager] OnLoginCompleted called. Login completed. Creating agent...");
+            CreateAgentUsingIdentityJson(json, false).Forget();
+            onLoginCompleted.Invoke();
+        }
 
         public async UniTaskVoid CreateAgentUsingIdentityJson(string json, bool useLocalHost = false)
         {
@@ -256,7 +252,7 @@ namespace Candid
         {
             Debug.Log($"[CandidApiManager] Initializing Candid APIs. Anonymous: {asAnon}");
             var userPrincipal = agent.Identity.GetPublicKey().ToPrincipal().ToText();
-            string userAccountIdentity;
+
             //Check if anon setup is required
             if (asAnon)
                 

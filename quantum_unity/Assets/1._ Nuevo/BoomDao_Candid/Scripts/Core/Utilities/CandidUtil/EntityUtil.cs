@@ -199,7 +199,7 @@
 
                                         if (value.TryParseValue<double>(out var decimalValue) == false)
                                         {
-                                            $"Issue parsing field of id: {condition.key}, from string to double".Error();
+                                            $"[EntityUtil]Issue parsing field of id: {condition.key}, from string to double".Error();
                                             return false;
                                         }
 
@@ -210,7 +210,7 @@
 
                                         if (value.TryParseValue<ulong>(out var ulongValue) == false)
                                         {
-                                            $"Issue parsing field of id: {condition.key}, from string to ulong".Error();
+                                            $"[EntityUtil]Issue parsing field of id: {condition.key}, from string to ulong".Error();
                                             return false;
                                         }
 
@@ -221,7 +221,7 @@
 
                                         if (value.TryParseValue<bool>(out var boolValue) == false)
                                         {
-                                            $"Issue parsing field of id: {condition.key}, from string to bool".Error();
+                                            $"[EntityUtil]Issue parsing field of id: {condition.key}, from string to bool".Error();
                                             return false;
                                         }
 
@@ -294,7 +294,7 @@
             {
                 return true;
             }
-            $"Error on \"value\" type, current type: {value.GetType()}, desired type is: {typeof(T)}".Error();
+            $"[EntityUtil]Error on \"value\" type, current type: {value.GetType()}, desired type is: {typeof(T)}".Error();
             return false;
         }
         public static bool TryGetFieldAsText(string uid, string entityId, string fieldName, out string outValue, string defaultValue = default, string sourceWorldId = default)
@@ -325,7 +325,7 @@
             {
                 return true;
             }
-            $"Error on \"value\" type, current type: {value.GetType()}, desired type is: {typeof(T)}".Error();
+            $"[EntityUtil]Error on \"value\" type, current type: {value.GetType()}, desired type is: {typeof(T)}".Error();
             return false;
         }
         public static bool TryGetFieldAsText(this DataTypes.Entity entity, string fieldName, out string outValue, string defaultValue = default)
@@ -358,7 +358,7 @@
                     outValue = e.Value;
                     return true;
                 default:
-                    $"Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.SetText)} for field: {fieldName}".Error();
+                    $"[EntityUtil]Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.SetText)} for field: {fieldName}".Error();
                     return false;
             }
         }
@@ -375,7 +375,7 @@
                     outValue = e;
                     return true;
                 default:
-                    $"Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.Numeric)} for field: {fieldName}".Error();
+                    $"[EntityUtil]Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.Numeric)} for field: {fieldName}".Error();
                     return false;
             }
         }
@@ -392,7 +392,7 @@
                     outValue = (ulong)e.Value;
                     return true;
                 default:
-                    $"Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.Numeric)} for field: {fieldName}".Error();
+                    $"[EntityUtil]Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.Numeric)} for field: {fieldName}".Error();
                     return false;
             }
         }
@@ -411,13 +411,13 @@
                     else if (valueToCheck == "false") outValue = false;
                     else
                     {
-                        $"Error trying to read \"{e.Value}\" as a bool value type".Error();
+                        $"[EntityUtil]Error trying to read \"{e.Value}\" as a bool value type".Error();
                         return false;
                     }
 
                     return true;
                 default:
-                    $"Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.SetText)} for field: {fieldName}".Error();
+                    $"[EntityUtil]Error on \"value\" type, current type: {edit.GetType()}, desired type is: {typeof(EntityFieldEdit.SetText)} for field: {fieldName}".Error();
                     return false;
             }
         }
@@ -539,7 +539,7 @@
                             {
                                 if (!config.fields.TryGetValue(fieldName, out feildValue))
                                 {
-                                    $"Formula error, variable's value of id: {variable} could not be found".Error();
+                                    $"[EntityUtil]Formula error, variable's value of id: {variable} could not be found".Error();
                                     feildValue = "Nan";
                                 }
                                 else
@@ -557,7 +557,7 @@
                         {
                             if (!entity.fields.TryGetValue(fieldName, out feildValue))
                             {
-                                $"Formula error, variable's value of id: {variable} could not be found".Error();
+                                $"[EntityUtil]Formula error, variable's value of id: {variable} could not be found".Error();
                                 feildValue = "Nan";
                             }
                         }
@@ -571,7 +571,7 @@
 
                             if (args.TryLocate(e => e.FieldName == actionArgFieldName, out var argValue) == false)
                             {
-                                return "Could not find arg value of field name: " + actionArgFieldName;
+                                return "[EntityUtil]Could not find arg value of field name: " + actionArgFieldName;
                             }
 
                             outValue = outValue.Replace("{" + $"{variable}" + "}", $"{argValue.FieldValue}");
@@ -595,7 +595,7 @@
         internal static void ApplyEntityEdits(ProcessedActionResponse.Outcomes outcomes)
         {
             var uid = outcomes.uid;
-            Debug.Log($"Apply outcomes to {uid}, outcomes: {outcomes.entityOutcomes}");
+            Debug.Log($"[EntityUtil]Apply outcomes to {uid}, outcomes: {outcomes.entityOutcomes}");
             var entityOutcomes = outcomes.entityOutcomes;
 
             Dictionary<string, DataTypes.Entity> editedEntities = new();
