@@ -123,6 +123,7 @@ namespace Candid
             #endif
         }
         
+        
         public void OnLoginCompleted(string json)
         {
             Debug.Log("[CandidApiManager] OnLoginCompleted called. Login completed. Creating agent...");

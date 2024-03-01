@@ -225,7 +225,7 @@ namespace Boom
         //
 
 
-        void OnLoginCompleted(string json)
+        public void OnLoginCompleted(string json)
         {
             var isLoggedIn = UserUtil.IsLoggedIn();
 
@@ -238,30 +238,44 @@ namespace Boom
             "You already have an Agent created".Log();
         }
         public async UniTaskVoid CreateAgentUsingIdentityJson(string json, bool useLocalHost = false)
-        {
-            await UniTask.SwitchToMainThread();
+{
+    await UniTask.SwitchToMainThread();
 
-            try
-            {
-                var identity = Identity.DeserializeJsonToIdentity(json);
-
-                var httpClient = new UnityHttpClient();
+    try
+    {
+        var identity = Identity.DeserializeJsonToIdentity(json);
+        var httpClient = new UnityHttpClient();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-                var bls = new BypassedBlsCryptography ();
+        var bls = new BypassedBlsCryptography();
 #else
-                var bls = new WasmBlsCryptography();
+        var bls = new WasmBlsCryptography();
 #endif
-                if (useLocalHost) await InitializeCandidApis(new HttpAgent(identity, new Uri("http://localhost:4943"), bls));
-                else await InitializeCandidApis(new HttpAgent(httpClient, identity, bls));
 
-                "You have logged in".Log();
-            }
-            catch (Exception e)
-            {
-                e.Message.Error();
-            }
+        if (useLocalHost)
+        {
+            await InitializeCandidApis(new HttpAgent(identity, new Uri("http://localhost:4943"), bls));
         }
+        else
+        {
+            await InitializeCandidApis(new HttpAgent(httpClient, identity, bls));
+        }
+
+        PlayerPrefs.SetString("authTokenId", json);
+        PlayerPrefs.Save(); // Ensure PlayerPrefs are saved immediately
+
+        // Additional log to confirm saving
+        Debug.Log("[CreateAgentUsingIdentityJson] JSON string saved to PlayerPrefs under 'authTokenId'.");
+        Debug.Log($"[CreateAgentUsingIdentityJson] Saved JSON: {json}"); // Log the actual JSON string for verification
+
+        "You have logged in".Log();
+    }
+    catch (Exception e)
+    {
+        e.Message.Error();
+    }
+}
+
 
         private void UserLogoutHandler(UserLogout obj)
         {
@@ -273,7 +287,6 @@ namespace Boom
             UserUtil.ClearData<DataTypes.NftCollection>();
 
             PlayerPrefs.SetString("authTokenId", string.Empty);
-            
             InitializeCandidApis(cachedAnonAgent.Value, true).Forget();
 
             configsRequested = false;

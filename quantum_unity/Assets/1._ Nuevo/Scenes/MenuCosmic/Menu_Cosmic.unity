@@ -15924,6 +15924,7 @@ GameObject:
   - component: {fileID: 536574844}
   - component: {fileID: 536574845}
   - component: {fileID: 536574846}
+  - component: {fileID: 536574847}
   m_Layer: 5
   m_Name: Dashboard
   m_TagString: Untagged
@@ -16066,6 +16067,22 @@ MonoBehaviour:
   tokenAmountInputField: {fileID: 1981928724}
   sendTokenButton: {fileID: 1475195953}
   transferStatusText: {fileID: 687889646}
+--- !u!114 &536574847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 536574839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433d19b1e116451b819e0652fbe4d9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoLogin: 1
+  onLoginCompleted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &540136173
 GameObject:
   m_ObjectHideFlags: 0

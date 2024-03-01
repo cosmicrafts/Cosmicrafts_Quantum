@@ -1816,7 +1816,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 502.6698, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &386669689
@@ -2212,7 +2212,6 @@ GameObject:
   - component: {fileID: 561116214}
   - component: {fileID: 561116213}
   - component: {fileID: 561116212}
-  - component: {fileID: 561116216}
   m_Layer: 5
   m_Name: LoginCanvas
   m_TagString: Untagged
@@ -2304,22 +2303,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &561116216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561116211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 433d19b1e116451b819e0652fbe4d9bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  autoLogin: 0
-  onLoginCompleted:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &585627308
 GameObject:
   m_ObjectHideFlags: 0
