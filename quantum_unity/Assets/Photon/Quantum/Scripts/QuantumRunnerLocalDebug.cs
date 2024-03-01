@@ -116,6 +116,15 @@ public class QuantumRunnerLocalDebug : QuantumCallbacks {
                 }
 #endif
                 game.SendPlayerData(i, Players[i]);
+                
+                foreach (var VARIABLE in Players[i].Cards)
+                {
+                  Debug.Log(VARIABLE.CardSettings.Id);
+                  Debug.Log(UnityDB.FindAsset<CardSettingsAsset>(VARIABLE.CardSettings.Id).DisplayName);
+                }
+                Debug.Log("----------------------------------------");
+                
+                
       }
     }
   }

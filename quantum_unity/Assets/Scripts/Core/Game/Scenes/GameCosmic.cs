@@ -145,6 +145,13 @@ namespace TowerRush
 						Level  = Game.GameplayInfo.Level,
 						Cards  = Game.GameplayInfo.Cards,
 					});
+
+					foreach (var VARIABLE in Game.GameplayInfo.Cards)
+					{
+						Debug.Log(VARIABLE.CardSettings.Id);
+						Debug.Log(UnityDB.FindAsset<CardSettingsAsset>(VARIABLE.CardSettings.Id).DisplayName);
+					}
+					Debug.Log("----------------------------------------");
 				}
 			}
 
@@ -218,13 +225,16 @@ namespace TowerRush
 			
 			if (e.Owner == Entities.LocalPlayerRef)
 			{
-				Debug.Log("CardSpawned Iam Owner");
+				CardSettingsAsset card = UnityDB.FindAsset<CardSettingsAsset>(e.assetRefCardSettings.Id);
+				Debug.Log(e.assetRefCardSettings.Id);
+				Debug.Log("CardSpawned Iam Owner: " + card.DisplayName + card.GetAssetGuid());
+				Debug.Log(card.GetEnergyCost());
 				gmt.AddDeploys(1);
-				gmt.AddEnergyUsed(e.EnergyCost);
+				gmt.AddEnergyUsed(card.GetEnergyCost());
 			}
 			else
 			{
-				Debug.Log("CardSpawned Not Owner");
+				Debug.Log("CardSpawned Not Owner" + e.Id);
 			}
 		}
 
