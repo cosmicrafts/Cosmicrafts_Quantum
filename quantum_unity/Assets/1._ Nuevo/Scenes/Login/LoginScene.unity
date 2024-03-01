@@ -1100,7 +1100,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.21347871, y: 0.20700002}
   m_AnchorMax: {x: 0.79252136, y: 0.32249779}
-  m_AnchoredPosition: {x: -0.897583, y: 0.000061035156}
+  m_AnchoredPosition: {x: -0.897583, y: 0}
   m_SizeDelta: {x: -1.7955322, y: -0.0000076293945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &302463608
@@ -1388,7 +1388,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.7514448}
-  m_AnchoredPosition: {x: 0, y: -0.12957954}
+  m_AnchoredPosition: {x: 0, y: -0.12957764}
   m_SizeDelta: {x: -0.2501, y: -0.25905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &333320314
@@ -1972,7 +1972,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.073322706, y: 0.83673704}
   m_AnchorMax: {x: 0.9277098, y: 1}
-  m_AnchoredPosition: {x: -0.56103516, y: -0.45599365}
+  m_AnchoredPosition: {x: -0.56103516, y: -0.4560547}
   m_SizeDelta: {x: 0.97450256, y: 1.0870018}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &414639074
@@ -2212,6 +2212,7 @@ GameObject:
   - component: {fileID: 561116214}
   - component: {fileID: 561116213}
   - component: {fileID: 561116212}
+  - component: {fileID: 561116216}
   m_Layer: 5
   m_Name: LoginCanvas
   m_TagString: Untagged
@@ -2303,6 +2304,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &561116216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561116211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433d19b1e116451b819e0652fbe4d9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoLogin: 0
+  onLoginCompleted:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &585627308
 GameObject:
   m_ObjectHideFlags: 0
@@ -2475,6 +2492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a78d133fdbc0ef4f928a85288701301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainScene: Menu_Cosmic
   userNameInputField: {fileID: 1623414151}
   actionLogText: {fileID: 934781235}
   actionButton: {fileID: 963604774}
@@ -2724,7 +2742,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.314003}
+  m_AnchoredPosition: {x: 0, y: 0.31401062}
   m_SizeDelta: {x: -0.0001, y: -0.62800026}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &674819623
@@ -3035,7 +3053,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.16003418, y: -0.10083008}
+  m_AnchoredPosition: {x: 0.15991211, y: -0.10083008}
   m_SizeDelta: {x: -0.3149414, y: -0.20178223}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &821584056
@@ -5342,7 +5360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.16003418, y: -0.10083008}
+  m_AnchoredPosition: {x: 0.15991211, y: -0.10083008}
   m_SizeDelta: {x: -0.3149414, y: -0.20178223}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1332755663
@@ -8230,7 +8248,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.9431321, y: 0.9462112}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.05505371, y: -0.016662598}
+  m_AnchoredPosition: {x: -0.05505371, y: -0.016723633}
   m_SizeDelta: {x: -0.11012, y: -0.1067}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1979130783

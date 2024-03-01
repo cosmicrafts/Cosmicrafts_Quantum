@@ -12,53 +12,72 @@ namespace Boom
     using UnityEngine.UI;
     using System;
     using Candid.World.Models;
-    using Newtonsoft.Json;
     using UnityEngine.SceneManagement;
+    using Newtonsoft.Json;
+using System.Threading.Tasks;
+using EdjCase.ICP.Candid.Models;
+using UnityEngine.InputSystem;
+
 
     public class BoomLogin : MonoBehaviour
     {
-        public static BoomLogin Instance { get; private set; }
-
-        #region FIELDS
-
         [SerializeField] private string mainScene = "Menu_Cosmic";
-        [SerializeField] private Animator chooseUserAnim;
-        [SerializeField] TMP_InputField userNameInputField;
-        [SerializeField] TMP_Text actionLogText;
-        [SerializeField] Button actionButton;
+        [SerializeField] private TMP_InputField userNameInputField;
+        [SerializeField] private TMP_Text actionLogText;
+        [SerializeField] private Button actionButton;
 
-        private Coroutine logCoroutine;
-        string actionId = "set_username";
-
-        #endregion
-
-        #region MONO
         private void Awake()
         {
-            if (Instance != null)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Instance = this;
             actionButton.onClick.RemoveAllListeners();
             actionButton.onClick.AddListener(ActionButtonClickHandler);
             UserUtil.AddListenerMainDataChange<MainDataTypes.LoginData>(LoginDataChangeHandler);
+            CandidApiManager.OnLoginCompletedEvent += HandleLoginCompleted;
+        }
+        private void HandleLoginCompleted(CandidApiManager.LoginData loginData)
+    {
+        // Handle login completion, e.g., transition scenes, update UI
+        Debug.Log("Login Completed in BoomLogin");
+        UpdateWindow(loginData);
+    }
+
+        public void StartWebLogin()
+    {
+        Debug.Log("[Login] Initiating Web login process...");
+        LoadingPanel.Instance.ActiveLoadingPanel();
+        CandidApiManager.Instance.StartLogin();
+    }
+
+        public void UpdateWindow(CandidApiManager.LoginData state)
+        {
+            Debug.Log($"[Login] UpdateWindow called with state: {state.state}, IsAnon: {state.asAnon}, Principal: {state.principal}, AccountId: {state.accountIdentifier}");
+            bool isLoading = state.state == CandidApiManager.DataState.Loading; ;
+
+            if(!state.asAnon)
+            {
+                Debug.Log("[Login]Logged In");
+                Debug.Log($"[Login]Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
+                UserLoginSuccessfull();
+            }
+            else//Logged In As Anon
+            {
+                Debug.Log("[Login]Logged in as Anon");
+                Debug.Log($"[Login]Principal: <b>\"{state.principal}\"</b>\nAccountId: <b>\"{state.accountIdentifier}\"</b>");
+                UserLoginSuccessfull();
+            }
+        }
+
+        public async void UserLoginSuccessfull()
+        {
+           
         }
 
         private void OnDestroy()
         {
             actionButton.onClick.RemoveListener(ActionButtonClickHandler);
             UserUtil.RemoveListenerMainDataChange<MainDataTypes.LoginData>(LoginDataChangeHandler);
+            CandidApiManager.OnLoginCompletedEvent -= HandleLoginCompleted;
         }
 
-        private void OnEnable()
-        {
-            actionLogText.text = "...";
-        }
-        #endregion
-
-        #region ACTION 
         public void ActionButtonClickHandler()
         {
             ExecuteAction().Forget();
@@ -66,66 +85,35 @@ namespace Boom
 
         public async UniTaskVoid ExecuteAction()
         {
-            if (logCoroutine != null) StopCoroutine(logCoroutine);
-
             var newUsername = userNameInputField.text;
             if (string.IsNullOrEmpty(newUsername)) return;
 
-            List<Field> fields = new() { new("username", newUsername) };
+            var actionId = "set_username";
+            var fields = new List<Field> { new("username", newUsername) };
+
             actionLogText.text = $"Processing Action of id: \"{actionId}\" with arguments:\n{JsonConvert.SerializeObject(fields)}";
             var actionResult = await ActionUtil.ProcessAction(actionId, fields);
 
             if (actionResult.IsErr)
             {
-                string errorMessage = actionResult.AsErr().content;
-                Debug.LogError(errorMessage);
-                logCoroutine = StartCoroutine(DisplayTempLog(errorMessage));
+                actionLogText.text = actionResult.AsErr().content;
                 return;
             }
 
-            if (!actionResult.IsErr)
-            {
-                SceneManager.LoadScene(mainScene);
-            }
-            else
-            {
-                string errorMessage = actionResult.AsErr().content;
-                Debug.LogError(errorMessage);
-                logCoroutine = StartCoroutine(DisplayTempLog(errorMessage));
-            }
-
-            logCoroutine = StartCoroutine(DisplayTempLog($"You have changed your username to: {newUsername}"));
+            actionLogText.text = $"You have changed your username to: {newUsername}";
+            SceneManager.LoadScene(mainScene);
         }
-        #endregion
 
-        #region LOG
-        IEnumerator DisplayTempLog(string message, float duration = 5f)
-        {
-            actionLogText.text = message;
-            yield return new WaitForSeconds(duration);
-            actionLogText.text = "...";
-        }
-        #endregion
-
-        #region USER DATA
         private void LoginDataChangeHandler(MainDataTypes.LoginData data)
         {
             if (data.state != MainDataTypes.LoginData.State.LoggedIn) return;
 
-            var principalId = data.principal;
-            EntityUtil.TryGetFieldAsText(principalId, "user_profile", "username", out var username, "None");
-
+            EntityUtil.TryGetFieldAsText(data.principal, "user_profile", "username", out var username, "None");
+            UpdateGlobalGameData(username, data.principal);
             if (!string.IsNullOrEmpty(username) && username != "None")
             {
-                UpdateGlobalGameData(username, principalId);
                 SceneManager.LoadScene(mainScene);
             }
-            else
-            {
-                chooseUserAnim.SetBool("ShowInput", true);
-            }
-
-            UpdateInputFieldContent(username);
         }
 
         private void UpdateGlobalGameData(string username, string principalId)
@@ -135,18 +123,10 @@ namespace Boom
                 SaveData.LoadGameUser();
             }
 
-            UserData user = GlobalGameData.Instance.GetUserData();
+            var user = GlobalGameData.Instance.GetUserData();
             user.NikeName = username;
             user.WalletId = principalId;
-
             SaveData.SaveGameUser();
-            Debug.Log($"GlobalGameData updated: Username={username}, PrincipalId={principalId}");
         }
-
-        private void UpdateInputFieldContent(string value)
-        {
-            userNameInputField.SetTextWithoutNotify(value);
-        }
-        #endregion
     }
 }
