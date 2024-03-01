@@ -23,7 +23,7 @@ namespace Boom.Tutorials
         private Coroutine logCoroutine;
 
         //The action ID
-        string actionId = "add_gem";
+        string actionId = "mine_copper_block";
 
         #endregion
 
