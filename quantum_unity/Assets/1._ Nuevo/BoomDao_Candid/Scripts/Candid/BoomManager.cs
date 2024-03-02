@@ -60,6 +60,94 @@ namespace Boom
         [SerializeField, ShowOnly] MainDataTypes.LoginData.State loginState;
         [SerializeField, ShowOnly] bool loginCompleted;
 
+        private bool isRandomAgentCreated = false;
+        
+        protected override void _Awake()
+        {
+            Debug.Log("[BoomManager] Awake - Starting initialization.");
+
+            // Broadcast state
+            Debug.Log("[BoomManager] Broadcasting state: WaitingForResponse");
+            BroadcastState.Invoke(new WaitingForResponse(true));
+
+            // Create a random agent
+            IAgent randomAgent = CreateAgentWithRandomIdentity();
+            if (randomAgent != null)
+            {
+                Debug.Log("[BoomManager] Random agent created successfully. Agent content: " + randomAgent.ToString());
+            }
+            else
+            {
+                Debug.LogError("[BoomManager] Failed to create random agent. Agent is null.");
+            }
+
+            // Register event handlers
+            Debug.Log("[BoomManager] Registering for UserLoginRequest event.");
+            Broadcast.Register<UserLoginRequest>(FetchHandler);
+
+            Debug.Log("[BoomManager] Registering for UserLogout event.");
+            Broadcast.Register<UserLogout>(UserLogoutHandler);
+
+            Debug.Log("[BoomManager] Registering for FetchListings event.");
+            Broadcast.Register<FetchListings>(FetchHandler);
+
+            Debug.Log("[BoomManager] Adding main data change listener for LoginData.");
+            UserUtil.AddListenerMainDataChange<MainDataTypes.LoginData>(LoginDataChangeHandler, new() { invokeOnRegistration = true });
+
+            Debug.Log("[BoomManager] Adding request data listeners.");
+            UserUtil.AddListenerRequestData<DataTypeRequestArgs.Entity>(FetchHandler);
+            UserUtil.AddListenerRequestData<DataTypeRequestArgs.ActionState>(FetchHandler);
+            UserUtil.AddListenerRequestData<DataTypeRequestArgs.Token>(FetchHandler);
+            UserUtil.AddListenerRequestData<DataTypeRequestArgs.NftCollection>(FetchHandler);
+
+            Debug.Log("[BoomManager] Adding data change listeners for Entity, ActionState, Token, and NftCollection.");
+            UserUtil.AddListenerDataChange<DataTypes.Entity>(SelfDataChangeHandler, new() { invokeOnSet = true }, WORLD_CANISTER_ID);
+            UserUtil.AddListenerDataChangeSelf<DataTypes.Entity>(SelfDataChangeHandler, new() { invokeOnSet = true });
+            UserUtil.AddListenerDataChangeSelf<DataTypes.ActionState>(SelfDataChangeHandler, new() { invokeOnSet = true });
+            UserUtil.AddListenerDataChangeSelf<DataTypes.Token>(SelfDataChangeHandler, new() { invokeOnSet = true });
+            UserUtil.AddListenerDataChangeSelf<DataTypes.NftCollection>(SelfDataChangeHandler, new() { invokeOnSet = true });
+
+            // Initialize Candid APIs
+            Debug.Log("[BoomManager] Initializing Candid APIs.");
+            InitializeCandidApis(randomAgent, true).Forget();
+        }
+
+            private IAgent CreateAgentWithRandomIdentity(bool useLocalHost = false)
+        {
+            Debug.Log("[BoomManager] Creating agent with random identity. Use localhost: " + useLocalHost);
+
+            IAgent randomAgent = null;
+
+            var httpClient = new UnityHttpClient();
+            #if UNITY_WEBGL && !UNITY_EDITOR
+                var bls = new BypassedBlsCryptography (); 
+            #else
+                var bls = new WasmBlsCryptography();
+            #endif
+
+            try
+            {
+                if (useLocalHost)
+                {
+                    Debug.Log("[BoomManager] Using localhost for agent creation.");
+                    randomAgent = new HttpAgent(Ed25519Identity.Generate(), new Uri("http://localhost:4943"), bls);
+                }
+                else
+                {
+                    Debug.Log("[BoomManager] Using httpClient for agent creation.");
+                    randomAgent = new HttpAgent(httpClient, Ed25519Identity.Generate(), bls);
+                }
+                
+                Debug.Log("[BoomManager] Random agent created successfully.");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[BoomManager] Error creating random agent: " + e.ToString());
+            }
+
+            return randomAgent;
+        }
+
         public void OnLoginRandomAgent()
         {
             CreateAgentRandom().Forget();
@@ -67,115 +155,27 @@ namespace Boom
 
         public async UniTaskVoid CreateAgentRandom()
         {
-            Debug.Log("[CandidApiManager] Starting creation of a random agent. Entering CreateAgentRandom method.");
+            Debug.Log("[BoomManager] Starting creation of a random agent. Entering CreateAgentRandom method.");
             await UniTask.SwitchToMainThread();
-            
+
             try
             {
-                // Define a local function to encapsulate the agent creation logic.
-                IAgent CreateAgentWithRandomIdentity(bool useLocalHost = false)
-                {
-                    Debug.Log($"[CandidApiManager] Attempting to create a random agent. LocalHost: {useLocalHost}");
-                    IAgent randomAgent = null;
-                    var httpClient = new UnityHttpClient();
-
-                    try
-                    {
-                        string uri = useLocalHost ? "http://localhost:4943" : "Using default agent URI";
-                        Debug.Log($"[CandidApiManager] Creating HttpAgent with URI: {uri}");
-
-                        if (useLocalHost)
-                            randomAgent = new HttpAgent(Ed25519Identity.Generate(), new Uri("http://localhost:4943"));
-                        else
-                            randomAgent = new HttpAgent(httpClient, Ed25519Identity.Generate());
-
-                        Debug.Log("[CandidApiManager] Random agent created successfully.");
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError($"[CandidApiManager] Failed to create random agent. Error: {e.Message}");
-                    }
-
-                    return randomAgent;
-                }
-
-                // Initiate the creation of a random agent and its initialization within Candid APIs.
-                var createdAgent = CreateAgentWithRandomIdentity(useLocalHost: false); // Adjust useLocalHost as needed.
-                if (createdAgent != null)
-                {
-                    Debug.Log("[CandidApiManager] Random agent creation succeeded. Proceeding to initialize Candid APIs.");
-                    await InitializeCandidApis(createdAgent, asAnon: true); // Assuming random agents are always treated as anonymous.
-                    Debug.Log("[CandidApiManager] Candid APIs initialized for random agent.");
-                }
-                else
-                {
-                    Debug.LogError("[CandidApiManager] Random agent creation failed. Unable to proceed with Candid API initialization.");
-                }
-
-
+                Debug.Log("[BoomManager] Attempting to create a random agent with localhost.");
+                var httpClient = new UnityHttpClient();
+                IAgent createdAgent = new HttpAgent(Ed25519Identity.Generate(), new Uri("http://localhost:4943"));
+                
+                Debug.Log("[BoomManager] Random agent created successfully.");
+                // Now proceed with the login process using the created agent.
+                isRandomAgentCreated = true;
+                FetchHandler(new UserLoginRequest());
             }
             catch (Exception e)
             {
-                Debug.LogError($"[CandidApiManager] Exception caught in CreateAgentRandom. Error: {e.Message}");
+                Debug.LogError($"[BoomManager] Failed to create random agent. Error: {e.Message}");
             }
-            Debug.Log("[CandidApiManager] Exiting CreateAgentRandom method.");
         }
-        
-        protected override void _Awake()
-        {
-            Debug.Log("[BoomManager] Awake - Starting initialization.");
-            BroadcastState.Invoke(new WaitingForResponse(true));
 
-            IAgent CreateAgentWithRandomIdentity(bool useLocalHost = false)
-            {
-                IAgent randomAgent = null;
 
-                var httpClient = new UnityHttpClient();
-                #if UNITY_WEBGL && !UNITY_EDITOR
-                                var bls = new BypassedBlsCryptography (); 
-                #else
-                                var bls = new WasmBlsCryptography();
-                #endif
-
-                try
-                {
-                    if (useLocalHost)
-                        randomAgent = new HttpAgent(Ed25519Identity.Generate(), new Uri("http://localhost:4943"), bls);
-                    else
-                        randomAgent = new HttpAgent(httpClient, Ed25519Identity.Generate(), bls);
-                }
-                catch (Exception e)
-                {
-                    e.ToString().Error();
-                }
-
-                return randomAgent;
-            }
-
-            instance = this;
-
-            Broadcast.Register<UserLoginRequest>(FetchHandler);
-            Debug.Log("[BoomManager] Registered for UserLoginRequest event.");
-
-            Broadcast.Register<UserLogout>(UserLogoutHandler);
-
-            Broadcast.Register<FetchListings>(FetchHandler);
-
-            UserUtil.AddListenerMainDataChange<MainDataTypes.LoginData>(LoginDataChangeHandler, new() { invokeOnRegistration = true });
-
-            UserUtil.AddListenerRequestData<DataTypeRequestArgs.Entity>(FetchHandler);
-            UserUtil.AddListenerRequestData<DataTypeRequestArgs.ActionState>(FetchHandler);
-            UserUtil.AddListenerRequestData<DataTypeRequestArgs.Token>(FetchHandler);
-            UserUtil.AddListenerRequestData<DataTypeRequestArgs.NftCollection>(FetchHandler);
-
-            UserUtil.AddListenerDataChange<DataTypes.Entity>(SelfDataChangeHandler, new() { invokeOnSet = true }, WORLD_CANISTER_ID);
-            UserUtil.AddListenerDataChangeSelf<DataTypes.Entity>(SelfDataChangeHandler, new() { invokeOnSet = true });
-            UserUtil.AddListenerDataChangeSelf<DataTypes.ActionState>(SelfDataChangeHandler, new() { invokeOnSet = true });
-            UserUtil.AddListenerDataChangeSelf<DataTypes.Token>(SelfDataChangeHandler, new() { invokeOnSet = true });
-            UserUtil.AddListenerDataChangeSelf<DataTypes.NftCollection>(SelfDataChangeHandler, new() { invokeOnSet = true });
-
-            InitializeCandidApis(CreateAgentWithRandomIdentity(), true).Forget();
-        }
 
         private void LoginDataChangeHandler(MainDataTypes.LoginData data)
         {
@@ -287,7 +287,7 @@ namespace Boom
         }
         //
 
-
+        // Create agent
         public void OnLoginCompleted(string json)
         {
             var isLoggedIn = UserUtil.IsLoggedIn();
@@ -300,44 +300,46 @@ namespace Boom
 
             "You already have an Agent created".Log();
         }
+        
         public async UniTaskVoid CreateAgentUsingIdentityJson(string json, bool useLocalHost = false)
-{
-    await UniTask.SwitchToMainThread();
-
-    try
-    {
-        var identity = Identity.DeserializeJsonToIdentity(json);
-        var httpClient = new UnityHttpClient();
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-        var bls = new BypassedBlsCryptography();
-#else
-        var bls = new WasmBlsCryptography();
-#endif
-
-        if (useLocalHost)
         {
-            await InitializeCandidApis(new HttpAgent(identity, new Uri("http://localhost:4943"), bls));
+            await UniTask.SwitchToMainThread();
+
+            try
+            {
+                var identity = Identity.DeserializeJsonToIdentity(json);
+                var httpClient = new UnityHttpClient();
+
+        #if UNITY_WEBGL && !UNITY_EDITOR
+                var bls = new BypassedBlsCryptography();
+        #else
+                var bls = new WasmBlsCryptography();
+        #endif
+
+                if (useLocalHost)
+                {
+                    await InitializeCandidApis(new HttpAgent(identity, new Uri("http://localhost:4943"), bls));
+                }
+                else
+                {
+                    await InitializeCandidApis(new HttpAgent(httpClient, identity, bls));
+                }
+
+                PlayerPrefs.SetString("authTokenId", json);
+                PlayerPrefs.Save(); // Ensure PlayerPrefs are saved immediately
+
+                // Additional log to confirm saving
+                Debug.Log("[BoomManager] JSON string saved to PlayerPrefs under 'authTokenId'.");
+                Debug.Log($"[BoomManager] Saved JSON: {json}"); // Log the actual JSON string for verification
+
+                "[BoomManager] CreateAgentUsingIdentityJson - You have logged in".Log();
+            }
+            catch (Exception e)
+            {
+                e.Message.Error();
+            }
         }
-        else
-        {
-            await InitializeCandidApis(new HttpAgent(httpClient, identity, bls));
-        }
 
-        PlayerPrefs.SetString("authTokenId", json);
-        PlayerPrefs.Save(); // Ensure PlayerPrefs are saved immediately
-
-        // Additional log to confirm saving
-        Debug.Log("[CreateAgentUsingIdentityJson] JSON string saved to PlayerPrefs under 'authTokenId'.");
-        Debug.Log($"[CreateAgentUsingIdentityJson] Saved JSON: {json}"); // Log the actual JSON string for verification
-
-        "You have logged in".Log();
-    }
-    catch (Exception e)
-    {
-        e.Message.Error();
-    }
-}
 
 
         private void UserLogoutHandler(UserLogout obj)
@@ -875,22 +877,31 @@ namespace Boom
         {
             FetchListings().Forget();
         }
+
         private void FetchHandler(UserLoginRequest arg)
         {
             Debug.Log("[BoomManager] UserLoginRequest event received. Processing...");
             LoadingPanel.Instance.ActiveLoadingPanel();
+            
+            // Check if the random agent has been created
+            if (isRandomAgentCreated)
+            {
+                // Use the random agent for login
+                Debug.Log("[BoomManager] Using random agent for login.");
+                return;
+            }
+            
             if (UserUtil.IsLoginRequestedPending() || UserUtil.IsLoggedIn()) return;
 
             UserUtil.SetAsLoginIn();
             BroadcastState.Invoke(new WaitingForResponse(true));
 
-
             PlayerPrefs.SetString("walletType", "II");
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+        #if UNITY_WEBGL && !UNITY_EDITOR
             LoginManager.Instance.StartLoginFlowWebGl(OnLoginCompleted);
             return;
-#endif
+        #endif
             isLoginIn = true;
             LoginManager.Instance.StartLoginFlow(OnLoginCompleted);
         }
