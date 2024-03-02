@@ -3,6 +3,7 @@ using CanisterPK.testnft.Models;
 using System.Collections.Generic;
 using EdjCase.ICP.Candid.Models;
 using System;
+using MetadataArray = System.Collections.Generic.Dictionary<System.String, CanisterPK.testnft.Models.Metadata>;
 
 namespace CanisterPK.testnft.Models
 {
@@ -35,6 +36,11 @@ namespace CanisterPK.testnft.Models
 			return new Metadata(MetadataTag.Int, info);
 		}
 
+		public static Metadata MetadataArray(MetadataArray info)
+		{
+			return new Metadata(MetadataTag.MetadataArray, info);
+		}
+
 		public static Metadata Nat(UnboundedUInt info)
 		{
 			return new Metadata(MetadataTag.Nat, info);
@@ -55,6 +61,12 @@ namespace CanisterPK.testnft.Models
 		{
 			this.ValidateTag(MetadataTag.Int);
 			return (UnboundedInt)this.Value!;
+		}
+
+		public MetadataArray AsMetadataArray()
+		{
+			this.ValidateTag(MetadataTag.MetadataArray);
+			return (MetadataArray)this.Value!;
 		}
 
 		public UnboundedUInt AsNat()
@@ -82,6 +94,7 @@ namespace CanisterPK.testnft.Models
 	{
 		Blob,
 		Int,
+		MetadataArray,
 		Nat,
 		Text
 	}
