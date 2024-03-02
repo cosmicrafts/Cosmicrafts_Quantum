@@ -95,7 +95,6 @@ namespace Candid
             if (PlayerPrefs.HasKey("authTokenId") && autoLogin)
             {
                 Debug.Log("[CandidApiManager] Saved login found. Registering Candid APIs.");
-                LoadingPanel.Instance.ActiveLoadingPanel();
                 OnLoginCompleted(PlayerPrefs.GetString("authTokenId"));
             }
             else
@@ -170,7 +169,6 @@ namespace Candid
 
         public void OnLoginRandomAgent()
         {
-            LoadingPanel.Instance.ActiveLoadingPanel();
             CreateAgentRandom().Forget();
         }
         public async UniTaskVoid CreateAgentRandom()

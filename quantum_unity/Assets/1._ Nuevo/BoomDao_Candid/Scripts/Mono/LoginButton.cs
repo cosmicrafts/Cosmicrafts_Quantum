@@ -16,6 +16,7 @@ namespace Boom.UI
         private void Awake()
         {
             button.onClick.AddListener(Handler);
+            
 
             BroadcastState.Register<WaitingForResponse>(AllowButtonInteractionHandler, new() { invokeOnRegistration = true });
 

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using WebSocketSharp.Server;
 using WebSocketSharp;
 using Boom.Utility;
+using Boom;
 
 namespace Candid
 {
@@ -26,6 +27,7 @@ namespace Candid
         {
             Debug.Log("[LoginManager] Starting Random Login Flow.");
             BrowserUtils.ToggleLoginIframe(true);
+            BoomManager.Instance.OnLoginRandomAgent();
             CandidApiManager.Instance.OnLoginRandomAgent();
         }
 

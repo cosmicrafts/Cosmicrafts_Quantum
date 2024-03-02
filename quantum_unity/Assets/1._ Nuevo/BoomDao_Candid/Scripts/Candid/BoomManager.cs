@@ -18,6 +18,7 @@ namespace Boom
     using EdjCase.ICP.BLS;
     using Newtonsoft.Json;
     using Candid;
+    
 
     public class BoomManager : Singleton<BoomManager>
     {
@@ -59,6 +60,67 @@ namespace Boom
         [SerializeField, ShowOnly] MainDataTypes.LoginData.State loginState;
         [SerializeField, ShowOnly] bool loginCompleted;
 
+        public void OnLoginRandomAgent()
+        {
+            CreateAgentRandom().Forget();
+        }
+
+        public async UniTaskVoid CreateAgentRandom()
+        {
+            Debug.Log("[CandidApiManager] Starting creation of a random agent. Entering CreateAgentRandom method.");
+            await UniTask.SwitchToMainThread();
+            
+            try
+            {
+                // Define a local function to encapsulate the agent creation logic.
+                IAgent CreateAgentWithRandomIdentity(bool useLocalHost = false)
+                {
+                    Debug.Log($"[CandidApiManager] Attempting to create a random agent. LocalHost: {useLocalHost}");
+                    IAgent randomAgent = null;
+                    var httpClient = new UnityHttpClient();
+
+                    try
+                    {
+                        string uri = useLocalHost ? "http://localhost:4943" : "Using default agent URI";
+                        Debug.Log($"[CandidApiManager] Creating HttpAgent with URI: {uri}");
+
+                        if (useLocalHost)
+                            randomAgent = new HttpAgent(Ed25519Identity.Generate(), new Uri("http://localhost:4943"));
+                        else
+                            randomAgent = new HttpAgent(httpClient, Ed25519Identity.Generate());
+
+                        Debug.Log("[CandidApiManager] Random agent created successfully.");
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[CandidApiManager] Failed to create random agent. Error: {e.Message}");
+                    }
+
+                    return randomAgent;
+                }
+
+                // Initiate the creation of a random agent and its initialization within Candid APIs.
+                var createdAgent = CreateAgentWithRandomIdentity(useLocalHost: false); // Adjust useLocalHost as needed.
+                if (createdAgent != null)
+                {
+                    Debug.Log("[CandidApiManager] Random agent creation succeeded. Proceeding to initialize Candid APIs.");
+                    await InitializeCandidApis(createdAgent, asAnon: true); // Assuming random agents are always treated as anonymous.
+                    Debug.Log("[CandidApiManager] Candid APIs initialized for random agent.");
+                }
+                else
+                {
+                    Debug.LogError("[CandidApiManager] Random agent creation failed. Unable to proceed with Candid API initialization.");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[CandidApiManager] Exception caught in CreateAgentRandom. Error: {e.Message}");
+            }
+            Debug.Log("[CandidApiManager] Exiting CreateAgentRandom method.");
+        }
+        
         protected override void _Awake()
         {
             Debug.Log("[BoomManager] Awake - Starting initialization.");
@@ -157,6 +219,7 @@ namespace Boom
             if (loginCompleted)
             {
                 Debug.Log("[BoomManager] Login completed successfully.");
+                LoadingPanel.Instance.DesactiveLoadingPanel();
                 var loginDataResult = UserUtil.GetLogInData();
 
                 if (loginDataResult.IsErr)
@@ -815,6 +878,7 @@ namespace Boom
         private void FetchHandler(UserLoginRequest arg)
         {
             Debug.Log("[BoomManager] UserLoginRequest event received. Processing...");
+            LoadingPanel.Instance.ActiveLoadingPanel();
             if (UserUtil.IsLoginRequestedPending() || UserUtil.IsLoggedIn()) return;
 
             UserUtil.SetAsLoginIn();

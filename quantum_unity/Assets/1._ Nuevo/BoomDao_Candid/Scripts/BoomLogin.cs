@@ -35,6 +35,7 @@
 
         public void ActionButtonClickHandler()
         {
+            LoadingPanel.Instance.ActiveLoadingPanel();
             ExecuteAction().Forget();
         }
 
@@ -57,6 +58,7 @@
 
             actionLogText.text = $"You have changed your username to: {newUsername}";
             SceneManager.LoadScene(mainScene);
+            LoadingPanel.Instance.DesactiveLoadingPanel();
         }
 
         private void LoginDataChangeHandler(MainDataTypes.LoginData data)
@@ -64,11 +66,13 @@
             if (data.state != MainDataTypes.LoginData.State.LoggedIn) return;
 
             EntityUtil.TryGetFieldAsText(data.principal, "user_profile", "username", out var username, "None");
-            UpdateGlobalGameData(username, data.principal);
-            if (!string.IsNullOrEmpty(username) && username != "None")
-            {
-                SceneManager.LoadScene(mainScene);
-            }
+            
+            // Comment to always prompt username
+           // UpdateGlobalGameData(username, data.principal);
+           // if (!string.IsNullOrEmpty(username) && username != "None")
+           // {
+           //     SceneManager.LoadScene(mainScene);
+           // }
         }
 
         private void UpdateGlobalGameData(string username, string principalId)
