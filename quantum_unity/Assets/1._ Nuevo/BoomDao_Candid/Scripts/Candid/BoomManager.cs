@@ -878,6 +878,15 @@ namespace Boom
             FetchListings().Forget();
         }
 
+        public void PerformLogin()
+    {
+        // Simulate UserLoginRequest handling
+        LoadingPanel.Instance.ActiveLoadingPanel();
+        // If necessary, replicate what FetchHandler for UserLoginRequest does here
+        // Or directly call FetchHandler if you make it internal or public
+        FetchHandler(new UserLoginRequest()); // If accessibility is changed
+    }
+
         private void FetchHandler(UserLoginRequest arg)
         {
             Debug.Log("[BoomManager] UserLoginRequest event received. Processing...");
