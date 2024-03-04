@@ -57,6 +57,7 @@
             }
 
             actionLogText.text = $"You have changed your username to: {newUsername}";
+            
             SceneManager.LoadScene(mainScene);
             LoadingPanel.Instance.DesactiveLoadingPanel();
         }
@@ -66,25 +67,30 @@
             if (data.state != MainDataTypes.LoginData.State.LoggedIn) return;
 
             EntityUtil.TryGetFieldAsText(data.principal, "user_profile", "username", out var username, "None");
-            
-            // Comment to always prompt username
-           // UpdateGlobalGameData(username, data.principal);
-           // if (!string.IsNullOrEmpty(username) && username != "None")
-           // {
-           //     SceneManager.LoadScene(mainScene);
+            UpdateGlobalGameData(username, data.principal);
+
+           //Comment to always prompt username
+           //if (!string.IsNullOrEmpty(username) && username != "None")
+            //{
+           // SceneManager.LoadScene(mainScene);
            // }
         }
 
-        private void UpdateGlobalGameData(string username, string principalId)
+        private async UniTaskVoid UpdateGlobalGameData(string username, string principalId)
         {
             if (!GlobalGameData.Instance.userDataLoaded)
             {
-                SaveData.LoadGameUser();
+               await  SaveData.LoadGameUserAsync();
             }
 
+            // Process and save the updated data
             var user = GlobalGameData.Instance.GetUserData();
             user.NikeName = username;
             user.WalletId = principalId;
-            SaveData.SaveGameUser();
+            await SaveData.SaveGameUserAsync();
+
+            SceneManager.LoadScene(mainScene);
+            LoadingPanel.Instance.DesactiveLoadingPanel();
         }
+
     }

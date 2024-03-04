@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 //Game configuration structure (will be encrypted)
 
@@ -45,7 +46,7 @@ public static class SaveData
     //Load the configuration data
     public static void LoadGameUser()
     {
-        Debug.Log("[SaveData]Load Game User to GlobalGameData");
+        Debug.Log("[SaveData]Load Game User");
         UserData userData = JsonConvert.DeserializeObject<UserData>(PlayerPrefs.GetString(keyUser));
         
         if (userData == null)
@@ -63,5 +64,22 @@ public static class SaveData
     }
     public static void SaveGameUser(){ PlayerPrefs.SetString( keyUser, JsonConvert.SerializeObject(GlobalGameData.Instance.GetUserData()) ); }
     
+
+    public static async UniTask LoadGameUserAsync()
+    {
+        Debug.Log("[SaveData] Loading Game User");
+        string userDataJson = PlayerPrefs.GetString(keyUser, "{}");
+        UserData userData = JsonConvert.DeserializeObject<UserData>(userDataJson);
+        
+        // Assuming SetUserData is modified to be an async method
+        await GlobalGameData.Instance.SetUserDataAsync(userData ?? new UserData());
+    }
+
+    public static async UniTask SaveGameUserAsync()
+    {
+        string userDataJson = JsonConvert.SerializeObject(GlobalGameData.Instance.GetUserData());
+        PlayerPrefs.SetString(keyUser, userDataJson);
+        await UniTask.Yield(); // Simulate asynchronous work, e.g., saving to a remote server
+    }
    
 }

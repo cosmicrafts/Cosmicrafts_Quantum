@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using EdjCase.ICP.Candid.Models;
+using Cysharp.Threading.Tasks;
 
 public class GlobalGameData : MonoBehaviour
 {
@@ -84,6 +85,12 @@ public class GlobalGameData : MonoBehaviour
             avatarId = id;
             OnAvatarIdChanged?.Invoke(id);
         }
+    }
+    public async UniTask SetUserDataAsync(UserData userData)
+    {
+        this.userData = userData;
+        this.userDataLoaded = true;
+        await SaveData.SaveGameUserAsync();
     }
 
 }
