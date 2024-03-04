@@ -1949,7 +1949,6 @@ GameObject:
   - component: {fileID: 561116213}
   - component: {fileID: 561116212}
   - component: {fileID: 561116216}
-  - component: {fileID: 561116217}
   m_Layer: 5
   m_Name: LoginCanvas
   m_TagString: Untagged
@@ -2057,21 +2056,6 @@ MonoBehaviour:
   userNameInputField: {fileID: 1921929939}
   actionLogText: {fileID: 259410811}
   actionButton: {fileID: 893364344}
---- !u!114 &561116217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561116211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46760f0f1988a2e419d4233e60342bf6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  userDataLoaded: 0
-  actualRoom: TestingRoom
-  avatarId: 1
 --- !u!1 &658898703
 GameObject:
   m_ObjectHideFlags: 0
@@ -5451,9 +5435,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4acc59e12e50db94cb34fa88a4ab4bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 1524012287}
-  noneInteractable: 0
-  loginState: 0
 --- !u!1 &1531754563
 GameObject:
   m_ObjectHideFlags: 0
