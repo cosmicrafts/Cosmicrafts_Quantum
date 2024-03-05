@@ -1,7 +1,8 @@
 using UnityEngine;
 using TMPro;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 public class NFTDisplay : MonoBehaviour
 {
@@ -15,42 +16,41 @@ public class NFTDisplay : MonoBehaviour
     public TMP_Text damageText;
     public TMP_Text skillsText;
     public TMP_Text skinsText;
-    public Image iconImage;
+    public Image iconImage; // Handle this based on your project needs
 
-    public void DisplayNFT(UnitSO unitSO)
+    public void DisplayNFT(string unitName, string description, string unitClass, int rarity, string faction, int level, int health, int damage, Dictionary<string, int> skills, List<string> skins)
     {
-        UpdateText(unitNameText, unitSO.unitName);
-        UpdateText(descriptionText, unitSO.description);
-        UpdateText(factionText, unitSO.faction);
-        UpdateText(unitClassText, unitSO.unitClass);
-        UpdateText(rarityText, unitSO.rarity.ToString());
-        UpdateText(levelText, unitSO.level.ToString());
-        UpdateText(healthText, unitSO.health.ToString());
-        UpdateText(damageText, unitSO.damage.ToString());
+        UpdateText(unitNameText, unitName);
+        UpdateText(descriptionText, description);
+        UpdateText(factionText, faction);
+        UpdateText(unitClassText, unitClass);
+        UpdateText(rarityText, rarity.ToString());
+        UpdateText(levelText, level.ToString());
+        UpdateText(healthText, health.ToString());
+        UpdateText(damageText, damage.ToString());
 
         // Handle skills display
-        if (unitSO.skills != null && unitSO.skills.Count > 0)
+        if (skills != null && skills.Count > 0)
         {
-            skillsText.text = string.Join(", ", unitSO.skills.Select(s => $"{s.Key}: {s.Value}"));
+            skillsText.text = string.Join(", ", skills.Select(s => $"{s.Key}: {s.Value}"));
         }
         else
         {
             skillsText.gameObject.SetActive(false); // Hide if no skills
         }
+
         // Handle skins display
-         if (unitSO.skins != null && unitSO.skins.Count > 0)
+        if (skins != null && skins.Count > 0)
         {
-            skinsText.text = string.Join("\n", unitSO.skins);
+            skinsText.text = string.Join("\n", skins);
         }
         else
         {
             skinsText.gameObject.SetActive(false); // Hide if no skins
         }
-        // Handle icon display
-        // iconImage.sprite = GetIconSprite(unitSO.icon); // Implement this method based on your project's needs.
 
-        
-
+        // Handle icon display based on your project's needs
+        // iconImage.sprite = GetIconSprite(...);
     }
 
     void UpdateText(TMP_Text textComponent, string text)
@@ -61,6 +61,7 @@ public class NFTDisplay : MonoBehaviour
         }
         else
         {
+            textComponent.gameObject.SetActive(true);
             textComponent.text = text;
         }
     }

@@ -1,51 +1,45 @@
 using UnityEngine;
 using System;
 using TMPro;
-using Candid;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using CanisterPK.testnft.Models;
-using EdjCase.ICP.Candid.Models;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using EdjCase.ICP.Candid.Models;
 
 public class NFTMetadataParser : MonoBehaviour
 {
     public NFTDisplay nftDisplay;
 
-    public void ParseAndPopulateUnit(string rawJson, UnboundedUInt tokenId)
+    public void ParseAndDisplayNFT(string rawJson, UnboundedUInt tokenId)
     {
         try
         {
-            JObject jObject = JObject.Parse(rawJson);
-            JArray data = (JArray)jObject["Ok"];
-
-            // Create a new UnitSO instance here or get it from somewhere
-            UnitSO newUnitSO = ScriptableObject.CreateInstance<UnitSO>();
-
-            foreach (JArray item in data)
+            if (nftDisplay == null)
             {
-                string key = (string)item[0];
-                JObject value = (JObject)item[1];
-
-                switch (key)
-                {
-                    case "basic_stats":
-                        ParseBasicStats(value, ref newUnitSO);
-                        break;
-                    case "general":
-                        ParseGeneral(value, ref newUnitSO);
-                        break;
-                    case "skills":
-                        ParseSkills(value, ref newUnitSO);
-                        break;
-                    case "skins":
-                        ParseSkins(value, ref newUnitSO);
-                        break;
-                }
+                Debug.LogError("NFTDisplay reference is null.");
+                return;
             }
 
-            nftDisplay.DisplayNFT(newUnitSO);
+            JObject jObject = JObject.Parse(rawJson);
+
+            // Initialize with default values in case of missing data
+            string unitName = "";
+            string description = "";
+            string unitClass = "";
+            int rarity = 0;
+            string faction = "";
+            int level = 0;
+            int health = 0;
+            int damage = 0;
+            Dictionary<string, int> skills = new Dictionary<string, int>();
+            List<string> skins = new List<string>();
+
+            // Directly parse top-level sections
+            ParseBasicStats(jObject["basic_stats"] as JObject, ref level, ref health, ref damage);
+            ParseGeneral(jObject["general"] as JObject, ref unitName, ref description, ref unitClass, ref rarity, ref faction);
+            ParseSkills(jObject["skills"] as JObject, ref skills);
+            ParseSkins(jObject["skins"] as JObject, ref skins);
+
+            nftDisplay.DisplayNFT(unitName, description, unitClass, rarity, faction, level, health, damage, skills, skins);
         }
         catch (Exception ex)
         {
@@ -53,85 +47,47 @@ public class NFTMetadataParser : MonoBehaviour
         }
     }
 
-    void ParseBasicStats(JObject basicStats, UnitSO unitSO)
+    void ParseBasicStats(JObject basicStats, ref int level, ref int health, ref int damage)
     {
-        JArray statsArray = (JArray)basicStats["MetadataArray"];
-        foreach (JArray stat in statsArray)
+        if (basicStats != null && basicStats["Value"] is JObject value)
         {
-            string statName = (string)stat[0];
-            JObject statValue = (JObject)stat[1];
+            level = (int)(value["level"]?["Nat"] ?? 0);
+            health = (int)(value["health"]?["Int"] ?? 0);
+            damage = (int)(value["damage"]?["Int"] ?? 0);
+        }
+    }
 
-            switch (statName)
+    void ParseGeneral(JObject general, ref string unitName, ref string description, ref string unitClass, ref int rarity, ref string faction)
+    {
+        if (general != null && general["Value"] is JObject value)
+        {
+            unitName = value["name"]?["Text"]?.ToString() ?? "";
+            description = value["description"]?["Text"]?.ToString() ?? "";
+            unitClass = value["class"]?["Value"]?.ToString() ?? "";
+            rarity = (int)(value["rarity"]?["Nat"] ?? 0);
+            faction = value["faction"]?["Value"]?.ToString() ?? "";
+        }
+    }
+
+    void ParseSkills(JObject skills, ref Dictionary<string, int> skillsDict)
+    {
+        if (skills != null && skills["Value"] is JObject value)
+        {
+            // Note: This assumes skills are directly nested within "Value"
+            foreach (var skillProperty in value.Properties())
             {
-                case "level":
-                    unitSO.level = (int)statValue["Nat"];
-                    break;
-                case "health":
-                    unitSO.health = (int)statValue["Int"];
-                    break;
-                case "damage":
-                    unitSO.damage = (int)statValue["Int"];
-                    break;
+                string skillName = skillProperty.Name;
+                int skillValue = (int)(skillProperty.Value?["Nat"] ?? 0);
+                skillsDict[skillName] = skillValue;
             }
         }
     }
 
-    void ParseGeneral(JObject general, UnitSO unitSO)
+    void ParseSkins(JObject skins, ref List<string> skinsList)
     {
-        JArray generalArray = (JArray)general["MetadataArray"];
-        foreach (JArray item in generalArray)
-        {
-            string key = (string)item[0];
-            JObject value = (JObject)item[1];
+        skinsList.Clear(); // Clear existing skins 
 
-            switch (key)
-            {
-                case "name":
-                    unitSO.unitName = (string)value["Text"];
-                    break;
-                case "description":
-                    unitSO.description = (string)value["Text"];
-                    break;
-                case "class":
-                    unitSO.unitClass = (string)value["Text"];
-                    break;
-                case "rarity":
-                    unitSO.rarity = (int)value["Nat"];
-                    break;
-                case "faction":
-                    unitSO.faction = (string)value["Text"];
-                    break;
-                // Add other fields as needed
-            }
-        }
+        // I'm assuming you still need logic to parse skins data.
+        // If the skin structure has changed, please provide the updated format. 
     }
-
-    void ParseSkills(JObject skills,UnitSO unitSO)
-    {
-        JArray skillsArray = (JArray)skills["MetadataArray"];
-        foreach (JArray skill in skillsArray)
-        {
-            string skillName = (string)skill[0];
-            JObject skillValue = (JObject)skill[1];
-            unitSO.skills.Add(skillName, (int)skillValue["Nat"]);
-        }
-    }
-
-    void ParseSkins(JObject skins, ref UnitSO unitSO)
-    {
-        JArray skinsArray = (JArray)skins["MetadataArray"];
-        unitSO.skins.Clear(); // Clear existing skins to avoid duplications
-
-        foreach (JArray skin in skinsArray)
-        {
-            // Extract and store each skin's data as a raw JSON string
-            string skinDataAsString = skin.ToString();
-            unitSO.skins.Add(skinDataAsString);
-        }
-    }
-
-
-    private void ParseBasicStats(JObject basicStats, ref UnitSO unitSO) { /* Implementation */ }
-    private void ParseGeneral(JObject general, ref UnitSO unitSO) { /* Implementation */ }
-    private void ParseSkills(JObject skills, ref UnitSO unitSO) { /* Implementation */ }
 }
