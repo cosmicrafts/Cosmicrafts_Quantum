@@ -30,5 +30,5 @@ public class UnitSO : ScriptableObject
         public string skinIcon;
         public int skinRarity;
     }
-    public List<Skin> skins = new List<Skin>();
+    public List<string> skins = new List<string>();
 }

@@ -1,40 +1,59 @@
 using UnityEngine;
+using System;
+using TMPro;
+using Candid;
+using System.Threading.Tasks;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq; // Use Newtonsoft.Json for parsing complex JSON
+using Newtonsoft.Json;
+using CanisterPK.testnft.Models;
+using EdjCase.ICP.Candid.Models;
+using Newtonsoft.Json.Linq;
 
 public class NFTMetadataParser : MonoBehaviour
 {
-    public NFTUnit unitSO;
+    public NFTDisplay nftDisplay;
 
-    public void ParseAndPopulateUnit(string rawJson)
+    public void ParseAndPopulateUnit(string rawJson, UnboundedUInt tokenId)
     {
-        JObject jObject = JObject.Parse(rawJson);
-        JArray data = (JArray)jObject["Ok"];
-
-        foreach (JArray item in data)
+        try
         {
-            string key = (string)item[0];
-            JObject value = (JObject)item[1];
+            JObject jObject = JObject.Parse(rawJson);
+            JArray data = (JArray)jObject["Ok"];
 
-            switch (key)
+            // Create a new UnitSO instance here or get it from somewhere
+            UnitSO newUnitSO = ScriptableObject.CreateInstance<UnitSO>();
+
+            foreach (JArray item in data)
             {
-                case "basic_stats":
-                    ParseBasicStats(value);
-                    break;
-                case "general":
-                    ParseGeneral(value);
-                    break;
-                case "skills":
-                    ParseSkills(value);
-                    break;
-                case "skins":
-                    ParseSkins(value);
-                    break;
+                string key = (string)item[0];
+                JObject value = (JObject)item[1];
+
+                switch (key)
+                {
+                    case "basic_stats":
+                        ParseBasicStats(value, ref newUnitSO);
+                        break;
+                    case "general":
+                        ParseGeneral(value, ref newUnitSO);
+                        break;
+                    case "skills":
+                        ParseSkills(value, ref newUnitSO);
+                        break;
+                    case "skins":
+                        ParseSkins(value, ref newUnitSO);
+                        break;
+                }
             }
+
+            nftDisplay.DisplayNFT(newUnitSO);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error parsing NFT metadata: {ex.Message}");
         }
     }
 
-    void ParseBasicStats(JObject basicStats)
+    void ParseBasicStats(JObject basicStats, UnitSO unitSO)
     {
         JArray statsArray = (JArray)basicStats["MetadataArray"];
         foreach (JArray stat in statsArray)
@@ -57,7 +76,7 @@ public class NFTMetadataParser : MonoBehaviour
         }
     }
 
-    void ParseGeneral(JObject general)
+    void ParseGeneral(JObject general, UnitSO unitSO)
     {
         JArray generalArray = (JArray)general["MetadataArray"];
         foreach (JArray item in generalArray)
@@ -87,7 +106,7 @@ public class NFTMetadataParser : MonoBehaviour
         }
     }
 
-    void ParseSkills(JObject skills)
+    void ParseSkills(JObject skills,UnitSO unitSO)
     {
         JArray skillsArray = (JArray)skills["MetadataArray"];
         foreach (JArray skill in skillsArray)
@@ -98,37 +117,21 @@ public class NFTMetadataParser : MonoBehaviour
         }
     }
 
-    void ParseSkins(JObject skins)
+    void ParseSkins(JObject skins, ref UnitSO unitSO)
     {
         JArray skinsArray = (JArray)skins["MetadataArray"];
+        unitSO.skins.Clear(); // Clear existing skins to avoid duplications
+
         foreach (JArray skin in skinsArray)
         {
-            JArray skinDetails = (JArray)skin[1]["MetadataArray"];
-            NFTUnit.Skin newSkin = new NFTUnit.Skin();
-            foreach (JArray detail in skinDetails)
-            {
-                string key = (string)detail[0];
-                JObject value = (JObject)detail[1];
-                switch (key)
-                {
-                    case "skin_id":
-                        newSkin.skinId = (int)value["Nat"];
-                        break;
-                    case "skin_name":
-                        newSkin.skinName = (string)value["Text"];
-                        break;
-                    case "skin_description":
-                        newSkin.skinDescription = (string)value["Text"];
-                        break;
-                    case "skin_icon":
-                        newSkin.skinIcon = (string)value["Text"];
-                        break;
-                    case "skin_rarity":
-                        newSkin.skinRarity = (int)value["Nat"];
-                        break;
-                }
-            }
-            unitSO.skins.Add(newSkin);
+            // Extract and store each skin's data as a raw JSON string
+            string skinDataAsString = skin.ToString();
+            unitSO.skins.Add(skinDataAsString);
         }
     }
+
+
+    private void ParseBasicStats(JObject basicStats, ref UnitSO unitSO) { /* Implementation */ }
+    private void ParseGeneral(JObject general, ref UnitSO unitSO) { /* Implementation */ }
+    private void ParseSkills(JObject skills, ref UnitSO unitSO) { /* Implementation */ }
 }
