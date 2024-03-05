@@ -5435,6 +5435,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4acc59e12e50db94cb34fa88a4ab4bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  button: {fileID: 1524012287}
+  noneInteractable: 0
+  loginState: 0
 --- !u!1 &1531754563
 GameObject:
   m_ObjectHideFlags: 0
@@ -6649,6 +6652,11 @@ PrefabInstance:
     - target: {fileID: 2393423864867871020, guid: bb357f1634528a149871a2f38d213b8b,
         type: 3}
       propertyPath: secondsToUpdateClient
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393423864867871020, guid: bb357f1634528a149871a2f38d213b8b,
+        type: 3}
+      propertyPath: <BoomDaoGameType>k__BackingField
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2393423864867871021, guid: bb357f1634528a149871a2f38d213b8b,

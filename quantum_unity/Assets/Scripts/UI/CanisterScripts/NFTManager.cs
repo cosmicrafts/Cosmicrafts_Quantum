@@ -1,16 +1,16 @@
 using UnityEngine;
 using TMPro;
-using Newtonsoft.Json;
 using Candid;
-using CanisterPK.testnft.Models;
-using EdjCase.ICP.Candid.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using CanisterPK.testnft.Models;
+using EdjCase.ICP.Candid.Models;
 
 public class NFTManager : MonoBehaviour
 {
     public TMP_Text nftListText;
-    public GameObject nftPrefab; // Asegúrate de asignar el prefab en el Inspector
+    public GameObject nftPrefab;
 
     async void Start()
     {
@@ -20,68 +20,59 @@ public class NFTManager : MonoBehaviour
     async Task FetchOwnedNFTs()
     {
         string userPrincipalId = GlobalGameData.Instance.GetUserData().WalletId;
-
         if (string.IsNullOrEmpty(userPrincipalId))
         {
-            Debug.LogError("No user principal ID found.");
-            nftListText.text = "Error: User principal ID not found.";
+            LogError("User principal ID not found.");
             return;
         }
 
+        var account = new Account(Principal.FromText(userPrincipalId), null);
         try
         {
-            var account = new Account(Principal.FromText(userPrincipalId), null);
-            var nftListResult = await CandidApiManager.Instance.testnft.Icrc7TokensOf(account);
-
-            if (nftListResult.Tag == TokensOfResultTag.Ok)
+            var tokens = await GetOwnedNFTs(account);
+            if (tokens != null && tokens.Count > 0)
             {
-                var tokens = nftListResult.AsOk();
+                nftListText.text = $"Owned NFTs: {tokens.Count}";
                 foreach (var tokenId in tokens)
                 {
-                    var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
-
-                    if (metadataResult.Tag == MetadataResultTag.Ok)
-{
-    var metadataDict = metadataResult.AsOk(); // Esto debería darte Dictionary<string, Metadata>
-
-    foreach (KeyValuePair<string, Metadata> entry in metadataDict)
-    {
-        string key = entry.Key;
-        Metadata metadataValue = entry.Value;
-
-        // Ahora debes verificar el tipo de cada metadataValue
-        switch (metadataValue.Tag)
-        {
-            case MetadataTag.Blob:
-                // Procesar Blob
-                break;
-            case MetadataTag.Int:
-                // Procesar Int
-                break;
-            case MetadataTag.Nat:
-                // Procesar Nat
-                break;
-            case MetadataTag.Text:
-                string textValue = metadataValue.AsText(); // Correcto uso de AsText()
-                // Utiliza 'textValue' como necesites, por ejemplo:
-                Debug.Log($"{key}: {textValue}");
-                break;
-        }
-    }
-}
-
+                    await LogNFTMetadata(tokenId);
                 }
             }
             else
             {
-                Debug.LogError("Error fetching NFT tokens.");
-                nftListText.text = "Error fetching NFTs.";
+                LogError("No NFTs found.");
             }
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"Exception occurred: {ex}");
-            nftListText.text = "Error fetching NFTs.";
+            LogError($"Exception occurred - {ex.Message}");
         }
+    }
+
+    async Task<List<UnboundedUInt>> GetOwnedNFTs(Account account)
+    {
+        var nftListResult = await CandidApiManager.Instance.testnft.Icrc7TokensOf(account);
+        return nftListResult.Tag == TokensOfResultTag.Ok ? nftListResult.AsOk() : null;
+    }
+
+    async Task LogNFTMetadata(UnboundedUInt tokenId)
+    {
+        var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
+        if (metadataResult.Tag != MetadataResultTag.Ok) return;
+
+        var metadataDict = metadataResult.AsOk();
+
+        // Convert the dictionary to JSON string
+        string jsonMetadata = JsonConvert.SerializeObject(metadataDict, Formatting.Indented);
+        Debug.Log($"Metadata for Token ID {tokenId}: {jsonMetadata}");
+
+        // Optional: Parse the JSON string back to an object if necessary for further processing
+        // var parsedMetadata = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonMetadata);
+    }
+
+    void LogError(string message)
+    {
+        Debug.LogError($"FetchOwnedNFTs: {message}");
+        nftListText.text = message;
     }
 }
