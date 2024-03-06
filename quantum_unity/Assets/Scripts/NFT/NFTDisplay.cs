@@ -1,8 +1,7 @@
 using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
-using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.UI;
 
 public class NFTDisplay : MonoBehaviour
 {
@@ -16,53 +15,82 @@ public class NFTDisplay : MonoBehaviour
     public TMP_Text damageText;
     public TMP_Text skillsText;
     public TMP_Text skinsText;
-    public Image iconImage; // Handle this based on your project needs
+    public Image iconImage;
 
-    public void DisplayNFT(string unitName, string description, string unitClass, int rarity, string faction, int level, int health, int damage, Dictionary<string, int> skills, List<string> skins)
+    private NFTData nftData;
+
+    void Start()
     {
-        UpdateText(unitNameText, unitName);
-        UpdateText(descriptionText, description);
-        UpdateText(factionText, faction);
-        UpdateText(unitClassText, unitClass);
-        UpdateText(rarityText, rarity.ToString());
-        UpdateText(levelText, level.ToString());
-        UpdateText(healthText, health.ToString());
-        UpdateText(damageText, damage.ToString());
-
-        // Handle skills display
-        if (skills != null && skills.Count > 0)
+        if (nftData != null) 
         {
-            skillsText.text = string.Join(", ", skills.Select(s => $"{s.Key}: {s.Value}"));
+            DisplayNFT();
         }
-        else
-        {
-            skillsText.gameObject.SetActive(false); // Hide if no skills
-        }
-
-        // Handle skins display
-        if (skins != null && skins.Count > 0)
-        {
-            skinsText.text = string.Join("\n", skins);
-        }
-        else
-        {
-            skinsText.gameObject.SetActive(false); // Hide if no skins
-        }
-
-        // Handle icon display based on your project's needs
-        // iconImage.sprite = GetIconSprite(...);
     }
 
-    void UpdateText(TMP_Text textComponent, string text)
+    public void SetNFTData(NFTData nftData)
     {
-        if (string.IsNullOrEmpty(text))
+        this.nftData = nftData;
+        DisplayNFT(); // Update the UI as soon as new data is set
+    }
+
+    public void DisplayNFT()
+    {
+        if (nftData == null)
         {
-            textComponent.gameObject.SetActive(false); // Hide text if data is missing
+            Debug.LogWarning("NFTData not assigned.");
+            return;
+        }
+
+        // Populates UI with general information if available
+        var generalInfo = nftData.General.FirstOrDefault();
+        if (generalInfo != null)
+        {
+            unitNameText.text = generalInfo.Name;
+            descriptionText.text = generalInfo.Description;
+            factionText.text = generalInfo.Faction;
+            unitClassText.text = generalInfo.Class;
+            rarityText.text = generalInfo.Rarity.ToString();
+            skinsText.text = generalInfo.SkinsText; // Update according to your data structure
+
+            // Assuming method GetIconSpriteById exists and correctly returns a Sprite based on an ID
+            iconImage.sprite = GetIconSpriteById(generalInfo.Icon);
         }
         else
         {
-            textComponent.gameObject.SetActive(true);
-            textComponent.text = text;
+            Debug.LogWarning("General info is missing.");
         }
+
+        // Populates UI with basic stats
+        foreach (var stat in nftData.BasicStats)
+        {
+            switch (stat.StatName.ToLower())
+            {
+                case "level":
+                    levelText.text = $"Level: {stat.StatValue}";
+                    break;
+                case "health":
+                    healthText.text = $"Health: {stat.StatValue}";
+                    break;
+                case "damage":
+                    damageText.text = $"Damage: {stat.StatValue}";
+                    break;
+                default:
+                    Debug.LogWarning($"Unknown stat: {stat.StatName}");
+                    break;
+            }
+        }
+
+        // Populates skills and skins text
+        skillsText.text = string.Join(", ", nftData.Skills.Select(s => $"{s.SkillName}: {s.SkillValue}"));
+        skinsText.text = string.Join("\n", nftData.Skins.Select(s => $"{s.SkinName} - {s.SkinDescription}"));
     }
+
+    private Sprite GetIconSpriteById(int iconId)
+    {
+        // Implement the method to fetch and return the appropriate sprite for an iconId
+        // Placeholder implementation:
+        Debug.LogWarning("GetIconSpriteById method is not implemented.");
+        return null;
+    }
+
 }

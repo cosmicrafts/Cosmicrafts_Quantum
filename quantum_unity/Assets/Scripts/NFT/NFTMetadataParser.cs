@@ -1,93 +1,79 @@
-using UnityEngine;
 using System;
-using TMPro;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using EdjCase.ICP.Candid.Models;
+using CanisterPK.testnft.Models;
 
-public class NFTMetadataParser : MonoBehaviour
+public static class NFTMetadataParser
 {
-    public NFTDisplay nftDisplay;
-
-    public void ParseAndDisplayNFT(string rawJson, UnboundedUInt tokenId)
+    public static NFTData Parse(Dictionary<string, Metadata> metadataDictionary)
     {
-        try
+        var nftData = new NFTData();
+        foreach (var entry in metadataDictionary)
         {
-            if (nftDisplay == null)
+            switch (entry.Key)
             {
-                Debug.LogError("NFTDisplay reference is null.");
-                return;
-            }
-
-            JObject jObject = JObject.Parse(rawJson);
-
-            // Initialize with default values in case of missing data
-            string unitName = "";
-            string description = "";
-            string unitClass = "";
-            int rarity = 0;
-            string faction = "";
-            int level = 0;
-            int health = 0;
-            int damage = 0;
-            Dictionary<string, int> skills = new Dictionary<string, int>();
-            List<string> skins = new List<string>();
-
-            // Directly parse top-level sections
-            ParseBasicStats(jObject["basic_stats"] as JObject, ref level, ref health, ref damage);
-            ParseGeneral(jObject["general"] as JObject, ref unitName, ref description, ref unitClass, ref rarity, ref faction);
-            ParseSkills(jObject["skills"] as JObject, ref skills);
-            ParseSkins(jObject["skins"] as JObject, ref skins);
-
-            nftDisplay.DisplayNFT(unitName, description, unitClass, rarity, faction, level, health, damage, skills, skins);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Error parsing NFT metadata: {ex.Message}");
-        }
-    }
-
-    void ParseBasicStats(JObject basicStats, ref int level, ref int health, ref int damage)
-    {
-        if (basicStats != null && basicStats["Value"] is JObject value)
-        {
-            level = (int)(value["level"]?["Nat"] ?? 0);
-            health = (int)(value["health"]?["Int"] ?? 0);
-            damage = (int)(value["damage"]?["Int"] ?? 0);
-        }
-    }
-
-    void ParseGeneral(JObject general, ref string unitName, ref string description, ref string unitClass, ref int rarity, ref string faction)
-    {
-        if (general != null && general["Value"] is JObject value)
-        {
-            unitName = value["name"]?["Text"]?.ToString() ?? "";
-            description = value["description"]?["Text"]?.ToString() ?? "";
-            unitClass = value["class"]?["Value"]?.ToString() ?? "";
-            rarity = (int)(value["rarity"]?["Nat"] ?? 0);
-            faction = value["faction"]?["Value"]?.ToString() ?? "";
-        }
-    }
-
-    void ParseSkills(JObject skills, ref Dictionary<string, int> skillsDict)
-    {
-        if (skills != null && skills["Value"] is JObject value)
-        {
-            // Note: This assumes skills are directly nested within "Value"
-            foreach (var skillProperty in value.Properties())
-            {
-                string skillName = skillProperty.Name;
-                int skillValue = (int)(skillProperty.Value?["Nat"] ?? 0);
-                skillsDict[skillName] = skillValue;
+                case "basic_stats":
+                    ParseBasicStats(entry.Value.Value as Dictionary<string, Metadata>, nftData);
+                    break;
+                case "general":
+                    ParseGeneralInfo(entry.Value.Value as Dictionary<string, Metadata>, nftData);
+                    break;
+                case "skills":
+                    ParseSkills(entry.Value.Value as Dictionary<string, Metadata>, nftData);
+                    break;
+                // Skins logic removed
             }
         }
+        return nftData;
     }
 
-    void ParseSkins(JObject skins, ref List<string> skinsList)
+    private static void ParseBasicStats(Dictionary<string, Metadata> dict, NFTData nftData)
     {
-        skinsList.Clear(); // Clear existing skins 
-
-        // I'm assuming you still need logic to parse skins data.
-        // If the skin structure has changed, please provide the updated format. 
+        foreach (var item in dict)
+        {
+            int value = item.Value.Tag == MetadataTag.Nat ? (int)item.Value.AsNat() : (int)item.Value.AsInt();
+            nftData.BasicStats.Add(new BasicStat { StatName = item.Key, StatValue = value });
+        }
     }
+
+    private static void ParseGeneralInfo(Dictionary<string, Metadata> dict, NFTData nftData)
+    {
+        var generalInfo = new GeneralInfo();
+        foreach (var item in dict)
+        {
+            switch (item.Key)
+            {
+                case "class":
+                    generalInfo.Class = item.Value.AsText();
+                    break;
+                case "rarity":
+                    generalInfo.Rarity = (int)item.Value.AsNat();
+                    break;
+                case "faction":
+                    generalInfo.Faction = item.Value.AsText();
+                    break;
+                case "name":
+                    generalInfo.Name = item.Value.AsText();
+                    break;
+                case "description":
+                    generalInfo.Description = item.Value.AsText();
+                    break;
+                case "icon":
+                    generalInfo.Icon = (int)item.Value.AsNat();
+                    break;
+                // SkinsText or related to skins parsing not included
+            }
+        }
+        nftData.General.Add(generalInfo);
+    }
+
+    private static void ParseSkills(Dictionary<string, Metadata> dict, NFTData nftData)
+    {
+        foreach (var item in dict)
+        {
+            nftData.Skills.Add(new Skill { SkillName = item.Key, SkillValue = (int)item.Value.AsInt() });
+        }
+    }
+
+    // ParseSkins method or related logic removed
 }

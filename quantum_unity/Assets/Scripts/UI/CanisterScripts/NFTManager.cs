@@ -14,8 +14,8 @@ public class NFTManager : MonoBehaviour
    public TMP_Text nftListText;
    public GameObject nftPrefab;
    public Transform nftDisplayContainer;
-   public NFTMetadataParser metadataParser;
    public NFTDisplay nftDisplay;
+   
 
    async void Start()
    {
@@ -54,56 +54,58 @@ public class NFTManager : MonoBehaviour
 
    async Task FetchAndDisplayNFTMetadata(UnboundedUInt tokenId)
     {
-    var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
-    if (metadataResult.Tag == MetadataResultTag.Ok)
+        var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
+        if (metadataResult.Tag == MetadataResultTag.Ok && metadataResult.Value is Dictionary<string, Metadata> metadataDictionary)
         {
-            // Directly using Dictionary<string, Metadata> instead of MetadataArray
-            if (metadataResult.Value is Dictionary<string, Metadata> metadataDictionary)
-            {
-                foreach (var entry in metadataDictionary)
-                {
-                string key = entry.Key;
-                Metadata metadata = entry.Value;
-                Debug.Log($"Key: {key}, Metadata Tag: {metadata.Tag}");
-                // Process the metadata, handling nested structures
-                ProcessMetadata(metadata);
-                }
-            }
+            NFTData nftData = NFTMetadataParser.Parse(metadataDictionary);
+            InstantiateAndDisplayNFT(nftData); // Dynamically instantiate NFT display and update UI
         }
+    }
+
+    private void InstantiateAndDisplayNFT(NFTData nftData)
+    {
+        if (nftDisplay == null)
+        {
+            Debug.LogError("NFTDisplay component not found.");
+            return;
+        }
+
+        // Assuming nftDisplay is already correctly referenced
+        nftDisplay.SetNFTData(nftData);
     }
 
     void ProcessMetadata(Metadata metadata, string indent = "")
     {
     switch (metadata.Tag)
-        {
-            case MetadataTag.Blob:
-                List<byte> blob = metadata.AsBlob();
-                Debug.Log($"{indent}Blob: {BitConverter.ToString(blob.ToArray())}");
-                break;
-            case MetadataTag.Int:
-                UnboundedInt intValue = metadata.AsInt();
-                Debug.Log($"{indent}Int: {intValue}");
-                break;
-            case MetadataTag.MetadataArray:
-                var metadataArray = metadata.AsMetadataArray();
-                foreach (var arrayEntry in metadataArray)
-                {
-                    // Log key and directly process value without indicating it's nested
-                    ProcessMetadata(arrayEntry.Value, $"{arrayEntry.Key}: ");
-                }
-                break;
-            case MetadataTag.Nat:
-                UnboundedUInt natValue = metadata.AsNat();
-                Debug.Log($"{indent}Nat: {natValue}");
-                break;
-            case MetadataTag.Text:
-                string text = metadata.AsText();
-                Debug.Log($"{indent}Text: {text}");
-                break;
-            default:
-                Debug.LogError($"{indent}Unknown metadata tag.");
-                break;
-        }
+    {
+        case MetadataTag.Blob:
+            List<byte> blob = metadata.AsBlob();
+            Debug.Log($"{indent}Blob: {BitConverter.ToString(blob.ToArray())}");
+            break;
+        case MetadataTag.Int:
+            UnboundedInt intValue = metadata.AsInt();
+            Debug.Log($"{indent}Int: {intValue}");
+            break;
+        case MetadataTag.MetadataArray:
+            var metadataArray = metadata.AsMetadataArray();
+            foreach (var arrayEntry in metadataArray)
+            {
+                // Log key and directly process value without indicating it's nested
+                ProcessMetadata(arrayEntry.Value, $"{arrayEntry.Key}: ");
+            }
+            break;
+        case MetadataTag.Nat:
+            UnboundedUInt natValue = metadata.AsNat();
+            Debug.Log($"{indent}Nat: {natValue}");
+            break;
+        case MetadataTag.Text:
+            string text = metadata.AsText();
+            Debug.Log($"{indent}Text: {text}");
+            break;
+        default:
+            Debug.LogError($"{indent}Unknown metadata tag.");
+            break;
+    }
     }
 
 }
