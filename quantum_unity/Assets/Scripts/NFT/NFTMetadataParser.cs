@@ -8,6 +8,12 @@ public static class NFTMetadataParser
     public static NFTData Parse(Dictionary<string, Metadata> metadataDictionary)
     {
         var nftData = new NFTData();
+        if(metadataDictionary.TryGetValue("tokenId", out Metadata tokenIdMetadata))
+    {
+        nftData.TokenId = tokenIdMetadata.AsText();
+        metadataDictionary.Remove("tokenId"); // Remove it if you prefer not to treat it as general metadata
+    }
+
         foreach (var entry in metadataDictionary)
         {
             switch (entry.Key)

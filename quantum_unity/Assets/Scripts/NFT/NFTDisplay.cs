@@ -2,9 +2,10 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using UnityEngine.UI;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 
-public class NFTDisplay : MonoBehaviour {
+public class NFTDisplay : MonoBehaviour
+{
     public TMP_Text unitNameText;
     public TMP_Text descriptionText;
     public TMP_Text factionText;
@@ -15,51 +16,58 @@ public class NFTDisplay : MonoBehaviour {
     public TMP_Text damageText;
     public TMP_Text skillsText;
     public TMP_Text skinsText;
-    public Image iconImage; // Ensure you handle icon updates correctly with a method to map IDs to Sprites
+    public Image iconImage;
+    public TMP_Text tokenIdText;
+    private string tokenId;
+    private NFTData nftData;
 
-    private NFTData nftData; // Add this line to declare the nftData field
+    public string TokenId => tokenId;
 
-    // Updated to take full NFTData and automatically refresh all UI components
-    public void SetNFTData(NFTData nftData) {
+    public void SetNFTData(NFTData nftData)
+    {
         this.nftData = nftData;
+        tokenId = nftData.TokenId;
         iconImage.sprite = GetIconSpriteById(nftData.General.FirstOrDefault()?.Icon ?? 0);
         DisplayNFT();
+        tokenIdText.text = "Token ID: " + tokenId;
     }
 
-    private void DisplayNFT() {
-        if (nftData == null) {
+    private void DisplayNFT()
+    {
+        if (nftData == null)
+        {
             Debug.LogWarning("NFTData not assigned.");
             return;
         }
 
-        GeneralInfo general = nftData.General.FirstOrDefault();
-        if (general != null) {
+        var general = nftData.General.FirstOrDefault();
+        if (general != null)
+        {
             unitNameText.text = general.Name;
             descriptionText.text = general.Description;
             factionText.text = general.Faction;
             unitClassText.text = general.Class;
             rarityText.text = general.Rarity.ToString();
             skinsText.text = general.SkinsText;
-
-            // Implement your logic to convert icon ID to Sprite and assign it
             iconImage.sprite = GetIconSpriteById(general.Icon);
         }
 
-        levelText.text = GetValueFromStats(nftData.BasicStats, "level");
-        healthText.text = GetValueFromStats(nftData.BasicStats, "health");
-        damageText.text = GetValueFromStats(nftData.BasicStats, "damage");
+        levelText.text = GetValueFromStats("level");
+        healthText.text = GetValueFromStats("health");
+        damageText.text = GetValueFromStats("damage");
         skillsText.text = string.Join(", ", nftData.Skills.Select(s => $"{s.SkillName}: {s.SkillValue}"));
         skinsText.text = string.Join("\n", nftData.Skins.Select(s => $"{s.SkinName} - {s.SkinDescription}"));
     }
 
-    // Helper method to fetch stat value by name
-    private string GetValueFromStats(List<BasicStat> stats, string statName) {
-        var stat = stats.FirstOrDefault(s => s.StatName.ToLower() == statName.ToLower());
+    private string GetValueFromStats(string statName)
+    {
+        var stat = nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == statName.ToLower());
         return stat != null ? $"{stat.StatName}: {stat.StatValue}" : $"{statName}: Not Available";
     }
 
-    private Sprite GetIconSpriteById(int iconId) {
-    return iconImage.sprite;
-}
-
+    private Sprite GetIconSpriteById(int iconId)
+    {
+        // Your logic to convert iconId to Sprite
+        return iconImage.sprite;
+    }
 }

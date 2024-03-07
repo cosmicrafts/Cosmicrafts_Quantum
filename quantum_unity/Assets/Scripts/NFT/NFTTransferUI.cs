@@ -1,58 +1,62 @@
 using UnityEngine;
-using TMPro; // Add this for TextMeshPro
-using EdjCase.ICP.Candid.Models; // For Principal and UnboundedUInt
+using TMPro;
+using EdjCase.ICP.Candid.Models;
 using System.Collections.Generic;
-using System.Numerics; // For BigInteger
-using System.Linq;
+using System.Numerics;
 using CanisterPK.testnft.Models;
 using UnityEngine.UI;
 
 public class NFTTransferUI : MonoBehaviour
 {
     public TMP_InputField recipientPrincipalInput;
-    public TMP_InputField tokenIdInput;
-    public Button transferButton; // Reference to the transfer button
+    public Button transferButton;
     public TMP_Text notificationText;
     public NFTManager nftManager;
+    public NFTDisplay nftDisplay;
 
-private void Start()
+    private void Start()
     {
-        transferButton.onClick.AddListener(OnTransferButtonPressed); // Add listener for button click
+        transferButton.onClick.AddListener(OnTransferButtonPressed);
     }
-    // This method could be called when the user presses the transfer button
+
     public async void OnTransferButtonPressed()
     {
-        if (recipientPrincipalInput.text == "" || tokenIdInput.text == "")
+        string tokenIdToTransfer = nftDisplay.TokenId;
+        if (string.IsNullOrEmpty(recipientPrincipalInput.text) || string.IsNullOrEmpty(tokenIdToTransfer))
         {
             Debug.LogError("Recipient Principal or Token ID is empty.");
+            notificationText.text = "Recipient Principal or Token ID is empty.";
             return;
         }
 
-        Principal recipientPrincipal = Principal.FromText(recipientPrincipalInput.text);
-        UnboundedUInt tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdInput.text));
 
-        // Assuming TransferNFT now only takes a single tokenId, adjust the call accordingly
+        Debug.Log($"Transferring NFT with Token ID: {tokenIdToTransfer}");
+
+        Principal recipientPrincipal = Principal.FromText(recipientPrincipalInput.text);
+        UnboundedUInt tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToTransfer));
+
         List<UnboundedUInt> tokenIds = new List<UnboundedUInt> { tokenId };
 
         try
         {
             TransferReceipt receipt = await nftManager.TransferNFT(tokenIds, recipientPrincipal);
-            
+
             if (receipt.Tag == TransferReceiptTag.Ok)
             {
                 Debug.Log("NFT transfer successful!");
-                // Additional logic for a successful transfer
+                notificationText.text = $"NFT transfer successful! Token ID: {tokenIdToTransfer}";
             }
             else if (receipt.Tag == TransferReceiptTag.Err)
             {
                 Debug.LogError($"NFT transfer failed: {receipt.AsErr().ToString()}");
-                // Handle the error case
+                notificationText.text = $"NFT transfer failed: {receipt.AsErr().ToString()}";
             }
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"Exception during NFT transfer: {ex.Message}");
-            // Handle exceptions
+            notificationText.text = $"Exception during NFT transfer: {ex.Message}";
         }
     }
+
 }

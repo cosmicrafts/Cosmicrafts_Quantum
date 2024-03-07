@@ -99,26 +99,27 @@ public class NFTManager : MonoBehaviour
         var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
         if (metadataResult.Tag == MetadataResultTag.Ok && metadataResult.Value is Dictionary<string, Metadata> metadataDictionary)
         {
+            // Correctly include tokenId as an argument to the parse method
             NFTData nftData = NFTMetadataParser.Parse(metadataDictionary);
+            nftData.TokenId = tokenId.ToString();
+            NFTData clonedData = nftData.Clone();
 
-            // Instantiate prefab and set its NFTData
             var instance = Instantiate(nftPrefab, nftDisplayContainer);
             var nftItem = instance.GetComponent<NFTItem>();
             if (nftItem != null)
             {
-                nftItem.SetNFTData(nftData);
+                nftItem.SetNFTData(clonedData);
                 instance.SetActive(true);
             }
 
+            displayComponent.SetNFTData(clonedData); 
             // Update the display with fetched data
             displayComponent.SetNFTData(nftData);
             RefreshUILayout();
         }
-        else
-        {
-            Debug.LogError($"Failed to fetch metadata for NFT with Token ID: {tokenId}");
-        }
     }
+
+
 
     // Fetch user's owned NFT tokens
     async Task<List<UnboundedUInt>> GetOwnedNFTs(Account account)

@@ -9,9 +9,8 @@ public class NFTData : ScriptableObject
     public List<GeneralInfo> General { get; set; } = new List<GeneralInfo>();
     public List<Skill> Skills { get; set; } = new List<Skill>();
     public List<Skin> Skins { get; set; } = new List<Skin>();
-
-    public int cloneID; // Track clone ID
-
+    public string TokenId { get; set; }
+    
     // Corrected Deep Copy method
     public NFTData Clone()
     {
@@ -21,13 +20,14 @@ public class NFTData : ScriptableObject
         clone.Skills = this.Skills.ConvertAll(skill => new Skill { SkillName = skill.SkillName, SkillValue = skill.SkillValue });
         clone.Skins = this.Skins.ConvertAll(skin => new Skin { SkinId = skin.SkinId, SkinName = skin.SkinName, SkinDescription = skin.SkinDescription, SkinIcon = skin.SkinIcon, SkinRarity = skin.SkinRarity });
 
-        // Increment and assign cloneID for tracking
-        clone.cloneID = ++NFTManager.cloneCounter;
+        clone.TokenId = this.TokenId;
 
-        Debug.Log($"Clone created with ID: {clone.cloneID}");
+        Debug.Log($"[NFTData]Cloned ScriptableObject (SO) for NFTData - Token ID: {clone.TokenId}, Basic Stats: {string.Join("; ", clone.BasicStats.Select(bs => $"{bs.StatName}: {bs.StatValue}"))}, General Info: {string.Join("; ", clone.General.Select(gi => $"{gi.Class}, {gi.Rarity}"))}, Skills: {string.Join("; ", clone.Skills.Select(sk => $"{sk.SkillName}: {sk.SkillValue}"))}");
+
         return clone;
     }
 }
+
 public class BasicStat
 {
     public string StatName { get; set; }
