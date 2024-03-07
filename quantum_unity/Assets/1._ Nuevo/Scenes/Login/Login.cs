@@ -12,10 +12,13 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class Login : MonoBehaviour
 {
+
     public static Login Instance { get; private set; }
     public TMP_InputField inputNameField;
     public TMP_Text infoTxt;
     string mainScene = "Menu";
+    
+    //[SerializeField] private Animator chooseLoginAnim;
     [SerializeField] private Animator chooseUserAnim;
 
     private void Awake()
@@ -32,19 +35,30 @@ public class Login : MonoBehaviour
     }
 
     private void Update()
-    {
-        // Check if Enter key is pressed
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            SetPlayerName(); // Trigger OK action
-        }
-        // Check if Escape key is pressed
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            BackLoginMenu(); // Trigger Cancel action
-        }
-    }
 
+    {
+
+        // Check if Enter key is pressed
+
+        if (Input.GetKeyDown(KeyCode.Return))
+
+        {
+
+            SetPlayerName(); // Trigger OK action
+
+        }
+
+        // Check if Escape key is pressed
+
+        else if (Input.GetKeyDown(KeyCode.Escape))
+
+        {
+
+            BackLoginMenu(); // Trigger Cancel action
+
+        }
+
+    }
 
     private void OnDestroy()
     {

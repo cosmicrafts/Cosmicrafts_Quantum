@@ -1,44 +1,34 @@
+using CanisterPK.CanisterLogin;
+using CanisterPK.CanisterMatchMaking;
+using CanisterPK.CanisterStats;
+using CanisterPK.testnft;
+using CanisterPK.testicrc1;
+using CanisterPK.validator;
+
+using UnityEngine.SceneManagement;
+
 namespace Candid
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Candid.Extv2Standard;
-    using Candid.Extv2Boom;
-    using Candid.IcpLedger;
-    using Candid.IcpLedger.Models;
-    using Candid.World;
-    using Candid.WorldHub;
+    
     using Cysharp.Threading.Tasks;
     using EdjCase.ICP.Agent.Agents;
     using EdjCase.ICP.Agent.Identities;
     using EdjCase.ICP.Candid.Models;
-    using Boom.Patterns.Broadcasts;
-    using Boom.Utility;
-    using Boom.Values;
+   
     using UnityEngine;
-    using Candid.IcrcLedger;
-    using Unity.VisualScripting;
-    using Boom;
-    using EdjCase.ICP.BLS;
-    using Newtonsoft.Json;
-    using UnityEngine.Events;
-    using CanisterPK.CanisterLogin;
-    using CanisterPK.CanisterMatchMaking;
-    using CanisterPK.CanisterStats;
-    using CanisterPK.testnft;
-    using CanisterPK.testicrc1;
-    using CanisterPK.validator;
-    using UnityEngine.SceneManagement;
     //using WebSocketSharp;
-    
+  
+
+    using Unity.VisualScripting;
 
     public class CandidApiManager : MonoBehaviour
     {
 
         public bool autoLogin = true;
         public static CandidApiManager Instance { get; private set; }
-        public UnityEvent onLoginCompleted;
         
         // Canister APIs
         public CanisterLoginApiClient CanisterLogin { get; private set; }
@@ -74,9 +64,6 @@ namespace Candid
 
         private void Awake()
         {
-            if (onLoginCompleted == null) {
-                onLoginCompleted = new UnityEvent();
-            }
             Debug.Log("[CandidApiManager] Awake called. Initializing instance.");
             if (Instance != null)
             {
@@ -88,13 +75,14 @@ namespace Candid
             DontDestroyOnLoad(gameObject);
             Debug.Log("[CandidApiManager] Instance set and marked as DontDestroyOnLoad.");
         }
-        
+
         private void Start()
         {
             Debug.Log("[CandidApiManager] Start called.");
             if (PlayerPrefs.HasKey("authTokenId") && autoLogin)
             {
                 Debug.Log("[CandidApiManager] Saved login found. Registering Candid APIs.");
+                LoadingPanel.Instance.ActiveLoadingPanel();
                 OnLoginCompleted(PlayerPrefs.GetString("authTokenId"));
             }
             else
@@ -122,12 +110,10 @@ namespace Candid
             #endif
         }
         
-        
         public void OnLoginCompleted(string json)
         {
             Debug.Log("[CandidApiManager] OnLoginCompleted called. Login completed. Creating agent...");
             CreateAgentUsingIdentityJson(json, false).Forget();
-            onLoginCompleted.Invoke();
         }
 
         public async UniTaskVoid CreateAgentUsingIdentityJson(string json, bool useLocalHost = false)
@@ -169,6 +155,7 @@ namespace Candid
 
         public void OnLoginRandomAgent()
         {
+            LoadingPanel.Instance.ActiveLoadingPanel();
             CreateAgentRandom().Forget();
         }
         public async UniTaskVoid CreateAgentRandom()
@@ -251,7 +238,7 @@ namespace Candid
         {
             Debug.Log($"[CandidApiManager] Initializing Candid APIs. Anonymous: {asAnon}");
             var userPrincipal = agent.Identity.GetPublicKey().ToPrincipal().ToText();
-
+            string userAccountIdentity;
             //Check if anon setup is required
             if (asAnon)
                 
@@ -262,7 +249,8 @@ namespace Candid
                 CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
                 testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
-                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));
+                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                
+
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
@@ -275,6 +263,7 @@ namespace Candid
                 testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
                 Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                
+
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
@@ -290,6 +279,7 @@ namespace Candid
             testnft = null;              
             testicrc1 = null;
             Validator = null;                
+
             
             //Set Login Data
             loginData = new LoginData(null, null, null, false, DataState.None);
