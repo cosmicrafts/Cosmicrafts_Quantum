@@ -98,7 +98,7 @@
 				}
 			}
 
-			frame.SpawnCard(settings, owner, position, rotation, card.Level);
+			frame.SpawnCard(settings, owner, position, rotation, card.Level, card);
 			frame.Events.CardSpawned(owner, card.CardSettings);
 				
 			AddCardToQueue(frame, card);

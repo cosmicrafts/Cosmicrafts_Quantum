@@ -5,6 +5,13 @@
 	unsafe partial class Frame
 	{
 		// PUBLIC METHODS
+		
+		static readonly CardInfo _cardInfoDefault = new CardInfo
+		{
+			Level = 0,
+			Damage = FP._200,
+			BaseHealth = FP._200
+		};
 
 		public EntityRef CreateEntity(AssetRefEntityPrototype prototype, FPVector2 position, FP rotation)
 		{
@@ -26,12 +33,29 @@
 
 		public void SpawnCard(CardSettings settings, PlayerRef owner, FPVector2 position, FP rotation, byte level)
 		{
+			SpawnCard(settings, owner, position, rotation, level, _cardInfoDefault);
+		}
+		
+		public void SpawnCard(CardSettings settings, PlayerRef owner, FPVector2 position, FP rotation, byte level, CardInfo cardInfo)
+		{
 			if (settings is UnitSettings unitSettings)
 			{
 				for (int idx = 0; idx < unitSettings.UnitCount; idx++)
 				{
 					var unitEntity = CreateEntity(unitSettings.Prefab, TransformPosition(position, unitSettings.UnitCount, idx), rotation);
 					var unit       = Unsafe.GetPointer<Unit>(unitEntity);
+					
+					Log.Debug($"Level: {cardInfo.Level}");
+					Log.Debug($"H: {cardInfo.BaseHealth}");
+					Log.Debug($"D: {cardInfo.Damage}");
+					
+					if (cardInfo.Level == 0) { }
+					else
+					{
+						unitSettings.BaseHealth = cardInfo.BaseHealth;
+					}
+
+					UnitSettings newUnit = unitSettings;
 					
 					unit->Initialize(this, owner, unitEntity, unitSettings, level);
 

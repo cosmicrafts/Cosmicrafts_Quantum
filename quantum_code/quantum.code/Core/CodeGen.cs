@@ -821,16 +821,22 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct CardInfo {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(16)]
+    public FP BaseHealth;
     [FieldOffset(8)]
     public AssetRefCardSettings CardSettings;
+    [FieldOffset(24)]
+    public FP Damage;
     [FieldOffset(0)]
     public Byte Level;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 97;
+        hash = hash * 31 + BaseHealth.GetHashCode();
         hash = hash * 31 + CardSettings.GetHashCode();
+        hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         return hash;
       }
@@ -839,6 +845,8 @@ namespace Quantum {
         var p = (CardInfo*)ptr;
         serializer.Stream.Serialize(&p->Level);
         Quantum.AssetRefCardSettings.Serialize(&p->CardSettings, serializer);
+        FP.Serialize(&p->BaseHealth, serializer);
+        FP.Serialize(&p->Damage, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -3351,9 +3359,13 @@ namespace Quantum.Prototypes {
   public sealed unsafe partial class CardInfo_Prototype : StructPrototype {
     public AssetRefCardSettings CardSettings;
     public Byte Level;
+    public FP BaseHealth;
+    public FP Damage;
     partial void MaterializeUser(Frame frame, ref CardInfo result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref CardInfo result, in PrototypeMaterializationContext context) {
+      result.BaseHealth = this.BaseHealth;
       result.CardSettings = this.CardSettings;
+      result.Damage = this.Damage;
       result.Level = this.Level;
       MaterializeUser(frame, ref result, in context);
     }

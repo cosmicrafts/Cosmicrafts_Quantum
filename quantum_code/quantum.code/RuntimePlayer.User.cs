@@ -20,6 +20,8 @@
 					var card = Cards[idx];
 					stream.WriteByte(card.Level);
 					stream.WriteLong(card.CardSettings.Id.Value);
+					stream.WriteFP(card.BaseHealth);
+					stream.WriteFP(card.Damage);
 				}
 			}
 			else if (stream.Reading)
@@ -33,6 +35,8 @@
 					{
 						Level        = stream.ReadByte(),
 						CardSettings = new AssetRefCardSettings() { Id = new AssetGuid(stream.ReadLong()) },
+						BaseHealth = stream.ReadFP(),
+						Damage = stream.ReadFP(),
 					};
 				}
 			}

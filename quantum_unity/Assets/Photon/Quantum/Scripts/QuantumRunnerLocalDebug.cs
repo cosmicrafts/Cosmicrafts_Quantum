@@ -119,6 +119,8 @@ public class QuantumRunnerLocalDebug : QuantumCallbacks {
                 
                 foreach (var VARIABLE in Players[i].Cards)
                 {
+                  Debug.Log("Health: " + VARIABLE.BaseHealth);
+                  Debug.Log("Damage: " + VARIABLE.Damage);
                   Debug.Log(VARIABLE.CardSettings.Id);
                   Debug.Log(UnityDB.FindAsset<CardSettingsAsset>(VARIABLE.CardSettings.Id).DisplayName);
                 }

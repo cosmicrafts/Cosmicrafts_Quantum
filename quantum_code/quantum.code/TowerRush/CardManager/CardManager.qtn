@@ -18,6 +18,8 @@ struct CardInfo
 {
 	AssetRefCardSettings CardSettings;
 	Byte                 Level;
+    FP                   BaseHealth;
+    FP                   Damage;
 }
 
 [PreserveInPrototype]

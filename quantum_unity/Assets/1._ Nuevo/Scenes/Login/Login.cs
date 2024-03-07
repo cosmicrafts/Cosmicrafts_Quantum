@@ -100,12 +100,14 @@ public class Login : MonoBehaviour
         Debug.Log("[Login] Player information retrieved.");
         if (playerInfo.HasValue)
         {
+        Debug.Log("[Login] HasValue");
+        
             CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
             GoToMenuScene(player);
         }
         else
         {
-            Debug.LogWarning("[Login] No player information available. Prompting user for username.");
+            Debug.Log("[Login] No player information available. Prompting user for username.");
             LoadingPanel.Instance.DesactiveLoadingPanel();
             chooseUserAnim.Play("ChooseUsername_Intro");
         }
