@@ -13,8 +13,8 @@ using UnityEngine.Networking;
 
 public class UIMainMenu : MonoBehaviour
 {
-    public TMP_Text walletIdText; // Public TMP_Text variable for WalletID
-    public TMP_Text usernameText; // Public TMP_Text variable for username
+    public TMP_Text walletIdText;
+    public TMP_Text usernameText;
     public TMP_Text levelText; 
 
     private bool getInfoFromCanister = false;

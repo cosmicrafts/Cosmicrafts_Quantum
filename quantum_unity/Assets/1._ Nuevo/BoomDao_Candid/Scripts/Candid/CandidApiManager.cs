@@ -1,12 +1,3 @@
-using CanisterPK.CanisterLogin;
-using CanisterPK.CanisterMatchMaking;
-using CanisterPK.CanisterStats;
-using CanisterPK.testnft;
-using CanisterPK.testicrc1;
-using CanisterPK.validator;
-
-using UnityEngine.SceneManagement;
-
 namespace Candid
 {
     using System;
@@ -14,15 +5,39 @@ namespace Candid
     using System.Linq;
     
     using Cysharp.Threading.Tasks;
+    
+   
+    using EdjCase.ICP.Candid.Models;
+    //using WebSocketSharp;
+    using CanisterPK.CanisterLogin;
+    using CanisterPK.CanisterMatchMaking;
+    using CanisterPK.CanisterStats;
+    using CanisterPK.testnft;
+    using CanisterPK.testicrc1;
+    using CanisterPK.validator;
+    using Boom;
+
+
+    using Org.BouncyCastle.Crypto.Parameters;
+    using Org.BouncyCastle.Security;
+    using Org.BouncyCastle.Asn1;
+    using Org.BouncyCastle.Asn1.X509;
+
+    using EdjCase.ICP.Agent;
     using EdjCase.ICP.Agent.Agents;
     using EdjCase.ICP.Agent.Identities;
-    using EdjCase.ICP.Candid.Models;
-   
-    using UnityEngine;
-    //using WebSocketSharp;
-  
+    using EdjCase.ICP.Agent.Models;
 
+    using Org.BouncyCastle.Crypto.Parameters;
+    using Org.BouncyCastle.Crypto.Signers;
+    using Org.BouncyCastle.Security;
+
+
+    using Newtonsoft.Json;
+    using System.IO;
+    using UnityEngine.SceneManagement;
     using Unity.VisualScripting;
+    using UnityEngine;
 
     public class CandidApiManager : MonoBehaviour
     {
@@ -77,19 +92,112 @@ namespace Candid
         }
 
         private void Start()
+{
+    Debug.Log("[CandidApiManager] Start called.");
+    string authTokenId = PlayerPrefs.GetString("authTokenId", "");
+
+    if (!string.IsNullOrEmpty(authTokenId))
+    {
+        HandleWebLogin(authTokenId); // For web or other types of login that use an authTokenId.
+    }
+    else
+    {
+        var identity = LoadIdentityFromPlayerPrefs();
+        if (identity != null)
         {
-            Debug.Log("[CandidApiManager] Start called.");
-            if (PlayerPrefs.HasKey("authTokenId") && autoLogin)
-            {
-                Debug.Log("[CandidApiManager] Saved login found. Registering Candid APIs.");
-                LoadingPanel.Instance.ActiveLoadingPanel();
-                OnLoginCompleted(PlayerPrefs.GetString("authTokenId"));
-            }
-            else
-            {
-                Debug.Log("[CandidApiManager] No saved login found.");
-            }
+            Debug.Log("[CandidApiManager] Identity found in PlayerPrefs. Using existing identity.");
+            CreateAgentUsingIdentity(identity, false).Forget();
         }
+        else
+        {
+            Debug.Log("[CandidApiManager] No identity found in PlayerPrefs. Creating new random agent.");
+            CreateAgentRandom().Forget();
+        }
+    }
+}
+
+private async UniTaskVoid CreateAgentUsingIdentity(Ed25519Identity identity, bool useLocalHost = false)
+{
+    Debug.Log("[CandidApiManager] Creating agent using existing identity.");
+    await UniTask.SwitchToMainThread();
+    var httpClient = new UnityHttpClient();
+
+
+    var agent = new HttpAgent(new UnityHttpClient(), identity);
+    await InitializeCandidApis(agent, asAnon: true);
+
+    Debug.Log("[CandidApiManager] Random agent created and initialized.");
+    if (Login.Instance != null)
+    {
+        Login.Instance.UpdateWindow(loginData);
+        Debug.Log("[CandidApiManager] Login window updated with random agent data.");
+    }
+}
+
+
+private Ed25519Identity LoadIdentityFromPlayerPrefs()
+{
+    string privateKeyBase64 = PlayerPrefs.GetString("userPrivateKey", "");
+    string publicKeyBase64 = PlayerPrefs.GetString("userPublicKey", "");
+    Debug.Log($"[CandidApiManager] Attempting to load identity from PlayerPrefs: PrivateKey={privateKeyBase64}, PublicKey={publicKeyBase64}");
+
+    if (!string.IsNullOrEmpty(privateKeyBase64) && !string.IsNullOrEmpty(publicKeyBase64))
+    {
+        byte[] privateKey = Convert.FromBase64String(privateKeyBase64);
+        byte[] publicKey = Convert.FromBase64String(publicKeyBase64);
+        Ed25519Identity loadedIdentity = new Ed25519Identity(publicKey, privateKey);
+        Debug.Log("[CandidApiManager] Successfully loaded identity from PlayerPrefs.");
+        return loadedIdentity;
+    }
+    else
+    {
+        Debug.LogWarning("[CandidApiManager] Failed to load identity from PlayerPrefs.");
+        return null;
+    }
+}
+
+private void HandleWebLogin(string authTokenId)
+{
+    // Implement your logic for handling web login here
+    Debug.Log("[CandidApiManager] Handling web login with authTokenId.");
+}
+
+public async UniTaskVoid CreateAgentRandom()
+{
+    Debug.Log("[CandidApiManager] Starting creation of a random agent.");
+    await UniTask.SwitchToMainThread();
+
+    var identity = GenerateEd25519Identity();
+
+    var agent = new HttpAgent(new UnityHttpClient(), identity);
+    await InitializeCandidApis(agent, asAnon: true);
+
+    Debug.Log("[CandidApiManager] Random agent created and initialized.");
+    if (Login.Instance != null)
+    {
+        Login.Instance.UpdateWindow(loginData);
+        Debug.Log("[CandidApiManager] Login window updated with random agent data.");
+    }
+}
+
+private static Ed25519Identity GenerateEd25519Identity()
+{
+    var secureRandom = new SecureRandom();
+    var privateKeyParams = new Ed25519PrivateKeyParameters(secureRandom);
+    byte[] privateKey = privateKeyParams.GetEncoded();
+    byte[] publicKey = privateKeyParams.GeneratePublicKey().GetEncoded();
+
+    // Directly save the private and public keys in Base64 format into PlayerPrefs.
+    string privateKeyBase64 = Convert.ToBase64String(privateKey);
+    string publicKeyBase64 = Convert.ToBase64String(publicKey);
+    PlayerPrefs.SetString("userPrivateKey", privateKeyBase64);
+    PlayerPrefs.SetString("userPublicKey", publicKeyBase64);
+    PlayerPrefs.Save();
+    Debug.Log($"[CandidApiManager] Identity saved to PlayerPrefs. PrivateKeyBase64: {privateKeyBase64}, PublicKeyBase64: {publicKeyBase64}");
+
+    // Now create and return the Ed25519Identity using the raw byte arrays.
+    return new Ed25519Identity(publicKey, privateKey);
+}
 
 
         public void StartLogin()
@@ -158,66 +266,7 @@ namespace Candid
             LoadingPanel.Instance.ActiveLoadingPanel();
             CreateAgentRandom().Forget();
         }
-        public async UniTaskVoid CreateAgentRandom()
-        {
-            Debug.Log("[CandidApiManager] Starting creation of a random agent. Entering CreateAgentRandom method.");
-            await UniTask.SwitchToMainThread();
-            
-            try
-            {
-                // Define a local function to encapsulate the agent creation logic.
-                IAgent CreateAgentWithRandomIdentity(bool useLocalHost = false)
-                {
-                    Debug.Log($"[CandidApiManager] Attempting to create a random agent. LocalHost: {useLocalHost}");
-                    IAgent randomAgent = null;
-                    var httpClient = new UnityHttpClient();
 
-                    try
-                    {
-                        string uri = useLocalHost ? "http://localhost:4943" : "Using default agent URI";
-                        Debug.Log($"[CandidApiManager] Creating HttpAgent with URI: {uri}");
-
-                        if (useLocalHost)
-                            randomAgent = new HttpAgent(Ed25519Identity.Generate(), new Uri("http://localhost:4943"));
-                        else
-                            randomAgent = new HttpAgent(httpClient, Ed25519Identity.Generate());
-
-                        Debug.Log("[CandidApiManager] Random agent created successfully.");
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError($"[CandidApiManager] Failed to create random agent. Error: {e.Message}");
-                    }
-
-                    return randomAgent;
-                }
-
-                // Initiate the creation of a random agent and its initialization within Candid APIs.
-                var createdAgent = CreateAgentWithRandomIdentity(useLocalHost: false); // Adjust useLocalHost as needed.
-                if (createdAgent != null)
-                {
-                    Debug.Log("[CandidApiManager] Random agent creation succeeded. Proceeding to initialize Candid APIs.");
-                    await InitializeCandidApis(createdAgent, asAnon: true); // Assuming random agents are always treated as anonymous.
-                    Debug.Log("[CandidApiManager] Candid APIs initialized for random agent.");
-                }
-                else
-                {
-                    Debug.LogError("[CandidApiManager] Random agent creation failed. Unable to proceed with Candid API initialization.");
-                }
-
-                if (Login.Instance != null)
-                {
-                    Login.Instance.UpdateWindow(loginData);
-                    Debug.Log("[CandidApiManager] Login window updated with new random agent data.");
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[CandidApiManager] Exception caught in CreateAgentRandom. Error: {e.Message}");
-            }
-            Debug.Log("[CandidApiManager] Exiting CreateAgentRandom method.");
-        }
-        
         public void LogOut( )
         {
             Debug.Log("[CandidApiManager] Initiating logout process.");
