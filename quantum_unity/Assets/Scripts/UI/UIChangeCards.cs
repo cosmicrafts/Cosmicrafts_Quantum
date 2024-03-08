@@ -10,6 +10,8 @@ namespace TowerRush
 		public AssetRefCardSettings CardSettings;
 		public byte                 Level;
 		public bool                 InDeck;
+		public float                Hp;
+		public float                Dmg;
 	}
 
 	public class UIChangeCards : UIView
@@ -38,11 +40,11 @@ namespace TowerRush
 				if (infoIndex >= 0)
 				{
 					var cardInfo = cards[infoIndex];
-					m_Cards[idx].SetData(settings, cardInfo.Level, cardInfo.InDeck);
+					m_Cards[idx].SetData(settings, cardInfo, cardInfo.InDeck);
 				}
 				else
 				{
-					m_Cards[idx].SetData(settings, 1, false);
+					m_Cards[idx].SetData(settings, new MenuCardInfo(), false);
 				}
 			}
 

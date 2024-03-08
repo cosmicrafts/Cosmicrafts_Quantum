@@ -53,6 +53,8 @@ public class SelectCardUI : MonoBehaviour
     				CardSettings = allCards[idx],
     				Level        = 1,
     				InDeck       = true,
+                    Hp           = 100f,
+	                Dmg          = 20f,
     			};
     		}
 
@@ -73,14 +75,18 @@ public class SelectCardUI : MonoBehaviour
     			var id     = new AssetGuid(reader.ReadInt64());
     			var level  = reader.ReadByte();
     			var inDeck = reader.ReadBoolean();
+                var hp = reader.ReadSingle();
+                var dmg = reader.ReadSingle();
 
-    			if (UnityDB.FindAsset(id) != null)
+                if (UnityDB.FindAsset(id) != null)
     			{
     				m_Cards[idx] = new MenuCardInfo
     				{
     					CardSettings = new AssetRefCardSettings { Id = id },
     					Level        = level,
     					InDeck       = inDeck,
+                        Hp           = hp, 
+                        Dmg          = dmg, 
     				};
     			}
     		}
@@ -100,6 +106,8 @@ public class SelectCardUI : MonoBehaviour
 			    writer.Write(card.CardSettings.Id.Value);
 			    writer.Write(card.Level);
 			    writer.Write(card.InDeck);
+			    writer.Write(card.Hp);
+			    writer.Write(card.Dmg);
 		    }
 
 
@@ -122,11 +130,11 @@ public class SelectCardUI : MonoBehaviour
     		if (infoIndex >= 0)
     		{
     			var cardInfo = cards[infoIndex];
-                m_CardsUI[idx].SetData(settings, cardInfo.Level, cardInfo.InDeck);
+                m_CardsUI[idx].SetData(settings, cardInfo, cardInfo.InDeck);
     		}
     		else
     		{
-	            m_CardsUI[idx].SetData(settings, 1, false);
+	            m_CardsUI[idx].SetData(settings, new MenuCardInfo(), false);
     		}
     	}
 

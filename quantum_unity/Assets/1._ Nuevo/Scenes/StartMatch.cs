@@ -9,6 +9,7 @@ using TowerRush.Core;
 using UnityEngine.UI;
 using System.IO;
 using System.Linq;
+using Photon.Deterministic;
 using TowerRush;
 
 public class StartMatch : MonoBehaviour
@@ -90,9 +91,12 @@ public class StartMatch : MonoBehaviour
 									{
 										CardSettings = obj.CardSettings,
 										Level        = obj.Level,
+										BaseHealth   = FP.FromFloat_UNSAFE(obj.Hp),
+										Damage       = FP.FromFloat_UNSAFE(obj.Dmg),
 									}).ToArray(),
 			};
 
+			
 			MatchRequest matchRequest = new MatchRequest();
 			matchRequest.Room                 = GlobalGameData.Instance.actualRoom;
 			matchRequest.Type                 = EMatchRequestType.JoinOrCreate;
@@ -129,6 +133,8 @@ public class StartMatch : MonoBehaviour
 					writer.Write(card.CardSettings.Id.Value);
 					writer.Write(card.Level);
 					writer.Write(card.InDeck);
+					writer.Write(card.Hp);
+					writer.Write(card.Dmg);
 				}
 
 
@@ -163,6 +169,8 @@ public class StartMatch : MonoBehaviour
 						CardSettings = allCards[idx],
 						Level        = 1,
 						InDeck       = true,
+						Hp           = 100f,
+						Dmg          = 20f,
 					};
 				}
 
@@ -183,6 +191,8 @@ public class StartMatch : MonoBehaviour
 					var id     = new AssetGuid(reader.ReadInt64());
 					var level  = reader.ReadByte();
 					var inDeck = reader.ReadBoolean();
+					var hp = reader.ReadSingle();
+					var dmg = reader.ReadSingle();
 
 					if (UnityDB.FindAsset(id) != null)
 					{
@@ -191,6 +201,8 @@ public class StartMatch : MonoBehaviour
 							CardSettings = new AssetRefCardSettings { Id = id },
 							Level        = level,
 							InDeck       = inDeck,
+							Hp           = hp, 
+							Dmg          = dmg, 
 						};
 					}
 				}
