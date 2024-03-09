@@ -53,9 +53,24 @@
 					else
 					{
 						unitSettings.BaseHealth = cardInfo.BaseHealth;
+							
+						switch (unitSettings.WeaponBehavior._field_used_) {
+							case "PROJECTILE":
+								switch (unitSettings.WeaponBehavior.Projectile.Behavior._field_used_)
+								{
+									case "AOE": unitSettings.WeaponBehavior.Projectile.Behavior.AoE.Damage = cardInfo.Damage; break;
+									case "SINGLETARGET": unitSettings.WeaponBehavior.Projectile.Behavior.SingleTarget.Damage = cardInfo.Damage; break;
+									case "": case null: break;
+								}
+								break;
+							case "SINGLETARGET": 
+								unitSettings.WeaponBehavior.SingleTarget.Damage = cardInfo.Damage;
+								break;
+							
+							case "": case null: break;
+						}
 					}
-
-					UnitSettings newUnit = unitSettings;
+					
 					
 					unit->Initialize(this, owner, unitEntity, unitSettings, level);
 

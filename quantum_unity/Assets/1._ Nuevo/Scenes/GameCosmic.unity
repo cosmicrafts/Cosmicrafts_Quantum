@@ -167,7 +167,6 @@ GameObject:
   m_Component:
   - component: {fileID: 57171300}
   - component: {fileID: 57171301}
-  - component: {fileID: 57171302}
   m_Layer: 0
   m_Name: Scene
   m_TagString: Untagged
@@ -217,18 +216,8 @@ MonoBehaviour:
   m_BetaCameraPosition: {fileID: 1710087917}
   m_AlphaLight: {fileID: 1071963250}
   m_BetaLight: {fileID: 1391781205}
---- !u!114 &57171302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57171299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e834e0d90699a345801bd2e0074ff71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  CanvasDamage: {fileID: 7751084914488314239, guid: 48826ce7a53e443408841cb8be937705,
+    type: 3}
 --- !u!1 &82075205
 GameObject:
   m_ObjectHideFlags: 0

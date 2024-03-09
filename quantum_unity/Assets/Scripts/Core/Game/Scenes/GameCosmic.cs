@@ -24,6 +24,7 @@ namespace TowerRush
 		[SerializeField] Light     m_AlphaLight;
 		[SerializeField] Light     m_BetaLight;
 
+		[SerializeField] private GameObject CanvasDamage;
 		// PRIVATE MEMBERS
 
 		private bool m_Started;
@@ -187,6 +188,15 @@ namespace TowerRush
 		}
 		private void OnHealthChanged(EventOnHealthChanged e)
 		{
+			void InstanceCanvasDamage()
+			{
+				GameObject targetGameObject = GameObject.Find(e.Data.Target.ToString());
+				if (targetGameObject != null)
+				{
+					GameObject canvasDmg = Instantiate(CanvasDamage, targetGameObject.transform.position, targetGameObject.transform.rotation);
+					canvasDmg.GetComponent<CanvasDamage>().SetDamage(e.Data.Value.AsFloat);
+				}
+			}
 			
 			if (e.Data.HideToStats)
 			{
@@ -203,6 +213,7 @@ namespace TowerRush
 				else if (e.Data.Action == EHealthAction.Remove)
 				{
 					Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+					InstanceCanvasDamage();
 					gmt.AddDamageReceived(e.Data.Value.AsFloat);
 				}
 			}
@@ -215,6 +226,7 @@ namespace TowerRush
 				else if (e.Data.Action == EHealthAction.Remove)
 				{
 					Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+					InstanceCanvasDamage();
 					gmt.AddDamage(e.Data.Value.AsFloat);
 				}
 			}
