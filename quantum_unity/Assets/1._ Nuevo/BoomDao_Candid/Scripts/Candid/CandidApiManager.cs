@@ -17,27 +17,32 @@ namespace Candid
     using CanisterPK.validator;
     using Boom;
 
-
+    using Org.BouncyCastle.Crypto.Signers;
     using Org.BouncyCastle.Crypto.Parameters;
     using Org.BouncyCastle.Security;
     using Org.BouncyCastle.Asn1;
-    using Org.BouncyCastle.Asn1.X509;
 
     using EdjCase.ICP.Agent;
     using EdjCase.ICP.Agent.Agents;
     using EdjCase.ICP.Agent.Identities;
     using EdjCase.ICP.Agent.Models;
 
-    using Org.BouncyCastle.Crypto.Parameters;
-    using Org.BouncyCastle.Crypto.Signers;
-    using Org.BouncyCastle.Security;
-
-
     using Newtonsoft.Json;
-    using System.IO;
+    
     using UnityEngine.SceneManagement;
     using Unity.VisualScripting;
     using UnityEngine;
+
+    using System.Collections.Concurrent; //not needed so far
+    using System.IO;
+
+    public class IdentityMessage
+    {
+        public string Type { get; set; }
+        public string PublicKey { get; set; }
+        public string PrivateKey { get; set; }
+    }
+
 
     public class CandidApiManager : MonoBehaviour
     {
@@ -52,8 +57,7 @@ namespace Candid
         public TestnftApiClient testnft { get; private set; }
         public Testicrc1ApiClient testicrc1{ get; private set; }
         public ValidatorApiClient Validator { get; private set; }
-            
-            
+
         // Login Data
         public enum DataState { None, Loading, Ready }
         public struct LoginData 
@@ -74,6 +78,8 @@ namespace Candid
             }
         }
         public LoginData loginData = new LoginData(null, null, null, false, DataState.None);
+
+        private static readonly ConcurrentQueue<Action> _executeOnMainThread = new ConcurrentQueue<Action>();
         
         private void Awake()
         {
@@ -116,24 +122,66 @@ namespace Candid
             }
         }
 
-        private async UniTaskVoid CreateAgentUsingIdentity(Ed25519Identity identity, bool useLocalHost = false)
+        public void StartLogin(string loginMessage = null)
         {
-            Debug.Log("[CandidApiManager] Creating agent using existing identity.");
-            await UniTask.SwitchToMainThread();
-            var httpClient = new UnityHttpClient();
-
-
-            var agent = new HttpAgent(new UnityHttpClient(), identity);
-            await InitializeCandidApis(agent, asAnon: true);
-
-            Debug.Log("[CandidApiManager] Random agent created and initialized.");
-            if (Login.Instance != null)
+            Debug.Log("[CandidApiManager] StartLogin called.");
+            if (loginData.state == DataState.Ready) 
             {
-                Login.Instance.UpdateWindow(loginData);
-                Debug.Log("[CandidApiManager] Login window updated with random agent data.");
+                Debug.Log("[CandidApiManager] Login data is already ready. Aborting StartLogin.");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(loginMessage))
+            {
+                ProcessLoginMessage(loginMessage);
+                return; // Return early since we're handling a specific login message.
+            }
+            
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("[CandidApiManager] Starting WebGL login flow.");
+            LoginManager.Instance.StartLoginFlowWebGl(OnLoginCompleted);
+            #else
+            Debug.Log("[CandidApiManager] Starting standard login flow.");
+            LoginManager.Instance.StartLoginFlow(OnLoginCompleted);
+            #endif
+        }
+
+        public void ProcessLoginMessage(string loginMessage)
+        {
+            Debug.Log("[CandidApiManager] Received login message for processing.");
+            try
+            {
+                // Deserialize the message to extract the identity details
+                var identityMessage = JsonConvert.DeserializeObject<IdentityMessage>(loginMessage);
+                if (identityMessage?.Type == "Ed25519Identity")
+                {
+                    Debug.Log("[CandidApiManager] Processing Ed25519Identity message.");
+                    // Convert the message to an Ed25519Identity and proceed with creating an agent
+                    var identity = ConvertMessageToIdentity(identityMessage);
+                    CreateAgentUsingIdentity(identity, false).Forget();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[CandidApiManager] Error processing login message: {ex.Message}");
             }
         }
 
+        private Ed25519Identity ConvertMessageToIdentity(IdentityMessage message)
+        {
+            byte[] publicKey = Convert.FromBase64String(message.PublicKey);
+            byte[] privateKey = Convert.FromBase64String(message.PrivateKey);
+            return new Ed25519Identity(publicKey, privateKey);
+        }
+
+
+        private void SaveIdentityToPlayerPrefs(string publicKeyBase64, string privateKeyBase64)
+        {
+            PlayerPrefs.SetString("userPrivateKey", privateKeyBase64);
+            PlayerPrefs.SetString("userPublicKey", publicKeyBase64);
+            PlayerPrefs.Save();
+            Debug.Log("[CandidApiManager] Identity saved to PlayerPrefs from message.");
+        }
 
         private Ed25519Identity LoadIdentityFromPlayerPrefs()
         {
@@ -155,6 +203,25 @@ namespace Candid
                 return null;
             }
         }
+
+        private async UniTaskVoid CreateAgentUsingIdentity(Ed25519Identity identity, bool useLocalHost = false)
+        {
+            Debug.Log("[CandidApiManager] Creating agent using existing identity.");
+            await UniTask.SwitchToMainThread();
+            var httpClient = new UnityHttpClient();
+
+
+            var agent = new HttpAgent(new UnityHttpClient(), identity);
+            await InitializeCandidApis(agent, asAnon: true);
+
+            Debug.Log("[CandidApiManager] Random agent created and initialized.");
+            if (Login.Instance != null)
+            {
+                Login.Instance.UpdateWindow(loginData);
+                Debug.Log("[CandidApiManager] Login window updated with random agent data.");
+            }
+        }
+
 
 
         public void OnLoginRandomAgent()
@@ -201,23 +268,7 @@ namespace Candid
         }
 
 
-        public void StartLogin()
-        {
-            Debug.Log("[CandidApiManager] StartLogin called.");
-            if (loginData.state == DataState.Ready) 
-            {
-                Debug.Log("[CandidApiManager] Login data is already ready. Aborting StartLogin.");
-                return;
-            }
-            
-            #if UNITY_WEBGL && !UNITY_EDITOR
-            Debug.Log("[CandidApiManager] Starting WebGL login flow.");
-            LoginManager.Instance.StartLoginFlowWebGl(OnLoginCompleted);
-            #else
-            Debug.Log("[CandidApiManager] Starting login flow.");
-            LoginManager.Instance.StartLoginFlow(OnLoginCompleted);
-            #endif
-        }
+        
         
         public void OnLoginCompleted(string json)
         {

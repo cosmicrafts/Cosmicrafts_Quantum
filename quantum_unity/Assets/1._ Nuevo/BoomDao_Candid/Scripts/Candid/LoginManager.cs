@@ -46,19 +46,32 @@ namespace Candid
             BrowserUtils.ToggleLoginIframe(true);
         }
         public void ExecuteCallbackWithJson(string identityJson)
-        {
-            if (callback != null)
-            {
-                Debug.Log("[LoginManager] Executing callback with JSON.");
-                callback(identityJson);
-                callback = null; // Ensure callback is only called once
-            }
-            else
-            {
-                Debug.LogWarning("[LoginManager] Callback is null, cannot execute.");
-            }
-            BrowserUtils.ToggleLoginIframe(false);
-        }
+{
+    Debug.Log("[LoginManager] Received identity for callback: " + identityJson);
+
+    // Attempt to deserialize the message to identify if it's an Ed25519Identity
+    var identityMessage = JsonConvert.DeserializeObject<IdentityMessage>(identityJson);
+    if (identityMessage != null && identityMessage.Type == "Ed25519Identity")
+    {
+        Debug.Log("[LoginManager] Ed25519Identity detected, processing...");
+        // Process the Ed25519Identity message directly in CandidApiManager
+        CandidApiManager.Instance.ProcessLoginMessage(identityJson);
+    }
+    else if (callback != null)
+    {
+        Debug.Log("[LoginManager] Executing standard callback with JSON.");
+        callback(identityJson);
+        callback = null; // Ensure callback is only called once after execution
+    }
+    else
+    {
+        Debug.LogWarning("[LoginManager] Callback is null, cannot execute.");
+    }
+
+    // Assuming there's a method to manage UI components post-login attempt
+    BrowserUtils.ToggleLoginIframe(false);
+}
+
          public void CancelLogin()
         {
             Debug.Log("[LoginManager] Cancelling login and closing WebSocket server if active.");
