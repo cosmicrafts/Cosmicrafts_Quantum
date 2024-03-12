@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
+  m_Name: Card_BlackBird
+  m_EditorClassIdentifier: 
+  GhostPrefab: {fileID: 965122459359557164, guid: 6bd235d6a2f8b6f41b3886800601c338,
+    type: 3}
+  Sprite: {fileID: 21300000, guid: 602e244f5aebd5841b7f266a2d26c2f0, type: 3}
+  DisplayName: BlackBird
+  Settings:
+    Identifier:
+      Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_BlackBird
+      Guid:
+        Value: 1865065108031479822
+    Prefab:
+      Id:
+        Value: 1340357768632712773
+    Rarity: 4
+    EnergyCost: 3
+    ActivationDelay:
+      RawValue: 32768
+    UnitCount: 1
+    UnitBehaviors: []
+    BaseHealth:
+      RawValue: 26214400
+    HealthPerLevelPercent:
+      RawValue: 655360
+    DestroyOnDeath: 1
+    TargetType: 2
+    UnitSize:
+      RawValue: 39321
+    AttackTarget: -1
+    WeaponBehavior:
+      _field_used_: PROJECTILE
+      SingleTarget:
+        Damage:
+          RawValue: 0
+        DamagePerLevelPercent:
+          RawValue: 0
+      Projectile:
+        Prototype:
+          Id:
+            Value: 2210417644035088212
+        Speed:
+          RawValue: 393216
+        Behavior:
+          _field_used_: AOE
+          SingleTarget:
+            Damage:
+              RawValue: 0
+            DamagePerLevelPercent:
+              RawValue: 0
+          AoE:
+            Prototype:
+              Id:
+                Value: 2867976968352079687
+            Radius:
+              RawValue: 98304
+            Damage:
+              RawValue: 3932160
+            DamagePerLevelPercent:
+              RawValue: 655360
+    AttackRange:
+      RawValue: 327680
+    AttackSpeed:
+      RawValue: 98304
+    StartAttackDelay:
+      RawValue: 19660
+    MovementSpeed:
+      RawValue: 98304
