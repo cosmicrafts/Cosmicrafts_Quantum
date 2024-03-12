@@ -44,6 +44,7 @@ public class SelectCardUI : MonoBehaviour
         
     	if (stringData.Length == 0)
     	{
+	        Debug.Log("[SELECT CARD UI] StringLenght= 0");
     		var allCards = m_GameplaySettings.Settings.AllCards;
     		var count    = allCards.Length;
     		m_Cards      = new MenuCardInfo[count];
@@ -98,7 +99,8 @@ public class SelectCardUI : MonoBehaviour
         }
         catch (Exception e)
         {
-	        Console.WriteLine(e);
+	        Debug.Log(e);
+	        Debug.Log("SELECT CARD UI");
 	        m_CardsSaveFile.Clear();
 	        LoadCardSelection();
         }
