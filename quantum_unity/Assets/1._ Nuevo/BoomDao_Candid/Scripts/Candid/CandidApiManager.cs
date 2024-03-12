@@ -3,7 +3,8 @@ namespace Candid
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    
+    using System.Text;
+
     using Cysharp.Threading.Tasks;
     
    
@@ -17,6 +18,8 @@ namespace Candid
     using CanisterPK.validator;
     using Boom;
 
+    using Org.BouncyCastle.Crypto.Digests;
+    using Org.BouncyCastle.Crypto.Generators;
     using Org.BouncyCastle.Crypto.Signers;
     using Org.BouncyCastle.Crypto.Parameters;
     using Org.BouncyCastle.Security;
@@ -248,24 +251,38 @@ namespace Candid
             }
         }
 
+        private static string testSeedPhrase = "your test seed phrase goes here"; 
+
         private static Ed25519Identity GenerateEd25519Identity()
-        {
-            var secureRandom = new SecureRandom();
-            var privateKeyParams = new Ed25519PrivateKeyParameters(secureRandom);
-            byte[] privateKey = privateKeyParams.GetEncoded();
-            byte[] publicKey = privateKeyParams.GeneratePublicKey().GetEncoded();
+    {
+        string testSeedPhrase = "random vivid normal black shoe glide deer stand certain giant diet expand"; 
+        byte[] seedBytes = Encoding.UTF8.GetBytes(testSeedPhrase); 
 
-            // Directly save the private and public keys in Base64 format into PlayerPrefs.
-            string privateKeyBase64 = Convert.ToBase64String(privateKey);
-            string publicKeyBase64 = Convert.ToBase64String(publicKey);
-            PlayerPrefs.SetString("userPrivateKey", privateKeyBase64);
-            PlayerPrefs.SetString("userPublicKey", publicKeyBase64);
-            PlayerPrefs.Save();
-            Debug.Log($"[CandidApiManager] Identity saved to PlayerPrefs. PrivateKeyBase64: {privateKeyBase64}, PublicKeyBase64: {publicKeyBase64}");
+        // Deterministic derivation using SHA-256
+        var sha256 = new Sha256Digest();
+        byte[] hashOutput = new byte[sha256.GetDigestSize()];
+        sha256.BlockUpdate(seedBytes, 0, seedBytes.Length);
+        sha256.DoFinal(hashOutput, 0);
 
-            // Now create and return the Ed25519Identity using the raw byte arrays.
-            return new Ed25519Identity(publicKey, privateKey);
-        }
+        // Use the first 32 bytes of the hash as the private key
+        var privateKey = new Ed25519PrivateKeyParameters(hashOutput, 0); 
+
+        // Derive the public key
+        var publicKey = privateKey.GeneratePublicKey();
+
+        // ... Extract keys as byte arrays ...
+
+        // Directly save the private and public keys in Base64 format into PlayerPrefs.
+        string privateKeyBase64 = Convert.ToBase64String(privateKey.GetEncoded());
+        string publicKeyBase64 = Convert.ToBase64String(publicKey.GetEncoded());
+        PlayerPrefs.SetString("userPrivateKey", privateKeyBase64);
+        PlayerPrefs.SetString("userPublicKey", publicKeyBase64);
+        PlayerPrefs.Save();
+        Debug.Log($"[CandidApiManager] Identity saved to PlayerPrefs. PrivateKeyBase64: {privateKeyBase64}, PublicKeyBase64: {publicKeyBase64}");
+
+        // Now create and return the Ed25519Identity using the raw byte arrays.
+        return new Ed25519Identity(publicKey.GetEncoded(), privateKey.GetEncoded()); 
+    }
 
 
         
