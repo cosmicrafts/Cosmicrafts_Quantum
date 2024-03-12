@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -40,6 +41,7 @@ public class SelectCardUI : MonoBehaviour
     	}
 
     	var stringData = m_CardsSaveFile.GetString("Selection", "");
+        
     	if (stringData.Length == 0)
     	{
     		var allCards = m_GameplaySettings.Settings.AllCards;
@@ -62,36 +64,48 @@ public class SelectCardUI : MonoBehaviour
     		return;
     	}
 
-    	var data = System.Convert.FromBase64String(stringData);
+        try
+        {
+	        var data = System.Convert.FromBase64String(stringData);
 
-    	using (var stream = new MemoryStream(data))
-    	using (var reader = new BinaryReader(stream))
-    	{
-    		var count = reader.ReadInt32();
-    		m_Cards = new MenuCardInfo[count];
+	        using (var stream = new MemoryStream(data))
+	        using (var reader = new BinaryReader(stream))
+	        {
+		        var count = reader.ReadInt32();
+		        m_Cards = new MenuCardInfo[count];
 
-    		for (int idx = 0; idx < count; idx++)
-    		{
-    			var id     = new AssetGuid(reader.ReadInt64());
-    			var level  = reader.ReadByte();
-    			var inDeck = reader.ReadBoolean();
-                var hp = reader.ReadSingle();
-                var dmg = reader.ReadSingle();
+		        for (int idx = 0; idx < count; idx++)
+		        {
+			        var id     = new AssetGuid(reader.ReadInt64());
+			        var level  = reader.ReadByte();
+			        var inDeck = reader.ReadBoolean();
+			        var hp = reader.ReadSingle();
+			        var dmg = reader.ReadSingle();
 
-                if (UnityDB.FindAsset(id) != null)
-    			{
-    				m_Cards[idx] = new MenuCardInfo
-    				{
-    					CardSettings = new AssetRefCardSettings { Id = id },
-    					Level        = level,
-    					InDeck       = inDeck,
-                        Hp           = hp, 
-                        Dmg          = dmg, 
-    				};
-    			}
-    		}
-    	}
+			        if (UnityDB.FindAsset(id) != null)
+			        {
+				        m_Cards[idx] = new MenuCardInfo
+				        {
+					        CardSettings = new AssetRefCardSettings { Id = id },
+					        Level        = level,
+					        InDeck       = inDeck,
+					        Hp           = hp, 
+					        Dmg          = dmg, 
+				        };
+			        }
+		        }
+	        }
+        }
+        catch (Exception e)
+        {
+	        Console.WriteLine(e);
+	        m_CardsSaveFile.Clear();
+	        LoadCardSelection();
+        }
+    	
+        
     }
+    
     private void SaveCardSelection()
     {
 	    using (var stream = new MemoryStream())
