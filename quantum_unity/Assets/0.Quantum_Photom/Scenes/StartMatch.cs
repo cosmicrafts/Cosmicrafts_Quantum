@@ -23,6 +23,11 @@ public class StartMatch : MonoBehaviour
 
 		private MenuCardInfo[]                  m_Cards;
 		private DictionaryFile                  m_CardsSaveFile;
+		
+		
+		[Header("Skills")]
+		[Range(0, 1000)] public float HpPorcent = 100;
+		[Range(0, 1000)] public float DmgPorcent = 100;
 
 		
 		private void Awake()
@@ -91,8 +96,8 @@ public class StartMatch : MonoBehaviour
 									{
 										CardSettings = obj.CardSettings,
 										Level        = obj.Level,
-										BaseHealth   = FP.FromFloat_UNSAFE(obj.Hp),
-										Damage       = FP.FromFloat_UNSAFE(obj.Dmg),
+										BaseHealth   = FP.FromFloat_UNSAFE(obj.Hp * (HpPorcent * 0.01f) ),
+										Damage       = FP.FromFloat_UNSAFE(obj.Dmg * (DmgPorcent * 0.01f)),
 									}).ToArray(),
 			};
 
