@@ -2,10 +2,12 @@ using EdjCase.ICP.Agent.Agents;
 using EdjCase.ICP.Candid.Models;
 using EdjCase.ICP.Candid;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using CanisterPK.CanisterLogin;
 using EdjCase.ICP.Agent.Responses;
 using EdjCase.ICP.Candid.Mapping;
 using TokenID = EdjCase.ICP.Candid.Models.UnboundedUInt;
+using Balance = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
 namespace CanisterPK.CanisterLogin
 {
@@ -31,6 +33,14 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<List<Models.Player>> GetAllPlayers()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getAllPlayers", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.Player>>(this.Converter);
+		}
+
 		public async Task<CanisterLoginApiClient.GetICPBalanceReturnArg0> GetICPBalance()
 		{
 			CandidArg arg = CandidArg.FromCandid();
@@ -44,6 +54,14 @@ namespace CanisterPK.CanisterLogin
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getMyPlayerData", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<OptionalValue<Models.Player>>(this.Converter);
+		}
+
+		public async Task<Balance> GetNFTUpgradeCost()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getNFTUpgradeCost", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<Balance>(this.Converter);
 		}
 
 		public async Task<OptionalValue<Models.Player>> GetPlayer()
@@ -83,10 +101,31 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<(bool ReturnArg0, string ReturnArg1)> MintChest(Principal arg0, UnboundedUInt arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintChest", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> MintDeck(Principal arg0, (UnboundedUInt, UnboundedUInt) arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintDeck", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1)> MintNFT(Principal arg0, UnboundedUInt arg1)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintNFT", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> OpenChests(UnboundedUInt arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "openChests", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 

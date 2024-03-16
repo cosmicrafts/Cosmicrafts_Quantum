@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Candid;
 using EdjCase.ICP.Candid.Models;
+using Quantum;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -85,13 +86,10 @@ public class Login : MonoBehaviour
         user.WalletId = player.Id.ToString();
         SaveData.SaveGameUser();
         
-        
-        // Assume this logs imply the data is now updated in memory
         Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Name: {player.Name}");
-
-        // Direct transition to main menu scene without further checks
-        // await Task.Delay(3000); 
         Debug.Log("[Login] Transitioning to the main menu scene...");
+        
+        
         SceneManager.LoadScene(1);
     }
 
@@ -111,7 +109,26 @@ public class Login : MonoBehaviour
                 {
                     Debug.Log("[LoginPostCreate] Player information retrieved.");
                     CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
-                    UpdateUserDataAndTransition(player);
+                    
+                    
+                    Debug.Log("[Login] INIT MINT");
+                    var MintInnfo = 
+                        await CandidApiManager.Instance.CanisterLogin.MintDeck(
+                            player.Id, 
+                            (UnboundedUInt.FromUInt64(0), (UnboundedUInt.FromUInt64(0)) )
+                            );
+                   
+                    if (MintInnfo.ReturnArg0)
+                    {
+                        Debug.Log("[Login] MINT SUCCESS");
+                        UpdateUserDataAndTransition(player);
+                    }
+                    else
+                    {
+                        Debug.LogError("[Login] ERROR MINT NFTs");
+                    }
+                        
+                    
                 }
                 else
                 {
