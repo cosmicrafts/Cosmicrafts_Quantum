@@ -11,6 +11,11 @@ public class GlobalGameData : MonoBehaviour
             if (_instance == null) { _instance = Instantiate( ResourcesServices.LoadGlobalManager().GetComponent<GlobalGameData>() ); }
             return _instance;
         }
+        set
+        {
+            if(_instance &&_instance.gameObject) { Destroy(_instance.gameObject); }
+            _instance = value;
+        }
     }
     private void Awake() {  
         if(!_instance){ _instance = this; DontDestroyOnLoad(gameObject); }

@@ -20,6 +20,8 @@ public class Login : MonoBehaviour
 
     private void Awake()
     {
+        GlobalGameData.Instance = null;
+        
         if (Instance != null)
         {
             Debug.LogWarning("[Login] Instance already exists. Destroying duplicate.");
@@ -81,6 +83,8 @@ public class Login : MonoBehaviour
         user.Level = (int)player.Level;
         user.NikeName = player.Name;
         user.WalletId = player.Id.ToString();
+        SaveData.SaveGameUser();
+        
         
         // Assume this logs imply the data is now updated in memory
         Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Name: {player.Name}");
