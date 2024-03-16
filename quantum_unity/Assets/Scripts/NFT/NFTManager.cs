@@ -103,7 +103,6 @@ public class NFTManager : MonoBehaviour
             NFTData nftData = NFTMetadataParser.Parse(metadataDictionary);
             nftData.TokenId = tokenId.ToString();
             NFTData clonedData = nftData.Clone();
-
             var instance = Instantiate(nftPrefab, nftDisplayContainer);
             var nftItem = instance.GetComponent<NFTItem>();
             if (nftItem != null)
@@ -119,8 +118,6 @@ public class NFTManager : MonoBehaviour
         }
     }
 
-
-
     // Fetch user's owned NFT tokens
     async Task<List<UnboundedUInt>> GetOwnedNFTs(Account account)
     {
@@ -128,19 +125,6 @@ public class NFTManager : MonoBehaviour
         return nftListResult.Tag == TokensOfResultTag.Ok ? nftListResult.AsOk() : new List<UnboundedUInt>();
     }
 
-    // Fetch metadata for an NFT token and display it
-    async Task FetchAndDisplayNFTMetadata(UnboundedUInt tokenId)
-    {
-        var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
-        if (metadataResult.Tag == MetadataResultTag.Ok && metadataResult.Value is Dictionary<string, Metadata> metadataDictionary)
-        {
-            NFTData nftData = NFTMetadataParser.Parse(metadataDictionary);
-            string nftInfo = GetNFTDataInfo(nftData);
-            Debug.Log($"Parsed NFTData for Token ID {tokenId}: {nftInfo}");
-
-            InstantiateAndDisplayNFT(nftData);
-        }
-    }
 
     // Get information about NFT data
     private string GetNFTDataInfo(NFTData nftData)
