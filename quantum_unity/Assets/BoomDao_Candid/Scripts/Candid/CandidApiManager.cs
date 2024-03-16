@@ -16,6 +16,8 @@ namespace Candid
     using CanisterPK.testnft;
     using CanisterPK.testicrc1;
     using CanisterPK.validator;
+    using CanisterPK.flux;
+    using CanisterPK.chests;
     using Boom;
 
     using Org.BouncyCastle.Crypto.Digests;
@@ -60,6 +62,8 @@ namespace Candid
         public TestnftApiClient testnft { get; private set; }
         public Testicrc1ApiClient testicrc1{ get; private set; }
         public ValidatorApiClient Validator { get; private set; }
+        public FluxApiClient flux { get; private set; }
+        public ChestsApiClient chests { get; private set; }
 
         // Login Data
         public enum DataState { None, Loading, Ready }
@@ -364,7 +368,8 @@ namespace Candid
                 testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
                 Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                
-
+                flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));  
+                chests = new ChestsApiClient(agent, Principal.FromText("w4fdk-fiaaa-aaaap-qccgq-cai"));    
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
@@ -376,8 +381,9 @@ namespace Candid
                 CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
                 testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
-                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                
-
+                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));
+                flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));  
+                chests = new ChestsApiClient(agent, Principal.FromText("w4fdk-fiaaa-aaaap-qccgq-cai"));       
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
@@ -392,7 +398,9 @@ namespace Candid
             CanisterStats = null;
             testnft = null;              
             testicrc1 = null;
-            Validator = null;                
+            Validator = null;       
+            flux = null;  
+            chests = null;           
 
             
             //Set Login Data

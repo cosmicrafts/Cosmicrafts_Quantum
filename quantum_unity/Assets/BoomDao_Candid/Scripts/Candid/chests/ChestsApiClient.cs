@@ -2,14 +2,14 @@ using EdjCase.ICP.Agent.Agents;
 using EdjCase.ICP.Candid.Models;
 using EdjCase.ICP.Candid;
 using System.Threading.Tasks;
-using CanisterPK.testnft;
+using CanisterPK.chests;
 using EdjCase.ICP.Agent.Responses;
 using System.Collections.Generic;
 using TokenId = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
-namespace CanisterPK.testnft
+namespace CanisterPK.chests
 {
-	public class TestnftApiClient
+	public class ChestsApiClient
 	{
 		public IAgent Agent { get; }
 
@@ -17,7 +17,7 @@ namespace CanisterPK.testnft
 
 		public CandidConverter? Converter { get; }
 
-		public TestnftApiClient(IAgent agent, Principal canisterId, CandidConverter? converter = default)
+		public ChestsApiClient(IAgent agent, Principal canisterId, CandidConverter? converter = default)
 		{
 			this.Agent = agent;
 			this.CanisterId = canisterId;
@@ -172,18 +172,11 @@ namespace CanisterPK.testnft
 			return reply.ToObjects<Models.MintReceipt>(this.Converter);
 		}
 
-		public async Task<Models.MintReceipt> MintDeck(List<Models.MintArgs> arg0)
+		public async Task<Models.OpenReceipt> OpenChest(Models.OpenArgs arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintDeck", arg);
-			return reply.ToObjects<Models.MintReceipt>(this.Converter);
-		}
-
-		public async Task<Models.UpgradeReceipt> UpgradeNFT(Models.UpgradeArgs arg0)
-		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "upgradeNFT", arg);
-			return reply.ToObjects<Models.UpgradeReceipt>(this.Converter);
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "openChest", arg);
+			return reply.ToObjects<Models.OpenReceipt>(this.Converter);
 		}
 	}
 }
