@@ -10,7 +10,7 @@ public class NFTUpgradeUI : MonoBehaviour
 {
     public Button upgradeButton;
     public TMP_Text notificationText;
-    public NFTDisplay nftDisplay;
+    public NFTCard nftCard;
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class NFTUpgradeUI : MonoBehaviour
 
     private async void OnUpgradeButtonPressed()
     {
-        string tokenIdToUpgrade = nftDisplay.TokenId;
+        string tokenIdToUpgrade = nftCard.TokenId;
         if (string.IsNullOrEmpty(tokenIdToUpgrade))
         {
             Debug.LogError("Token ID is empty.");

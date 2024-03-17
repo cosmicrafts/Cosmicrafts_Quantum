@@ -12,7 +12,7 @@ public class NFTTransferUI : MonoBehaviour
     public Button transferButton;
     public TMP_Text notificationText;
     public NFTManager nftManager;
-    public NFTDisplay nftDisplay;
+    public NFTCard nftCard;
 
     private void Start()
     {
@@ -21,7 +21,7 @@ public class NFTTransferUI : MonoBehaviour
 
     public async void OnTransferButtonPressed()
     {
-        string tokenIdToTransfer = nftDisplay.TokenId;
+        string tokenIdToTransfer = nftCard.TokenId;
         if (string.IsNullOrEmpty(recipientPrincipalInput.text) || string.IsNullOrEmpty(tokenIdToTransfer))
         {
             Debug.LogError("Recipient Principal or Token ID is empty.");
