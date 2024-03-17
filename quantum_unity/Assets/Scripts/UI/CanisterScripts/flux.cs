@@ -22,6 +22,17 @@ public class flux : MonoBehaviour
         FetchBalance();
     }
 
+    private void OnEnable()
+{
+    BalanceManager.OnBalanceUpdateNeeded += FetchBalance;
+}
+
+private void OnDisable()
+{
+    BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
+}
+
+
     public async void FetchBalance()
     {
         string principalId = GlobalGameData.Instance.GetUserData().WalletId;
@@ -43,8 +54,9 @@ public class flux : MonoBehaviour
 
     private string FormatBalance(UnboundedUInt balance)
     {
-        string balanceString = balance.ToString().PadLeft(DECIMAL_PLACES + 1, '0'); // Add one to account for the integer part
-        return balanceString.Substring(0, balanceString.Length - DECIMAL_PLACES);
+       // string balanceString = balance.ToString().PadLeft(DECIMAL_PLACES + 1, '0'); // Add one to account for the integer part
+      //  return balanceString.Substring(0, balanceString.Length - DECIMAL_PLACES);
+      return balance.ToString();
     }
 
 
@@ -66,7 +78,8 @@ public class flux : MonoBehaviour
     private BigInteger ConvertToBigInteger(decimal value)
     {
         // Scale the decimal value to the appropriate number of decimal places and convert to BigInteger
-        return new BigInteger(value * (decimal)Math.Pow(10, DECIMAL_PLACES));
+       // return new BigInteger(value * (decimal)Math.Pow(10, DECIMAL_PLACES));
+       return BigInteger.Parse(value.ToString());
     }
 
     public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)

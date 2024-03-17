@@ -67,6 +67,10 @@ public class ChestManager : MonoBehaviour
     {
         GameObject instance = Instantiate(chestPrefab, chestDisplayContainer);
         instance.SetActive(true);
+
+        // Add a component to store the token ID
+        ChestTokenStorage tokenStorage = instance.AddComponent<ChestTokenStorage>(); 
+        tokenStorage.tokenId = tokenId;
     }
 
     private async Task<List<UnboundedUInt>> GetOwnedChestTokens(Account account) // Renamed for clarity
