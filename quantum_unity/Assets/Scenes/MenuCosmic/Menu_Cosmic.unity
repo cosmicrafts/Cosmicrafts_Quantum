@@ -1150,6 +1150,46 @@ PrefabInstance:
       propertyPath: notificationText
       value: 
       objectReference: {fileID: 269951989}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1595423158}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6575963185779033880, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27ebfd1302b4aaa40ae3dc51339bce7c, type: 3}
 --- !u!224 &25433490 stripped
@@ -53918,7 +53958,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1595423159}
-  - component: {fileID: 1595423160}
   - component: {fileID: 1595423161}
   m_Layer: 5
   m_Name: RewardScreen
@@ -53949,22 +53988,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!111 &1595423160
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1595423158}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations:
-  - {fileID: 7400000, guid: 006555931e55fe34fa9e052346ad5248, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!114 &1595423161
 MonoBehaviour:
   m_ObjectHideFlags: 0

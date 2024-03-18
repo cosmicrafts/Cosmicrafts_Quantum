@@ -13,10 +13,10 @@ public class ChestManager : MonoBehaviour
 {
     public static ChestManager Instance { get; private set; } 
 
-    public TMP_Text ownedChestsText; // Replace 'nftListText' with something chest-related
+    public TMP_Text ownedChestsText;
     public GameObject chestPrefab; 
     public ChestDisplay chestDisplay;
-    public Transform chestDisplayContainer; // Renamed from 'nftDisplayContainer' 
+    public Transform chestDisplayContainer;
 
     private void Awake()
     {
@@ -32,7 +32,7 @@ public class ChestManager : MonoBehaviour
 
     async void Start()
     {
-        chestPrefab.SetActive(false); // Deactivate prefab at start 
+        chestPrefab.SetActive(false);
         await FetchOwnedChests();
     }
 
