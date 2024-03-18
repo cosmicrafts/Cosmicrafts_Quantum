@@ -7,7 +7,6 @@ public class RewardScreenUI : MonoBehaviour
 {
     public Image displayImage; // Make sure to assign this in the Inspector
     public Button tapTarget; // The button on the image for fake tap
-    public GameObject loadingScreen; // Assign in Inspector
 
     public UnityEvent onActivateRewardScreen = new UnityEvent();
 
@@ -37,7 +36,7 @@ public class RewardScreenUI : MonoBehaviour
     private void HandleTapToOpen()
     {
         // Show loading screen and await chest opening confirmation
-        loadingScreen.SetActive(true);
+        LoadingPanel.Instance.ActiveLoadingPanel();
         // Add logic to wait for the chest to actually open if necessary.
     }
 
@@ -48,7 +47,7 @@ public class RewardScreenUI : MonoBehaviour
 
     public void OnChestOpened()
     {
-        loadingScreen.SetActive(false);
+        LoadingPanel.Instance.DesactiveLoadingPanel();
         // Optionally, show rewards here or close the reward screen
     }
 }
