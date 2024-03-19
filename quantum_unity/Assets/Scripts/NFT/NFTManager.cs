@@ -18,6 +18,7 @@ public class NFTManager : MonoBehaviour
     
     public List<NFTData> AllNFTDatas = null;
     
+    
     private void Awake()
     {
         if (Instance != null && Instance != this) 

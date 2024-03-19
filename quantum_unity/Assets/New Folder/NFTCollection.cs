@@ -26,13 +26,21 @@ public class NFTCollection : MonoBehaviour
     
     public List<NFTData> AllNFTDatas = null;
     
+    [Serializable]
+    public class SavedKeys
+    {
+        public List<string> listSavedKeys = new List<string>();
+    }
   
     //Updates the UI collection with the current data and filters
     public void RefreshCollection()
     {
-        
-        if (AllNFTDatas == null) { return; }
-        
+
+        if (AllNFTDatas == null)
+        {
+            return;
+        }
+
         //Clean the collection section
         foreach (Transform child in NftCardPrefab.transform.parent)
         {
@@ -41,31 +49,41 @@ public class NFTCollection : MonoBehaviour
                 Destroy(child.gameObject);
             }
         }
-        
-        List<String> listSavedKeys = new List<string>();
-        
-        if (PlayerPrefs.HasKey("savedList"))
+
+        SavedKeys savedKeys = new SavedKeys();
+
+        Debug.Log("RefreshCollection");
+        Debug.Log(PlayerPrefs.GetString("savedKeys"));
+
+        if (PlayerPrefs.HasKey("savedKeys"))
         {
-            listSavedKeys = JsonUtility.FromJson<List<string>>(PlayerPrefs.GetString("savedList"));
-            Debug.Log(JsonUtility.ToJson(listSavedKeys));
-        }
-        
-        if (!PlayerPrefs.HasKey("savedList") || listSavedKeys.Count < 6 ||
-            !listSavedKeys.All(savedKey => AllNFTDatas.Any(nftData => nftData.TokenId == savedKey)))
-        {
-            listSavedKeys = AllNFTDatas.Take(6).Select(nft => nft.TokenId).ToList();
+            savedKeys = JsonUtility.FromJson<SavedKeys>(PlayerPrefs.GetString("savedKeys"));
+
+            foreach (string key in savedKeys.listSavedKeys)
+            {
+                Debug.Log(key);
+            }
         }
 
-        Debug.Log(JsonUtility.ToJson(listSavedKeys));
-        
-        for (int i = 0; i < listSavedKeys.Count; i++)
+        if (!PlayerPrefs.HasKey("savedKeys") || savedKeys.listSavedKeys.Count < 6 ||
+            !savedKeys.listSavedKeys.All(savedKey => AllNFTDatas.Any(nftData => nftData.TokenId == savedKey)))
         {
-            Deck[i].SetNFTData( AllNFTDatas.Find(nftData => nftData.TokenId == listSavedKeys[i] ) );
+            savedKeys.listSavedKeys = AllNFTDatas.Take(6).Select(nft => nft.TokenId).ToList();
+        }
+
+        foreach (string key in savedKeys.listSavedKeys)
+        {
+            Debug.Log(key);
+        }
+
+        for (int i = 0; i < savedKeys.listSavedKeys.Count; i++)
+        {
+            Deck[i].SetNFTData( AllNFTDatas.Find(nftData => nftData.TokenId == savedKeys.listSavedKeys[i] ) );
         }
         
         foreach (NFTData nftData in AllNFTDatas)
         {
-            if (listSavedKeys.Contains(nftData.TokenId)) { continue; }
+            if (savedKeys.listSavedKeys.Contains(nftData.TokenId)) { continue; }
             
             NFTCard card = Instantiate(NftCardPrefab.gameObject, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
             card.SetNFTData(nftData);
@@ -118,8 +136,7 @@ public class NFTCollection : MonoBehaviour
             NFTData todeck = DragingCard.nftData;
             NFTData tocol = EnterCard.nftData;
             
-         
-            Deck[EnterCard.DeckSlot] = DragingCard;
+            //Deck[EnterCard.DeckSlot] = DragingCard;
 
             EnterCard.SetNFTData(todeck);
             EnterCard.animator.Play("DeckChange", -1, 0f);
@@ -133,15 +150,15 @@ public class NFTCollection : MonoBehaviour
         DragingCard.iconImage.enabled = true;
         DragingCard = null;
         DragIcon.gameObject.SetActive(false);
-
-        List<String> listSavedKeys = new List<string>();
-
+        
+        SavedKeys savedKeys = new SavedKeys();
+        
         for (int i = 0; i < Deck.Length; i++) {
-            listSavedKeys.Add( Deck[i].TokenId );
+            savedKeys.listSavedKeys.Add( Deck[i].TokenId );
         }
         
-        PlayerPrefs.SetString("savedList", JsonUtility.ToJson(listSavedKeys));
-        Debug.Log(JsonUtility.ToJson(listSavedKeys));
+        PlayerPrefs.SetString("savedKeys", JsonUtility.ToJson(savedKeys));
+        Debug.Log(JsonUtility.ToJson(savedKeys));
     }
 
     //Mouse over enter to deck
