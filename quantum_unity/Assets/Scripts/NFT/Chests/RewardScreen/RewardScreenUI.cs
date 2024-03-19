@@ -18,13 +18,15 @@ public class RewardScreenUI : MonoBehaviour
 
     private void ActivateRewardScreen()
     {
-        gameObject.SetActive(true); // Activate the reward screen
+        gameObject.SetActive(true);
+        tapTarget.gameObject.SetActive(true);
     }
 
     public void SetImage(Sprite chestSprite)
     {
         if (displayImage != null)
         {
+            Debug.Log("Setting new sprite on reward screen.");
             displayImage.sprite = chestSprite;
         }
         else
@@ -33,11 +35,30 @@ public class RewardScreenUI : MonoBehaviour
         }
     }
 
+
     private void HandleTapToOpen()
     {
         // Show loading screen and await chest opening confirmation
         LoadingPanel.Instance.ActiveLoadingPanel();
         // Add logic to wait for the chest to actually open if necessary.
+        StartCoroutine(DeactivateAfterDelay(1f));
+    }
+
+    private IEnumerator DeactivateAfterDelay(float delay)
+    {
+        // Wait for the specified delay duration
+        yield return new WaitForSeconds(delay);
+
+        // Deactivate the game object here
+        Image tapTargetImage = tapTarget.GetComponent<Image>();
+        if (tapTargetImage != null)
+        {
+            tapTargetImage.color = new Color(tapTargetImage.color.r, tapTargetImage.color.g, tapTargetImage.color.b, 1f);
+            tapTargetImage.rectTransform.localScale = new Vector3(1, 1, 1);
+            tapTargetImage.rectTransform.offsetMin = new Vector2(0, 0);
+            tapTargetImage.rectTransform.offsetMax = new Vector2(0, 0);
+        }
+        tapTarget.gameObject.SetActive(false);
     }
 
     public void CloseRewardScreen()
@@ -45,9 +66,9 @@ public class RewardScreenUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OnChestOpened()
+    public void OnChestOpenedSuccessfully()
     {
         LoadingPanel.Instance.DesactiveLoadingPanel();
-        // Optionally, show rewards here or close the reward screen
+        gameObject.SetActive(false);
     }
 }

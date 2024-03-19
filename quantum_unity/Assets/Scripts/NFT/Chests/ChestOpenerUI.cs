@@ -65,6 +65,8 @@ public class ChestOpenerUI : MonoBehaviour
             Debug.Log("Chest opened successfully!");
             notificationText.text = "Chest opened: " + message;
 
+            rewardScreenUI.OnChestOpenedSuccessfully();
+
             // Remove the chest prefab
             Destroy(gameObject);
 
