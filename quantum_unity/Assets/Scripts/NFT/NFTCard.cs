@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using System.Linq;
@@ -6,6 +7,8 @@ using System.Collections.Generic;
 
 public class NFTCard : MonoBehaviour
 {
+    public Sprite[] icons;
+    
     [HideInInspector]
     public bool IsSelected;
     public int DeckSlot;
@@ -37,8 +40,9 @@ public class NFTCard : MonoBehaviour
         var general = nftData.General.FirstOrDefault();
         if (general != null)
         {
-            unitNameText.text = general.Name;
-            iconImage.sprite = GetIconSpriteById(general.Icon);
+            unitNameText.text = tokenId;//general.Name;
+            Debug.Log(int.Parse(tokenId) % 10);
+            iconImage.sprite = GetIconSpriteById( int.Parse(tokenId) % 10 );
         }
         levelText.text = GetValueFromStats("level");
     }
@@ -50,8 +54,7 @@ public class NFTCard : MonoBehaviour
     }
     public Sprite GetIconSpriteById(int iconId)
     {
-        // Your logic to convert iconId to Sprite
-        return iconImage.sprite;
+        return icons[iconId];
     }
     
     

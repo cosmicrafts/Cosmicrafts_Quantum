@@ -41,19 +41,22 @@ public class NFTCollection : MonoBehaviour
                 Destroy(child.gameObject);
             }
         }
-
+        
         List<String> listSavedKeys = new List<string>();
         
         if (PlayerPrefs.HasKey("savedList"))
         {
             listSavedKeys = JsonUtility.FromJson<List<string>>(PlayerPrefs.GetString("savedList"));
+            Debug.Log(JsonUtility.ToJson(listSavedKeys));
         }
         
-        if (!PlayerPrefs.HasKey("savedList") || !listSavedKeys.All(savedKey => AllNFTDatas.Any(nftData => nftData.TokenId == savedKey)))
+        if (!PlayerPrefs.HasKey("savedList") || listSavedKeys.Count < 6 ||
+            !listSavedKeys.All(savedKey => AllNFTDatas.Any(nftData => nftData.TokenId == savedKey)))
         {
             listSavedKeys = AllNFTDatas.Take(6).Select(nft => nft.TokenId).ToList();
         }
 
+        Debug.Log(JsonUtility.ToJson(listSavedKeys));
         
         for (int i = 0; i < listSavedKeys.Count; i++)
         {
@@ -81,6 +84,7 @@ public class NFTCollection : MonoBehaviour
     //Selects a card
     public void SelectCard(NFTCard card)
     {
+        Debug.Log("Select");
         if (card.DeckSlot == -1 && EnterCard != null)
         {
             return;
@@ -98,6 +102,7 @@ public class NFTCollection : MonoBehaviour
     //Drags a card
     public void DragCard(NFTCard card)
     {
+        Debug.Log("Drag");
         DragingCard = card;
         DragIcon.gameObject.SetActive(true);
         DragIcon.Icon.sprite = card.iconImage.sprite;
@@ -107,19 +112,24 @@ public class NFTCollection : MonoBehaviour
     //Drops a card
     public void DropCard()
     {
+        Debug.Log("Drop 1 ");
         if (EnterCard!= null && DragingCard != null)
         {
-            NFTCard todeck = DragingCard;
-            NFTCard tocol = EnterCard;
+            NFTData todeck = DragingCard.nftData;
+            NFTData tocol = EnterCard.nftData;
             
-            Deck[EnterCard.DeckSlot] = todeck;
+         
+            Deck[EnterCard.DeckSlot] = DragingCard;
 
-            EnterCard.SetNFTData(todeck.nftData);
+            EnterCard.SetNFTData(todeck);
             EnterCard.animator.Play("DeckChange", -1, 0f);
-            DragingCard.SetNFTData(tocol.nftData);
+           
+            DragingCard.SetNFTData(tocol);
             DragingCard.animator.Play("DeckChange", -1, 0f);
+         
         }
        
+        Debug.Log("Drop8");
         DragingCard.iconImage.enabled = true;
         DragingCard = null;
         DragIcon.gameObject.SetActive(false);
@@ -135,9 +145,14 @@ public class NFTCollection : MonoBehaviour
     }
 
     //Mouse over enter to deck
-    public void DeckEnterDrop(NFTCard card) { EnterCard = card; }
+    public void DeckEnterDrop(NFTCard card) { EnterCard = card;
+        Debug.Log("Entro");}
     //Mouse over exit from deck
-    public void ClearEnterDrop(NFTCard card) { EnterCard = null; }
+    public void ClearEnterDrop(NFTCard card)
+    {
+        EnterCard = null; 
+        Debug.Log("Salio");
+    }
 
     
 }
