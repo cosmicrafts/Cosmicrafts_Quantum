@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System;
 using System.Numerics;
 
-public class icrc1token : MonoBehaviour
+public class shards : MonoBehaviour
 {
     public TMP_Text balanceText;
     public TMP_InputField principalInputField;
