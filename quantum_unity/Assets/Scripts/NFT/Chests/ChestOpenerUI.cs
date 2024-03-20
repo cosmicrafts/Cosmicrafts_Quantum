@@ -15,12 +15,6 @@ public class ChestOpenerUI : MonoBehaviour
     public GameObject rewardScreen;
     public Image chestImage;
     public RewardScreenUI rewardScreenUI;
-    private bool rewardsFetched = false;
-    private bool userHasInteracted = false;
-    public bool AreRewardsFetched() => rewardsFetched;
-    public bool UserHasInteracted() => userHasInteracted;
-
-    
 
     private void Start()
     {
@@ -71,19 +65,15 @@ public class ChestOpenerUI : MonoBehaviour
 
             if (success)
             {
-                rewardsFetched = true;
                 Debug.Log("[ChestOpenerUI] Chest opened successfully. Rewards fetched set to true.");
 
                 notificationText.text = "Chest opened: " + message;
 
                 rewardScreenUI.HandleRewardMessage(message);
+
                 rewardScreenUI.OnChestOpenedSuccessfully();
 
-                // Remove the chest prefab
                 Destroy(gameObject);
-
-                // Trigger balance updates
-            //  BalanceManager.UpdateBalances();
             }
             else
             {
@@ -97,36 +87,4 @@ public class ChestOpenerUI : MonoBehaviour
             notificationText.text = $"Exception during chest opening: {ex.Message}";
         }
     }
-
-    private string ExtractValueFromSegment(string segment, string key)
-    {
-        // Finding the key in the segment
-        int keyIndex = segment.IndexOf($"\"{key}\":") + key.Length + 3;
-        int endIndex = segment.IndexOf(",", keyIndex);
-        if (endIndex == -1) // If it's the last key-value pair in the segment
-        {
-            endIndex = segment.IndexOf("}", keyIndex);
-        }
-
-        // Extracting and returning the value
-        string value = segment.Substring(keyIndex, endIndex - keyIndex).Replace("\"", "").Trim();
-        return value;
-    }
-
-    public void UserInteracted()
-        {
-            userHasInteracted = true;
-            Debug.Log("User interaction recorded. Set to true");
-            if (rewardsFetched)
-            {
-                rewardScreenUI.ShowRewardsUI();
-            }
-        }
-
-    public void ResetFlags()
-        {
-            rewardsFetched = false;
-            userHasInteracted = false;
-            Debug.Log("[ChestOpenerUI] Flags reset for the next interaction.");
-        }
 }

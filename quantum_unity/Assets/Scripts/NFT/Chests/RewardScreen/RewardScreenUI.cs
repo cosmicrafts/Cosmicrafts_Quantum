@@ -41,32 +41,21 @@ public class RewardScreenUI : MonoBehaviour
 
     private void HandleTapToOpen()
     {
-        chestOpenerUI.UserInteracted();
-        if (!chestOpenerUI.AreRewardsFetched())
-        {
-            LoadingPanel.Instance.ActiveLoadingPanel();
-        }
-        else
-        {
-            ShowRewardsUI(); // Directly show rewards if already fetched
-        }
+        LoadingPanel.Instance.ActiveLoadingPanel();
         StartCoroutine(DeactivateAfterDelay(1f));
     }
 
     public void OnChestOpenedSuccessfully()
     {
         LoadingPanel.Instance.DesactiveLoadingPanel();
-        if (chestOpenerUI.UserHasInteracted())
-        {
-            ShowRewardsUI();
-        }
+        StartCoroutine(DeactivateAfterDelay(0f));
+        ShowRewardsUI();
     }
 
     public void ShowRewardsUI()
     {
         rewardsPanel.gameObject.SetActive(true);
         rewardsContainer.gameObject.SetActive(true);
-        chestOpenerUI.ResetFlags();
         Debug.Log("Rewards shown, resetting status for next interaction.");
     }
 
@@ -129,12 +118,28 @@ public class RewardScreenUI : MonoBehaviour
                         ShardsScript.FetchBalance(); // Similarly for shards
                     }
 
-                    // Destroy the prefab instance after clicking
-                    Destroy(rewardInstance);
+                    // Play the animation associated with the reward
+                    Animator animator = rewardInstance.GetComponent<Animator>();
+                    if (animator != null)
+                    {
+                        animator.Play("notnew");
+                    }
+
+                    // Optionally, wait for the animation to finish before destroying the instance
+                    float animationDuration = animator.GetCurrentAnimatorStateInfo(0).length;
+                    StartCoroutine(DestroyAfterAnimation(rewardInstance, animationDuration));
+                
                 });
             }
         }
     }
+    
+    IEnumerator DestroyAfterAnimation(GameObject instance, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(instance);
+    }
+
 
     public void HandleRewardMessage(string message)
     {
