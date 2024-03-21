@@ -42,10 +42,16 @@ public class TokenAnimation : MonoBehaviour
             tokens.Add(token);
             RectTransform tokenRect = token.GetComponent<RectTransform>();
 
-            Image tokenImage = token.GetComponent<Image>();
-            if (sourceImage != null && tokenImage != null)
+            // Find the child object by name and get the Image component from it.
+            // Replace "ChildName" with the actual name of your child object.
+            Transform childTransform = token.transform.Find("Image");
+            if (childTransform != null)
             {
-                tokenImage.sprite = sourceImage.sprite;
+                Image tokenChildImage = childTransform.GetComponent<Image>();
+                if (sourceImage != null && tokenChildImage != null)
+                {
+                    tokenChildImage.sprite = sourceImage.sprite;
+                }
             }
 
             // Convert start and end points to canvas space

@@ -19,6 +19,10 @@ public class RewardScreenUI : MonoBehaviour
     public flux FluxScript;
     public shards ShardsScript;
     public ChestOpenerUI chestOpenerUI;
+    private int activeRewardsCount = 0;
+    public DeactivationAnim deactivationAnimScript;
+
+
 
     private void Awake()
     {
@@ -96,6 +100,8 @@ public class RewardScreenUI : MonoBehaviour
         GameObject rewardInstance = Instantiate(rewardPrefab, rewardsContainer);
         // Ensure the instantiated prefab is active in case the original prefab was inactive.
         rewardInstance.SetActive(true);
+        // Increment the active rewards count
+        activeRewardsCount++;
 
         RewardPrefabScript rewardScript = rewardInstance.GetComponent<RewardPrefabScript>();
         if (rewardScript != null)
@@ -128,9 +134,28 @@ public class RewardScreenUI : MonoBehaviour
                     // Optionally, wait for the animation to finish before destroying the instance
                     float animationDuration = animator.GetCurrentAnimatorStateInfo(0).length;
                     StartCoroutine(DestroyAfterAnimation(rewardInstance, animationDuration));
+
+                    activeRewardsCount--;
+                    if (activeRewardsCount <= 0)
+                    {
+                        StartCoroutine(StartDeactivationWithDelay(0.5f));
+                    }
                 
                 });
             }
+        }
+    }
+
+    IEnumerator StartDeactivationWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if(deactivationAnimScript != null)
+        {
+            deactivationAnimScript.StartDeactivation();
+        }
+        else
+        {
+            Debug.LogError("DeactivationAnim script not assigned.");
         }
     }
     
