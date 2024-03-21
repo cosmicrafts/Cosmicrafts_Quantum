@@ -21,6 +21,7 @@ public class RewardScreenUI : MonoBehaviour
     public ChestOpenerUI chestOpenerUI;
     private int activeRewardsCount = 0;
     public DeactivationAnim deactivationAnimScript;
+    public Animator chestAnimator;
 
 
 
@@ -46,13 +47,12 @@ public class RewardScreenUI : MonoBehaviour
     private void HandleTapToOpen()
     {
         LoadingPanel.Instance.ActiveLoadingPanel();
-        StartCoroutine(DeactivateAfterDelay(1f));
     }
 
     public void OnChestOpenedSuccessfully()
     {
         LoadingPanel.Instance.DesactiveLoadingPanel();
-        StartCoroutine(DeactivateAfterDelay(0f));
+        StartCoroutine(DeactivateAfterDelay(.35f));
         ShowRewardsUI();
     }
 
@@ -65,6 +65,11 @@ public class RewardScreenUI : MonoBehaviour
 
     private IEnumerator DeactivateAfterDelay(float delay)
     {
+        if (chestAnimator != null)
+        {
+            chestAnimator.Play("ChestClose");
+        }
+
         yield return new WaitForSeconds(delay);
 
         // Deactivate the game object here
