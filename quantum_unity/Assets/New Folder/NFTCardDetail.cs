@@ -9,6 +9,17 @@ using UnityEngine.UI;
  */
 public class NFTCardDetail : NFTCard
 {
+    [Header("CardDetailSlots")]
+    public TMP_Text descriptionText;
+    public TMP_Text unitClassText;
+    public TMP_Text rarityText;
+    public TMP_Text healthText;
+    public TMP_Text damageText;
+    public TMP_Text skillsText;
+    public TMP_Text skinsText;
+    public TMP_Text tokenIdText;
+
+    [Header("ModelRender")]
     //References the object model of the selected card
     public GameObject Model;
     //References the mesh renderer model of the selected card
@@ -16,6 +27,7 @@ public class NFTCardDetail : NFTCard
     //References the mesh filter model of the selected card
     public MeshFilter ModelFilter;
 
+    /*
     //The text references of specific card stats
     public TMP_Text Txt_HP;
     public TMP_Text Txt_Shield;
@@ -25,16 +37,9 @@ public class NFTCardDetail : NFTCard
     public Image Bar_HP;
     public Image Bar_Shield;
     public Image Bar_Dmg;
+    */
     
     
-    public TMP_Text descriptionText;
-    public TMP_Text unitClassText;
-    public TMP_Text rarityText;
-    public TMP_Text healthText;
-    public TMP_Text damageText;
-    public TMP_Text skillsText;
-    public TMP_Text skinsText;
-    public TMP_Text tokenIdText;
     
 
     //The particles reference for skills cards
