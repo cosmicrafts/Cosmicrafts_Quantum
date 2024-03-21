@@ -16,7 +16,7 @@ public class NFTData : ScriptableObject
     {
         var clone = ScriptableObject.CreateInstance<NFTData>();
         clone.BasicStats = this.BasicStats.ConvertAll(stat => new BasicStat { StatName = stat.StatName, StatValue = stat.StatValue });
-        clone.General = this.General.ConvertAll(info => new GeneralInfo { Class = info.Class, Rarity = info.Rarity, Faction = info.Faction, Name = info.Name, Description = info.Description, Icon = info.Icon, SkinsText = info.SkinsText });
+        clone.General = this.General.ConvertAll(info => new GeneralInfo { UnitId = info.UnitId, Class = info.Class, Rarity = info.Rarity, Faction = info.Faction, Name = info.Name, Description = info.Description, Icon = info.Icon, SkinsText = info.SkinsText });
         clone.Skills = this.Skills.ConvertAll(skill => new Skill { SkillName = skill.SkillName, SkillValue = skill.SkillValue });
         clone.Skins = this.Skins.ConvertAll(skin => new Skin { SkinId = skin.SkinId, SkinName = skin.SkinName, SkinDescription = skin.SkinDescription, SkinIcon = skin.SkinIcon, SkinRarity = skin.SkinRarity });
 
@@ -37,6 +37,7 @@ public class BasicStat
 
 public class GeneralInfo
 {
+    public int UnitId { get; set; }
     public string Class { get; set; }
     public int Rarity { get; set; }
     public string Faction { get; set; }
@@ -48,6 +49,7 @@ public class GeneralInfo
     {
         return new GeneralInfo
         {
+            UnitId = this.UnitId,
             Class = this.Class,
             Rarity = this.Rarity,
             Faction = this.Faction,

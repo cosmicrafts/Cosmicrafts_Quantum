@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EdjCase.ICP.Candid.Models;
 using CanisterPK.testnft.Models;
+using UnityEngine;
 
 public static class NFTMetadataParser
 {
@@ -49,6 +50,10 @@ public static class NFTMetadataParser
         {
             switch (item.Key)
             {
+                case "unit_id":
+                    generalInfo.UnitId = (int)item.Value.AsNat();
+                    Debug.Log((int)item.Value.AsNat() );
+                    break;
                 case "class":
                     generalInfo.Class = item.Value.AsText();
                     break;

@@ -38,9 +38,13 @@ public class NFTCard : MonoBehaviour
         }
 
         var general = nftData.General.FirstOrDefault();
+
+        Debug.Log(nftData.General.Count);
+        
         if (general != null)
         {
-            unitNameText.text = tokenId;//general.Name;
+            unitNameText.text = tokenId + ":" + general.UnitId.ToString() ;//general.Name;
+            Debug.Log(general.Class +""+ general.UnitId.ToString() );
             Debug.Log(int.Parse(tokenId) % 10);
             iconImage.sprite = GetIconSpriteById( int.Parse(tokenId) % 10 );
         }
