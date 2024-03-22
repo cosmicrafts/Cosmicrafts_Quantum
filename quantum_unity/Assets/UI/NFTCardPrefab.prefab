@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0.0000038146973, y: 0.000015258789}
-  m_SizeDelta: {x: 29.6104, y: 29.4162}
+  m_SizeDelta: {x: 35.278, y: 35.0469}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2560668490034282400
 CanvasRenderer:
@@ -67,7 +67,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8040c94edc53de74aab0fe4d1e1be3d5, type: 3}
+  m_Sprite: {fileID: -7813611246368878555, guid: a4d3fbb85fedd6e4a8de281035b674f8,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -324,17 +325,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 18.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 14
-  m_fontSizeMax: 18
-  m_fontStyle: 0
+  m_fontSizeMax: 28
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -8
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -463,17 +464,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 101aa9a74e27bcb4a9c4022b75e6e705, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icons:
-  - {fileID: 21300000, guid: 1a8f3a76f155f994c85641a769b65adc, type: 3}
-  - {fileID: 21300000, guid: 2c217e7a52fac424a8db0a985e951a92, type: 3}
-  - {fileID: 21300000, guid: b006333c27271594eaee4ffd86c128f9, type: 3}
-  - {fileID: 21300000, guid: 647a921aa174b4049afe946fe81c3421, type: 3}
-  - {fileID: 21300000, guid: 2d340834f443d9146b2f072f56bf5216, type: 3}
-  - {fileID: 21300000, guid: 22dec80c0b9293546bdbf1402598136f, type: 3}
-  - {fileID: 21300000, guid: 20bfba8aa98b8be40916482e3e1c60a6, type: 3}
-  - {fileID: 21300000, guid: c80fe5e9488bc28499cd105d837ea695, type: 3}
-  - {fileID: 21300000, guid: dc60918a8a72ecc449348b6142036835, type: 3}
-  - {fileID: 21300000, guid: 8d9bdf383aad9e541a35bc3e1603d8e5, type: 3}
   IsSelected: 0
   DeckSlot: -1
   animator: {fileID: 3325991309267906675}
@@ -915,17 +905,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.2
+  m_fontSize: 31.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 14
-  m_fontSizeMax: 42
-  m_fontStyle: 0
+  m_fontSizeMax: 32
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -8
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
