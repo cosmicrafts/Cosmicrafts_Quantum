@@ -19,7 +19,6 @@ public class flux : MonoBehaviour
     public TMP_Text transferStatusText; 
     public Animator TokenPanel;
 
-
     private const int DECIMAL_PLACES = 6;
     void Start()
     {
@@ -37,7 +36,6 @@ private void OnDisable()
 {
     BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
 }
-
 
     public async void FetchBalance()
     {
@@ -98,43 +96,43 @@ private void OnDisable()
     }
 
     public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
+{
+    try
     {
-        try
+        var fee = await CandidApiManager.Instance.flux.Icrc1Fee();
+
+        var transfer = new CanisterPK.flux.Models.TransferArgs(
+            tokenAmount, // Use the actual tokenAmount here
+            null,
+            new OptionalValue<UnboundedUInt>(fee),
+            null,
+            null,
+            new Account(Principal.FromText(recipientPrincipalId), null)
+        );
+
+        var transferResult = await CandidApiManager.Instance.flux.Icrc1Transfer(transfer);
+
+        // Update status text based on transfer result
+        if (transferResult.Tag == TransferResultTag.Err)
         {
-            var fee = await CandidApiManager.Instance.flux.Icrc1Fee();
-
-            var transfer = new CanisterPK.flux.Models.TransferArgs(
-                UnboundedUInt.FromBigInteger(1),
-                null,
-                new OptionalValue<UnboundedUInt>(fee),
-                null,
-                null,
-                new Account(Principal.FromText(recipientPrincipalId), null)
-            );
-
-            var transferResult = await CandidApiManager.Instance.flux.Icrc1Transfer(transfer);
-
-            // Update status text based on transfer result
-            if (transferResult.Tag == TransferResultTag.Err)
-            {
-                SetTransferStatus("Transfer failed");
-                Debug.LogError(JsonUtility.ToJson(transferResult.Value));
-            }
-            else
-            {
-                SetTransferStatus("Transfer successful");
-                Debug.Log("Transfer successful");
-            }
-
-            // Update balance after transfer
-            FetchBalance();
+            SetTransferStatus("Transfer failed");
+            Debug.LogError(JsonUtility.ToJson(transferResult.Value));
         }
-        catch (Exception ex)
+        else
         {
-            SetTransferStatus($"Failed to send tokens: {ex.Message}");
-            Debug.LogError($"Failed to send tokens: {ex.Message}");
+            SetTransferStatus("Transfer successful");
+            Debug.Log("Transfer successful");
         }
+
+        // Update balance after transfer
+        FetchBalance();
     }
+    catch (Exception ex)
+    {
+        SetTransferStatus($"Failed to send tokens: {ex.Message}");
+        Debug.LogError($"Failed to send tokens: {ex.Message}");
+    }
+}
 
     private void SetTransferStatus(string status)
     {

@@ -96,43 +96,44 @@ private void OnDisable()
     }
 
     public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
+{
+    try
     {
-        try
+        var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
+
+        var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
+            tokenAmount, // Use the actual tokenAmount here
+            null,
+            new OptionalValue<UnboundedUInt>(fee),
+            null,
+            null,
+            new Account(Principal.FromText(recipientPrincipalId), null)
+        );
+
+        var transferResult = await CandidApiManager.Instance.testicrc1.Icrc1Transfer(transfer);
+
+        // Update status text based on transfer result
+        if (transferResult.Tag == TransferResultTag.Err)
         {
-            var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
-
-            var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
-                UnboundedUInt.FromBigInteger(1),
-                null,
-                new OptionalValue<UnboundedUInt>(fee),
-                null,
-                null,
-                new Account(Principal.FromText(recipientPrincipalId), null)
-            );
-
-            var transferResult = await CandidApiManager.Instance.testicrc1.Icrc1Transfer(transfer);
-
-            // Update status text based on transfer result
-            if (transferResult.Tag == TransferResultTag.Err)
-            {
-                SetTransferStatus("Transfer failed");
-                Debug.LogError(JsonUtility.ToJson(transferResult.Value));
-            }
-            else
-            {
-                SetTransferStatus("Transfer successful");
-                Debug.Log("Transfer successful");
-            }
-
-            // Update balance after transfer
-            FetchBalance();
+            SetTransferStatus("Transfer failed");
+            Debug.LogError(JsonUtility.ToJson(transferResult.Value));
         }
-        catch (Exception ex)
+        else
         {
-            SetTransferStatus($"Failed to send tokens: {ex.Message}");
-            Debug.LogError($"Failed to send tokens: {ex.Message}");
+            SetTransferStatus("Transfer successful");
+            Debug.Log("Transfer successful");
         }
+
+        // Update balance after transfer
+        FetchBalance();
     }
+    catch (Exception ex)
+    {
+        SetTransferStatus($"Failed to send tokens: {ex.Message}");
+        Debug.LogError($"Failed to send tokens: {ex.Message}");
+    }
+}
+
 
     private void SetTransferStatus(string status)
     {
@@ -149,7 +150,7 @@ private void OnDisable()
 
     // Coroutine for animating the balance update
     private IEnumerator IncrementBalanceAnimation(BigInteger targetBalance) {
-    float duration = 0.75f;
+    float duration = 0.5f;
     BigInteger currentBalance;
 
     if (!BigInteger.TryParse(SanitizeText(balanceText.text), out currentBalance)) {
