@@ -89,6 +89,7 @@ public class NFTCollection : MonoBehaviour
             card.SetNFTData(nftData);
         }
         
+        PlayerPrefs.SetString("savedKeys", JsonUtility.ToJson(savedKeys));
         NftCardPrefab.gameObject.SetActive(false);
 
         /*//Select the first card

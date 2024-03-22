@@ -7,8 +7,6 @@ using System.Collections.Generic;
 
 public class NFTCard : MonoBehaviour
 {
-    public Sprite[] icons;
-    
     [HideInInspector]
     public bool IsSelected;
     public int DeckSlot;
@@ -46,7 +44,7 @@ public class NFTCard : MonoBehaviour
             unitNameText.text = tokenId + ":" + general.UnitId.ToString() ;//general.Name;
             Debug.Log(general.Class +""+ general.UnitId.ToString() );
             Debug.Log(int.Parse(tokenId) % 10);
-            iconImage.sprite = GetIconSpriteById( int.Parse(tokenId) % 10 );
+            iconImage.sprite = GetIconSpriteById( general.UnitId );
         }
         levelText.text = GetValueFromStats("level");
     }
@@ -58,7 +56,7 @@ public class NFTCard : MonoBehaviour
     }
     public Sprite GetIconSpriteById(int iconId)
     {
-        return icons[iconId];
+        return UnityDB.FindAsset<CardSettingsAsset>(NFTManager.Instance.m_GameplaySettings.Settings.AllCards[iconId].Id).Sprite;
     }
     
     

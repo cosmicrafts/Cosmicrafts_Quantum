@@ -21,8 +21,7 @@ public class StartMatch : MonoBehaviour
 
 		// PRIVATE MEMBERS
 
-		private MenuCardInfo[]                  m_Cards;
-		private DictionaryFile                  m_CardsSaveFile;
+		NFTCollection.SavedKeys savedKeys = new NFTCollection.SavedKeys();
 		
 		
 		[Header("Skills")]
@@ -37,8 +36,8 @@ public class StartMatch : MonoBehaviour
 			{
 				mapNames.Add(m_Maps[idx].name);
 			}
-
-			LoadCardSelection();
+			
+			savedKeys = JsonUtility.FromJson<NFTCollection.SavedKeys>(PlayerPrefs.GetString("savedKeys"));
 		}
 
 		
@@ -69,36 +68,39 @@ public class StartMatch : MonoBehaviour
 
 			var clientId = Game.QuantumServices.Network.UserID;
 
-			var  cards = m_Cards;
+			
 			byte level = 1;
 
 #if ENABLE_CHEAT_MANAGER
-			if (CheatManager.Instance.Cards.SafeLength() > 0)
+			/*if (CheatManager.Instance.Cards.SafeLength() > 0)
 			{
+				var  cards = m_Cards;
 				cards = CheatManager.Instance.Cards.Select(obj => new MenuCardInfo { CardSettings = obj.CardSettings, Level = obj.Level, InDeck = true }).ToArray();
-			}
+			}*/
 
 			if (CheatManager.Instance.Level > 0)
 			{
 				level = CheatManager.Instance.Level;
 			}
 #endif
-
+			
 			Game.GameplayInfo = new GameplayInfo()
 			{ 
 				ClientID       = clientId,
 				StartParams    = param,
 				SceneName      = map.Settings.Scene,
 				Level          = level,
-				Cards          = m_Cards
-									.Where(obj => obj.InDeck == true)
-									.Select(obj => new CardInfo 
-									{
-										CardSettings = obj.CardSettings,
-										Level        = obj.Level,
-										BaseHealth   = FP.FromFloat_UNSAFE(obj.Hp * (HpPorcent * 0.01f) ),
-										Damage       = FP.FromFloat_UNSAFE(obj.Dmg * (DmgPorcent * 0.01f)),
-									}).ToArray(),
+				Cards          = NFTManager.Instance.AllNFTDatas
+						.Where(nft => savedKeys.listSavedKeys.Contains(nft.TokenId))
+						.Select(nftData => new CardInfo
+						{
+							CardSettings = m_GameplaySettings.Settings.AllCards[nftData.General.FirstOrDefault().UnitId],
+							Level = 1,
+							BaseHealth = FP.FromFloat_UNSAFE(
+								nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == "health").StatValue * (HpPorcent * 0.01f)),
+							Damage = FP.FromFloat_UNSAFE(
+								nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == "damage").StatValue * (DmgPorcent * 0.01f)),
+						}).ToArray(),
 			};
 
 			
@@ -124,95 +126,6 @@ public class StartMatch : MonoBehaviour
 			match.Connected -= OnConnectedToMatch;
 		}
 
-		private void SaveCardSelection()
-		{
-			using (var stream = new MemoryStream())
-			using (var writer = new BinaryWriter(stream))
-			{
-				var count = m_Cards.Length;
-				writer.Write(count);
-
-				for (int idx = 0; idx < count; idx++)
-				{
-					var card = m_Cards[idx];
-					writer.Write(card.CardSettings.Id.Value);
-					writer.Write(card.Level);
-					writer.Write(card.InDeck);
-					writer.Write(card.Hp);
-					writer.Write(card.Dmg);
-				}
-
-
-				writer.Flush();
-
-				var data       = stream.ToArray();
-				var stringData = System.Convert.ToBase64String(data);
-
-				m_CardsSaveFile.SetString("Selection", stringData);
-				m_CardsSaveFile.Save();
-			}
-		}
-
-		private void LoadCardSelection()
-		{
-			if (m_CardsSaveFile == null)
-			{
-				m_CardsSaveFile = DictionaryFile.Load("Cards");
-			}
-
-			var stringData = m_CardsSaveFile.GetString("Selection", "");
-			if (stringData.Length == 0)
-			{
-				var allCards = m_GameplaySettings.Settings.AllCards;
-				var count    = allCards.Length;
-				m_Cards      = new MenuCardInfo[count];
-
-				for (int idx = 0; idx < count; idx++)
-				{
-					m_Cards[idx] = new MenuCardInfo
-					{
-						CardSettings = allCards[idx],
-						Level        = 1,
-						InDeck       = true,
-						Hp           = 100f,
-						Dmg          = 20f,
-					};
-				}
-
-				SaveCardSelection();
-				return;
-			}
-
-			var data = System.Convert.FromBase64String(stringData);
-
-			using (var stream = new MemoryStream(data))
-			using (var reader = new BinaryReader(stream))
-			{
-				var count = reader.ReadInt32();
-				m_Cards = new MenuCardInfo[count];
-
-				for (int idx = 0; idx < count; idx++)
-				{
-					var id     = new AssetGuid(reader.ReadInt64());
-					var level  = reader.ReadByte();
-					var inDeck = reader.ReadBoolean();
-					var hp = reader.ReadSingle();
-					var dmg = reader.ReadSingle();
-
-					if (UnityDB.FindAsset(id) != null)
-					{
-						m_Cards[idx] = new MenuCardInfo
-						{
-							CardSettings = new AssetRefCardSettings { Id = id },
-							Level        = level,
-							InDeck       = inDeck,
-							Hp           = hp, 
-							Dmg          = dmg, 
-						};
-					}
-				}
-			}
-		}
-    
+	
     
 }

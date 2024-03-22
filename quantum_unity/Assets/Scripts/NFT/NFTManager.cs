@@ -18,6 +18,7 @@ public class NFTManager : MonoBehaviour
     
     public List<NFTData> AllNFTDatas = null;
     
+    public GameplaySettingsAsset  m_GameplaySettings;
     
     private void Awake()
     {
