@@ -1,5 +1,5 @@
 using Candid;
-using CanisterPK.testicrc1.Models;
+using Boom.BoomToken.Models;
 using EdjCase.ICP.Candid.Models;
 using TMPro;
 using UnityEngine;
@@ -10,20 +10,18 @@ using System.Collections;
 using System.Linq;
 
 
-public class shards : MonoBehaviour
+public class boomtoken : MonoBehaviour
 {
     public TMP_Text balanceText;
     public TMP_InputField principalInputField;
     public TMP_InputField tokenAmountInputField;
-    public Button sendTokenButton;
     public TMP_Text transferStatusText; 
-    public Animator ShardsPanel;
+    public Animator BoomPanel;
 
     private const int DECIMAL_PLACES = 6;
     void Start()
     {
-        sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
-        ShardsPanel = GameObject.Find("ShardsPanel").GetComponent<Animator>();
+        BoomPanel = GameObject.Find("BoomPanel").GetComponent<Animator>();
         FetchBalance();
     }
 
@@ -44,19 +42,19 @@ private void OnDisable()
 
         try
         {
-            var account = new CanisterPK.testicrc1.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
-            var balance = await CandidApiManager.Instance.testicrc1.Icrc1BalanceOf(account);
+            var account = new Boom.BoomToken.Models.Account(Principal.FromText(principalId), new Account.SubaccountInfo());
+            var balance = await CandidApiManager.Instance.boomToken.Icrc1BalanceOf(account);
 
             // Trigger the balance animation with the new balance
             AnimateBalanceUpdate(balance);
 
-            if (ShardsPanel == null)
+            if (BoomPanel == null)
             {
                 Debug.LogError("Panel Animator is not assigned.");
             }
             else
             {
-                ShardsPanel.Play("TokenPanelRefresh", -1, 0f);
+                BoomPanel.Play("TokenPanelRefresh", -1, 0f);
             }
         }
         catch (Exception ex)
@@ -73,20 +71,6 @@ private void OnDisable()
     }
 
 
-    private void SendTokenButtonClicked()
-    {
-        if (!decimal.TryParse(tokenAmountInputField.text, out decimal tokenAmount))
-        {
-            Debug.LogError("Invalid token amount");
-            return;
-        }
-
-        BigInteger tokenAmountBigInt = ConvertToBigInteger(tokenAmount);
-
-        SetTransferStatus("Sending...");
-
-        transferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt));
-    }
 
     private BigInteger ConvertToBigInteger(decimal value)
     {
@@ -95,50 +79,7 @@ private void OnDisable()
        return BigInteger.Parse(value.ToString());
     }
 
-    public async void transferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
-{
-    try
-    {
-        var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
 
-        var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
-            tokenAmount, // Use the actual tokenAmount here
-            null,
-            new OptionalValue<UnboundedUInt>(fee),
-            null,
-            null,
-            new Account(Principal.FromText(recipientPrincipalId), null)
-        );
-
-        var transferResult = await CandidApiManager.Instance.testicrc1.Icrc1Transfer(transfer);
-
-        // Update status text based on transfer result
-        if (transferResult.Tag == TransferResultTag.Err)
-        {
-            SetTransferStatus("Transfer failed");
-            Debug.LogError(JsonUtility.ToJson(transferResult.Value));
-        }
-        else
-        {
-            SetTransferStatus("Transfer successful");
-            Debug.Log("Transfer successful");
-        }
-
-        // Update balance after transfer
-        FetchBalance();
-    }
-    catch (Exception ex)
-    {
-        SetTransferStatus($"Failed to send tokens: {ex.Message}");
-        Debug.LogError($"Failed to send tokens: {ex.Message}");
-    }
-}
-
-
-    private void SetTransferStatus(string status)
-    {
-        transferStatusText.text = status;
-    }
 
     // Method to start the balance update animation
     private void AnimateBalanceUpdate(UnboundedUInt newBalance)

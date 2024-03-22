@@ -1,5 +1,5 @@
 using Candid;
-using CanisterPK.testicrc1.Models;
+using Candid.IcpLedger;
 using EdjCase.ICP.Candid.Models;
 using TMPro;
 using UnityEngine;
@@ -8,22 +8,24 @@ using System;
 using System.Numerics;
 using System.Collections;
 using System.Linq;
+using Candid.IcpLedger.Models;
+using System.Collections.Generic;
 
 
-public class shards : MonoBehaviour
+public class icptoken : MonoBehaviour
 {
     public TMP_Text balanceText;
     public TMP_InputField principalInputField;
     public TMP_InputField tokenAmountInputField;
     public Button sendTokenButton;
     public TMP_Text transferStatusText; 
-    public Animator ShardsPanel;
+    public Animator ICPPanel;
 
     private const int DECIMAL_PLACES = 6;
     void Start()
     {
         sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
-        ShardsPanel = GameObject.Find("ShardsPanel").GetComponent<Animator>();
+        ICPPanel = GameObject.Find("ICPPanel").GetComponent<Animator>();
         FetchBalance();
     }
 
@@ -38,32 +40,38 @@ private void OnDisable()
 }
 
     public async void FetchBalance()
+{
+    string principalId = GlobalGameData.Instance.GetUserData().WalletId;
+    Debug.Log($"Fetching balance for Principal ID: {principalId}");
+
+    try
     {
-        string principalId = GlobalGameData.Instance.GetUserData().WalletId;
-        Debug.Log($"Fetching balance for Principal ID: {principalId}");
+        // Adjusting the creation of the Account object to correctly use OptionalValue wrapping a List<byte>
+        var account = new Candid.IcpLedger.Models.Account(
+            Principal.FromText(principalId), 
+            new OptionalValue<List<byte>>(null)
+        );
+        
+        var balance = await CandidApiManager.Instance.icptoken.Icrc1BalanceOf(account);
 
-        try
+        // Trigger the balance animation with the new balance
+        AnimateBalanceUpdate(balance);
+
+        if (ICPPanel == null)
         {
-            var account = new CanisterPK.testicrc1.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
-            var balance = await CandidApiManager.Instance.testicrc1.Icrc1BalanceOf(account);
-
-            // Trigger the balance animation with the new balance
-            AnimateBalanceUpdate(balance);
-
-            if (ShardsPanel == null)
-            {
-                Debug.LogError("Panel Animator is not assigned.");
-            }
-            else
-            {
-                ShardsPanel.Play("TokenPanelRefresh", -1, 0f);
-            }
+            Debug.LogError("Panel Animator is not assigned.");
         }
-        catch (Exception ex)
+        else
         {
-            Debug.LogError($"Error fetching balance: {ex.Message}");
+            ICPPanel.Play("TokenPanelRefresh", -1, 0f);
         }
     }
+    catch (Exception ex)
+    {
+        Debug.LogError($"Error fetching balance: {ex.Message}");
+    }
+}
+
 
     private string FormatBalance(UnboundedUInt balance)
     {
@@ -95,44 +103,34 @@ private void OnDisable()
        return BigInteger.Parse(value.ToString());
     }
 
-    public async void transferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
-{
-    try
+   public async void transferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
     {
-        var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
-
-        var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
-            tokenAmount, // Use the actual tokenAmount here
-            null,
-            new OptionalValue<UnboundedUInt>(fee),
-            null,
-            null,
-            new Account(Principal.FromText(recipientPrincipalId), null)
-        );
-
-        var transferResult = await CandidApiManager.Instance.testicrc1.Icrc1Transfer(transfer);
-
-        // Update status text based on transfer result
-        if (transferResult.Tag == TransferResultTag.Err)
+        try
         {
-            SetTransferStatus("Transfer failed");
-            Debug.LogError(JsonUtility.ToJson(transferResult.Value));
-        }
-        else
-        {
-            SetTransferStatus("Transfer successful");
-            Debug.Log("Transfer successful");
-        }
+            var fee = await CandidApiManager.Instance.icptoken.Icrc1Fee();
+            ulong feeAsUlong = (ulong)fee.ToBigInteger();
+            Tokens feeTokens = new Tokens(feeAsUlong);
 
-        // Update balance after transfer
-        FetchBalance();
+            var transfer = new Candid.IcpLedger.Models.TransferArgs(
+                (ulong)tokenAmount, // Assuming Memo is a simple ulong
+                null, 
+                feeTokens,
+                null,
+                null, // No CreatedAtTime 
+                new OptionalValue<TimeStamp>(new TimeStamp((ulong)DateTime.UtcNow.Ticks))
+            );
+
+
+            // Update balance after transfer
+            FetchBalance(); 
+         }
+         catch (Exception ex) 
+         {
+            SetTransferStatus($"Failed to send tokens: {ex.Message}");
+            Debug.LogError($"Failed to send tokens: {ex.Message}");
+         }
     }
-    catch (Exception ex)
-    {
-        SetTransferStatus($"Failed to send tokens: {ex.Message}");
-        Debug.LogError($"Failed to send tokens: {ex.Message}");
-    }
-}
+
 
 
     private void SetTransferStatus(string status)
