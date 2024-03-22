@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Numerics;
+using System.Collections;
+using System.Linq;
+
 
 public class flux : MonoBehaviour
 {
@@ -14,11 +17,14 @@ public class flux : MonoBehaviour
     public TMP_InputField tokenAmountInputField;
     public Button sendTokenButton;
     public TMP_Text transferStatusText; 
+    public Animator TokenPanel;
+
 
     private const int DECIMAL_PLACES = 6;
     void Start()
     {
         sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
+        TokenPanel = GameObject.Find("TokenPanel").GetComponent<Animator>();
         FetchBalance();
     }
 
@@ -43,8 +49,17 @@ private void OnDisable()
             var account = new CanisterPK.flux.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
             var balance = await CandidApiManager.Instance.flux.Icrc1BalanceOf(account);
 
-            // Format balance to display decimal places
-            balanceText.text = FormatBalance(balance);
+            // Trigger the balance animation with the new balance
+            AnimateBalanceUpdate(balance);
+
+            if (TokenPanel == null)
+            {
+                Debug.LogError("Panel Animator is not assigned.");
+            }
+            else
+            {
+                TokenPanel.Play("TokenPanelRefresh", -1, 0f);
+            }
         }
         catch (Exception ex)
         {
@@ -89,7 +104,7 @@ private void OnDisable()
             var fee = await CandidApiManager.Instance.flux.Icrc1Fee();
 
             var transfer = new CanisterPK.flux.Models.TransferArgs(
-                UnboundedUInt.FromBigInteger(1000000),
+                UnboundedUInt.FromBigInteger(1),
                 null,
                 new OptionalValue<UnboundedUInt>(fee),
                 null,
@@ -125,4 +140,42 @@ private void OnDisable()
     {
         transferStatusText.text = status;
     }
+
+    // Method to start the balance update animation
+    private void AnimateBalanceUpdate(UnboundedUInt newBalance)
+    {
+        // Assuming you have a method to convert UnboundedUInt to BigInteger or decimal for comparison
+        BigInteger newBalanceBigInt = newBalance.ToBigInteger();
+        StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
+    }
+
+    // Coroutine for animating the balance update
+    private IEnumerator IncrementBalanceAnimation(BigInteger targetBalance) {
+    float duration = 0.75f;
+    BigInteger currentBalance;
+
+    if (!BigInteger.TryParse(SanitizeText(balanceText.text), out currentBalance)) {
+        Debug.Log("Current balance is not a valid number, defaulting to zero.");
+        currentBalance = BigInteger.Zero;
+    }
+
+    float elapsed = 0f;
+    while (elapsed < duration) {
+        elapsed += Time.deltaTime;
+        float progress = Mathf.Clamp01(elapsed / duration);
+
+        BigInteger progressBalance = currentBalance + (targetBalance - currentBalance) * new BigInteger((long)(progress * 100000)) / new BigInteger(100000);
+
+        balanceText.text = progressBalance.ToString();
+        yield return null;
+    }
+
+    balanceText.text = targetBalance.ToString();
+    Debug.Log($"Final balance text: {balanceText.text}");
+}
+
+    private string SanitizeText(string text) {
+    return new string(text.Where(char.IsDigit).ToArray());
+}
+
 }

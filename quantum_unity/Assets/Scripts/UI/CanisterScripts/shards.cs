@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Numerics;
+using System.Collections;
+using System.Linq;
+
 
 public class shards : MonoBehaviour
 {
@@ -14,24 +17,25 @@ public class shards : MonoBehaviour
     public TMP_InputField tokenAmountInputField;
     public Button sendTokenButton;
     public TMP_Text transferStatusText; 
+    public Animator ShardsPanel;
 
     private const int DECIMAL_PLACES = 6;
     void Start()
     {
         sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
+        ShardsPanel = GameObject.Find("ShardsPanel").GetComponent<Animator>();
         FetchBalance();
     }
 
-        private void OnEnable()
-    {
-        BalanceManager.OnBalanceUpdateNeeded += FetchBalance;
-    }
+    private void OnEnable()
+{
+    BalanceManager.OnBalanceUpdateNeeded += FetchBalance;
+}
 
-    private void OnDisable()
-    {
-        BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
-    }
-
+private void OnDisable()
+{
+    BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
+}
 
     public async void FetchBalance()
     {
@@ -43,8 +47,17 @@ public class shards : MonoBehaviour
             var account = new CanisterPK.testicrc1.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
             var balance = await CandidApiManager.Instance.testicrc1.Icrc1BalanceOf(account);
 
-            // Format balance to display decimal places
-            balanceText.text = FormatBalance(balance);
+            // Trigger the balance animation with the new balance
+            AnimateBalanceUpdate(balance);
+
+            if (ShardsPanel == null)
+            {
+                Debug.LogError("Panel Animator is not assigned.");
+            }
+            else
+            {
+                ShardsPanel.Play("TokenPanelRefresh", -1, 0f);
+            }
         }
         catch (Exception ex)
         {
@@ -54,7 +67,7 @@ public class shards : MonoBehaviour
 
     private string FormatBalance(UnboundedUInt balance)
     {
-      //  string balanceString = balance.ToString().PadLeft(DECIMAL_PLACES + 1, '0'); // Add one to account for the integer part
+       // string balanceString = balance.ToString().PadLeft(DECIMAL_PLACES + 1, '0'); // Add one to account for the integer part
       //  return balanceString.Substring(0, balanceString.Length - DECIMAL_PLACES);
       return balance.ToString();
     }
@@ -78,8 +91,8 @@ public class shards : MonoBehaviour
     private BigInteger ConvertToBigInteger(decimal value)
     {
         // Scale the decimal value to the appropriate number of decimal places and convert to BigInteger
-      //  return new BigInteger(value * (decimal)Math.Pow(10, DECIMAL_PLACES));
-      return BigInteger.Parse(value.ToString());
+       // return new BigInteger(value * (decimal)Math.Pow(10, DECIMAL_PLACES));
+       return BigInteger.Parse(value.ToString());
     }
 
     public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
@@ -89,7 +102,7 @@ public class shards : MonoBehaviour
             var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
 
             var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
-                UnboundedUInt.FromBigInteger(1000000),
+                UnboundedUInt.FromBigInteger(1),
                 null,
                 new OptionalValue<UnboundedUInt>(fee),
                 null,
@@ -125,4 +138,42 @@ public class shards : MonoBehaviour
     {
         transferStatusText.text = status;
     }
+
+    // Method to start the balance update animation
+    private void AnimateBalanceUpdate(UnboundedUInt newBalance)
+    {
+        // Assuming you have a method to convert UnboundedUInt to BigInteger or decimal for comparison
+        BigInteger newBalanceBigInt = newBalance.ToBigInteger();
+        StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
+    }
+
+    // Coroutine for animating the balance update
+    private IEnumerator IncrementBalanceAnimation(BigInteger targetBalance) {
+    float duration = 0.75f;
+    BigInteger currentBalance;
+
+    if (!BigInteger.TryParse(SanitizeText(balanceText.text), out currentBalance)) {
+        Debug.Log("Current balance is not a valid number, defaulting to zero.");
+        currentBalance = BigInteger.Zero;
+    }
+
+    float elapsed = 0f;
+    while (elapsed < duration) {
+        elapsed += Time.deltaTime;
+        float progress = Mathf.Clamp01(elapsed / duration);
+
+        BigInteger progressBalance = currentBalance + (targetBalance - currentBalance) * new BigInteger((long)(progress * 100000)) / new BigInteger(100000);
+
+        balanceText.text = progressBalance.ToString();
+        yield return null;
+    }
+
+    balanceText.text = targetBalance.ToString();
+    Debug.Log($"Final balance text: {balanceText.text}");
+}
+
+    private string SanitizeText(string text) {
+    return new string(text.Where(char.IsDigit).ToArray());
+}
+
 }
