@@ -61,7 +61,7 @@ public class NFTCollection : MonoBehaviour
 
             foreach (string key in savedKeys.listSavedKeys)
             {
-                Debug.Log(key);
+              //  Debug.Log(key);
             }
         }
 
@@ -131,7 +131,7 @@ public class NFTCollection : MonoBehaviour
     //Drops a card
     public void DropCard()
     {
-        Debug.Log("Drop 1 ");
+      //  Debug.Log("Drop 1 ");
         if (EnterCard!= null && DragingCard != null)
         {
             NFTData todeck = DragingCard.nftData;
@@ -147,7 +147,7 @@ public class NFTCollection : MonoBehaviour
          
         }
        
-        Debug.Log("Drop8");
+       // Debug.Log("Drop8");
         DragingCard.iconImage.enabled = true;
         DragingCard = null;
         DragIcon.gameObject.SetActive(false);
@@ -164,12 +164,13 @@ public class NFTCollection : MonoBehaviour
 
     //Mouse over enter to deck
     public void DeckEnterDrop(NFTCard card) { EnterCard = card;
-        Debug.Log("[NFTCollection]Swap In");}
+      //  Debug.Log("[NFTCollection]Swap In");
+      }
     //Mouse over exit from deck
     public void ClearEnterDrop(NFTCard card)
     {
         EnterCard = null; 
-        Debug.Log("[NFTCollection]Swap Out");
+      //  Debug.Log("[NFTCollection]Swap Out");
     }
 
     

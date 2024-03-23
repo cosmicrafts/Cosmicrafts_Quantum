@@ -170,7 +170,7 @@ private void OnDisable()
     }
 
     balanceText.text = targetBalance.ToString();
-    Debug.Log($"Final balance text: {balanceText.text}");
+  //  Debug.Log($"Final balance text: {balanceText.text}");
 }
 
     private string SanitizeText(string text) {

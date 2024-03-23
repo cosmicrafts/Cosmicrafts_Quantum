@@ -18,48 +18,55 @@ public class NFTUpgradeUI : MonoBehaviour
     }
 
     private async void OnUpgradeButtonPressed()
+{
+    string tokenIdToUpgrade = nftCard.TokenId;
+    if (string.IsNullOrEmpty(tokenIdToUpgrade))
     {
-        string tokenIdToUpgrade = nftCard.TokenId;
-        if (string.IsNullOrEmpty(tokenIdToUpgrade))
+        Debug.LogError("Token ID is empty.");
+        notificationText.text = "Token ID is empty.";
+        return;
+    }
+
+    // Log the original token ID string
+    Debug.Log($"Token ID to Upgrade: {tokenIdToUpgrade}");
+
+    UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
+
+    // Log the UnboundedUInt representation of the token ID
+    Debug.Log($"Token ID as UnboundedUInt: {tokenID}");
+
+    try
+    {
+        // Access the CanisterLoginApiClient through CandidApiManager instance
+        var apiClient = CandidApiManager.Instance.CanisterLogin;
+        
+        // Check if apiClient is null
+        if (apiClient == null)
         {
-            Debug.LogError("Token ID is empty.");
-            notificationText.text = "Token ID is empty.";
+            Debug.LogError("CanisterLoginApiClient is not initialized.");
+            notificationText.text = "Error: API client not initialized.";
             return;
         }
 
-        UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
+        Debug.Log($"Triggering NFT upgrade for Token ID: {tokenIdToUpgrade}");
 
-        try
+        (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
+        if (success)
         {
-            // Access the CanisterLoginApiClient through CandidApiManager instance
-            var apiClient = CandidApiManager.Instance.CanisterLogin;
-            
-            // Check if apiClient is null
-            if (apiClient == null)
-            {
-                Debug.LogError("CanisterLoginApiClient is not initialized.");
-                notificationText.text = "Error: API client not initialized.";
-                return;
-            }
-
-            Debug.Log($"Triggering NFT upgrade for Token ID: {tokenIdToUpgrade}");
-
-            (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
-            if (success)
-            {
-                Debug.Log("NFT upgrade successful!");
-                notificationText.text = "Upgrade successful: " + message;
-            }
-            else
-            {
-                Debug.LogError("NFT upgrade failed: " + message);
-                notificationText.text = "Upgrade failed: " + message;
-            }
+            Debug.Log("NFT upgrade successful!");
+            notificationText.text = "Upgrade successful: " + message;
         }
-        catch (System.Exception ex)
+        else
         {
-            Debug.LogError($"Exception during NFT upgrade: {ex.Message}");
-            notificationText.text = $"Exception during upgrade: {ex.Message}";
+            Debug.LogError("NFT upgrade failed: " + message);
+            notificationText.text = "Upgrade failed: " + message;
         }
     }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"Exception during NFT upgrade: {ex.Message}");
+        notificationText.text = $"Exception during upgrade: {ex.Message}";
+    }
+}
+
 }

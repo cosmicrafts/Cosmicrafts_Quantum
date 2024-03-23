@@ -599,28 +599,41 @@ namespace DanielLochner.Assets.SimpleScrollSnap
                 }
             }
         }
-        private void SnapToPanel()
+private void SnapToPanel()
+{
+    if (Viewport == null || Content == null || Panels == null || Panels.Length <= CenteredPanel || Panels[CenteredPanel] == null)
+    {
+        Debug.LogWarning("SnapToPanel: One or more required components are null.");
+        return;
+    }
+
+    float xOffset = (movementType == MovementType.Free || movementAxis == MovementAxis.Horizontal) ? Viewport.rect.width / 2f : 0f;
+    float yOffset = (movementType == MovementType.Free || movementAxis == MovementAxis.Vertical) ? Viewport.rect.height / 2f : 0f;
+    Vector2 offset = new Vector2(xOffset, yOffset);
+
+    Vector2 targetPosition = -Panels[CenteredPanel].anchoredPosition + offset;
+    Content.anchoredPosition = Vector2.Lerp(Content.anchoredPosition, targetPosition, (useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime) * snapSpeed);
+
+    if (SelectedPanel != CenteredPanel)
+    {
+        if (GetDisplacementFromCenter(CenteredPanel).magnitude < (Viewport.rect.width / 10f))
         {
-            float xOffset = (movementType == MovementType.Free || movementAxis == MovementAxis.Horizontal) ? Viewport.rect.width  / 2f : 0f;
-            float yOffset = (movementType == MovementType.Free || movementAxis == MovementAxis.Vertical)   ? Viewport.rect.height / 2f : 0f;
-            Vector2 offset = new Vector2(xOffset, yOffset);
-
-            Vector2 targetPosition = -Panels[CenteredPanel].anchoredPosition + offset;
-            Content.anchoredPosition = Vector2.Lerp(Content.anchoredPosition, targetPosition, (useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime) * snapSpeed);
-
-            if (SelectedPanel != CenteredPanel)
+            if (onPanelCentered != null)
             {
-                if (GetDisplacementFromCenter(CenteredPanel).magnitude < (Viewport.rect.width / 10f))
-                {
-                    onPanelCentered.Invoke(CenteredPanel, SelectedPanel);
-                    SelectedPanel = CenteredPanel;
-                }
+                onPanelCentered.Invoke(CenteredPanel, SelectedPanel);
             }
-            else
-            {
-                onPanelCentering.Invoke(CenteredPanel, SelectedPanel);
-            }
+            SelectedPanel = CenteredPanel;
         }
+    }
+    else
+    {
+        if (onPanelCentering != null)
+        {
+            onPanelCentering.Invoke(CenteredPanel, SelectedPanel);
+        }
+    }
+}
+
 
         public void GoToPanel(int panelNumber)
         {
