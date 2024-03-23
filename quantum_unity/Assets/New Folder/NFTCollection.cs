@@ -164,12 +164,12 @@ public class NFTCollection : MonoBehaviour
 
     //Mouse over enter to deck
     public void DeckEnterDrop(NFTCard card) { EnterCard = card;
-        Debug.Log("Entro");}
+        Debug.Log("[NFTCollection]Swap In");}
     //Mouse over exit from deck
     public void ClearEnterDrop(NFTCard card)
     {
         EnterCard = null; 
-        Debug.Log("Salio");
+        Debug.Log("[NFTCollection]Swap Out");
     }
 
     
