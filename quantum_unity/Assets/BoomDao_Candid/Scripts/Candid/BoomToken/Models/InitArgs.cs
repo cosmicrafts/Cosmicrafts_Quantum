@@ -1,9 +1,9 @@
 using EdjCase.ICP.Candid.Mapping;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using EdjCase.ICP.Candid.Models;
 using System.Collections.Generic;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class InitArgs
 	{

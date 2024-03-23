@@ -1,5 +1,5 @@
 using Candid;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using EdjCase.ICP.Candid.Models;
 using TMPro;
 using UnityEngine;
@@ -42,7 +42,7 @@ private void OnDisable()
 
         try
         {
-            var account = new Boom.BoomToken.Models.Account(Principal.FromText(principalId), new Account.SubaccountInfo());
+            var account = new CanisterPK.BoomToken.Models.Account(Principal.FromText(principalId), new Account.SubaccountInfo());
             var balance = await CandidApiManager.Instance.boomToken.Icrc1BalanceOf(account);
 
             // Trigger the balance animation with the new balance

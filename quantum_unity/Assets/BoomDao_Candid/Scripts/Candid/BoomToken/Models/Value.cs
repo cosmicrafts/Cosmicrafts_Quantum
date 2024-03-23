@@ -1,11 +1,11 @@
 using EdjCase.ICP.Candid.Mapping;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using System.Collections.Generic;
 using EdjCase.ICP.Candid.Models;
 using System;
-using Map = System.Collections.Generic.Dictionary<System.String, Boom.BoomToken.Models.Value>;
+using Map = System.Collections.Generic.Dictionary<System.String, CanisterPK.BoomToken.Models.Value>;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	[Variant]
 	public class Value

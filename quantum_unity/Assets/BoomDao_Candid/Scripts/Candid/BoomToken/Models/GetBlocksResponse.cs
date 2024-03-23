@@ -1,12 +1,12 @@
 using EdjCase.ICP.Candid.Mapping;
 using EdjCase.ICP.Candid.Models;
 using System.Collections.Generic;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using BlockIndex = EdjCase.ICP.Candid.Models.UnboundedUInt;
-using Block = Boom.BoomToken.Models.Value;
+using Block = CanisterPK.BoomToken.Models.Value;
 using QueryBlockArchiveFn = EdjCase.ICP.Candid.Models.Values.CandidFunc;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class GetBlocksResponse
 	{

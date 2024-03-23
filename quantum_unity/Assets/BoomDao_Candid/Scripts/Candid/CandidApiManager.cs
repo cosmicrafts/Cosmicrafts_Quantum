@@ -19,7 +19,7 @@ namespace Candid
     using CanisterPK.flux;
     using CanisterPK.chests;
     using Candid.IcpLedger;
-    using Boom.BoomToken;
+    using CanisterPK.BoomToken;
     using Boom;
 
     using Org.BouncyCastle.Crypto.Digests;

@@ -1,9 +1,9 @@
 using EdjCase.ICP.Candid.Mapping;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using System.Collections.Generic;
-using Block = Boom.BoomToken.Models.Value;
+using Block = CanisterPK.BoomToken.Models.Value;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class BlockRange
 	{

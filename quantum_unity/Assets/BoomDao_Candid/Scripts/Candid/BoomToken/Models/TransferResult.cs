@@ -1,9 +1,9 @@
 using EdjCase.ICP.Candid.Mapping;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using System;
 using BlockIndex = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	[Variant]
 	public class TransferResult

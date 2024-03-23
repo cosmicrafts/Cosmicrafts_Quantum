@@ -1,12 +1,12 @@
 using EdjCase.ICP.Candid.Mapping;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using EdjCase.ICP.Candid.Models;
 using System.Collections.Generic;
 using Subaccount = System.Collections.Generic.List<System.Byte>;
 using Timestamp = System.UInt64;
 using Tokens = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class ApproveArgs
 	{

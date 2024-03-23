@@ -1,10 +1,10 @@
 using EdjCase.ICP.Candid.Mapping;
 using EdjCase.ICP.Candid.Models;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using System.Collections.Generic;
 using Timestamp = System.UInt64;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class Transaction
 	{

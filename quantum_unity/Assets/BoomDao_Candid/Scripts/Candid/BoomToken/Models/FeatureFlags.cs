@@ -1,6 +1,6 @@
 using EdjCase.ICP.Candid.Mapping;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class FeatureFlags
 	{

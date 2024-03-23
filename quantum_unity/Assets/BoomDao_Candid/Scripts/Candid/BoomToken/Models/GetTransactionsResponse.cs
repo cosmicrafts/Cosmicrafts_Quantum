@@ -1,11 +1,11 @@
 using EdjCase.ICP.Candid.Mapping;
 using EdjCase.ICP.Candid.Models;
 using System.Collections.Generic;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using TxIndex = EdjCase.ICP.Candid.Models.UnboundedUInt;
 using QueryArchiveFn = EdjCase.ICP.Candid.Models.Values.CandidFunc;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class GetTransactionsResponse
 	{

@@ -115,9 +115,9 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
-		public async Task<(bool ReturnArg0, string ReturnArg1)> MintNFT(Principal arg0, UnboundedUInt arg1)
+		public async Task<(bool ReturnArg0, string ReturnArg1)> MintNFT(Principal arg0, UnboundedUInt arg1, UnboundedUInt arg2)
 		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintNFT", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
 		}

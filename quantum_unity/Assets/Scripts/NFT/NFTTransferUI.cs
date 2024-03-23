@@ -20,43 +20,48 @@ public class NFTTransferUI : MonoBehaviour
     }
 
     public async void OnTransferButtonPressed()
+{
+    string tokenIdToTransfer = nftCard.TokenId;
+    if (string.IsNullOrEmpty(recipientPrincipalInput.text) || string.IsNullOrEmpty(tokenIdToTransfer))
     {
-        string tokenIdToTransfer = nftCard.TokenId;
-        if (string.IsNullOrEmpty(recipientPrincipalInput.text) || string.IsNullOrEmpty(tokenIdToTransfer))
+        Debug.LogError("Recipient Principal or Token ID is empty.");
+        notificationText.text = "Recipient Principal or Token ID is empty.";
+        return;
+    }
+
+
+    // Log Principal ID and Token ID
+    Debug.Log($"Principal ID: {recipientPrincipalInput.text}, Token ID: {tokenIdToTransfer}");
+
+    Principal recipientPrincipal = Principal.FromText(recipientPrincipalInput.text);
+    UnboundedUInt tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToTransfer));
+
+    List<UnboundedUInt> tokenIds = new List<UnboundedUInt> { tokenId };
+
+    try
+    {
+        // Log before attempting transfer
+        Debug.Log("Attempting NFT transfer...");
+
+        TransferReceipt receipt = await nftManager.TransferNFT(tokenIds, recipientPrincipal);
+
+        if (receipt.Tag == TransferReceiptTag.Ok)
         {
-            Debug.LogError("Recipient Principal or Token ID is empty.");
-            notificationText.text = "Recipient Principal or Token ID is empty.";
-            return;
+            Debug.Log("NFT transfer successful!");
+            notificationText.text = $"NFT transfer successful! Token ID: {tokenIdToTransfer}";
         }
-
-
-        Debug.Log($"Transferring NFT with Token ID: {tokenIdToTransfer}");
-
-        Principal recipientPrincipal = Principal.FromText(recipientPrincipalInput.text);
-        UnboundedUInt tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToTransfer));
-
-        List<UnboundedUInt> tokenIds = new List<UnboundedUInt> { tokenId };
-
-        try
+        else if (receipt.Tag == TransferReceiptTag.Err)
         {
-            TransferReceipt receipt = await nftManager.TransferNFT(tokenIds, recipientPrincipal);
-
-            if (receipt.Tag == TransferReceiptTag.Ok)
-            {
-                Debug.Log("NFT transfer successful!");
-                notificationText.text = $"NFT transfer successful! Token ID: {tokenIdToTransfer}";
-            }
-            else if (receipt.Tag == TransferReceiptTag.Err)
-            {
-                Debug.LogError($"NFT transfer failed: {receipt.AsErr().ToString()}");
-                notificationText.text = $"NFT transfer failed: {receipt.AsErr().ToString()}";
-            }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Exception during NFT transfer: {ex.Message}");
-            notificationText.text = $"Exception during NFT transfer: {ex.Message}";
+            Debug.LogError($"NFT transfer failed: {receipt.AsErr().ToString()}");
+            notificationText.text = $"NFT transfer failed: {receipt.AsErr().ToString()}";
         }
     }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"Exception during NFT transfer: {ex.Message}");
+        notificationText.text = $"Exception during NFT transfer: {ex.Message}";
+    }
+}
+
 
 }

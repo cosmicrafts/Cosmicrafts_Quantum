@@ -1,9 +1,9 @@
 using EdjCase.ICP.Candid.Mapping;
 using EdjCase.ICP.Candid.Models;
-using Boom.BoomToken.Models;
+using CanisterPK.BoomToken.Models;
 using Subaccount = System.Collections.Generic.List<System.Byte>;
 
-namespace Boom.BoomToken.Models
+namespace CanisterPK.BoomToken.Models
 {
 	public class Account
 	{

@@ -4,11 +4,11 @@ using EdjCase.ICP.Candid;
 using System.Threading.Tasks;
 using EdjCase.ICP.Agent.Responses;
 using System.Collections.Generic;
-using Boom.BoomToken;
+using CanisterPK.BoomToken;
 using EdjCase.ICP.Candid.Mapping;
 using Tokens = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
-namespace Boom.BoomToken
+namespace CanisterPK.BoomToken
 {
 	public class BoomTokenApiClient
 	{
