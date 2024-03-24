@@ -18,6 +18,8 @@ public class NFTCardDetail : NFTCard
     public TMP_Text skillsText;
     public TMP_Text skinsText;
     public TMP_Text tokenIdText;
+    public Image factionImage;
+    public Sprite[] factionSprites;
 
     [Header("ModelRender")]
     //References the object model of the selected card
@@ -64,6 +66,7 @@ public class NFTCardDetail : NFTCard
             unitNameText.text = general.Name;
             descriptionText.text = general.Description;
             //factionIcon.text = general.Faction;
+            SetFactionIcon(general.Faction);
             unitClassText.text = general.Class;
             rarityText.text = general.Rarity.ToString();
             skinsText.text = general.SkinsText;
@@ -75,6 +78,27 @@ public class NFTCardDetail : NFTCard
         skillsText.text = string.Join(", ", nftData.Skills.Select(s => $"{s.SkillName}: {s.SkillValue}"));
         skinsText.text = string.Join("\n", nftData.Skins.Select(s => $"{s.SkinName} - {s.SkinDescription}"));
     }
+
+    private void SetFactionIcon(string factionText)
+    {
+        Debug.Log($"Attempting to set faction icon for: {factionText}");
+        int index = -1;
+
+        // Your switch statement...
+
+        if (index >= 0 && index < factionSprites.Length)
+        {
+            Debug.Log($"Setting faction sprite at index: {index}");
+            factionImage.sprite = factionSprites[index];
+        }
+        else
+        {
+            Debug.LogWarning($"Could not find a matching faction sprite for: {factionText}");
+        }
+    }
+
+
+
     
     //Sets the UI data from a selected card from NFT data
     /*
