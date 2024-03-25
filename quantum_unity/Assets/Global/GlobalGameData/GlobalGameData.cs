@@ -62,11 +62,13 @@ public class GlobalGameData : MonoBehaviour
     public void ClearUser() { userData = null; }
     public string GetVersion() { return Application.version; }
     public void SetAvatarId(int id)
+{
+    if (avatarId != id)
     {
-        if (avatarId != id)
-        {
-            avatarId = id;
-            OnAvatarIdChanged?.Invoke(id);
-        }
+        avatarId = id;
+        Debug.Log($"GlobalGameData: Setting avatar ID to {id}");
+        OnAvatarIdChanged?.Invoke(id);
     }
+}
+
 }

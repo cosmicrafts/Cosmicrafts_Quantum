@@ -13,35 +13,43 @@ public class AvatarSelection : MonoBehaviour
     }
 
     private void PopulateAvatarButtons()
-    {
-        Object[] avatarObjects = Resources.LoadAll("Avatars", typeof(Sprite));
+{
+    Object[] avatarObjects = Resources.LoadAll("Avatars", typeof(Sprite));
+    Debug.Log($"Loaded {avatarObjects.Length} avatars.");
 
-        for (int i = 0; i < avatarObjects.Length; i++)
-        {
-            Sprite avatarSprite = (Sprite)avatarObjects[i];
-            CreateAvatarButton(avatarSprite, i + 1);
-        }
+    for (int i = 0; i < avatarObjects.Length; i++)
+    {
+        Sprite avatarSprite = (Sprite)avatarObjects[i];
+        Debug.Log($"Avatar {i + 1}: {avatarSprite.name}");
+        CreateAvatarButton(avatarSprite, i + 1);
     }
+}
+
 
     private void CreateAvatarButton(Sprite sprite, int avatarId)
+{
+    GameObject buttonObj = Instantiate(avatarButtonPrefab, scrollContent);
+    buttonObj.SetActive(true);
+
+    Image buttonImage = buttonObj.GetComponent<Image>();
+    Button button = buttonObj.GetComponent<Button>();
+
+    if (buttonImage != null)
     {
-        GameObject buttonObj = Instantiate(avatarButtonPrefab, scrollContent);
-        buttonObj.SetActive(true);
-
-        Image buttonImage = buttonObj.GetComponent<Image>();
-        Button button = buttonObj.GetComponent<Button>();
-
-        if (buttonImage != null) buttonImage.sprite = sprite;
-
-        if (button != null)
-        {
-            button.onClick.AddListener(() => SelectAvatar(avatarId));
-        }
+        buttonImage.sprite = sprite;
+        Debug.Log($"Assigning sprite {sprite.name} to button with Avatar ID: {avatarId}");
     }
 
-    private void SelectAvatar(int id)
+    if (button != null)
     {
-        GlobalGameData.Instance.SetAvatarId(id);
-        Debug.Log($"Avatar selected: {id}");
+        button.onClick.AddListener(() => SelectAvatar(avatarId));
     }
+}
+
+private void SelectAvatar(int id)
+{
+    GlobalGameData.Instance.SetAvatarId(id);
+    Debug.Log($"Avatar selected: {id}");
+}
+
 }

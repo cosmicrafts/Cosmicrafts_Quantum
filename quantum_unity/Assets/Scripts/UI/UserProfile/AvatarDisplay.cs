@@ -4,8 +4,8 @@ using System.IO;
 
 public class AvatarDisplay : MonoBehaviour
 {
-    [SerializeField] private Image avatarImage; // Make sure to assign this in the inspector
-    [SerializeField] private string avatarsFolderPath = "Avatars"; // Path inside the Resources folder
+    [SerializeField] private Image avatarImage;
+    [SerializeField] private string avatarsFolderPath = "Avatars";
 
     private void Awake()
     {
@@ -19,17 +19,22 @@ public class AvatarDisplay : MonoBehaviour
     }
 
     private void UpdateAvatarImage(int avatarId)
-    {
-        string imagePath = Path.Combine(avatarsFolderPath, avatarId.ToString()); // Build the resource path
-        Sprite avatarSprite = Resources.Load<Sprite>(imagePath);
+{
 
-        if (avatarSprite != null)
-        {
-            avatarImage.sprite = avatarSprite;
-        }
-        else
-        {
-            Debug.LogError($"Avatar image not found for ID {avatarId}");
-        }
+    string formattedId = avatarId < 10 ? $"0{avatarId}" : avatarId.ToString();
+    string imagePath = Path.Combine(avatarsFolderPath, $"Avatar_{formattedId}");
+    Sprite avatarSprite = Resources.Load<Sprite>(imagePath);
+
+    if (avatarSprite != null)
+    {
+        avatarImage.sprite = avatarSprite;
+        Debug.Log($"Displaying avatar ID {avatarId} with sprite {avatarSprite.name}");
     }
+    else
+    {
+        Debug.LogError($"Avatar image not found for ID {avatarId}, looked for {imagePath}");
+    }
+}
+
+
 }
