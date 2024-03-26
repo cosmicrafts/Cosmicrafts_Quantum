@@ -52,7 +52,7 @@ public static class NFTMetadataParser
             {
                 case "unit_id":
                     generalInfo.UnitId = (int)item.Value.AsNat();
-                    Debug.Log((int)item.Value.AsNat() );
+                  //  Debug.Log((int)item.Value.AsNat() );
                     break;
                 case "class":
                     generalInfo.Class = item.Value.AsText();

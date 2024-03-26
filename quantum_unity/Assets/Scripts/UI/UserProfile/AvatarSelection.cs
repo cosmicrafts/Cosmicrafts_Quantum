@@ -6,7 +6,7 @@ public class AvatarSelection : MonoBehaviour
 {
     [SerializeField] private GameObject avatarButtonPrefab;
     [SerializeField] private Transform scrollContent;
-    [SerializeField] private Image avatarImagePrefab;
+
 
     private void Start()
     {
@@ -16,12 +16,10 @@ public class AvatarSelection : MonoBehaviour
     private void PopulateAvatarButtons()
     {
         Object[] avatarObjects = Resources.LoadAll("Avatars", typeof(Sprite));
-        Debug.Log($"Loaded {avatarObjects.Length} avatars.");
 
         for (int i = 0; i < avatarObjects.Length; i++)
         {
             Sprite avatarSprite = (Sprite)avatarObjects[i];
-            Debug.Log($"Avatar {i + 1}: {avatarSprite.name}");
             CreateAvatarButton(avatarSprite, i + 1);
         }
     }
@@ -31,10 +29,23 @@ public class AvatarSelection : MonoBehaviour
         GameObject buttonObj = Instantiate(avatarButtonPrefab, scrollContent);
         buttonObj.SetActive(true);
 
-        if (avatarImagePrefab != null)
+        Transform imageTransform = buttonObj.transform.Find("AvatarImage");
+
+        if (imageTransform != null)
         {
-            avatarImagePrefab.sprite = sprite;
-            Debug.Log($"Assigning sprite {sprite.name} to button with Avatar ID: {avatarId}");
+            Image avatarImage = imageTransform.GetComponent<Image>();
+            if (avatarImage != null)
+            {
+                avatarImage.sprite = sprite;
+            }
+            else
+            {
+                Debug.LogWarning("Avatar Image component not found on the child object.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Child object with the specific name for Avatar Image not found.");
         }
 
         Button button = buttonObj.GetComponent<Button>();

@@ -52,8 +52,8 @@ public class NFTCollection : MonoBehaviour
 
         SavedKeys savedKeys = new SavedKeys();
 
-        Debug.Log("RefreshCollection");
-        Debug.Log(PlayerPrefs.GetString("savedKeys"));
+        // Debug.Log("RefreshCollection");
+        // Debug.Log(PlayerPrefs.GetString("savedKeys"));
 
         if (PlayerPrefs.HasKey("savedKeys"))
         {
@@ -73,7 +73,7 @@ public class NFTCollection : MonoBehaviour
 
         foreach (string key in savedKeys.listSavedKeys)
         {
-            Debug.Log(key);
+           // Debug.Log(key);
         }
 
         for (int i = 0; i < savedKeys.listSavedKeys.Count; i++)
@@ -159,7 +159,7 @@ public class NFTCollection : MonoBehaviour
         }
         
         PlayerPrefs.SetString("savedKeys", JsonUtility.ToJson(savedKeys));
-        Debug.Log(JsonUtility.ToJson(savedKeys));
+      //  Debug.Log(JsonUtility.ToJson(savedKeys));
     }
 
     //Mouse over enter to deck

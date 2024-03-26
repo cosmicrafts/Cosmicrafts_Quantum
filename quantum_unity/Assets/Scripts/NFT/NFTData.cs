@@ -22,7 +22,7 @@ public class NFTData : ScriptableObject
 
         clone.TokenId = this.TokenId;
 
-        Debug.Log($"[NFTData]Cloned ScriptableObject (SO) for NFTData - Token ID: {clone.TokenId}, Basic Stats: {string.Join("; ", clone.BasicStats.Select(bs => $"{bs.StatName}: {bs.StatValue}"))}, General Info: {string.Join("; ", clone.General.Select(gi => $"{gi.Class}, {gi.Rarity}"))}, Skills: {string.Join("; ", clone.Skills.Select(sk => $"{sk.SkillName}: {sk.SkillValue}"))}");
+      //  Debug.Log($"[NFTData]Cloned ScriptableObject (SO) for NFTData - Token ID: {clone.TokenId}, Basic Stats: {string.Join("; ", clone.BasicStats.Select(bs => $"{bs.StatName}: {bs.StatValue}"))}, General Info: {string.Join("; ", clone.General.Select(gi => $"{gi.Class}, {gi.Rarity}"))}, Skills: {string.Join("; ", clone.Skills.Select(sk => $"{sk.SkillName}: {sk.SkillValue}"))}");
 
         return clone;
     }

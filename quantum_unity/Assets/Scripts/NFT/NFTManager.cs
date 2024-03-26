@@ -49,11 +49,10 @@ public class NFTManager : MonoBehaviour
         {
             foreach (var tokenId in tokens)
             {
-                Debug.Log("[NFTManager] Getting Token: "+ tokenId);
+               // Debug.Log("[NFTManager] Getting Token: "+ tokenId);
                 await FetchAndSetNFTMetadata(tokenId);
             }
 
-            Debug.Log("[NFTManager] FinishGetTokens");
             nftCollection.AllNFTDatas = AllNFTDatas;
             nftCollection.RefreshCollection();
         }
