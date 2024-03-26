@@ -41,7 +41,28 @@ public class NFTCardDetail : NFTCard
     public Image Bar_Dmg;
     */
     
-    
+    void OnEnable()
+    {
+        NFTManager.OnMetadataUpdated += OnNFTMetadataUpdated;
+    }
+
+    void OnDisable()
+    {
+        NFTManager.OnMetadataUpdated -= OnNFTMetadataUpdated;
+    }
+
+    void OnNFTMetadataUpdated(string tokenId)
+    {
+        if (this.tokenId == tokenId)
+        {
+            // Fetch the updated data from NFTManager and update the UI
+            NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenId);
+            if (updatedData != null)
+            {
+                UpdateUI(updatedData); // Assuming you have an UpdateUI method in NFTCardDetail
+            }
+        }
+    }
     
 
     //The particles reference for skills cards
@@ -97,6 +118,10 @@ public class NFTCardDetail : NFTCard
         }
     }
 
+    public void UpdateUI(NFTData nftData) {
+    SetNFTData(nftData); // This method already exists in your code
+    // You can add more UI update logic here if necessary
+    }
 
 
     

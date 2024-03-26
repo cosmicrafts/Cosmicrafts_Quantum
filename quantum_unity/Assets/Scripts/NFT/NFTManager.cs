@@ -6,10 +6,14 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 using Candid;
 using CanisterPK.testnft.Models;
 using EdjCase.ICP.Candid.Models;
+
+
+
 
 public class NFTManager : MonoBehaviour
 {
@@ -19,6 +23,9 @@ public class NFTManager : MonoBehaviour
     public List<NFTData> AllNFTDatas = null;
     
     public GameplaySettingsAsset  m_GameplaySettings;
+
+    public delegate void MetadataUpdated(string tokenId);
+    public static event MetadataUpdated OnMetadataUpdated;
     
     private void Awake()
     {
@@ -64,11 +71,25 @@ public class NFTManager : MonoBehaviour
         var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
         if (metadataResult.Tag == MetadataResultTag.Ok && metadataResult.Value is Dictionary<string, Metadata> metadataDictionary)
         {
-            // Correctly include tokenId as an argument to the parse method
+            Debug.Log($"Successfully fetched metadata for Token ID: {tokenId}");
             NFTData nftData = NFTMetadataParser.Parse(metadataDictionary);
             nftData.TokenId = tokenId.ToString();
-            NFTData clonedData = nftData.Clone();
-            AllNFTDatas.Add(clonedData);
+
+            // Check if NFTData with this tokenId already exists
+            var existingData = AllNFTDatas.FirstOrDefault(nd => nd.TokenId == tokenId.ToString());
+            if (existingData != null)
+            {
+                // Update existing NFTData
+                var index = AllNFTDatas.IndexOf(existingData);
+                AllNFTDatas[index] = nftData.Clone();
+            }
+            else
+            {
+                // Add new NFTData
+                AllNFTDatas.Add(nftData.Clone());
+            }
+
+            OnMetadataUpdated?.Invoke(tokenId.ToString());
         }
     }
 
@@ -99,6 +120,22 @@ public class NFTManager : MonoBehaviour
         
     }
 
+
+    public async Task UpdateNFTMetadata(string tokenId)
+    {
+        Debug.Log($"Starting metadata update for Token ID: {tokenId}");
+        UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenId));
+        await FetchAndSetNFTMetadata(tokenID);
+        OnMetadataUpdated?.Invoke(tokenId);
+        Debug.Log($"Finished metadata update for Token ID: {tokenId}");
+        // Trigger any UI refresh mechanisms here if necessary.
+    }
+
+    public NFTData GetNFTDataById(string tokenId)
+    {
+        // Search for the NFTData with the matching tokenId
+        return AllNFTDatas.FirstOrDefault(nftData => nftData.TokenId == tokenId);
+    }
 
 
 }

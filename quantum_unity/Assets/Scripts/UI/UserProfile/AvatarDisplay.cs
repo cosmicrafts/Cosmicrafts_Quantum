@@ -28,7 +28,7 @@ public class AvatarDisplay : MonoBehaviour
     if (avatarSprite != null)
     {
         avatarImage.sprite = avatarSprite;
-        Debug.Log($"Displaying avatar ID {avatarId} with sprite {avatarSprite.name}");
+      //  Debug.Log($"Displaying avatar ID {avatarId} with sprite {avatarSprite.name}");
     }
     else
     {

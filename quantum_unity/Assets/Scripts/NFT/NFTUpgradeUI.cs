@@ -55,6 +55,7 @@ public class NFTUpgradeUI : MonoBehaviour
         {
             Debug.Log("NFT upgrade successful!");
             notificationText.text = "Upgrade successful: " + message;
+            await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade);
         }
         else
         {
