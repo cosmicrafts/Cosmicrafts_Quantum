@@ -12,9 +12,6 @@ using Candid;
 using CanisterPK.testnft.Models;
 using EdjCase.ICP.Candid.Models;
 
-
-
-
 public class NFTManager : MonoBehaviour
 {
     public static NFTManager Instance { get; private set; }
@@ -26,6 +23,8 @@ public class NFTManager : MonoBehaviour
 
     public delegate void MetadataUpdated(string tokenId);
     public static event MetadataUpdated OnMetadataUpdated;
+    public delegate void NFTTransferred(string tokenId);
+    public static event NFTTransferred OnNFTTransferred;
     
     private void Awake()
     {
@@ -120,7 +119,6 @@ public class NFTManager : MonoBehaviour
         
     }
 
-
     public async Task UpdateNFTMetadata(string tokenId)
     {
         Debug.Log($"Starting metadata update for Token ID: {tokenId}");
@@ -137,5 +135,10 @@ public class NFTManager : MonoBehaviour
         return AllNFTDatas.FirstOrDefault(nftData => nftData.TokenId == tokenId);
     }
 
+    public void RemoveNFT(string tokenId)
+    {
+        AllNFTDatas.RemoveAll(nft => nft.TokenId == tokenId);
+        OnNFTTransferred?.Invoke(tokenId);
+    }
 
 }

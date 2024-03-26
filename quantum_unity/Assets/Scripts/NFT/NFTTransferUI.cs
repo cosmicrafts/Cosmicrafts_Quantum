@@ -45,7 +45,10 @@ public class NFTTransferUI : MonoBehaviour
             {
                 Debug.Log("NFT transfer successful!");
                 notificationText.text = $"NFT transfer successful! Token ID: {tokenIdToTransfer}";
+                // Invoke the removal of the transferred NFT
+                nftManager.RemoveNFT(tokenIdToTransfer);
             }
+
             else if (receipt.Tag == TransferReceiptTag.Err)
             {
                 Debug.LogError($"NFT transfer failed: {receipt.AsErr().ToString()}");
