@@ -99,13 +99,21 @@
 			}
 
 			PlayerRef owner = default;
+			int unitTokenID = default;
+			int killerTokenID = default;
+			
 			if (frame.Unsafe.TryGetPointer<Unit>(entity, out var unit))
 			{
 				owner = unit-> Owner;
+				unitTokenID = unit->TokenID;
 			}
 			
+			if (frame.Unsafe.TryGetPointer<Unit>(killer, out var unitKiller))
+			{
+				killerTokenID = unitKiller->TokenID;
+			}
 			
-			frame.Events.UnitDestroyed(owner, entity, killer);
+			frame.Events.UnitDestroyed(owner, entity, unitTokenID, killer, killerTokenID);
 
 		}
 
@@ -230,7 +238,7 @@
 
 		private void SetBuilding(Frame frame, PlayerRef owner, EntityRef entity, UnitSettings settings, byte level)
 		{
-			frame.Unsafe.GetPointer<Unit>(entity)->Initialize(frame, owner, entity, settings, level);
+			frame.Unsafe.GetPointer<Unit>(entity)->Initialize(frame, owner, entity, settings, level, 0);
 		}
 
 		private bool CheckTower(Frame frame, EntityRef unitRef, QListPtr<EntityRef> towersPtr, PlayerRef killerPlayer)

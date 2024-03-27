@@ -831,6 +831,8 @@ namespace Quantum {
     public FP Damage;
     [FieldOffset(0)]
     public Byte Level;
+    [FieldOffset(4)]
+    public Int32 TokenID;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 97;
@@ -838,12 +840,14 @@ namespace Quantum {
         hash = hash * 31 + CardSettings.GetHashCode();
         hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
+        hash = hash * 31 + TokenID.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (CardInfo*)ptr;
         serializer.Stream.Serialize(&p->Level);
+        serializer.Stream.Serialize(&p->TokenID);
         Quantum.AssetRefCardSettings.Serialize(&p->CardSettings, serializer);
         FP.Serialize(&p->BaseHealth, serializer);
         FP.Serialize(&p->Damage, serializer);
@@ -891,19 +895,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HealthData {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public EHealthAction Action;
-    [FieldOffset(8)]
-    public QBoolean HideToStats;
     [FieldOffset(16)]
-    public EntityRef Source;
+    public QBoolean HideToStats;
     [FieldOffset(24)]
-    public EntityRef Target;
+    public EntityRef Source;
     [FieldOffset(4)]
-    public PlayerRef TargetOwner;
+    public Int32 SourceTokenID;
     [FieldOffset(32)]
+    public EntityRef Target;
+    [FieldOffset(12)]
+    public PlayerRef TargetOwner;
+    [FieldOffset(8)]
+    public Int32 TargetTokenID;
+    [FieldOffset(40)]
     public FP Value;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -911,8 +919,10 @@ namespace Quantum {
         hash = hash * 31 + (Byte)Action;
         hash = hash * 31 + HideToStats.GetHashCode();
         hash = hash * 31 + Source.GetHashCode();
+        hash = hash * 31 + SourceTokenID.GetHashCode();
         hash = hash * 31 + Target.GetHashCode();
         hash = hash * 31 + TargetOwner.GetHashCode();
+        hash = hash * 31 + TargetTokenID.GetHashCode();
         hash = hash * 31 + Value.GetHashCode();
         return hash;
       }
@@ -920,6 +930,8 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (HealthData*)ptr;
         serializer.Stream.Serialize((Byte*)&p->Action);
+        serializer.Stream.Serialize(&p->SourceTokenID);
+        serializer.Stream.Serialize(&p->TargetTokenID);
         PlayerRef.Serialize(&p->TargetOwner, serializer);
         QBoolean.Serialize(&p->HideToStats, serializer);
         EntityRef.Serialize(&p->Source, serializer);
@@ -2195,27 +2207,30 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Unit : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     [ExcludeFromPrototype()]
     public FP ActivationDelay;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     [ExcludeFromPrototype()]
     [FramePrinter.PtrQListAttribute(typeof(UnitBehavior))]
     private Quantum.Ptr BehaviorsPtr;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     [ExcludeFromPrototype()]
     public QBoolean DestroyOnDeath;
     [FieldOffset(0)]
     [ExcludeFromPrototype()]
     public Byte Level;
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     [ExcludeFromPrototype()]
     public PlayerRef Owner;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public AssetRefCardSettings Settings;
+    [FieldOffset(4)]
+    [ExcludeFromPrototype()]
+    public Int32 TokenID;
     public QListPtr<UnitBehavior> Behaviors {
       get {
         return new QListPtr<UnitBehavior>(BehaviorsPtr);
@@ -2233,6 +2248,7 @@ namespace Quantum {
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Settings.GetHashCode();
+        hash = hash * 31 + TokenID.GetHashCode();
         return hash;
       }
     }
@@ -2246,6 +2262,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Unit*)ptr;
         serializer.Stream.Serialize(&p->Level);
+        serializer.Stream.Serialize(&p->TokenID);
         PlayerRef.Serialize(&p->Owner, serializer);
         QBoolean.Serialize(&p->DestroyOnDeath, serializer);
         QList.Serialize(p->Behaviors, &p->BehaviorsPtr, serializer, StaticDelegates.SerializeUnitBehavior);
@@ -2567,10 +2584,11 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventCardSpawned CardSpawned(PlayerRef Owner, AssetRefCardSettings assetRefCardSettings) {
+      public EventCardSpawned CardSpawned(PlayerRef Owner, Int32 TokenID, AssetRefCardSettings assetRefCardSettings) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventCardSpawned>(EventCardSpawned.ID);
         ev.Owner = Owner;
+        ev.TokenID = TokenID;
         ev.assetRefCardSettings = assetRefCardSettings;
         _f.AddEvent(ev);
         return ev;
@@ -2598,12 +2616,14 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventUnitDestroyed UnitDestroyed(PlayerRef Owner, EntityRef UnitEntity, EntityRef killer) {
+      public EventUnitDestroyed UnitDestroyed(PlayerRef Owner, EntityRef UnitEntity, Int32 UnitTokenID, EntityRef killer, Int32 killerTokenID) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventUnitDestroyed>(EventUnitDestroyed.ID);
         ev.Owner = Owner;
         ev.UnitEntity = UnitEntity;
+        ev.UnitTokenID = UnitTokenID;
         ev.killer = killer;
+        ev.killerTokenID = killerTokenID;
         _f.AddEvent(ev);
         return ev;
       }
@@ -2672,6 +2692,7 @@ namespace Quantum {
   public unsafe partial class EventCardSpawned : EventBase {
     public new const Int32 ID = 1;
     public PlayerRef Owner;
+    public Int32 TokenID;
     public AssetRefCardSettings assetRefCardSettings;
     protected EventCardSpawned(Int32 id, EventFlags flags) : 
         base(id, flags) {
@@ -2691,6 +2712,7 @@ namespace Quantum {
       unchecked {
         var hash = 41;
         hash = hash * 31 + Owner.GetHashCode();
+        hash = hash * 31 + TokenID.GetHashCode();
         hash = hash * 31 + assetRefCardSettings.GetHashCode();
         return hash;
       }
@@ -2779,7 +2801,9 @@ namespace Quantum {
     public new const Int32 ID = 5;
     public PlayerRef Owner;
     public EntityRef UnitEntity;
+    public Int32 UnitTokenID;
     public EntityRef killer;
+    public Int32 killerTokenID;
     protected EventUnitDestroyed(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -2799,7 +2823,9 @@ namespace Quantum {
         var hash = 59;
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + UnitEntity.GetHashCode();
+        hash = hash * 31 + UnitTokenID.GetHashCode();
         hash = hash * 31 + killer.GetHashCode();
+        hash = hash * 31 + killerTokenID.GetHashCode();
         return hash;
       }
     }
@@ -3361,12 +3387,14 @@ namespace Quantum.Prototypes {
     public Byte Level;
     public FP BaseHealth;
     public FP Damage;
+    public Int32 TokenID;
     partial void MaterializeUser(Frame frame, ref CardInfo result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref CardInfo result, in PrototypeMaterializationContext context) {
       result.BaseHealth = this.BaseHealth;
       result.CardSettings = this.CardSettings;
       result.Damage = this.Damage;
       result.Level = this.Level;
+      result.TokenID = this.TokenID;
       MaterializeUser(frame, ref result, in context);
     }
   }
@@ -3508,8 +3536,10 @@ namespace Quantum.Prototypes {
   public sealed unsafe partial class HealthData_Prototype : StructPrototype {
     public FP Value;
     public MapEntityId Target;
+    public Int32 TargetTokenID;
     public PlayerRef TargetOwner;
     public MapEntityId Source;
+    public Int32 SourceTokenID;
     public EHealthAction_Prototype Action;
     public QBoolean HideToStats;
     partial void MaterializeUser(Frame frame, ref HealthData result, in PrototypeMaterializationContext context);
@@ -3517,8 +3547,10 @@ namespace Quantum.Prototypes {
       result.Action = this.Action;
       result.HideToStats = this.HideToStats;
       PrototypeValidator.FindMapEntity(this.Source, in context, out result.Source);
+      result.SourceTokenID = this.SourceTokenID;
       PrototypeValidator.FindMapEntity(this.Target, in context, out result.Target);
       result.TargetOwner = this.TargetOwner;
+      result.TargetTokenID = this.TargetTokenID;
       result.Value = this.Value;
       MaterializeUser(frame, ref result, in context);
     }

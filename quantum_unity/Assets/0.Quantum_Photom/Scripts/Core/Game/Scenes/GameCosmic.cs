@@ -6,278 +6,299 @@ using Quantum.Services;
 
 namespace TowerRush
 {
-	using TowerRush.Core;
-	using Quantum;
-	using System.Collections;
-	using UnityEngine;
-	using Photon.Realtime;
+    using TowerRush.Core;
+    using Quantum;
+    using System.Collections;
+    using UnityEngine;
+    using Photon.Realtime;
 
-	public class GameCosmic : Scene
-	{
-		
-		private GameMetrics gmt = new GameMetrics();
-		
-		// CONFIGURATION
+    public class GameCosmic : Scene
+    {
+        private GameMetrics gmt = new GameMetrics();
 
-		[SerializeField] Transform m_AlphaCameraPosition;
-		[SerializeField] Transform m_BetaCameraPosition;
-		[SerializeField] Light     m_AlphaLight;
-		[SerializeField] Light     m_BetaLight;
+        // CONFIGURATION
 
-		[SerializeField] private GameObject CanvasDamage;
-		// PRIVATE MEMBERS
+        [SerializeField] Transform m_AlphaCameraPosition;
+        [SerializeField] Transform m_BetaCameraPosition;
+        [SerializeField] Light m_AlphaLight;
+        [SerializeField] Light m_BetaLight;
 
-		private bool m_Started;
+        [SerializeField] private GameObject CanvasDamage;
+        // PRIVATE MEMBERS
 
-		// Scene INTERFACE
+        private bool m_Started;
 
-		protected override void OnInitialize()
-		{
-			QuantumCallback.Subscribe<CallbackGameStarted>(this, OnGameStarted);
-			QuantumEvent.Subscribe<EventGameplayStateChanged>(this, OnGameplayStateChanged);
-			UIMatchLoading.Instance.OnInitMatch();
-			
-			gmt.InitMetrics();
-			QuantumEvent.Subscribe<EventGameplayResult>(this, OnGameplayResult);
-			QuantumEvent.Subscribe<EventUnitDestroyed>(this, OnUnitDestroyed);
-			QuantumEvent.Subscribe<EventOnHealthChanged>(this, OnHealthChanged);
-			QuantumEvent.Subscribe<EventCardSpawned>(this, OnSpawnedCard);
-		}
+        // Scene INTERFACE
 
-		protected override void OnDeinitialize()
-		{
-			QuantumCallback.UnsubscribeListener<CallbackGameStarted>(this);
-			QuantumEvent.UnsubscribeListener<EventGameplayStateChanged>(this);
-			
-			QuantumEvent.UnsubscribeListener<EventGameplayResult>(this);
-			QuantumEvent.UnsubscribeListener<EventUnitDestroyed>(this);
-			QuantumEvent.UnsubscribeListener<EventOnHealthChanged>(this);
-			QuantumEvent.UnsubscribeListener<EventCardSpawned>(this);
-		}
+        protected override void OnInitialize()
+        {
+            QuantumCallback.Subscribe<CallbackGameStarted>(this, OnGameStarted);
+            QuantumEvent.Subscribe<EventGameplayStateChanged>(this, OnGameplayStateChanged);
+            UIMatchLoading.Instance.OnInitMatch();
 
-		protected override void OnActivate()
-		{
-			if (Game.GameplayInfo != null)
-			{
-				StartCoroutine(Activate_Coroutine());
-				
-			}
-			else if (QuantumRunner.Default == null)
-			{
-				StartCoroutine(ActivateOffline_Coroutine());
-			}
-			else
-			{
-				m_State = EState.Active;
-			}
-		}
-		protected override void OnDeactivate()
-		{
-			QuantumRunner.ShutdownAll(true);
-			Game.QuantumServices.Matchmaking.Leave();
-			Game.QuantumServices.Network.Disconnect();
+            gmt.InitMetrics();
+            QuantumEvent.Subscribe<EventGameplayResult>(this, OnGameplayResult);
+            QuantumEvent.Subscribe<EventUnitDestroyed>(this, OnUnitDestroyed);
+            QuantumEvent.Subscribe<EventOnHealthChanged>(this, OnHealthChanged);
+            QuantumEvent.Subscribe<EventCardSpawned>(this, OnSpawnedCard);
+        }
 
-			base.OnDeactivate();
-		}
+        protected override void OnDeinitialize()
+        {
+            QuantumCallback.UnsubscribeListener<CallbackGameStarted>(this);
+            QuantumEvent.UnsubscribeListener<EventGameplayStateChanged>(this);
 
-		protected override void OnUpdate()
-		{
-			if (Entities.LocalPlayer == 0)
-			{
-				Game.Instance.MainCamera.transform.SetPositionAndRotation(m_AlphaCameraPosition.position, m_AlphaCameraPosition.rotation);
-				m_AlphaLight.SetActive(true);
-				m_BetaLight.SetActive(false);
-			}
-			else
-			{
-				Game.Instance.MainCamera.transform.SetPositionAndRotation(m_BetaCameraPosition.position, m_BetaCameraPosition.rotation);
-				m_AlphaLight.SetActive(false);
-				m_BetaLight.SetActive(true);
-			}
-		}
+            QuantumEvent.UnsubscribeListener<EventGameplayResult>(this);
+            QuantumEvent.UnsubscribeListener<EventUnitDestroyed>(this);
+            QuantumEvent.UnsubscribeListener<EventOnHealthChanged>(this);
+            QuantumEvent.UnsubscribeListener<EventCardSpawned>(this);
+        }
 
-		protected override bool CanUpdateComponents(SceneContext context)
-		{
-			return context.Frame != null;
-		}
+        protected override void OnActivate()
+        {
+            if (Game.GameplayInfo != null)
+            {
+                StartCoroutine(Activate_Coroutine());
+            }
+            else if (QuantumRunner.Default == null)
+            {
+                StartCoroutine(ActivateOffline_Coroutine());
+            }
+            else
+            {
+                m_State = EState.Active;
+            }
+        }
 
-		// PRIVATE METHODS
+        protected override void OnDeactivate()
+        {
+            QuantumRunner.ShutdownAll(true);
+            Game.QuantumServices.Matchmaking.Leave();
+            Game.QuantumServices.Network.Disconnect();
 
-		private IEnumerator Activate_Coroutine()
-		{
-			var match = Game.QuantumServices.Matchmaking.CurrentMatch;
+            base.OnDeactivate();
+        }
 
-			while (match.HasStarted == false)
-				yield return null;
+        protected override void OnUpdate()
+        {
+            if (Entities.LocalPlayer == 0)
+            {
+                Game.Instance.MainCamera.transform.SetPositionAndRotation(m_AlphaCameraPosition.position,
+                    m_AlphaCameraPosition.rotation);
+                m_AlphaLight.SetActive(true);
+                m_BetaLight.SetActive(false);
+            }
+            else
+            {
+                Game.Instance.MainCamera.transform.SetPositionAndRotation(m_BetaCameraPosition.position,
+                    m_BetaCameraPosition.rotation);
+                m_AlphaLight.SetActive(false);
+                m_BetaLight.SetActive(true);
+            }
+        }
 
-			QuantumRunner.StartGame(Game.GameplayInfo.ClientID, Game.GameplayInfo.StartParams);
+        protected override bool CanUpdateComponents(SceneContext context)
+        {
+            return context.Frame != null;
+        }
 
-			while (m_Started == false)
-				yield return null;
+        // PRIVATE METHODS
 
-			m_State = EState.Active;
-		}
+        private IEnumerator Activate_Coroutine()
+        {
+            var match = Game.QuantumServices.Matchmaking.CurrentMatch;
 
-		private IEnumerator ActivateOffline_Coroutine()
-		{
-			var debugRunner = GetComponentInChildren<QuantumRunnerLocalDebug>();
-			if (debugRunner == null || debugRunner.enabled == true)
-			{
-				m_State = EState.Active;
-				yield break;
-			}
+            while (match.HasStarted == false)
+                yield return null;
 
-			debugRunner.enabled = true;
+            QuantumRunner.StartGame(Game.GameplayInfo.ClientID, Game.GameplayInfo.StartParams);
 
-			while (m_Started == false)
-				yield return null;
+            while (m_Started == false)
+                yield return null;
 
-			m_State = EState.Active;
-		}
+            m_State = EState.Active;
+        }
 
-		private void OnGameStarted(CallbackGameStarted started)
-		{
-			if (Game.GameplayInfo != null)
-			{
-				foreach (var player in started.Game.GetLocalPlayers())
-				{
-					started.Game.SendPlayerData(player, new RuntimePlayer()
-					{
-						Level  = Game.GameplayInfo.Level,
-						Cards  = Game.GameplayInfo.Cards,
-					});
+        private IEnumerator ActivateOffline_Coroutine()
+        {
+            var debugRunner = GetComponentInChildren<QuantumRunnerLocalDebug>();
+            if (debugRunner == null || debugRunner.enabled == true)
+            {
+                m_State = EState.Active;
+                yield break;
+            }
 
-					foreach (var VARIABLE in Game.GameplayInfo.Cards)
-					{
-						Debug.Log(VARIABLE.CardSettings.Id);
-						Debug.Log(UnityDB.FindAsset<CardSettingsAsset>(VARIABLE.CardSettings.Id).DisplayName);
-					}
-					Debug.Log("----------------------------------------");
-				}
-			}
+            debugRunner.enabled = true;
 
-			m_Started = true;
-		}
-		private void OnGameplayStateChanged(EventGameplayStateChanged stateChanged)
-		{
-			Debug.Log("ChageState: " + stateChanged.State);
-			if (stateChanged.State == EGameplayState.Deactivate)
-			{
-				FinishScene();
-			}
-			
-		}
-		
-		private void OnUnitDestroyed(EventUnitDestroyed e)
-		{
-			Debug.LogWarning("Se destruyo una nave" + e.killer.ToString());
-			// Aquí puedes rastrear qué tropa destruyó a qué otra tropa
-			// e.Unit es la entidad destruida
-			// e.Destroyer es la entidad que causó la destrucción
+            while (m_Started == false)
+                yield return null;
 
-			// Por ejemplo, podrías incrementar un contador o actualizar una estadística
-			// que rastree las unidades destruidas por cada tipo de tropa
-		}
-		private void OnGameplayResult(EventGameplayResult gameplayResult)
-		{
-			bool isWin;
-			if (gameplayResult.Winner < 0) { Debug.Log("Draw"); isWin = true; }
-			else if (gameplayResult.Winner == Entities.LocalPlayer) { isWin = true; }
-			else { isWin = false; }
-			//SendStats(isWin);
-		}
-		private void OnHealthChanged(EventOnHealthChanged e)
-		{
-			void InstanceCanvasDamage()
-			{
-				GameObject targetGameObject = GameObject.Find(e.Data.Target.ToString());
-				if (targetGameObject != null)
-				{
-					GameObject canvasDmg = Instantiate(CanvasDamage, targetGameObject.transform.position, targetGameObject.transform.rotation);
-					canvasDmg.GetComponent<CanvasDamage>().SetDamage(e.Data.Value.AsFloat);
-				}
-			}
-			
-			if (e.Data.HideToStats)
-			{
-				Debug.Log($"HideToStats: {e.Data.Value} a la entidad {e.Data.Target}");
-				return;
-			}
-			
-			if (e.Data.TargetOwner == Entities.LocalPlayerRef)
-			{
-				if (e.Data.Action == EHealthAction.Add)
-				{
-					Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
-				}
-				else if (e.Data.Action == EHealthAction.Remove)
-				{
-					Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
-					InstanceCanvasDamage();
-					gmt.AddDamageReceived(e.Data.Value.AsFloat);
-				}
-			}
-			else
-			{
-				if (e.Data.Action == EHealthAction.Add)
-				{
-					Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
-				}
-				else if (e.Data.Action == EHealthAction.Remove)
-				{
-					Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
-					InstanceCanvasDamage();
-					gmt.AddDamage(e.Data.Value.AsFloat);
-				}
-			}
-			
-		}
-		private void OnSpawnedCard(EventCardSpawned e)
-		{
-			
-			if (e.Owner == Entities.LocalPlayerRef)
-			{
-				CardSettingsAsset card = UnityDB.FindAsset<CardSettingsAsset>(e.assetRefCardSettings.Id);
-				Debug.Log(e.assetRefCardSettings.Id);
-				Debug.Log("CardSpawned Iam Owner: " + card.DisplayName + card.GetAssetGuid());
-				Debug.Log(card.GetEnergyCost());
-				gmt.AddDeploys(1);
-				gmt.AddEnergyUsed(card.GetEnergyCost());
-			}
-			else
-			{
-				Debug.Log("CardSpawned Not Owner" + e.Id);
-			}
-		}
+            m_State = EState.Active;
+        }
 
-		public async void SendStats(bool isWin)
-		{
-			BasicStats basicStats = new BasicStats();
-			basicStats.EnergyUsed = gmt.GetEnergyUsed();
-			basicStats.EnergyGenerated = gmt.GetEnergyGenerated();
-			basicStats.EnergyWasted = gmt.GetEnergyWasted();
-			basicStats.EnergyChargeRate = gmt.GetEnergyChargeRatePerSec();
-			basicStats.XpEarned = gmt.GetScore();
-			basicStats.DamageDealt = gmt.GetDamage();
-			basicStats.DamageTaken = gmt.GetDamageReceived(); 
-			basicStats.DamageCritic = gmt.GetDamageCritic();
-			basicStats.DamageEvaded = gmt.GetDamageEvaded();
-			basicStats.Kills = gmt.GetKills();
-			basicStats.Deploys = gmt.GetDeploys();
-			basicStats.SecRemaining = gmt.GetSecRemaining();
-			basicStats.WonGame = isWin;
-			basicStats.Faction = (UnboundedUInt) 0;
-			basicStats.CharacterID = "0";
-			basicStats.GameMode = (UnboundedUInt)0;
-			basicStats.BotMode = (UnboundedUInt) 0;
-			basicStats.BotDifficulty = (UnboundedUInt) 0;
-	    
-	    
-			var statsSend = await CandidApiManager.Instance.CanisterStats.SaveFinishedGame(GlobalGameData.Instance.actualNumberRoom, basicStats);
-			Debug.Log(statsSend);
-		}
+        private void OnGameStarted(CallbackGameStarted started)
+        {
+            if (Game.GameplayInfo != null)
+            {
+                foreach (var player in started.Game.GetLocalPlayers())
+                {
+                    started.Game.SendPlayerData(player, new RuntimePlayer()
+                    {
+                        Level = Game.GameplayInfo.Level,
+                        Cards = Game.GameplayInfo.Cards,
+                    });
+
+                    foreach (var VARIABLE in Game.GameplayInfo.Cards)
+                    {
+                        Debug.Log(VARIABLE.CardSettings.Id);
+                        Debug.Log(UnityDB.FindAsset<CardSettingsAsset>(VARIABLE.CardSettings.Id).DisplayName);
+                    }
+
+                    Debug.Log("----------------------------------------");
+                }
+            }
+
+            m_Started = true;
+        }
+
+        private void OnGameplayStateChanged(EventGameplayStateChanged stateChanged)
+        {
+            Debug.Log("ChageState: " + stateChanged.State);
+            if (stateChanged.State == EGameplayState.Deactivate)
+            {
+                FinishScene();
+            }
+        }
+
+        private void OnUnitDestroyed(EventUnitDestroyed e)
+        {
+            Debug.LogWarning("Se destruyo una nave" + e.killer.ToString());
+            Debug.LogWarning("NaveTokenID: " + e.UnitTokenID);
+            Debug.LogWarning("Killer TokenID: " + e.killerTokenID);
+            
+            // Aquí puedes rastrear qué tropa destruyó a qué otra tropa
+            // e.Unit es la entidad destruida
+            // e.Destroyer es la entidad que causó la destrucción
+
+            // Por ejemplo, podrías incrementar un contador o actualizar una estadística
+            // que rastree las unidades destruidas por cada tipo de tropa
+        }
+
+        private void OnGameplayResult(EventGameplayResult gameplayResult)
+        {
+            bool isWin;
+            if (gameplayResult.Winner < 0)
+            {
+                Debug.Log("Draw");
+                isWin = true;
+            }
+            else if (gameplayResult.Winner == Entities.LocalPlayer)
+            {
+                isWin = true;
+            }
+            else
+            {
+                isWin = false;
+            }
+            //SendStats(isWin);
+        }
+
+        private void OnHealthChanged(EventOnHealthChanged e)
+        {
+            void InstanceCanvasDamage()
+            {
+                GameObject targetGameObject = GameObject.Find(e.Data.Target.ToString());
+                if (targetGameObject != null)
+                {
+                    GameObject canvasDmg = Instantiate(CanvasDamage, targetGameObject.transform.position,
+                        targetGameObject.transform.rotation);
+                    canvasDmg.GetComponent<CanvasDamage>().SetDamage(e.Data.Value.AsFloat);
+                }
+            }
+
+            Debug.Log($"Target_TokenID: {e.Data.TargetTokenID}");
+            Debug.Log($"Source_TokenID: {e.Data.SourceTokenID}");
+            
+            if (e.Data.HideToStats)
+            {
+                Debug.Log($"HideToStats: {e.Data.Value} a la entidad {e.Data.Target}");
+                return;
+            }
+
+            if (e.Data.TargetOwner == Entities.LocalPlayerRef)
+            {
+                if (e.Data.Action == EHealthAction.Add)
+                {
+                    Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
+                }
+                else if (e.Data.Action == EHealthAction.Remove)
+                {
+                    Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+                    InstanceCanvasDamage();
+                    gmt.AddDamageReceived(e.Data.Value.AsFloat);
+                }
+            }
+            else
+            {
+                if (e.Data.Action == EHealthAction.Add)
+                {
+                    Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
+                }
+                else if (e.Data.Action == EHealthAction.Remove)
+                {
+                    Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+                    InstanceCanvasDamage();
+                    gmt.AddDamage(e.Data.Value.AsFloat);
+                }
+            }
+            
+           
+        }
+
+        private void OnSpawnedCard(EventCardSpawned e)
+        {
+            if (e.Owner == Entities.LocalPlayerRef)
+            {
+                CardSettingsAsset card = UnityDB.FindAsset<CardSettingsAsset>(e.assetRefCardSettings.Id);
+                Debug.Log(e.assetRefCardSettings.Id);
+                Debug.Log("CardSpawned Iam Owner: " + card.DisplayName + e.TokenID);
+                Debug.Log(card.GetEnergyCost());
+                gmt.AddDeploys(1);
+                gmt.AddEnergyUsed(card.GetEnergyCost());
+            }
+            else
+            {
+                Debug.Log("CardSpawned Not Owner" + e.TokenID);
+            }
+        }
+
+        public async void SendStats(bool isWin)
+        {
+            BasicStats basicStats = new BasicStats();
+            basicStats.EnergyUsed = gmt.GetEnergyUsed();
+            basicStats.EnergyGenerated = gmt.GetEnergyGenerated();
+            basicStats.EnergyWasted = gmt.GetEnergyWasted();
+            basicStats.EnergyChargeRate = gmt.GetEnergyChargeRatePerSec();
+            basicStats.XpEarned = gmt.GetScore();
+            basicStats.DamageDealt = gmt.GetDamage();
+            basicStats.DamageTaken = gmt.GetDamageReceived();
+            basicStats.DamageCritic = gmt.GetDamageCritic();
+            basicStats.DamageEvaded = gmt.GetDamageEvaded();
+            basicStats.Kills = gmt.GetKills();
+            basicStats.Deploys = gmt.GetDeploys();
+            basicStats.SecRemaining = gmt.GetSecRemaining();
+            basicStats.WonGame = isWin;
+            basicStats.Faction = (UnboundedUInt) 0;
+            basicStats.CharacterID = "0";
+            basicStats.GameMode = (UnboundedUInt) 0;
+            basicStats.BotMode = (UnboundedUInt) 0;
+            basicStats.BotDifficulty = (UnboundedUInt) 0;
 
 
-
-	}
+            var statsSend =
+                await CandidApiManager.Instance.CanisterStats.SaveFinishedGame(GlobalGameData.Instance.actualNumberRoom,
+                    basicStats);
+            Debug.Log(statsSend);
+        }
+    }
 }

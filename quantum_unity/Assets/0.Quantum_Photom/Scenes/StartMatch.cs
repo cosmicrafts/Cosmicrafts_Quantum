@@ -100,6 +100,7 @@ public class StartMatch : MonoBehaviour
 								nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == "health").StatValue * (HpPorcent * 0.01f)),
 							Damage = FP.FromFloat_UNSAFE(
 								nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == "damage").StatValue * (DmgPorcent * 0.01f)),
+							TokenID = Int32.Parse( nftData.TokenId ),
 						}).ToArray(),
 			};
 
