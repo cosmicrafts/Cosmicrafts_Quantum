@@ -90,51 +90,50 @@ public class NFTCollection : MonoBehaviour
   
     //Updates the UI collection with the current data and filters
    public void RefreshCollection()
-{
-    if (AllNFTDatas == null || AllNFTDatas.Count == 0)
     {
-        Debug.Log("No NFT Data available for collection.");
-        return;
-    }
-
-    // Clean up existing UI elements.
-    foreach (Transform child in NftCardPrefab.transform.parent)
-    {
-        if (child.gameObject != NftCardPrefab.gameObject)
+        if (AllNFTDatas == null || AllNFTDatas.Count == 0)
         {
-            Destroy(child.gameObject);
+            Debug.Log("No NFT Data available for collection.");
+            return;
         }
+
+        // Clean up existing UI elements.
+        foreach (Transform child in NftCardPrefab.transform.parent)
+        {
+            if (child.gameObject != NftCardPrefab.gameObject)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        // Repopulate the deck with the first available NFTs from AllNFTDatas.
+        var deckNFTs = AllNFTDatas.Take(6).ToList();
+        for (int i = 0; i < deckNFTs.Count; i++)
+        {
+            Deck[i].SetNFTData(deckNFTs[i]);
+            Deck[i].gameObject.SetActive(true);
+        }
+
+        // Hide unused deck slots if any.
+        for (int i = deckNFTs.Count; i < Deck.Length; i++)
+        {
+            Deck[i].gameObject.SetActive(false);
+        }
+
+        // Display the rest of the collection, excluding those in the deck.
+        foreach (NFTData nftData in AllNFTDatas.Skip(6))
+        {
+            NFTCard card = Instantiate(NftCardPrefab.gameObject, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
+            card.SetNFTData(nftData);
+            card.gameObject.SetActive(true);
+        }
+
+        NftCardPrefab.gameObject.SetActive(false); // Hide the prefab template.
+
+        // Update PlayerPrefs with the new deck configuration.
+        SavedKeys savedKeys = new SavedKeys { listSavedKeys = deckNFTs.Select(nft => nft.TokenId).ToList() };
+        PlayerPrefs.SetString("savedKeys", JsonUtility.ToJson(savedKeys));
     }
-
-    // Repopulate the deck with the first available NFTs from AllNFTDatas.
-    var deckNFTs = AllNFTDatas.Take(6).ToList();
-    for (int i = 0; i < deckNFTs.Count; i++)
-    {
-        Deck[i].SetNFTData(deckNFTs[i]);
-        Deck[i].gameObject.SetActive(true);
-    }
-
-    // Hide unused deck slots if any.
-    for (int i = deckNFTs.Count; i < Deck.Length; i++)
-    {
-        Deck[i].gameObject.SetActive(false);
-    }
-
-    // Display the rest of the collection, excluding those in the deck.
-    foreach (NFTData nftData in AllNFTDatas.Skip(6))
-    {
-        NFTCard card = Instantiate(NftCardPrefab.gameObject, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
-        card.SetNFTData(nftData);
-        card.gameObject.SetActive(true);
-    }
-
-    NftCardPrefab.gameObject.SetActive(false); // Hide the prefab template.
-
-    // Update PlayerPrefs with the new deck configuration.
-    SavedKeys savedKeys = new SavedKeys { listSavedKeys = deckNFTs.Select(nft => nft.TokenId).ToList() };
-    PlayerPrefs.SetString("savedKeys", JsonUtility.ToJson(savedKeys));
-}
-
 
     //Selects a card
     public void SelectCard(NFTCard card)
@@ -152,8 +151,10 @@ public class NFTCollection : MonoBehaviour
         CurrentSelected = card;
         card.SelectCard();
         CardPreview.SetNFTData(card.nftData);
+        CardPreview.iconImage.sprite = card.iconImage.sprite;
         CardPreview.gameObject.SetActive(true);
     }
+
     //Drags a card
     public void DragCard(NFTCard card)
     {
@@ -164,6 +165,7 @@ public class NFTCollection : MonoBehaviour
         card.iconImage.enabled = false;
         DragIcon.transform.position = Input.mousePosition;
     }
+
     //Drops a card
     public void DropCard()
     {

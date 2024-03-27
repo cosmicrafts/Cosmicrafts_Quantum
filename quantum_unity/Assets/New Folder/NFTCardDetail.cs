@@ -102,7 +102,7 @@ public class NFTCardDetail : NFTCard
 
     private void SetFactionIcon(string factionText)
     {
-        Debug.Log($"Attempting to set faction icon for: {factionText}");
+       // Debug.Log($"Attempting to set faction icon for: {factionText}");
         int index = -1;
 
         // Your switch statement...
