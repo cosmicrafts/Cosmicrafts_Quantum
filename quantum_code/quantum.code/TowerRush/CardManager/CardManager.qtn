@@ -20,7 +20,6 @@ struct CardInfo
 	Byte                 Level;
     FP                   BaseHealth;
     FP                   Damage;
-    int                  TokenID;
 }
 
 [PreserveInPrototype]
@@ -40,7 +39,5 @@ synced event CardsChanged
 synced event CardSpawned
 {
     PlayerRef Owner; // El propietario de la unidad destruida
-    int       TokenID;
-
     AssetRefCardSettings assetRefCardSettings;
 }

@@ -9,10 +9,8 @@ struct HealthData
 {
 	FP            Value;
 	EntityRef     Target;
-    int           TargetTokenID;
     PlayerRef     TargetOwner;
 	EntityRef     Source;
-    int           SourceTokenID;
 	EHealthAction Action;
     bool     HideToStats;
 }

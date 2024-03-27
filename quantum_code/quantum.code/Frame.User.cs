@@ -48,7 +48,6 @@
 					Log.Debug($"Level: {cardInfo.Level}");
 					Log.Debug($"H: {cardInfo.BaseHealth}");
 					Log.Debug($"D: {cardInfo.Damage}");
-					Log.Debug($"D: {cardInfo.TokenID}");
 					
 					if (cardInfo.Level == 0) { }
 					else
@@ -73,7 +72,7 @@
 					}
 					
 					
-					unit->Initialize(this, owner, unitEntity, unitSettings, level, cardInfo.TokenID);
+					unit->Initialize(this, owner, unitEntity, unitSettings, level);
 
 				}
 			}
