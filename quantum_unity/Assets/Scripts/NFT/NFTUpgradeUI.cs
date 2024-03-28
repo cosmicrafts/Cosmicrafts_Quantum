@@ -16,6 +16,7 @@ public class NFTUpgradeUI : MonoBehaviour
     public TMP_Text levelInfoText;
     public TMP_Text hpInfoText;
     public TMP_Text damageInfoText;
+    public NFTUpgradeScreenUI upgradeScreenUI;
     public shards ShardsScript;
 
     private void OnEnable()
@@ -49,6 +50,8 @@ public class NFTUpgradeUI : MonoBehaviour
             return;
         }
 
+        LoadingPanel.Instance.ActiveLoadingPanel();
+
         int currentLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
         int currentHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
         int currentDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
@@ -80,13 +83,17 @@ public class NFTUpgradeUI : MonoBehaviour
             (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
             if (success)
             {
+                
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+                upgradeScreenUI.gameObject.SetActive(true);
+                
                 ShardsScript.FetchBalance();
                 Debug.Log("NFT upgrade successful!");
                 notificationText.text = "Upgrade successful: " + message;
                 await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade);
 
                 NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade);
-                nftCard.SetNFTData(updatedData); // Make sure to update the NFTCard with the new data
+               // nftCard.SetNFTData(updatedData); // Make sure to update the NFTCard with the new data
 
                 int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
                 int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
@@ -94,6 +101,7 @@ public class NFTUpgradeUI : MonoBehaviour
 
                 // Calculate differences
                 DisplayUpgradeInfo(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
+                upgradeScreenUI.ActivateUpgradeScreen(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
             }
             else
             {
