@@ -5,9 +5,10 @@
 
 	public unsafe partial struct Unit
 	{
-		public void Initialize(Frame frame, PlayerRef owner, EntityRef entity, UnitSettings settings, byte level)
+		public void Initialize(Frame frame, PlayerRef owner, EntityRef entity, UnitSettings settings, byte level, int tokenID)
 		{
 			Owner           = owner;
+			TokenID         = tokenID;
 			Level           = level;
 			DestroyOnDeath  = settings.DestroyOnDeath;
 			ActivationDelay = settings.ActivationDelay;

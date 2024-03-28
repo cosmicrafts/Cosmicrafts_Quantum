@@ -22,6 +22,7 @@
 					stream.WriteLong(card.CardSettings.Id.Value);
 					stream.WriteFP(card.BaseHealth);
 					stream.WriteFP(card.Damage);
+					stream.WriteInt(card.TokenID);
 				}
 			}
 			else if (stream.Reading)
@@ -37,6 +38,7 @@
 						CardSettings = new AssetRefCardSettings() { Id = new AssetGuid(stream.ReadLong()) },
 						BaseHealth = stream.ReadFP(),
 						Damage = stream.ReadFP(),
+						TokenID = stream.ReadInt(),
 					};
 				}
 			}

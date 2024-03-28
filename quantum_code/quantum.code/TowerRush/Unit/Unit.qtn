@@ -2,6 +2,7 @@
 {
 	[ExcludeFromPrototype] Byte                 Level;
 	[ExcludeFromPrototype] PlayerRef            Owner;
+    [ExcludeFromPrototype] int                  TokenID;
 	[ExcludeFromPrototype] bool                 DestroyOnDeath;
 	[ExcludeFromPrototype] AssetRefCardSettings Settings;
 	[ExcludeFromPrototype] FP                   ActivationDelay;

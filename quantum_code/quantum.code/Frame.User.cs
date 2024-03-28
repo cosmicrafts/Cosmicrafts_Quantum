@@ -10,7 +10,8 @@
 		{
 			Level = 0,
 			Damage = FP._200,
-			BaseHealth = FP._200
+			BaseHealth = FP._200,
+			TokenID = 0,
 		};
 
 		public EntityRef CreateEntity(AssetRefEntityPrototype prototype, FPVector2 position, FP rotation)
@@ -48,6 +49,7 @@
 					Log.Debug($"Level: {cardInfo.Level}");
 					Log.Debug($"H: {cardInfo.BaseHealth}");
 					Log.Debug($"D: {cardInfo.Damage}");
+					Log.Debug($"TokenID: {cardInfo.TokenID}");
 					
 					if (cardInfo.Level == 0) { }
 					else
@@ -72,7 +74,7 @@
 					}
 					
 					
-					unit->Initialize(this, owner, unitEntity, unitSettings, level);
+					unit->Initialize(this, owner, unitEntity, unitSettings, level, cardInfo.TokenID);
 
 				}
 			}

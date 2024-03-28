@@ -47,6 +47,12 @@
 			var castleSettings   = frame.FindAsset<UnitSettings>(gameplaySettings.CastleSettings.Id);
 			var towerSettings    = frame.FindAsset<UnitSettings>(gameplaySettings.TowerSettings.Id);
 
+			foreach (var card in playerData.Cards)
+			{
+				Log.Debug("D: " + card.Damage +" L: " + card.Level +" HP: " + card.BaseHealth );
+				Log.Debug("Token: " + card.TokenID );
+			}
+
 			player->PlayerRef = playerRef;
 			cardManager->Initialize(frame, playerData.Cards, gameplaySettings);
 
@@ -230,7 +236,7 @@
 
 		private void SetBuilding(Frame frame, PlayerRef owner, EntityRef entity, UnitSettings settings, byte level)
 		{
-			frame.Unsafe.GetPointer<Unit>(entity)->Initialize(frame, owner, entity, settings, level);
+			frame.Unsafe.GetPointer<Unit>(entity)->Initialize(frame, owner, entity, settings, level, 0);
 		}
 
 		private bool CheckTower(Frame frame, EntityRef unitRef, QListPtr<EntityRef> towersPtr, PlayerRef killerPlayer)

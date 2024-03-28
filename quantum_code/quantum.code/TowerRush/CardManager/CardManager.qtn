@@ -20,6 +20,7 @@ struct CardInfo
 	Byte                 Level;
     FP                   BaseHealth;
     FP                   Damage;
+    int                  TokenID;
 }
 
 [PreserveInPrototype]
