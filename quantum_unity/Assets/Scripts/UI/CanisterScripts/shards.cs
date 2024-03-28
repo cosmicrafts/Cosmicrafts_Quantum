@@ -18,6 +18,8 @@ public class shards : MonoBehaviour
     public Button sendTokenButton;
     public TMP_Text transferStatusText; 
     public Animator ShardsPanel;
+    public BigInteger CurrentBalance { get; private set; } = BigInteger.Zero;
+
 
     private const int DECIMAL_PLACES = 6;
     void Start()
@@ -63,6 +65,7 @@ private void OnDisable()
         {
             Debug.LogError($"Error fetching balance: {ex.Message}");
         }
+        Debug.Log($"[shards] Fetched balance: {CurrentBalance}");
     }
 
     private string FormatBalance(UnboundedUInt balance)
@@ -145,6 +148,7 @@ private void OnDisable()
     {
         // Assuming you have a method to convert UnboundedUInt to BigInteger or decimal for comparison
         BigInteger newBalanceBigInt = newBalance.ToBigInteger();
+        CurrentBalance = newBalanceBigInt;
         StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
     }
 

@@ -20,6 +20,8 @@ public class icptoken : MonoBehaviour
     public Button sendTokenButton;
     public TMP_Text transferStatusText; 
     public Animator ICPPanel;
+    public BigInteger CurrentBalance { get; private set; } = BigInteger.Zero;
+
 
     private const int DECIMAL_PLACES = 6;
     void Start()
@@ -143,6 +145,7 @@ private void OnDisable()
     {
         // Assuming you have a method to convert UnboundedUInt to BigInteger or decimal for comparison
         BigInteger newBalanceBigInt = newBalance.ToBigInteger();
+        CurrentBalance = newBalanceBigInt;
         StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
     }
 

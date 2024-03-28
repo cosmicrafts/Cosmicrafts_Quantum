@@ -16,17 +16,27 @@ public class NFTUpgradeUI : MonoBehaviour
     public TMP_Text levelInfoText;
     public TMP_Text hpInfoText;
     public TMP_Text damageInfoText;
+    public shards ShardsScript;
+
+    private void OnEnable()
+    {
+        FetchAndCheckShardsBalance();
+        upgradeButton.onClick.AddListener(OnUpgradeButtonPressed);
+    }
+
+    private void FetchAndCheckShardsBalance()
+    {
+        BigInteger requiredShards = new BigInteger(11);
+        bool hasEnoughShards = ShardsScript.CurrentBalance >= requiredShards;
+        upgradeButton.interactable = hasEnoughShards;
+        notificationText.text = hasEnoughShards ? "" : "You need at least 10 shards to upgrade.";
+    }
 
     private void DisplayUpgradeInfo(int currentLevel, int updatedLevel, int currentHP, int hpDiff, int currentDamage, int damageDiff)
     {
         levelInfoText.text = $"Level: {currentLevel} -> {updatedLevel}";
         hpInfoText.text = $"HP: {currentHP} + {hpDiff}";
         damageInfoText.text = $"Damage: {currentDamage} + {damageDiff}";
-    }
-
-    private void Start()
-    {
-        upgradeButton.onClick.AddListener(OnUpgradeButtonPressed);
     }
 
     private async void OnUpgradeButtonPressed()
@@ -70,6 +80,7 @@ public class NFTUpgradeUI : MonoBehaviour
             (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
             if (success)
             {
+                ShardsScript.FetchBalance();
                 Debug.Log("NFT upgrade successful!");
                 notificationText.text = "Upgrade successful: " + message;
                 await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade);
