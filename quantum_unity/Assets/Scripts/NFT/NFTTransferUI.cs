@@ -50,10 +50,43 @@ public class NFTTransferUI : MonoBehaviour
             }
 
             else if (receipt.Tag == TransferReceiptTag.Err)
-            {
-                Debug.LogError($"NFT transfer failed: {receipt.AsErr().ToString()}");
-                notificationText.text = $"NFT transfer failed: {receipt.AsErr().ToString()}";
-            }
+{
+    TransferError error = receipt.AsErr();
+    switch (error.Tag)
+    {
+        case TransferErrorTag.CreatedInFuture:
+            Debug.LogError("NFT transfer failed: Transfer created in the future.");
+            // Access specific fields if needed
+            var futureInfo = error.AsCreatedInFuture();
+            Debug.LogError($"Ledger Time: {futureInfo.LedgerTime}");
+            break;
+        case TransferErrorTag.Duplicate:
+            Debug.LogError("NFT transfer failed: Duplicate transfer.");
+            // Access specific fields if needed
+            var duplicateInfo = error.AsDuplicate();
+            Debug.LogError($"Duplicate of Transfer ID: {duplicateInfo.DuplicateOf}");
+            break;
+        case TransferErrorTag.GenericError:
+            var genericInfo = error.AsGenericError();
+            Debug.LogError($"NFT transfer failed: Generic error - {genericInfo.Message}");
+            break;
+        case TransferErrorTag.TemporarilyUnavailable:
+            Debug.LogError("NFT transfer failed: Service temporarily unavailable.");
+            break;
+        case TransferErrorTag.TooOld:
+            Debug.LogError("NFT transfer failed: Transfer too old.");
+            break;
+        case TransferErrorTag.Unauthorized:
+            Debug.LogError("NFT transfer failed: Unauthorized.");
+            var unauthorizedInfo = error.AsUnauthorized();
+            Debug.LogError($"Unauthorized Token IDs: {string.Join(", ", unauthorizedInfo.TokenIds)}");
+            break;
+        default:
+            Debug.LogError("NFT transfer failed: Unknown error.");
+            break;
+    }
+}
+
         }
         catch (System.Exception ex)
         {

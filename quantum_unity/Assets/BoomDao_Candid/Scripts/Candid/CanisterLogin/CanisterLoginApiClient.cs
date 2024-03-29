@@ -26,6 +26,13 @@ namespace CanisterPK.CanisterLogin
 			this.Converter = converter;
 		}
 
+		public async Task<(bool ReturnArg0, string ReturnArg1)> ClaimReward(UnboundedUInt arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "claimReward", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1)> CreatePlayer(string arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
@@ -92,6 +99,13 @@ namespace CanisterPK.CanisterLogin
 			CandidArg arg = CandidArg.FromCandid();
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getPlayerPreferences", arg);
 			return reply.ToObjects<OptionalValue<Models.PlayerPreferences>>(this.Converter);
+		}
+
+		public async Task<List<Models.RewardsUser>> GetUserRewards()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getUserRewards", arg);
+			return reply.ToObjects<List<Models.RewardsUser>>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> MergeSkinNFTs(UnboundedUInt arg0, UnboundedUInt arg1)

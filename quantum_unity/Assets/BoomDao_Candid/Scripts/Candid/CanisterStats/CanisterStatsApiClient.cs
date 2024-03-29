@@ -73,6 +73,22 @@ namespace CanisterPK.CanisterStats
 			return reply.ToObjects<Models.OverallStats>(this.Converter);
 		}
 
+		public async Task<OptionalValue<Models.AverageStats>> GetPlayerAverageStats(Principal arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getPlayerAverageStats", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<OptionalValue<Models.AverageStats>>(this.Converter);
+		}
+
+		public async Task<OptionalValue<Models.PlayerGamesStats>> GetPlayerStats(Principal arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getPlayerStats", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<OptionalValue<Models.PlayerGamesStats>>(this.Converter);
+		}
+
 		public async Task<bool> SaveFinishedGame(GameID arg0, Models.BasicStats arg1)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
