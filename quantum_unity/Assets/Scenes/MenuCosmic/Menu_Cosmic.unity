@@ -24348,7 +24348,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &597973403
 RectTransform:
   m_ObjectHideFlags: 0
@@ -74313,6 +74313,7 @@ GameObject:
   - component: {fileID: 2020007991}
   - component: {fileID: 2020007990}
   - component: {fileID: 2020007992}
+  - component: {fileID: 2020007993}
   m_Layer: 5
   m_Name: UIProfile
   m_TagString: Untagged
@@ -74389,6 +74390,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avatarButtonPrefab: {fileID: 1953014732}
   scrollContent: {fileID: 1158350598}
+--- !u!114 &2020007993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020007988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 031bb7eb77b3f5343b00bd2649d43c3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loading: {fileID: 0}
+  error: {fileID: 0}
+  content: {fileID: 0}
+  since: {fileID: 0}
+  timePlayed: {fileID: 0}
+  blockChain: {fileID: 0}
+  gamesWins: {fileID: 0}
+  gamesPlayed: {fileID: 0}
+  damageDealt: {fileID: 0}
+  damageEvaded: {fileID: 0}
+  criticalDamage: {fileID: 0}
+  damageTaken: {fileID: 0}
+  xpEarned: {fileID: 0}
+  energyGenerated: {fileID: 0}
+  energyUsed: {fileID: 0}
+  energyWasted: {fileID: 0}
 --- !u!1 &2020773736
 GameObject:
   m_ObjectHideFlags: 0
