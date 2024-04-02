@@ -66,5 +66,7 @@ synced event UnitDestroyed
 {
     PlayerRef Owner; // El propietario de la unidad destruida
     EntityRef UnitEntity; // La unidad destruida
+    int       UnitTokenID;
     EntityRef killer; // La unidad que causó la destrucción
+    int       killerTokenID;
 }

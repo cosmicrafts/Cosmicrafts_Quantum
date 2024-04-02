@@ -41,8 +41,16 @@
 			if (frame.Unsafe.TryGetPointer<Unit>(data.Target, out var unit))
 			{
 				data.TargetOwner = unit-> Owner;
+				data.TargetTokenID = unit-> TokenID;
 			}
-			else { data.TargetOwner = default; }
+			else { data.TargetOwner = default; data.TargetTokenID = default; }
+			
+			if (frame.Unsafe.TryGetPointer<Unit>(data.Source, out var unitSource))
+			{
+				data.SourceTokenID = unitSource-> TokenID;
+			}
+			else { data.SourceTokenID = default; }
+			
 			
 			
 			switch (data.Action)

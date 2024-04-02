@@ -1,3 +1,4 @@
+ using System;
  using System.Collections;
 using System.Collections.Generic;
  using System.Globalization;
@@ -29,9 +30,37 @@ public class UIProfile2 : MonoBehaviour
     public TMP_Text energyGenerated;
     public TMP_Text energyUsed;
     public TMP_Text energyWasted;
-    
-      
-    
+
+
+    private async void Start()
+    {
+        Debug.Log("[START]");
+        
+        var playerGameStats = await CandidApiManager.Instance.CanisterStats.GetMyStats();
+        
+        if (playerGameStats.HasValue)
+        {
+            var playerStats = playerGameStats.ValueOrDefault;
+            
+            // Basic stats
+            Debug.Log($"Energy Generated: {playerStats.EnergyGenerated}");
+            Debug.Log($"Energy Used: {playerStats.EnergyUsed}");
+            Debug.Log($"Energy Wasted: {playerStats.EnergyWasted}");
+            Debug.Log($"Games Lost: {playerStats.GamesLost}");
+            Debug.Log($"Games Played: {playerStats.GamesPlayed}");
+            Debug.Log($"Games Won: {playerStats.GamesWon}");
+            Debug.Log($"Total Damage Crit: {playerStats.TotalDamageCrit}");
+            Debug.Log($"Total Damage Dealt: {playerStats.TotalDamageDealt}");
+            Debug.Log($"Total Damage Evaded: {playerStats.TotalDamageEvaded}");
+            Debug.Log($"Total Damage Taken: {playerStats.TotalDamageTaken}");
+            Debug.Log($"Total XP Earned: {playerStats.TotalXpEarned}");
+        }
+        else
+        {
+            Debug.Log("No hay info del match");
+        }
+    }
+
     public void OpenProfile()
     {
         Debug.Log("awake");

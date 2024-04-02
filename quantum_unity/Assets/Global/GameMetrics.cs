@@ -23,6 +23,8 @@ public class GameMetrics
     int SecRemaining;
     //Score Token
     int Score;
+    //IsWinner
+    bool IsWin;
 
     // Start is called before the first frame update
     public void InitMetrics()
@@ -43,6 +45,7 @@ public class GameMetrics
         SecRemaining = 0;
 
         Score = 0;
+        IsWin = false;
     }
 
     //Calculate final metrics when game ends
@@ -85,6 +88,11 @@ public class GameMetrics
     {
         Deploys += value;
     }
+    
+    public void SetIsWin(bool isWin)
+    {
+        IsWin = isWin;
+    }
 
     //Gets
     #region
@@ -100,6 +108,6 @@ public class GameMetrics
     public int GetDeploys() { return Deploys; }
     public int GetSecRemaining() { return SecRemaining; }
     public int GetScore() { return Score; }
-    
+    public bool GetIsWin() { return IsWin; }
     #endregion
 }

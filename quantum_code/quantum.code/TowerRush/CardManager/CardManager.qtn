@@ -40,5 +40,6 @@ synced event CardsChanged
 synced event CardSpawned
 {
     PlayerRef Owner; // El propietario de la unidad destruida
+    int CardTokenID;
     AssetRefCardSettings assetRefCardSettings;
 }

@@ -25,6 +25,10 @@ namespace TowerRush
 		[SerializeField] Light     m_BetaLight;
 
 		[SerializeField] private GameObject CanvasDamage;
+		
+		[SerializeField] private GameObject UILoadingResults;
+		[SerializeField] private GameObject UIResults;
+		
 		// PRIVATE MEMBERS
 
 		private bool m_Started;
@@ -163,20 +167,31 @@ namespace TowerRush
 			Debug.Log("ChageState: " + stateChanged.State);
 			if (stateChanged.State == EGameplayState.Deactivate)
 			{
-				FinishScene();
+				SendStats();
+				//FinishScene();
 			}
 			
 		}
 		
 		private void OnUnitDestroyed(EventUnitDestroyed e)
 		{
-			Debug.LogWarning("Se destruyo una nave" + e.killer.ToString());
-			// Aquí puedes rastrear qué tropa destruyó a qué otra tropa
 			// e.Unit es la entidad destruida
-			// e.Destroyer es la entidad que causó la destrucción
+			// e.killer es la entidad que causó la destrucción
 
-			// Por ejemplo, podrías incrementar un contador o actualizar una estadística
-			// que rastree las unidades destruidas por cada tipo de tropa
+			if (e.Owner == Entities.LocalPlayerRef)
+			{
+				Debug.LogWarning(
+					"Destruyeron Mi Nave: "+e.UnitEntity.ToString() + "Killer: " + e.killer.ToString());
+			}
+			else
+			{
+				Debug.LogWarning(
+					"Destruí una Nave: "+e.killer.ToString() + "ship: " + e.UnitEntity.ToString());
+				
+				gmt.AddKills(1);
+			}
+			
+			
 		}
 		private void OnGameplayResult(EventGameplayResult gameplayResult)
 		{
@@ -184,7 +199,8 @@ namespace TowerRush
 			if (gameplayResult.Winner < 0) { Debug.Log("Draw"); isWin = true; }
 			else if (gameplayResult.Winner == Entities.LocalPlayer) { isWin = true; }
 			else { isWin = false; }
-			//SendStats(isWin);
+			
+			gmt.SetIsWin(isWin);
 		}
 		private void OnHealthChanged(EventOnHealthChanged e)
 		{
@@ -234,23 +250,22 @@ namespace TowerRush
 		}
 		private void OnSpawnedCard(EventCardSpawned e)
 		{
-			
 			if (e.Owner == Entities.LocalPlayerRef)
 			{
 				CardSettingsAsset card = UnityDB.FindAsset<CardSettingsAsset>(e.assetRefCardSettings.Id);
 				Debug.Log(e.assetRefCardSettings.Id);
-				Debug.Log("CardSpawned Iam Owner: " + card.DisplayName + card.GetAssetGuid());
+				Debug.Log("CardSpawned Iam Owner: " + card.DisplayName+" : "+ e.CardTokenID);
 				Debug.Log(card.GetEnergyCost());
 				gmt.AddDeploys(1);
 				gmt.AddEnergyUsed(card.GetEnergyCost());
 			}
 			else
 			{
-				Debug.Log("CardSpawned Not Owner" + e.Id);
+				Debug.Log("CardSpawned Not Owner" + e.CardTokenID);
 			}
 		}
 
-		public async void SendStats(bool isWin)
+		public async void SendStats()
 		{
 			BasicStats basicStats = new BasicStats();
 			basicStats.EnergyUsed = gmt.GetEnergyUsed();
@@ -265,7 +280,8 @@ namespace TowerRush
 			basicStats.Kills = gmt.GetKills();
 			basicStats.Deploys = gmt.GetDeploys();
 			basicStats.SecRemaining = gmt.GetSecRemaining();
-			basicStats.WonGame = isWin;
+			
+			basicStats.WonGame = gmt.GetIsWin();
 			basicStats.Faction = (UnboundedUInt) 0;
 			basicStats.CharacterID = "0";
 			basicStats.GameMode = (UnboundedUInt)0;
@@ -273,8 +289,14 @@ namespace TowerRush
 			basicStats.BotDifficulty = (UnboundedUInt) 0;
 	    
 	    
+			LoadingPanel.Instance.ActiveLoadingPanel();
+			
 			var statsSend = await CandidApiManager.Instance.CanisterStats.SaveFinishedGame(GlobalGameData.Instance.actualNumberRoom, basicStats);
-			Debug.Log(statsSend);
+			Debug.Log("StatSend: " + statsSend.ReturnArg0);
+			Debug.Log("Res: " + statsSend.ReturnArg1);
+			LoadingPanel.Instance.DesactiveLoadingPanel();
+			
+			FinishScene();
 		}
 
 

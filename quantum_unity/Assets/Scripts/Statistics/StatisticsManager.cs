@@ -66,10 +66,10 @@ public class StatisticsManager : MonoBehaviour
         };
 
         // Call the canister to save the game statistics
-        bool result = await CandidApiManager.Instance.CanisterStats.SaveFinishedGame(gameIDUnbounded, stats);
+        var result = await CandidApiManager.Instance.CanisterStats.SaveFinishedGame(gameIDUnbounded, stats);
 
-        Debug.Log($"Game stats saved for Game ID {gameID}: {result}");
-        return result;
+        Debug.Log($"Game stats saved for Game ID {gameID}: {result.ReturnArg0}");
+        return result.ReturnArg0;
     }
 
     public async Task GetPlayerStats(string principalId)

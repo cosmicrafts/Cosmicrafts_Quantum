@@ -105,14 +105,21 @@
 			}
 
 			PlayerRef owner = default;
+			int unitTokenID = default;
 			if (frame.Unsafe.TryGetPointer<Unit>(entity, out var unit))
 			{
 				owner = unit-> Owner;
+				unitTokenID = unit-> TokenID;
 			}
 			
+			int killerTokenID = default;
+			if (frame.Unsafe.TryGetPointer<Unit>(killer, out var unitKiller))
+			{
+				killerTokenID = unitKiller-> TokenID;
+			}
 			
-			frame.Events.UnitDestroyed(owner, entity, killer);
-
+			frame.Events.UnitDestroyed(owner, entity, unitTokenID, killer, killerTokenID);
+			
 		}
 
 		public bool IsValidUnitPosition(Frame frame, PlayerRef playerRef, FPVector2 position)
