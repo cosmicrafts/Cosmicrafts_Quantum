@@ -14,9 +14,24 @@ public class NFTTransferUI : MonoBehaviour
     public NFTManager nftManager;
     public NFTCard nftCard;
 
+    public TMP_Text nameText;
+    public TMP_Text levelText;
+    public TMP_Text tokenId;
+    public Image avatarImage;
+
+        private void DisplayNFTInfo()
+    {
+        nameText.text = nftCard.Name;
+        levelText.text = nftCard.Level;
+        tokenId.text = nftCard.TokenId;
+        avatarImage.sprite = nftCard.Avatar;
+    }
+
+
     private void Start()
     {
         transferButton.onClick.AddListener(OnTransferButtonPressed);
+        DisplayNFTInfo();
     }
 
     public async void OnTransferButtonPressed()

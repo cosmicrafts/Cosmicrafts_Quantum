@@ -3,18 +3,20 @@ using TMPro;
 
 public class CopyToClipboard : MonoBehaviour
 {
-    public TMP_Text textToCopy;
     public NotificationManager notificationManager;
 
     public void CopyText()
     {
-        Debug.Log("Copying text: " + textToCopy.text);
-        GUIUtility.systemCopyBuffer = textToCopy.text;
+        // Directly fetch the full wallet ID from GlobalGameData or similar
+        string fullWalletId = GlobalGameData.Instance.GetUserData().WalletId;
+        
+        GUIUtility.systemCopyBuffer = fullWalletId; // Copy the full Wallet ID to clipboard
+        Debug.Log("Full Wallet ID copied to clipboard: " + fullWalletId);
 
         // Show notification
-        if(notificationManager != null)
+        if (notificationManager != null)
         {
-            notificationManager.ShowNotification("Principal copied to clipboard!");
+            notificationManager.ShowNotification("Principal ID copied to clipboard!");
         }
         else
         {

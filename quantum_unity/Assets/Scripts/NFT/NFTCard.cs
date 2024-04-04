@@ -23,6 +23,9 @@
         [HideInInspector] public NFTData nftData;
 
         public string TokenId => tokenId;
+        public string Name => nftData.General.FirstOrDefault()?.Name ?? "Default Name";
+        public string Level => GetValueFromStats("level");
+        public Sprite Avatar => iconImage.sprite;
 
         public virtual void SetNFTData(NFTData nftData)
         {
