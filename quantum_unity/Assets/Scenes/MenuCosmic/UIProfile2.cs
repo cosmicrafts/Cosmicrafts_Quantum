@@ -34,31 +34,7 @@ public class UIProfile2 : MonoBehaviour
 
     private async void Start()
     {
-        Debug.Log("[START]");
-        
-        var playerGameStats = await CandidApiManager.Instance.CanisterStats.GetMyStats();
-        
-        if (playerGameStats.HasValue)
-        {
-            var playerStats = playerGameStats.ValueOrDefault;
-            
-            // Basic stats
-            Debug.Log($"Energy Generated: {playerStats.EnergyGenerated}");
-            Debug.Log($"Energy Used: {playerStats.EnergyUsed}");
-            Debug.Log($"Energy Wasted: {playerStats.EnergyWasted}");
-            Debug.Log($"Games Lost: {playerStats.GamesLost}");
-            Debug.Log($"Games Played: {playerStats.GamesPlayed}");
-            Debug.Log($"Games Won: {playerStats.GamesWon}");
-            Debug.Log($"Total Damage Crit: {playerStats.TotalDamageCrit}");
-            Debug.Log($"Total Damage Dealt: {playerStats.TotalDamageDealt}");
-            Debug.Log($"Total Damage Evaded: {playerStats.TotalDamageEvaded}");
-            Debug.Log($"Total Damage Taken: {playerStats.TotalDamageTaken}");
-            Debug.Log($"Total XP Earned: {playerStats.TotalXpEarned}");
-        }
-        else
-        {
-            Debug.Log("No hay info del match");
-        }
+        GetInfoToProfile();
     }
 
     public void OpenProfile()
@@ -72,6 +48,7 @@ public class UIProfile2 : MonoBehaviour
 
     public async void GetInfoToProfile()
     {
+        Debug.Log("GetInfoToProfile");
         var playerGameStats = await CandidApiManager.Instance.CanisterStats.GetMyStats();
         
         if (playerGameStats.HasValue)
@@ -94,14 +71,14 @@ public class UIProfile2 : MonoBehaviour
             energyUsed.text = playerGameStatsValue.EnergyUsed.ToString(CultureInfo.InvariantCulture);
             energyWasted.text = playerGameStatsValue.EnergyWasted.ToString(CultureInfo.InvariantCulture);
             
-            loading.SetActive(false);
-            content.SetActive(true);
+            //loading.SetActive(false);
+            //content.SetActive(true);
         }
         else
         {
-            loading.SetActive(false);
-            error.SetActive(true);
-            Debug.Log("No hay info del match");
+            //loading.SetActive(false);
+            //error.SetActive(true);
+            Debug.Log("No hay info de Stats");
         }
         
             
