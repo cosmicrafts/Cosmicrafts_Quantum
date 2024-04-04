@@ -20,7 +20,7 @@ public class RewardScreenUI : MonoBehaviour
     public shards ShardsScript;
     public ChestOpenerUI chestOpenerUI;
     private int activeRewardsCount = 0;
-    public DeactivationAnim deactivationAnimScript;
+    public SimpleDeactivate deactivationAnimScript;
     public Animator chestAnimator;
 
 

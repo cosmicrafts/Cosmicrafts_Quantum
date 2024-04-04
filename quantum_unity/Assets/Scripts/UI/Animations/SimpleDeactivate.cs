@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DeactivationAnim : MonoBehaviour
+public class SimpleDeactivate : MonoBehaviour
 {
     public Animation customAnimation; // Assign the Animation component in the inspector
     public AnimationClip closeAnimationClip; // Drag and drop your .anim file here in the inspector
