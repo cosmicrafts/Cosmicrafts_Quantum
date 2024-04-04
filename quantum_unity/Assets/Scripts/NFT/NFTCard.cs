@@ -18,6 +18,8 @@
         public Image factionIcon;
         public TMP_Text levelText;
         public TMP_Text costText;
+        public static event Action<NFTCard> OnCardSelected;
+
         
         protected string tokenId;
         [HideInInspector] public NFTData nftData;
@@ -64,8 +66,12 @@
         
         public void SelectCard()
         {
+            Debug.Log($"SelectCard called on {tokenId}");
             IsSelected = true;
             unitNameText.color = Color.green;
+            OnCardSelected?.Invoke(this);
+            NFTTransferUI.Instance?.HandleCardDirectly(this);
+            NFTUpgradeUI.Instance?.HandleCardSelected(this);
         }
         public void DeselectCard()
         {

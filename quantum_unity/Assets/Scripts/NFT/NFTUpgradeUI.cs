@@ -19,10 +19,24 @@ public class NFTUpgradeUI : MonoBehaviour
     public NFTUpgradeScreenUI upgradeScreenUI;
     public shards ShardsScript;
 
+    [Header("NFT Display Info")]
+    public TMP_Text nameText;
+    public TMP_Text tokenIdText;
+    public TMP_Text levelText;
+    public Image avatarImage;
+
+    public static NFTUpgradeUI Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void OnEnable()
     {
         FetchAndCheckShardsBalance();
         upgradeButton.onClick.AddListener(OnUpgradeButtonPressed);
+        UpdateDisplayedNFTInfo();
     }
 
     private void FetchAndCheckShardsBalance()
@@ -93,7 +107,13 @@ public class NFTUpgradeUI : MonoBehaviour
                 await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade);
 
                 NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade);
-               // nftCard.SetNFTData(updatedData); // Make sure to update the NFTCard with the new data
+                nftCard.SetNFTData(updatedData);
+
+               if (updatedData != null)
+                {
+                    nftCard.SetNFTData(updatedData);
+                    UpdateDisplayedNFTInfo();
+                }
 
                 int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
                 int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
@@ -134,4 +154,27 @@ public class NFTUpgradeUI : MonoBehaviour
         }
     }
 
+    private void UpdateDisplayedNFTInfo()
+    {
+        if (nftCard != null && nftCard.nftData != null)
+        {
+            nameText.text = nftCard.Name;
+            tokenIdText.text = nftCard.TokenId;
+            levelText.text = nftCard.Level;
+            if (avatarImage != null)
+            {
+                avatarImage.sprite = nftCard.Avatar;
+            }
+            else
+            {
+                Debug.Log("avatarImage is null!");
+            }
+        }
+    }
+
+    public void HandleCardSelected(NFTCard selectedCard)
+    {
+        nftCard = selectedCard;
+        UpdateDisplayedNFTInfo();
+    }
 }

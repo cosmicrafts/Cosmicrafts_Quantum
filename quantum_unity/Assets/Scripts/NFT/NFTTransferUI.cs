@@ -18,20 +18,52 @@ public class NFTTransferUI : MonoBehaviour
     public TMP_Text levelText;
     public TMP_Text tokenId;
     public Image avatarImage;
+    public static NFTTransferUI Instance;
 
-        private void DisplayNFTInfo()
-    {
-        nameText.text = nftCard.Name;
-        levelText.text = nftCard.Level;
-        tokenId.text = nftCard.TokenId;
-        avatarImage.sprite = nftCard.Avatar;
-    }
+    private void Awake()
+{
+    Instance = this;
+}
 
 
     private void Start()
     {
         transferButton.onClick.AddListener(OnTransferButtonPressed);
         DisplayNFTInfo();
+    }
+
+    private void OnEnable()
+    {
+        NFTCard.OnCardSelected += HandleCardSelected;
+    }
+
+    private void OnDisable()
+    {
+        NFTCard.OnCardSelected -= HandleCardSelected;
+    }
+
+    public void HandleCardDirectly(NFTCard selectedCard)
+    {
+        Debug.Log($"HandleCardDirectly called with {selectedCard.TokenId}");
+        HandleCardSelected(selectedCard); // Now directly calling the method intended for event handling.
+    }
+
+    private void HandleCardSelected(NFTCard selectedCard)
+    {
+        Debug.Log($"HandleCardSelected called with {selectedCard.TokenId}");
+        nftCard = selectedCard;
+        DisplayNFTInfo();
+    }
+
+    private void DisplayNFTInfo()
+    {
+        if (nftCard != null && nftCard.nftData != null)
+        {
+            nameText.text = nftCard.Name;
+            levelText.text = nftCard.Level;
+            tokenId.text = nftCard.TokenId;
+            avatarImage.sprite = nftCard.Avatar;
+        }
     }
 
     public async void OnTransferButtonPressed()
@@ -43,7 +75,6 @@ public class NFTTransferUI : MonoBehaviour
             notificationText.text = "Recipient Principal or Token ID is empty.";
             return;
         }
-
 
         Debug.Log($"Transferring NFT with Token ID: {tokenIdToTransfer}");
 

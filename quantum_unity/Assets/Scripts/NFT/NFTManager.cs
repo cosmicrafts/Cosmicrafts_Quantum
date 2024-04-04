@@ -123,10 +123,9 @@ public class NFTManager : MonoBehaviour
     {
         Debug.Log($"Starting metadata update for Token ID: {tokenId}");
         UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenId));
-        await FetchAndSetNFTMetadata(tokenID);
+       // await FetchAndSetNFTMetadata(tokenID);
         OnMetadataUpdated?.Invoke(tokenId);
         Debug.Log($"Finished metadata update for Token ID: {tokenId}");
-        // Trigger any UI refresh mechanisms here if necessary.
     }
 
     public NFTData GetNFTDataById(string tokenId)
