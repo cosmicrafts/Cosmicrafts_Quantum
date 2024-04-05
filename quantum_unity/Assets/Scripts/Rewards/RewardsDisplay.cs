@@ -24,6 +24,10 @@ public class RewardsDisplay : MonoBehaviour
     public Sprite chest3Sprite;
     public Sprite chest4Sprite;
 
+    public GameObject panelToChangeColor;
+    public Color gamesPlayedColor;
+    public Color gamesWonColor;
+
     public void SetRewardData(RewardsUser reward)
     {
         // Determine singular or plural form for game(s) based on reward.Total
@@ -39,18 +43,20 @@ public class RewardsDisplay : MonoBehaviour
         rewardTypeText.text = missionText;
 
         idText.text = $"ID: {reward.IdReward}";
-        prizeAmountText.text = $"Reward: {reward.PrizeAmount}";
+        prizeAmountText.text = $"{reward.PrizeAmount}";
         progressText.text = $"{reward.Progress}/{reward.Total}";
 
         // Date and time formatting to display "Time remaining"
         expirationText.text = CalculateTimeRemaining(reward.Expiration);
 
-        finishedText.text = $"Finished: {(reward.Finished ? "Yes" : "No")}";
-        prizeTypeText.text = $"{(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}";
+        finishedText.text = $"Completed: {(reward.Finished ? "Yes" : "No")}";
+        prizeTypeText.text = $"Reward: {(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}";
 
         Sprite selectedSprite = GetPrizeSprite(reward.PrizeType, reward.PrizeAmount);
         prizeImage.sprite = selectedSprite;
         prizeImage.enabled = selectedSprite != null;
+
+        panelToChangeColor.GetComponent<Image>().color = reward.RewardType == RewardType.GamesCompleted ? gamesPlayedColor : gamesWonColor;
     }
 
 

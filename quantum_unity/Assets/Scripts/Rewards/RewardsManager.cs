@@ -45,7 +45,7 @@ public class RewardsManager : MonoBehaviour
 
         if (rewards != null && rewards.Count > 0)
         {
-            rewardsCountText.text = $"Missions Available: {rewards.Count}";
+            rewardsCountText.text = $"{rewards.Count}";
         }
         else
         {
