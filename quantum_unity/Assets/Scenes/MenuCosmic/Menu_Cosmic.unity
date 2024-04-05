@@ -9461,7 +9461,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1518176197}
+      - m_Target: {fileID: 1518176201}
         m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -10281,8 +10281,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1947769706}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -13771,8 +13771,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1119664108}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1119664111}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -14105,8 +14105,8 @@ GameObject:
   - component: {fileID: 343384506}
   - component: {fileID: 343384505}
   - component: {fileID: 343384504}
-  - component: {fileID: 343384503}
   - component: {fileID: 343384507}
+  - component: {fileID: 343384508}
   m_Layer: 5
   m_Name: Notification_Panel
   m_TagString: Untagged
@@ -14135,20 +14135,6 @@ RectTransform:
   m_AnchoredPosition: {x: -224.52002, y: -308.0088}
   m_SizeDelta: {x: 411.0011, y: -616.0182}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &343384503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 343384500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customAnimation: {fileID: 343384504}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &343384504
 Animation:
   m_ObjectHideFlags: 0
@@ -14218,6 +14204,20 @@ MonoBehaviour:
   notificationPanel: {fileID: 343384500}
   notificationText: {fileID: 1476938330}
   displayDuration: 3
+--- !u!114 &343384508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343384500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 343384504}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &343707678
 GameObject:
   m_ObjectHideFlags: 0
@@ -16307,8 +16307,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1947769706}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -20867,8 +20867,8 @@ GameObject:
   m_Component:
   - component: {fileID: 524307736}
   - component: {fileID: 524307738}
-  - component: {fileID: 524307737}
   - component: {fileID: 524307739}
+  - component: {fileID: 524307740}
   m_Layer: 5
   m_Name: NFTViewer
   m_TagString: Untagged
@@ -20905,20 +20905,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.0546875, y: 0.00061035156}
   m_SizeDelta: {x: 0.74927, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &524307737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 524307735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customAnimation: {fileID: 524307738}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &524307738
 Animation:
   m_ObjectHideFlags: 0
@@ -20972,6 +20958,20 @@ MonoBehaviour:
   Model: {fileID: 0}
   ModelRender: {fileID: 0}
   ModelFilter: {fileID: 0}
+--- !u!114 &524307740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524307735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 524307738}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &529180457
 GameObject:
   m_ObjectHideFlags: 0
@@ -26166,7 +26166,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -27358,7 +27358,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1001031305}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -30210,8 +30210,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1947769706}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -33265,9 +33265,9 @@ MonoBehaviour:
   m_colorMode: 2
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 0.21226418, g: 0.82307804, b: 1, a: 1}
     bottomLeft: {r: 0.48584908, g: 0.82912785, b: 1, a: 1}
-    bottomRight: {r: 0.48584908, g: 0.82912785, b: 1, a: 1}
+    bottomRight: {r: 0.17150229, g: 0.4738206, b: 0.8867924, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
@@ -33392,8 +33392,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1947769706}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -34488,7 +34488,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -36840,7 +36840,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -37332,8 +37332,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 524307737}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 524307740}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -39580,7 +39580,7 @@ GameObject:
   - component: {fileID: 1001031304}
   - component: {fileID: 1001031309}
   - component: {fileID: 1001031306}
-  - component: {fileID: 1001031305}
+  - component: {fileID: 1001031310}
   m_Layer: 5
   m_Name: TransferNFT
   m_TagString: Untagged
@@ -39610,20 +39610,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0.0024414062, y: 0.00012207031}
   m_SizeDelta: {x: -0.0048828, y: -0.0021973}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1001031305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1001031303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customAnimation: {fileID: 1001031306}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &1001031306
 Animation:
   m_ObjectHideFlags: 0
@@ -39648,6 +39634,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1001031303}
   m_CullTransparentMesh: 1
+--- !u!114 &1001031310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001031303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 1001031306}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &1005827306
 GameObject:
   m_ObjectHideFlags: 0
@@ -40482,6 +40482,7 @@ GameObject:
   - component: {fileID: 1041287811}
   - component: {fileID: 1041287809}
   - component: {fileID: 1041287808}
+  - component: {fileID: 1041287812}
   m_Layer: 5
   m_Name: Chests
   m_TagString: Untagged
@@ -40523,8 +40524,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customAnimation: {fileID: 1041287809}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &1041287809
 Animation:
   m_ObjectHideFlags: 0
@@ -40549,6 +40548,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1041287806}
   m_CullTransparentMesh: 1
+--- !u!114 &1041287812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041287806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 1041287809}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &1041775054
 GameObject:
   m_ObjectHideFlags: 0
@@ -43321,8 +43334,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1119664106}
   - component: {fileID: 1119664109}
-  - component: {fileID: 1119664108}
   - component: {fileID: 1119664110}
+  - component: {fileID: 1119664111}
   m_Layer: 5
   m_Name: NFTs
   m_TagString: Untagged
@@ -43353,20 +43366,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.0546875, y: 0.00061035156}
   m_SizeDelta: {x: 0.74927, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1119664108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1119664105}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customAnimation: {fileID: 1119664109}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &1119664109
 Animation:
   m_ObjectHideFlags: 0
@@ -43407,6 +43406,20 @@ MonoBehaviour:
   DragIcon: {fileID: 5334926864761191817}
   CurrentSelected: {fileID: 0}
   AllNFTDatas: []
+--- !u!114 &1119664111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1119664105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 1119664109}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &1120691854
 GameObject:
   m_ObjectHideFlags: 0
@@ -45599,8 +45612,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1947769706}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -45647,9 +45660,9 @@ MonoBehaviour:
   m_colorMode: 2
   m_fontColorGradient:
     topLeft: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
-    topRight: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
+    topRight: {r: 0.21226418, g: 0.82307804, b: 1, a: 1}
     bottomLeft: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
-    bottomRight: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
+    bottomRight: {r: 0.17150229, g: 0.4738206, b: 0.8867924, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
@@ -46788,9 +46801,9 @@ MonoBehaviour:
   m_colorMode: 2
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 0.21226418, g: 0.82307804, b: 1, a: 1}
     bottomLeft: {r: 0.48584908, g: 0.82912785, b: 1, a: 1}
-    bottomRight: {r: 0.48584908, g: 0.82912785, b: 1, a: 1}
+    bottomRight: {r: 0.17150229, g: 0.4738206, b: 0.8867924, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
@@ -46915,8 +46928,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1947769706}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -47131,7 +47144,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1947769703}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -50967,8 +50980,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1518176197}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1518176201}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -54571,8 +54584,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1041287808}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1041287812}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -54954,7 +54967,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1947769703}
+      objectReference: {fileID: 0}
     - target: {fileID: 4753986385210677313, guid: 4b11d978534314c428b95863a7760a55,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -55486,7 +55499,7 @@ GameObject:
   - component: {fileID: 1518176196}
   - component: {fileID: 1518176200}
   - component: {fileID: 1518176198}
-  - component: {fileID: 1518176197}
+  - component: {fileID: 1518176201}
   m_Layer: 5
   m_Name: TransferToken
   m_TagString: Untagged
@@ -55516,20 +55529,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0.0024414062, y: 0.00012207031}
   m_SizeDelta: {x: -0.0048828, y: -0.0021973}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1518176197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1518176195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customAnimation: {fileID: 1518176198}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &1518176198
 Animation:
   m_ObjectHideFlags: 0
@@ -55554,6 +55553,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1518176195}
   m_CullTransparentMesh: 1
+--- !u!114 &1518176201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1518176195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 1518176198}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &1519091580
 GameObject:
   m_ObjectHideFlags: 0
@@ -56504,7 +56517,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1041287808}
+      - m_Target: {fileID: 1041287812}
         m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -57962,7 +57975,7 @@ MonoBehaviour:
   FluxScript: {fileID: 1299073782}
   ShardsScript: {fileID: 781813610}
   chestOpenerUI: {fileID: 25433498}
-  deactivationAnimScript: {fileID: 1595423163}
+  deactivationAnimScript: {fileID: 0}
   chestAnimator: {fileID: 900970473}
 --- !u!111 &1595423162
 Animation:
@@ -57989,7 +58002,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1595423158}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   customAnimation: {fileID: 1595423162}
@@ -65759,8 +65772,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2020007990}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 2020007993}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -67397,7 +67410,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1001031305}
+      - m_Target: {fileID: 1001031310}
         m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
@@ -68396,8 +68409,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1119664108}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 1119664111}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -68530,8 +68543,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2020007990}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 2020007993}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
@@ -69717,8 +69730,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1947769702}
   - component: {fileID: 1947769704}
-  - component: {fileID: 1947769703}
   - component: {fileID: 1947769705}
+  - component: {fileID: 1947769706}
   m_Layer: 5
   m_Name: UpgradeNFTScreen
   m_TagString: Untagged
@@ -69755,20 +69768,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1947769703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1947769701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customAnimation: {fileID: 1947769704}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &1947769704
 Animation:
   m_ObjectHideFlags: 0
@@ -69800,6 +69799,20 @@ MonoBehaviour:
   levelInfoText: {fileID: 880827263}
   hpInfoText: {fileID: 674643240}
   damageInfoText: {fileID: 1249740959}
+--- !u!114 &1947769706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947769701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 1947769704}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &1948955586
 GameObject:
   m_ObjectHideFlags: 0
@@ -72335,8 +72348,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2020007989}
   - component: {fileID: 2020007991}
-  - component: {fileID: 2020007990}
   - component: {fileID: 2020007992}
+  - component: {fileID: 2020007993}
   m_Layer: 5
   m_Name: UIProfile
   m_TagString: Untagged
@@ -72367,20 +72380,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 768}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2020007990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2020007988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 990fbed979e588e87a275e424ec72afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customAnimation: {fileID: 2020007991}
-  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!111 &2020007991
 Animation:
   m_ObjectHideFlags: 0
@@ -72411,6 +72410,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avatarButtonPrefab: {fileID: 1953014732}
   scrollContent: {fileID: 1158350598}
+--- !u!114 &2020007993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020007988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 2020007991}
+  closeAnimationClip: {fileID: 7400000, guid: b03285572badd1dbfbd0b09239f9c707, type: 2}
 --- !u!1 &2020773736
 GameObject:
   m_ObjectHideFlags: 0
@@ -78815,7 +78828,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1595423163}
+      objectReference: {fileID: 0}
     - target: {fileID: 4753986385210677313, guid: 4b11d978534314c428b95863a7760a55,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -82844,8 +82857,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 524307737}
-        m_TargetAssemblyTypeName: DeactivationAnim, Assembly-CSharp
+      - m_Target: {fileID: 524307740}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
         m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
