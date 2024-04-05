@@ -2,8 +2,8 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CanisterPK.CanisterLogin; // Ensure this uses the correct namespace for your project
-using CanisterPK.CanisterLogin.Models; // Adjust if necessary based on actual namespace
+using CanisterPK.CanisterLogin;
+using CanisterPK.CanisterLogin.Models;
 using EdjCase.ICP.Candid.Models;
 using Candid;
 
@@ -14,9 +14,6 @@ public class RewardsManager : MonoBehaviour
     public TMP_Text rewardsCountText;
     public GameObject rewardPrefab;
     public Transform rewardsContainer;
-
-    // Assume apiClient is initialized somewhere, for example, in Start or Awake.
-    private CanisterLoginApiClient apiClient;
 
     void Awake()
     {
@@ -32,7 +29,7 @@ public class RewardsManager : MonoBehaviour
 
     async void Start()
     {
-        rewardPrefab.SetActive(false); // Ensure prefab is inactive by default
+        rewardPrefab.SetActive(false);
         await FetchUserRewards();
     }
 
@@ -45,13 +42,6 @@ public class RewardsManager : MonoBehaviour
         // Log and handle each reward
         foreach (var reward in rewards)
         {
-            // Assuming you want to log the detailed info of each reward for debugging
-            Debug.Log($"Reward ID: {reward.IdReward}, " +
-                    $"Prize Type: {reward.PrizeType}, " +
-                    $"Prize Amount: {reward.PrizeAmount}, " +
-                    $"Progress: {reward.Progress}/{reward.Total}, " +
-                    $"Type: {reward.RewardType}");
-
             // Instantiate and set up each reward prefab
             InstantiateRewardPrefab(reward);
         }
@@ -59,7 +49,7 @@ public class RewardsManager : MonoBehaviour
         // Update UI based on fetched rewards
         if (rewards != null && rewards.Count > 0)
         {
-            rewardsCountText.text = $"Rewards Available: {rewards.Count}";
+            rewardsCountText.text = $"Missions Available: {rewards.Count}";
             foreach (var reward in rewards)
             {
                 InstantiateRewardPrefab(reward);
@@ -67,7 +57,7 @@ public class RewardsManager : MonoBehaviour
         }
         else
         {
-            rewardsCountText.text = "No Rewards Available";
+            rewardsCountText.text = "All Missions completed";
         }
     }
 

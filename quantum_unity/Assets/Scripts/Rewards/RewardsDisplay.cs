@@ -1,12 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 using CanisterPK.CanisterLogin.Models;
-
+using EdjCase.ICP.Candid.Models;
 
 public class RewardsDisplay : MonoBehaviour
 {
-    // Reference to UI text components, assign them in the Unity Editor
+    // Existing fields...
     public TMP_Text idText;
     public TMP_Text rewardTypeText;
     public TMP_Text prizeAmountText;
@@ -14,27 +15,38 @@ public class RewardsDisplay : MonoBehaviour
     public TMP_Text expirationText;
     public TMP_Text finishedText;
     public TMP_Text prizeTypeText;
+    public Image prizeImage;
 
-    public void SetRewardData(RewardsUser reward)
+    public Sprite fluxSprite;
+    public Sprite shardsSprite;
+    public Sprite chest1Sprite;
+    public Sprite chest2Sprite;
+    public Sprite chest3Sprite;
+    public Sprite chest4Sprite;
+
+        public void SetRewardData(RewardsUser reward)
     {
-        // Handling RewardType display based on total required quantity
         string missionText = reward.RewardType switch
         {
-            RewardType.GamesCompleted => $"Mission: Play {reward.Total} Games",
-            RewardType.GamesWon => $"Mission: Win {reward.Total} Games",
-            _ => $"Mission: Unknown Type" // Default case if there are other types
+            RewardType.GamesCompleted => $"Play {reward.Total} Games",
+            RewardType.GamesWon => $"Win {reward.Total} Games",
+            _ => $"Unknown Mission" // Default case if there are other types
         };
         rewardTypeText.text = missionText;
 
         idText.text = $"ID: {reward.IdReward}";
-        prizeAmountText.text = $"Prize Amount: {reward.PrizeAmount}";
-        progressText.text = $"Progress: {reward.Progress}/{reward.Total}";
+        prizeAmountText.text = $"{reward.PrizeAmount}";
+        progressText.text = $"{reward.Progress}/{reward.Total}";
 
         // Date and time formatting to display "Time remaining"
         expirationText.text = CalculateTimeRemaining(reward.Expiration);
 
         finishedText.text = $"Finished: {(reward.Finished ? "Yes" : "No")}";
-        prizeTypeText.text = $"Prize Type: {(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}";
+        prizeTypeText.text = $"{(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}";
+
+        Sprite selectedSprite = GetPrizeSprite(reward.PrizeType, reward.PrizeAmount);
+        prizeImage.sprite = selectedSprite;
+        prizeImage.enabled = selectedSprite != null;
     }
 
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
@@ -58,4 +70,39 @@ public class RewardsDisplay : MonoBehaviour
         string formattedTime = $"{(int)timeRemaining.TotalDays}d {(int)timeRemaining.Hours}h {(int)timeRemaining.Minutes}m";
         return $"Time remaining: {formattedTime}";
     }
+
+    private Sprite GetPrizeSprite(PrizeType prizeType, UnboundedUInt prizeAmount)
+    {
+        switch (prizeType)
+        {
+            case PrizeType.Shards:
+                return shardsSprite;
+            case PrizeType.Flux:
+                return fluxSprite;
+            case PrizeType.Chest:
+                return SelectChestSprite(prizeAmount);
+            default:
+                return null; // Handle unknown prize type
+        }
+    }
+
+   private Sprite SelectChestSprite(UnboundedUInt prizeAmount)
+    {
+        int amount = (int)prizeAmount; // Assuming this cast is safe given your data model
+
+        switch (amount)
+        {
+            case 1:
+                return chest1Sprite;
+            case 2:
+                return chest2Sprite;
+            case 3:
+                return chest3Sprite;
+            case 4:
+                return chest4Sprite;
+            default:
+                return null; // Handle cases where the prize amount doesn't match expected values
+        }
+    }
+
 }
