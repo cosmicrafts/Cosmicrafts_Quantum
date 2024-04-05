@@ -12,8 +12,8 @@ public class EloManagement : MonoBehaviour
     public static EloManagement Instance { get; private set; }
     public double CurrentEloPoints { get; private set; }
     public TMP_Text eloText;
-    public event Action<League> OnLeagueChanged;
-    private League currentLeague;
+    public event Action<LeagueSO> OnLeagueChanged;
+    private LeagueSO currentLeague;
 
     private void Awake()
     {
@@ -48,7 +48,7 @@ public class EloManagement : MonoBehaviour
             Debug.Log($"Updated Elo Points: {roundedEloPoints}");
 
             // Update UI element with new rounded down Elo points
-            if (eloText != null) eloText.text = $"Elo Points: {roundedEloPoints}";
+            if (eloText != null) eloText.text = $"{roundedEloPoints}";
         }
         catch (Exception ex)
         {
@@ -56,12 +56,13 @@ public class EloManagement : MonoBehaviour
         }
 
         // Determine if the league has changed
-        League newLeague = LeagueManager.Instance.GetCurrentLeague(CurrentEloPoints);
+        LeagueSO newLeague = LeagueManager.Instance.GetCurrentLeague(CurrentEloPoints);
         if (newLeague != currentLeague)
         {
             currentLeague = newLeague;
+            // Fire the event with the new LeagueSO
             OnLeagueChanged?.Invoke(newLeague);
-            Debug.Log($"Welcome to {newLeague.name} League!");
+            Debug.Log($"Welcome to {newLeague.leagueName} League!");
         }
     }
 }

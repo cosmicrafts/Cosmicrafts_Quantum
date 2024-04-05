@@ -60770,18 +60770,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leagues:
-  - name: StarDust Pioneer
-    minElo: 0
-    maxElo: 1199
-    leagueSprite: {fileID: 21300000, guid: 6569a51d46ae8ca439532ec649cb29fb, type: 3}
-  - name: Cosmic Spark
-    minElo: 1200
-    maxElo: 1299
-    leagueSprite: {fileID: 21300000, guid: 3c38ba98bd689ef47b1919c0a7f3bb80, type: 3}
-  - name: Nova Traveler
-    minElo: 1300
-    maxElo: 1399
-    leagueSprite: {fileID: 21300000, guid: a858e92463313ec41a5b44cfaa81c383, type: 3}
+  - {fileID: 11400000, guid: 20bfd7ee3402bbc4c98976bf1616b8c1, type: 2}
+  - {fileID: 11400000, guid: 0be1766591c39de4a82ae8033add6cb9, type: 2}
+  - {fileID: 11400000, guid: 5f4fb137b2dc0804fb5cf1460ebe9bf2, type: 2}
   leagueSpriteImage: {fileID: 476357301}
   leagueNameText: {fileID: 1097036199}
 --- !u!1 &1696071579
