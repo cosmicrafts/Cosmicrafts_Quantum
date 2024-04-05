@@ -58,8 +58,8 @@ public class UIProfile2 : MonoBehaviour
             since.text = "";
             timePlayed.text = "";
             blockChain.text = "";
-            gamesPlayed.text = playerGameStatsValue.GamesWon.ToString();
-            gamesWins.text = playerGameStatsValue.GamesPlayed.ToString();
+            gamesPlayed.text = playerGameStatsValue.GamesPlayed.ToString();
+            gamesWins.text = playerGameStatsValue.GamesWon.ToString();
             
             damageDealt.text = playerGameStatsValue.TotalDamageDealt.ToString(CultureInfo.InvariantCulture);
             damageEvaded.text = playerGameStatsValue.TotalDamageEvaded.ToString(CultureInfo.InvariantCulture);
