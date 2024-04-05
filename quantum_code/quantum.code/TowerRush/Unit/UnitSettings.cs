@@ -14,6 +14,7 @@
 		[Space]
 		[Header("Health")]
 		public FP                       BaseHealth;
+		public FP                       BaseShield;
 		public FP                       HealthPerLevelPercent;
 		public bool                     DestroyOnDeath = true;
 

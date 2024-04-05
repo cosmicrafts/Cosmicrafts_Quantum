@@ -3,6 +3,8 @@
 	[ExcludeFromPrototype] byte Flags;
 	[ExcludeFromPrototype] FP   CurrentHealth;
 	[ExcludeFromPrototype] FP   MaxHealth;
+    [ExcludeFromPrototype] FP   CurrentShield;
+	[ExcludeFromPrototype] FP   MaxShield;
 }
 
 struct HealthData

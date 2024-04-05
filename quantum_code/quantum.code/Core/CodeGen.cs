@@ -2037,23 +2037,31 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Health : Quantum.IComponent {
-    public const Int32 SIZE = 24;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     [ExcludeFromPrototype()]
     public FP CurrentHealth;
+    [FieldOffset(16)]
+    [ExcludeFromPrototype()]
+    public FP CurrentShield;
     [FieldOffset(0)]
     [ExcludeFromPrototype()]
     public Byte Flags;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public FP MaxHealth;
+    [FieldOffset(32)]
+    [ExcludeFromPrototype()]
+    public FP MaxShield;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 233;
         hash = hash * 31 + CurrentHealth.GetHashCode();
+        hash = hash * 31 + CurrentShield.GetHashCode();
         hash = hash * 31 + Flags.GetHashCode();
         hash = hash * 31 + MaxHealth.GetHashCode();
+        hash = hash * 31 + MaxShield.GetHashCode();
         return hash;
       }
     }
@@ -2061,7 +2069,9 @@ namespace Quantum {
         var p = (Health*)ptr;
         serializer.Stream.Serialize(&p->Flags);
         FP.Serialize(&p->CurrentHealth, serializer);
+        FP.Serialize(&p->CurrentShield, serializer);
         FP.Serialize(&p->MaxHealth, serializer);
+        FP.Serialize(&p->MaxShield, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]

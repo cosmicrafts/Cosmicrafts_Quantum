@@ -8,6 +8,7 @@
 
 		public bool IsInvulnerable { get { return Flags.IsBitSet(0); } set { Flags = Flags.SetBit(0, value); } }
 		public bool IsAlive        { get { return CurrentHealth > FP._0; } }
+		public bool HasShield        { get { return CurrentShield > FP._0; } }
 
 		// PUBLIC METHODS
 
@@ -20,14 +21,17 @@
 			{
 				MaxHealth *= perLevel;
 			}
-
 			CurrentHealth = MaxHealth;
+
+			MaxShield = settings.BaseShield;
+			CurrentShield = MaxShield;
 		}
 
 		public void ForceKill(Frame frame, EntityRef entity)
 		{
 			IsInvulnerable = false;
 			CurrentHealth  = FP._0;
+			CurrentShield = FP._0;
 
 			frame.Signals.OnDeath(entity, default);
 			frame.Events.Death(entity);
@@ -80,8 +84,15 @@
 			if (IsInvulnerable == true)
 				return false;
 
-			CurrentHealth = FPMath.Max(CurrentHealth - data.Value, FP._0);
-
+			if (HasShield)
+			{
+				CurrentShield = FPMath.Max(CurrentShield - data.Value, FP._0);
+			}
+			else
+			{
+				CurrentHealth = FPMath.Max(CurrentHealth - data.Value, FP._0);
+			}
+			
 			frame.Events.OnHealthChanged(data);
 
 			if (IsAlive == false)

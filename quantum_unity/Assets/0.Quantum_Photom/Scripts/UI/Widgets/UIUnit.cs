@@ -14,6 +14,7 @@
 		[SerializeField] TextMeshProUGUI m_LevelText;
 		[SerializeField] TextMeshProUGUI m_UnitName;
 		[SerializeField] Image           m_HealthProgressBar;
+		[SerializeField] Image           m_ShieldProgressBar;
 		[SerializeField] Image           m_ActivationProgress;
 		[SerializeField] FP              m_MinimumActivationToShow;
 		[SerializeField] bool            m_ShowHealthBarWhenFull;
@@ -22,6 +23,8 @@
 
 		private FP                   m_LastHealth;
 		private FP                   m_LastMaxHealth;
+		private FP                   m_LastShield;
+		private FP                   m_LastMaxShield;
 		private byte                 m_LastLevel;
 		private UnitSettingsAsset    m_Settings;
 		private AssetRefCardSettings m_SettingsRef;
@@ -67,7 +70,8 @@
 				}
 			}
 
-			if (m_LastHealth == quantumHealth->CurrentHealth && m_LastMaxHealth == quantumHealth->MaxHealth)
+			if (m_LastHealth == quantumHealth->CurrentHealth && m_LastMaxHealth == quantumHealth->MaxHealth &&
+			    m_LastShield == quantumHealth->CurrentShield && m_LastMaxShield == quantumHealth->MaxShield)
 				return;
 
 			if (m_ShowHealthBarWhenFull == false && quantumHealth->CurrentHealth == quantumHealth->MaxHealth)
@@ -81,9 +85,13 @@
 			SetWidth(m_DefaultWidth * scale);
 			m_HealthProgressBar.SetActive(true);
 			m_HealthText.SetActive(true);
+			m_ShieldProgressBar.SetActive(true);
 
 			var health    = Mathf.Ceil(quantumHealth->CurrentHealth.AsFloat);
 			var maxHealth = Mathf.Ceil(quantumHealth->MaxHealth.AsFloat);
+			
+			var shield    = Mathf.Ceil(quantumHealth->CurrentShield.AsFloat);
+			var maxShield = Mathf.Ceil(quantumHealth->MaxShield.AsFloat);
 
 			if (m_HealthText != null)
 			{
@@ -94,9 +102,17 @@
 			{
 				m_HealthProgressBar.fillAmount = health / maxHealth;
 			}
+			
+			if (m_ShieldProgressBar != null)
+			{
+				m_ShieldProgressBar.fillAmount = shield / maxShield;
+			}
 
 			m_LastHealth    = quantumHealth->CurrentHealth;
 			m_LastMaxHealth = quantumHealth->MaxHealth;
+			
+			m_LastShield    = quantumHealth->CurrentShield;
+			m_LastMaxShield = quantumHealth->MaxShield;
 		}
 
 		// MonoBehaviour INTERFACE
