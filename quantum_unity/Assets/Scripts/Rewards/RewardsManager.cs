@@ -35,31 +35,24 @@ public class RewardsManager : MonoBehaviour
 
     private async Task FetchUserRewards()
     {
-        // Fetch rewards for the current user
         var rewards = await CandidApiManager.Instance.CanisterLogin.GetUserRewards();
         Debug.Log($"Fetched {rewards.Count} rewards.");
 
-        // Log and handle each reward
         foreach (var reward in rewards)
         {
-            // Instantiate and set up each reward prefab
             InstantiateRewardPrefab(reward);
         }
 
-        // Update UI based on fetched rewards
         if (rewards != null && rewards.Count > 0)
         {
             rewardsCountText.text = $"Missions Available: {rewards.Count}";
-            foreach (var reward in rewards)
-            {
-                InstantiateRewardPrefab(reward);
-            }
         }
         else
         {
             rewardsCountText.text = "All Missions completed";
         }
     }
+
 
     private void InstantiateRewardPrefab(RewardsUser reward)
     {

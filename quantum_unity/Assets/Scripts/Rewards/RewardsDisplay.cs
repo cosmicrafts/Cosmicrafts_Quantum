@@ -24,18 +24,22 @@ public class RewardsDisplay : MonoBehaviour
     public Sprite chest3Sprite;
     public Sprite chest4Sprite;
 
-        public void SetRewardData(RewardsUser reward)
+    public void SetRewardData(RewardsUser reward)
     {
+        // Determine singular or plural form for game(s) based on reward.Total
+        string gameOrGames = reward.Total == 1 ? "Game" : "Games";
+        string winOrWins = reward.Total == 1 ? "Win" : "Wins";
+
         string missionText = reward.RewardType switch
         {
-            RewardType.GamesCompleted => $"Play {reward.Total} Games",
-            RewardType.GamesWon => $"Win {reward.Total} Games",
-            _ => $"Unknown Mission" // Default case if there are other types
+            RewardType.GamesCompleted => $"Play {reward.Total} {gameOrGames}",
+            RewardType.GamesWon => $"{winOrWins} {reward.Total} {gameOrGames}",
+            _ => "Unknown Mission" // Default case if there are other types
         };
         rewardTypeText.text = missionText;
 
         idText.text = $"ID: {reward.IdReward}";
-        prizeAmountText.text = $"{reward.PrizeAmount}";
+        prizeAmountText.text = $"Reward: {reward.PrizeAmount}";
         progressText.text = $"{reward.Progress}/{reward.Total}";
 
         // Date and time formatting to display "Time remaining"
@@ -48,6 +52,7 @@ public class RewardsDisplay : MonoBehaviour
         prizeImage.sprite = selectedSprite;
         prizeImage.enabled = selectedSprite != null;
     }
+
 
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
     {
