@@ -73,7 +73,7 @@ public class NFTCardDetail : NFTCard
         this.nftData = nftData;
         tokenId = nftData.TokenId;
         iconImage.sprite = GetIconSpriteById(nftData.General.FirstOrDefault()?.Icon ?? 0);
-        tokenIdText.text = "Token ID: " + tokenId;
+        tokenIdText.text = tokenId;
         
         if (nftData == null)
         {

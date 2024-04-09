@@ -57,8 +57,9 @@
         public string GetValueFromStats(string statName)
         {
             var stat = nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == statName.ToLower());
-            return stat != null ? $"{stat.StatName}: {stat.StatValue}" : $"{statName}: Not Available";
+            return stat != null ? $"{stat.StatValue}" : "Not Available";
         }
+
         public Sprite GetIconSpriteById(int iconId)
         {
             return UnityDB.FindAsset<CardSettingsAsset>(NFTManager.Instance.m_GameplaySettings.Settings.AllCards[iconId].Id).Sprite;
