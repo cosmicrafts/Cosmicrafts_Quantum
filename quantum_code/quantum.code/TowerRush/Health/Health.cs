@@ -87,6 +87,7 @@
 			if (HasShield)
 			{
 				CurrentShield = FPMath.Max(CurrentShield - data.Value, FP._0);
+				//Agregar daño adicioanl a vida después de que supera al escudo
 			}
 			else
 			{

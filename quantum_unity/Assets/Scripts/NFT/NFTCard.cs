@@ -50,6 +50,7 @@
             //  Debug.Log(general.Class +""+ general.UnitId.ToString() );
             //  Debug.Log(int.Parse(tokenId) % 10);
                 iconImage.sprite = GetIconSpriteById( general.UnitId );
+                costText.text = GetEnergyCostById( general.UnitId ).ToString();
             }
             levelText.text = GetValueFromStats("level");
         }
@@ -63,6 +64,11 @@
         public Sprite GetIconSpriteById(int iconId)
         {
             return UnityDB.FindAsset<CardSettingsAsset>(NFTManager.Instance.m_GameplaySettings.Settings.AllCards[iconId].Id).Sprite;
+        }
+        
+        public int GetEnergyCostById(int cardId)
+        {
+            return UnityDB.FindAsset<CardSettingsAsset>(NFTManager.Instance.m_GameplaySettings.Settings.AllCards[cardId].Id).GetEnergyCost();
         }
         
         public void SelectCard()

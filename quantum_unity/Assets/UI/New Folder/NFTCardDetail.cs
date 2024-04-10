@@ -92,6 +92,7 @@ public class NFTCardDetail : NFTCard
             rarityText.text = general.Rarity.ToString();
             skinsText.text = general.SkinsText;
             iconImage.sprite = GetIconSpriteById(general.Icon);
+            costText.text = GetEnergyCostById( general.UnitId ).ToString();
         }
         levelText.text = GetValueFromStats("level");
         healthText.text = GetValueFromStats("health");
