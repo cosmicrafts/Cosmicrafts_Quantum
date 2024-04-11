@@ -2,56 +2,46 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using EdjCase.ICP.Candid.Models;
-using System.Numerics;
-using CanisterPK.CanisterLogin; 
+using CanisterPK.CanisterLogin;
 using CanisterPK.chests.Models;
 using Candid;
 using System;
 
 public class ChestOpenerUI : MonoBehaviour
 {
-    public Button openButton; 
+    public Button openButton;
     public TMP_Text notificationText;
     public GameObject rewardScreen;
-    public Image chestImage;
     public RewardScreenUI rewardScreenUI;
+    private ChestSO selectedChestSO;
+    private UnboundedUInt selectedTokenId;
 
     private void Start()
     {
         openButton.onClick.AddListener(OnOpenButtonPressed);
     }
 
-    private async void OnOpenButtonPressed()
+    public void SelectChestForOpening(ChestSO chestSO, UnboundedUInt tokenId)
     {
-        
-        Debug.Log("Button pressed. Attempting to activate reward screen.");
+        selectedChestSO = chestSO;
+        selectedTokenId = tokenId;
+        rewardScreenUI.SetImage(chestSO.icon);
+    }
 
-        RewardScreenUI rewardScreenUI = rewardScreen.GetComponent<RewardScreenUI>();
-        if (rewardScreenUI != null)
+    public async void OnOpenButtonPressed()
+    {
+        if (selectedChestSO == null || selectedTokenId == null)
         {
-            rewardScreenUI.onActivateRewardScreen.Invoke(); // Invoke the event to activate the screen
-            rewardScreenUI.SetImage(chestImage.sprite);
-        }
-        else
-        {
-            Debug.LogError("RewardScreenUI component not found on the reward screen GameObject.");
+            Debug.LogError("No chest selected or chest data missing.");
+            notificationText.text = "Error: No chest selected.";
             return;
         }
-
-        ChestTokenStorage tokenStorage = GetComponent<ChestTokenStorage>();
-        if (tokenStorage == null) 
-        {
-            Debug.LogError("Chest does not have ChestTokenStorage component.");
-            notificationText.text = "Error: Chest data missing.";
-            return;
-        }
-
-        // Correctly use 'tokenId' obtained from the ChestTokenStorage
-        UnboundedUInt tokenId = tokenStorage.tokenId;
+        Debug.Log($"Button pressed. Attempting to open chest: {selectedChestSO.chestName}");
+        rewardScreenUI.ActivateRewardScreen();
 
         try
         {
-            var apiClient = CandidApiManager.Instance.CanisterLogin; 
+            var apiClient = CandidApiManager.Instance.CanisterLogin;
             if (apiClient == null)
             {
                 Debug.LogError("CanisterLoginApiClient is not initialized.");
@@ -59,26 +49,22 @@ public class ChestOpenerUI : MonoBehaviour
                 return;
             }
 
-            // Correctly log and use 'tokenId' in the call
-            Debug.Log($"Triggering chest opening for Token ID: {tokenId}");
-            (bool success, string message) = await apiClient.OpenChests(tokenId); // Correct variable name
+            Debug.Log($"Triggering chest opening for Token ID: {selectedTokenId}");
+            (bool success, string message) = await apiClient.OpenChests(selectedTokenId);
 
             if (success)
             {
-                Debug.Log("[ChestOpenerUI] Chest opened successfully. Rewards fetched set to true.");
-
+                Debug.Log("Chest opened successfully.");
                 notificationText.text = "Chest opened: " + message;
-
                 rewardScreenUI.HandleRewardMessage(message);
-
                 rewardScreenUI.OnChestOpenedSuccessfully();
-
-                Destroy(gameObject);
+                ChestManager.Instance.RemoveChestAndRefreshCount(selectedTokenId);
+                // Consider what to do next - perhaps hide this UI or reset for another chest opening
             }
             else
             {
-                Debug.LogError("Chest opening failed: " + message);
-                notificationText.text = "Failed to open chest: " + message;
+                Debug.LogError($"Failed to open chest: {message}");
+                notificationText.text = $"Failed to open chest: {message}";
             }
         }
         catch (System.Exception ex)

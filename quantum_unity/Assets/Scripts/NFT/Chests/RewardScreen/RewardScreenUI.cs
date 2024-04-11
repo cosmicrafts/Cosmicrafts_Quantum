@@ -23,14 +23,12 @@ public class RewardScreenUI : MonoBehaviour
     public SimpleDeactivate deactivationAnimScript;
     public Animator chestAnimator;
 
-
-
     private void Awake()
     {
         onActivateRewardScreen.AddListener(ActivateRewardScreen);
         tapTarget.onClick.AddListener(HandleTapToOpen);
     }
-    private void ActivateRewardScreen()
+    public void ActivateRewardScreen()
     {
         gameObject.SetActive(true);
         tapTarget.gameObject.SetActive(true);
