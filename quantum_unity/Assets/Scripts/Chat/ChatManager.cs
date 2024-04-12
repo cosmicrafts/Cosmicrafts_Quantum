@@ -34,7 +34,7 @@ public class ChatManager : MonoBehaviour
             usernameText.text = username;
         }
     }
-
+/*
     private void Update()
     {
         while (mainThreadActions.Count > 0)
@@ -55,6 +55,7 @@ public class ChatManager : MonoBehaviour
             messageInputField.Select();
         }
     }
+    */
 
     private void ConnectToServer()
     {
