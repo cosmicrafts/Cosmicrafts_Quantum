@@ -20,7 +20,11 @@ public enum PlayerProperty
     XpProgress,
     Emblem,
     CharacterName,
-    Description
+    Description,
+    CurrentElo,
+    CurrentLeague,
+    CurrentSubLeague,
+    CurrentLeagueIcon
 }
 
 public class UIPTxtInfo : MonoBehaviour
@@ -30,6 +34,11 @@ public class UIPTxtInfo : MonoBehaviour
 
     //Load and show the property when begins
     void Start()
+    {
+        LoadProperty();
+    }
+
+    void OnDestroy()
     {
         LoadProperty();
     }
@@ -127,6 +136,38 @@ public class UIPTxtInfo : MonoBehaviour
                     SetText(Lang.GetEntityDescription(key));*/
                 }
                 break;
+            case PlayerProperty.CurrentElo:
+            // Directly use the current ELO points stored in EloManagement
+            SetText(EloManagement.Instance.CurrentEloPoints.ToString());
+            break;
+
+        case PlayerProperty.CurrentLeague:
+            // Fetch the current league based on the current ELO
+            LeagueSO currentLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+            if (currentLeague != null)
+            {
+                SetText(currentLeague.leagueName);
+            }
+            break;
+
+        case PlayerProperty.CurrentSubLeague:
+            // Fetch the current subleague based on the current ELO
+            LeagueSO currentSubLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+            if (currentSubLeague != null)
+            {
+                SetText(currentSubLeague.subLeagueName);
+            }
+            break;
+
+        case PlayerProperty.CurrentLeagueIcon:
+            // Fetch the league icon based on the current ELO
+            LeagueSO leagueWithIcon = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+            Image myImage = GetComponent<Image>();
+            if (myImage != null && leagueWithIcon != null)
+            {
+                myImage.sprite = leagueWithIcon.leagueSprite;
+            }
+            break;
         }
     }
 }

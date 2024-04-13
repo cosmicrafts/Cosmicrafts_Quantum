@@ -11,6 +11,7 @@ public class LeagueManager : MonoBehaviour
     public List<LeagueSO> leagues;
     public Image leagueSpriteImage;
     public TMP_Text leagueNameText;
+    public TMP_Text subLeagueNameText;
 
     private void Awake()
     {
@@ -53,6 +54,7 @@ public class LeagueManager : MonoBehaviour
         {
             leagueNameText.text = newLeague.leagueName;
             leagueSpriteImage.sprite = newLeague.leagueSprite;
+            subLeagueNameText.text = newLeague.subLeagueName;
         }
     }
 }
