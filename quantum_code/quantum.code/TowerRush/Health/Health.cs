@@ -1,4 +1,6 @@
-﻿namespace Quantum
+﻿using System.Diagnostics;
+
+namespace Quantum
 {
 	using Photon.Deterministic;
 
@@ -39,21 +41,59 @@
 
 		public bool ApplyHealthData(Frame frame, HealthData data)
 		{
+			data.AttackMode = EAttackMode.None;
+			
 			if (IsAlive == false)
 				return false;
 			
-			if (frame.Unsafe.TryGetPointer<Unit>(data.Target, out var unit))
-			{
-				data.TargetOwner = unit-> Owner;
-				data.TargetTokenID = unit-> TokenID;
-			}
-			else { data.TargetOwner = default; data.TargetTokenID = default; }
 			
 			if (frame.Unsafe.TryGetPointer<Unit>(data.Source, out var unitSource))
 			{
 				data.SourceTokenID = unitSource-> TokenID;
+				
+				if (data.Action == EHealthAction.Remove)
+				{
+					FP randomNum = frame.Global->RngSession.Next((FP)0, (FP)100);
+
+					if ( unitSource->Critic > randomNum )
+					{
+						data.AttackMode = EAttackMode.Critic;
+						data.Value *= FP._1_50;
+					}
+					
+				}
 			}
-			else { data.SourceTokenID = default; }
+			else
+			{
+				data.SourceTokenID = default; 
+				Log.Debug($"Dont Have UNIT Script In Source");
+			}
+			
+			
+			
+			////////////
+			if (frame.Unsafe.TryGetPointer<Unit>(data.Target, out var unit))
+			{
+				data.TargetOwner = unit-> Owner;
+				data.TargetTokenID = unit-> TokenID;
+
+				if (data.Action == EHealthAction.Remove)
+				{
+					FP randomNum = frame.Global->RngSession.Next((FP)0, (FP)100);
+
+					if (unit->Evasion > randomNum)
+					{
+						data.AttackMode = EAttackMode.Evasion;
+						data.Value *=  FP._0;
+					}
+					
+				}
+			}
+			else
+			{
+				data.TargetOwner = default; data.TargetTokenID = default;
+				Log.Debug($"Dont Have UNIT Script In Target");
+			}
 			
 			
 			

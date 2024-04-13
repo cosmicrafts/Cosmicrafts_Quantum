@@ -22,6 +22,7 @@ namespace Quantum.Editor {
     }
   }
 
+  [CustomPropertyDrawer(typeof(Quantum.Prototypes.EAttackMode_Prototype))]
   [CustomPropertyDrawer(typeof(Quantum.Prototypes.EEffectAreaState_Prototype))]
   [CustomPropertyDrawer(typeof(Quantum.Prototypes.EEffectAreaTarget_Prototype))]
   [CustomPropertyDrawer(typeof(Quantum.Prototypes.EGameplayState_Prototype))]

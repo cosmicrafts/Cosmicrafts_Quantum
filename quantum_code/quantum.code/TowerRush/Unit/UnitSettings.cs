@@ -17,6 +17,10 @@
 		public FP                       BaseShield;
 		public FP                       HealthPerLevelPercent;
 		public bool                     DestroyOnDeath = true;
+		
+		[Header("Health")]
+		public FP                       Critic;
+		public FP                       Evasion;
 
 		[Header("Target")]
 		public ETargetType              TargetType;

@@ -10,6 +10,10 @@
 			Owner           = owner;
 			TokenID         = tokenID;
 			Level           = level;
+
+			Critic          = settings.Critic;
+			Evasion         = settings.Evasion;
+			
 			DestroyOnDeath  = settings.DestroyOnDeath;
 			ActivationDelay = settings.ActivationDelay;
 			Settings        = settings;

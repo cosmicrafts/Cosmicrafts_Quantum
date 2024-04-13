@@ -16,6 +16,7 @@ struct HealthData
 	EntityRef     Source;
     int           SourceTokenID;
 	EHealthAction Action;
+    EAttackMode   AttackMode;
     bool     HideToStats;
 }
 
@@ -24,6 +25,12 @@ enum EHealthAction : Byte
 	None,
 	Add,
 	Remove,
+}
+enum EAttackMode : Byte
+{
+	None,
+	Critic,
+	Evasion,
 }
 
 signal OnDeath(EntityRef entity, EntityRef killer);

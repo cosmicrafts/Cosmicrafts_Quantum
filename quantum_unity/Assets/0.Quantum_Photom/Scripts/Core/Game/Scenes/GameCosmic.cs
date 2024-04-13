@@ -206,11 +206,12 @@ namespace TowerRush
 		{
 			void InstanceCanvasDamage()
 			{
+				
 				GameObject targetGameObject = GameObject.Find(e.Data.Target.ToString());
 				if (targetGameObject != null)
 				{
 					GameObject canvasDmg = Instantiate(CanvasDamage, targetGameObject.transform.position, targetGameObject.transform.rotation);
-					canvasDmg.GetComponent<CanvasDamage>().SetDamage(e.Data.Value.AsFloat);
+					canvasDmg.GetComponent<CanvasDamage>().SetDamage(e.Data.Value.AsFloat, e.Data.AttackMode);
 				}
 			}
 			

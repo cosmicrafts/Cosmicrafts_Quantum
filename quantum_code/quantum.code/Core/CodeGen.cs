@@ -26,6 +26,11 @@ namespace Quantum {
   using MethodImplAttribute = System.Runtime.CompilerServices.MethodImplAttribute;
   using MethodImplOptions = System.Runtime.CompilerServices.MethodImplOptions;
   
+  public enum EAttackMode : byte {
+    None,
+    Critic,
+    Evasion,
+  }
   public enum EEffectAreaState : byte {
     Init,
     Active,
@@ -897,8 +902,10 @@ namespace Quantum {
   public unsafe partial struct HealthData {
     public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
+    [FieldOffset(1)]
     public EHealthAction Action;
+    [FieldOffset(0)]
+    public EAttackMode AttackMode;
     [FieldOffset(16)]
     public QBoolean HideToStats;
     [FieldOffset(24)]
@@ -917,6 +924,7 @@ namespace Quantum {
       unchecked { 
         var hash = 107;
         hash = hash * 31 + (Byte)Action;
+        hash = hash * 31 + (Byte)AttackMode;
         hash = hash * 31 + HideToStats.GetHashCode();
         hash = hash * 31 + Source.GetHashCode();
         hash = hash * 31 + SourceTokenID.GetHashCode();
@@ -929,6 +937,7 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (HealthData*)ptr;
+        serializer.Stream.Serialize((Byte*)&p->AttackMode);
         serializer.Stream.Serialize((Byte*)&p->Action);
         serializer.Stream.Serialize(&p->SourceTokenID);
         serializer.Stream.Serialize(&p->TargetTokenID);
@@ -2217,7 +2226,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Unit : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(32)]
     [ExcludeFromPrototype()]
@@ -2226,9 +2235,15 @@ namespace Quantum {
     [ExcludeFromPrototype()]
     [FramePrinter.PtrQListAttribute(typeof(UnitBehavior))]
     private Quantum.Ptr BehaviorsPtr;
+    [FieldOffset(40)]
+    [ExcludeFromPrototype()]
+    public FP Critic;
     [FieldOffset(12)]
     [ExcludeFromPrototype()]
     public QBoolean DestroyOnDeath;
+    [FieldOffset(48)]
+    [ExcludeFromPrototype()]
+    public FP Evasion;
     [FieldOffset(0)]
     [ExcludeFromPrototype()]
     public Byte Level;
@@ -2254,7 +2269,9 @@ namespace Quantum {
         var hash = 263;
         hash = hash * 31 + ActivationDelay.GetHashCode();
         hash = hash * 31 + BehaviorsPtr.GetHashCode();
+        hash = hash * 31 + Critic.GetHashCode();
         hash = hash * 31 + DestroyOnDeath.GetHashCode();
+        hash = hash * 31 + Evasion.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Settings.GetHashCode();
@@ -2278,6 +2295,8 @@ namespace Quantum {
         QList.Serialize(p->Behaviors, &p->BehaviorsPtr, serializer, StaticDelegates.SerializeUnitBehavior);
         Quantum.AssetRefCardSettings.Serialize(&p->Settings, serializer);
         FP.Serialize(&p->ActivationDelay, serializer);
+        FP.Serialize(&p->Critic, serializer);
+        FP.Serialize(&p->Evasion, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -3031,6 +3050,7 @@ namespace Quantum {
       Register(typeof(ComponentPrototypeRef), ComponentPrototypeRef.SIZE);
       Register(typeof(DistanceJoint), DistanceJoint.SIZE);
       Register(typeof(DistanceJoint3D), DistanceJoint3D.SIZE);
+      Register(typeof(Quantum.EAttackMode), 1);
       Register(typeof(Quantum.EEffectAreaState), 1);
       Register(typeof(Quantum.EEffectAreaTarget), 1);
       Register(typeof(Quantum.EGameplayState), 4);
@@ -3126,6 +3146,7 @@ namespace Quantum {
     public static void EnsureNotStripped() {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.AssetRefCardSettings>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.AssetRefGameplaySettings>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.EAttackMode>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.EEffectAreaState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.EEffectAreaTarget>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.EGameplayState>();
@@ -3153,6 +3174,17 @@ namespace Quantum.Prototypes {
   using MethodImplAttribute = System.Runtime.CompilerServices.MethodImplAttribute;
   using MethodImplOptions = System.Runtime.CompilerServices.MethodImplOptions;
   
+  [System.SerializableAttribute()]
+  [Prototype(typeof(EAttackMode))]
+  public unsafe partial struct EAttackMode_Prototype {
+    public Byte Value;
+    public static implicit operator EAttackMode(EAttackMode_Prototype value) {
+        return (EAttackMode)value.Value;
+    }
+    public static implicit operator EAttackMode_Prototype(EAttackMode value) {
+        return new EAttackMode_Prototype() { Value = (Byte)value };
+    }
+  }
   [System.SerializableAttribute()]
   [Prototype(typeof(EEffectAreaState))]
   public unsafe partial struct EEffectAreaState_Prototype {
@@ -3551,10 +3583,12 @@ namespace Quantum.Prototypes {
     public MapEntityId Source;
     public Int32 SourceTokenID;
     public EHealthAction_Prototype Action;
+    public EAttackMode_Prototype AttackMode;
     public QBoolean HideToStats;
     partial void MaterializeUser(Frame frame, ref HealthData result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref HealthData result, in PrototypeMaterializationContext context) {
       result.Action = this.Action;
+      result.AttackMode = this.AttackMode;
       result.HideToStats = this.HideToStats;
       PrototypeValidator.FindMapEntity(this.Source, in context, out result.Source);
       result.SourceTokenID = this.SourceTokenID;
