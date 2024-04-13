@@ -281,7 +281,7 @@ namespace DanielLochner.Assets.SimpleScrollSnap
             yield return null;
             if (ValidConfig)
             {
-                startingPanel = 2;
+               // startingPanel = 2;
                 Setup();
             }
             else
