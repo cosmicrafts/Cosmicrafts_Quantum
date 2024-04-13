@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using EdjCase.ICP.Candid.Models;
+using TMPro;
 
 public class ChestInstance : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class ChestInstance : MonoBehaviour
     public Image chestImage;
     public ChestOpenerUI chestOpenerUI;
     public ChestTransferUI chestTransferUI;
+    public TMP_Text nameText;
+    public TMP_Text tokenIdText;
 
     public void OnChestSelected()
     {
@@ -40,6 +43,8 @@ public class ChestInstance : MonoBehaviour
     {
         chestSO = so;
         tokenId = id;
+
+        // Assign the icon from the ChestSO to the Image component of this instance
         if (chestImage != null)
         {
             chestImage.sprite = chestSO.icon;
@@ -48,5 +53,9 @@ public class ChestInstance : MonoBehaviour
         {
             Debug.LogError("Image component not found on ChestInstance. Please assign it in the Inspector.");
         }
+
+        // Set the text for name, rarity, and tokenId
+        if (nameText != null) nameText.text = chestSO.chestName;
+        if (tokenIdText != null) tokenIdText.text = "ID: " + tokenId.ToString();
     }
 }

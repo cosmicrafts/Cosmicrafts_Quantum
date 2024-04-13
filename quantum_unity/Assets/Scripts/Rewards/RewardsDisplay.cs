@@ -23,6 +23,8 @@ public class RewardsDisplay : MonoBehaviour
     public Sprite chest2Sprite;
     public Sprite chest3Sprite;
     public Sprite chest4Sprite;
+    public Sprite chest5Sprite;
+    public Sprite chest6Sprite;
 
     public GameObject panelToChangeColor;
     public Color gamesPlayedColor;
@@ -111,9 +113,12 @@ public class RewardsDisplay : MonoBehaviour
                 return chest3Sprite;
             case 4:
                 return chest4Sprite;
+            case 5:
+                return chest5Sprite;
+            case 6:
+                return chest6Sprite;
             default:
                 return null; // Handle cases where the prize amount doesn't match expected values
         }
     }
-
 }

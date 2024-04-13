@@ -68,7 +68,7 @@ public class TokenAnimation : MonoBehaviour
             LeanTween.move(tokenRect, endCanvasPoint, duration).setEase(LeanTweenType.easeOutQuad);
             LeanTween.scale(token, Vector3.one * 0.25f, duration / 2).setLoopPingPong(1);
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.12f);
         }
     }
 }
