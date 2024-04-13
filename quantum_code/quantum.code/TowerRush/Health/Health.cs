@@ -62,11 +62,12 @@ namespace Quantum
 					}
 					
 				}
+				Log.Debug($"Have UNIT Script In Source: {data.Source}");
 			}
 			else
 			{
 				data.SourceTokenID = default; 
-				Log.Debug($"Dont Have UNIT Script In Source");
+				Log.Debug($"Dont Have UNIT Script In Source: {data.Source}");
 			}
 			
 			
