@@ -45,8 +45,7 @@ namespace Quantum
 			
 			if (IsAlive == false)
 				return false;
-			
-			
+
 			if (frame.Unsafe.TryGetPointer<Unit>(data.Source, out var unitSource))
 			{
 				data.SourceTokenID = unitSource-> TokenID;

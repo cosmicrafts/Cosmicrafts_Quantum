@@ -73,7 +73,7 @@
 
 				for (int idx = 0, count = behaviors.Count; idx < count; idx++)
 				{
-					behaviors.GetPointer(idx)->ProcessEffect(frame, entity, targetPair.Entity, Level);
+					behaviors.GetPointer(idx)->ProcessEffect(frame, SourceEntity, entity, targetPair.Entity, Level);
 				}
 			}
 		}

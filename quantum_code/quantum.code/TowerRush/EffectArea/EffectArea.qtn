@@ -2,6 +2,7 @@
 {
 	[ExcludeFromPrototype] list<EffectAreaBehavior> Behaviors;
 	[ExcludeFromPrototype] PlayerRef                Owner;
+    [ExcludeFromPrototype] EntityRef                SourceEntity;
 	[ExcludeFromPrototype] FP                       Radius;
 	[ExcludeFromPrototype] FP                       StateTime;
 	[ExcludeFromPrototype] EEffectAreaState         State;

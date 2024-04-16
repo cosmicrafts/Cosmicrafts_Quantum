@@ -1881,7 +1881,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct EffectArea : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     [ExcludeFromPrototype()]
@@ -1893,13 +1893,16 @@ namespace Quantum {
     [FieldOffset(4)]
     [ExcludeFromPrototype()]
     public PlayerRef Owner;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public FP Radius;
+    [FieldOffset(16)]
+    [ExcludeFromPrototype()]
+    public EntityRef SourceEntity;
     [FieldOffset(2)]
     [ExcludeFromPrototype()]
     public EEffectAreaState State;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     [ExcludeFromPrototype()]
     public FP StateTime;
     [FieldOffset(3)]
@@ -1908,7 +1911,7 @@ namespace Quantum {
     [FieldOffset(1)]
     [ExcludeFromPrototype()]
     public Byte TickCount;
-    [FieldOffset(32)]
+    [FieldOffset(40)]
     [ExcludeFromPrototype()]
     public FP TickTime;
     public QListPtr<EffectAreaBehavior> Behaviors {
@@ -1926,6 +1929,7 @@ namespace Quantum {
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Radius.GetHashCode();
+        hash = hash * 31 + SourceEntity.GetHashCode();
         hash = hash * 31 + (Byte)State;
         hash = hash * 31 + StateTime.GetHashCode();
         hash = hash * 31 + (Byte)TargetType;
@@ -1949,6 +1953,7 @@ namespace Quantum {
         serializer.Stream.Serialize((Byte*)&p->TargetType);
         PlayerRef.Serialize(&p->Owner, serializer);
         QList.Serialize(p->Behaviors, &p->BehaviorsPtr, serializer, StaticDelegates.SerializeEffectAreaBehavior);
+        EntityRef.Serialize(&p->SourceEntity, serializer);
         FP.Serialize(&p->Radius, serializer);
         FP.Serialize(&p->StateTime, serializer);
         FP.Serialize(&p->TickTime, serializer);

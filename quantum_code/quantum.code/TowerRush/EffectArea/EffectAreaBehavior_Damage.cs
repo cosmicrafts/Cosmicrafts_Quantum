@@ -1,4 +1,6 @@
-﻿namespace Quantum
+﻿using System.Diagnostics;
+
+namespace Quantum
 {
 	using Photon.Deterministic;
 
@@ -14,16 +16,20 @@
 			}
 		}
 
-		public void ProcessEffect(Frame frame, EntityRef entity, EntityRef target)
+		public void ProcessEffect(Frame frame, EntityRef sourceEntity, EntityRef entity, EntityRef target)
 		{
+			//SourceEntity = Spaceship owner of Effect
+			// Entity = EntityGameobject of Effect
+			
 			var position   = frame.Unsafe.GetPointer<Transform2D>(entity)->Position;
 			var healthData = new HealthData()
 			{
 				Action = EHealthAction.Remove,
-				Value  = Damage,
+				Source = sourceEntity,
 				Target = target,
+				Value  = Damage,
 			};
-
+			
 			var targetHealth = frame.Unsafe.GetPointer<Health>(target);
 			targetHealth->ApplyHealthData(frame, healthData);
 		}

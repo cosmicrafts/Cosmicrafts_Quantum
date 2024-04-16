@@ -7,6 +7,7 @@
 	{
 		public void Initialize(Frame frame, PlayerRef owner, EntityRef entity, UnitSettings settings, byte level, int tokenID)
 		{
+			Log.Debug("CardSpawned-Entity: " + entity.Index);
 			Owner           = owner;
 			TokenID         = tokenID;
 			Level           = level;
