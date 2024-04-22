@@ -346,6 +346,10 @@ namespace Candid
         {
             Debug.Log("[CandidApiManager] Initiating logout process.");
             PlayerPrefs.DeleteKey("authTokenId");
+            //
+            PlayerPrefs.DeleteKey("userPrivateKey");
+            PlayerPrefs.DeleteKey("userPublicKey");
+            
             DesInitializeCandidApis();
             SceneManager.LoadScene(0);
             Debug.Log("[CandidApiManager] Logout process completed. Scene reloaded.");
