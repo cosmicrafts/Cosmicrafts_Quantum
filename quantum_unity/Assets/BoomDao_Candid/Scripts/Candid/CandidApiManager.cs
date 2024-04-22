@@ -122,7 +122,7 @@ namespace Candid
             else
             {
                 var identity = LoadIdentityFromPlayerPrefs();
-                if (identity != null)
+                if (identity != null && autoLogin )
                 {
                     LoadingPanel.Instance.ActiveLoadingPanel();
                     Debug.Log("[CandidApiManager] Saved random login found. Using existing identity.");
