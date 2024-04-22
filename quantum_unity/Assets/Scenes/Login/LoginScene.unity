@@ -2095,7 +2095,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.073322706, y: 0.83673704}
   m_AnchorMax: {x: 0.9277098, y: 1}
-  m_AnchoredPosition: {x: -0.5610962, y: -0.4560547}
+  m_AnchoredPosition: {x: -0.5611572, y: -0.4560547}
   m_SizeDelta: {x: 0.97450256, y: 1.0870018}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &414639074
@@ -3219,6 +3219,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CanvasLoading
+      objectReference: {fileID: 0}
+    - target: {fileID: 3353401442797202293, guid: 3b00397451eec0744b77d0f89c839fa3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b00397451eec0744b77d0f89c839fa3, type: 3}
@@ -5262,7 +5267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 433d19b1e116451b819e0652fbe4d9bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoLogin: 1
+  autoLogin: 0
 --- !u!4 &1396508692
 Transform:
   m_ObjectHideFlags: 0
