@@ -120,7 +120,7 @@ Material:
     - _Reflectivity: 10
     - _ScaleRatioA: 0.8333333
     - _ScaleRatioB: 0.6770833
-    - _ScaleRatioC: 0.3208926
+    - _ScaleRatioC: 0.6770833
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -133,9 +133,9 @@ Material:
     - _StencilWriteMask: 255
     - _TextureHeight: 512
     - _TextureWidth: 512
-    - _UnderlayDilate: 0.11
-    - _UnderlayOffsetX: -1
-    - _UnderlayOffsetY: -1
+    - _UnderlayDilate: -0.41
+    - _UnderlayOffsetX: -0.31
+    - _UnderlayOffsetY: -0.16
     - _UnderlaySoftness: 1
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
@@ -151,7 +151,7 @@ Material:
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 1}
+    - _UnderlayColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
@@ -163,11 +163,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: Changeling Neo Bold White
+  m_Name: Changeling Neo Bold BLK
   m_EditorClassIdentifier: 
-  hashCode: 1319404268
+  hashCode: 147122478
   material: {fileID: -340147488844179882}
-  materialHashCode: -2108126004
+  materialHashCode: 596882766
   m_Version: 1.1.0
   m_SourceFontFileGUID: b4201545845a4604d9e2a85f533fe93f
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: b4201545845a4604d9e2a85f533fe93f,
