@@ -14,9 +14,6 @@ using EdjCase.ICP.Candid.Models;
 
 public class NFTManager : MonoBehaviour
 {
-
-    public Button buttonPlay;
-    
     public static NFTManager Instance { get; private set; }
     public NFTCollection nftCollection;
     
@@ -62,7 +59,6 @@ public class NFTManager : MonoBehaviour
                 await FetchAndSetNFTMetadata(tokenId);
             }
 
-            buttonPlay.interactable = true;
             nftCollection.AllNFTDatas = AllNFTDatas;
             nftCollection.RefreshCollection();
         }
