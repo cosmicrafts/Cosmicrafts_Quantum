@@ -96,7 +96,7 @@
         if (newFillAmount < oldFillAmount)
         {
             // Use LeanTween for interpolation, adjust duration as needed
-            LeanTween.value(bar.gameObject, oldFillAmount, newFillAmount, 0.25f)
+            LeanTween.value(bar.gameObject, oldFillAmount, newFillAmount, 0.55f)
                 .setOnUpdate((float val) =>
                 {
                     bar.fillAmount = val;

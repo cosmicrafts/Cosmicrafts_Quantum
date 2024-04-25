@@ -34,17 +34,17 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MAT_Tigershark 1
-  m_Shader: {fileID: -6465566751694194690, guid: e4e5f6245b47a4e439d0e587aedf0643,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}
   m_ValidKeywords:
-  - _USE_SLICE_GLITCHES
-  - _USE_VERTEX_GLITCHES
+  - _EMISSION
+  - _NORMALMAP
   m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -54,7 +54,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: c9816170f25fa1047be360750e4183f8, type: 3}
+        m_Texture: {fileID: 2800000, guid: db5f52813bc16440aaabdb06ceadb4e6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c9816170f25fa1047be360750e4183f8, type: 3}
+        m_Texture: {fileID: 2800000, guid: db5f52813bc16440aaabdb06ceadb4e6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -144,6 +144,7 @@ Material:
     - _GlitchStrength: 0.25
     - _GlossMapScale: 0
     - _Glossiness: 0
+    - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _Metallic: 0
     - _NormalStrength: 1
@@ -157,12 +158,15 @@ Material:
     - _RimStepSmooth: 0.369
     - _ShadowStep: 0.789
     - _ShadowStepSmooth: 0.251
+    - _Shininess: 0
     - _SliceDuration: 0.5
     - _SliceFrequency: 0.1
     - _SliceJitter: 0.05
     - _SliceWidth: 0.2
     - _Smoothness: 0.381
+    - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
+    - _SpecSource: 0
     - _SpecularHighlights: 1
     - _SpecularStep: 0.358
     - _SpecularStepSmooth: 0.128

@@ -220,7 +220,7 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
-  DestroyDelay: 3
+  DestroyDelay: 0.5
   DestroyMoveDelay: 1.5
   DestroyMoveOffset: {x: 0, y: -1.5, z: 0}
   Scene: {fileID: 0}
@@ -353,7 +353,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7656316329839227263}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.179, z: -0.321}
+  m_LocalPosition: {x: 0, y: 1.94, z: -0.321}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -375,17 +375,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.25
+      value: 0.19976042
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.3
+      value: 0.23971254
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.3
+      value: 0.23971254
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
         type: 3}
@@ -442,10 +442,60 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5110364473456976520, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ef281a779373224ca54ec1370905f14, type: 2}
+    - target: {fileID: -2639638324218457063, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2639638324218457063, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0044
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
         type: 3}
       propertyPath: m_Name
       value: Mesh_Pulverizer
+      objectReference: {fileID: 0}
+    - target: {fileID: 2230372723046431426, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 95.92069
+      objectReference: {fileID: 0}
+    - target: {fileID: 2230372723046431426, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 277.97522
+      objectReference: {fileID: 0}
+    - target: {fileID: 2230372723046431426, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 129.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 2230372723046431426, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 6199527821901586837, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ef281a779373224ca54ec1370905f14, type: 2}
+    - target: {fileID: 8879528566716807029, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: d493e5ddc3ac0d648830b52c5d7f2b57,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d493e5ddc3ac0d648830b52c5d7f2b57, type: 3}

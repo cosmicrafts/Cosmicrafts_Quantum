@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4671562345712948669}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.089, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -255,7 +255,7 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
-  DestroyDelay: 3
+  DestroyDelay: 0.5
   DestroyMoveDelay: 1.5
   DestroyMoveOffset: {x: 0, y: -1, z: 0}
   Scene: {fileID: 0}
@@ -274,7 +274,7 @@ MonoBehaviour:
   Prototype:
     _empty_prototype_dummy_field_: 0
   m_HUDPosition: {fileID: 4476672590188337945}
-  m_HUDScale: 0.2
+  m_HUDScale: 0.15
   m_TeamMaterials: []
   m_FriendlyMaterial: {fileID: 0}
   m_EnemyMaterial: {fileID: 0}
@@ -454,17 +454,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 8832b36aa0056be4b85ed53ad5e37d44,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.45
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8832b36aa0056be4b85ed53ad5e37d44,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.45
+      value: 0.47492
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8832b36aa0056be4b85ed53ad5e37d44,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.45
+      value: 0.36236006
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8832b36aa0056be4b85ed53ad5e37d44,
         type: 3}

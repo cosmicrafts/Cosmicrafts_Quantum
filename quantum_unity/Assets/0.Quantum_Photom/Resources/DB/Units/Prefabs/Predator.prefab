@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 518060329497872659}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.429, z: 0}
+  m_LocalPosition: {x: 0, y: 1.098, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -255,7 +255,7 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
-  DestroyDelay: 3
+  DestroyDelay: 0.5
   DestroyMoveDelay: 1.5
   DestroyMoveOffset: {x: 0, y: -1.5, z: 0}
   Scene: {fileID: 0}
@@ -459,12 +459,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: a63455161dfa2e54a8627e7bfa5caf57,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.45
+      value: 0.761715
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a63455161dfa2e54a8627e7bfa5caf57,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.45
+      value: 0.49086002
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a63455161dfa2e54a8627e7bfa5caf57,
         type: 3}
