@@ -105,20 +105,25 @@
 
 		// PRIVATE METHODS
 
-		private IEnumerator ScaleFrame_Coroutine()
-		{
-			m_Frame.localScale = Vector3.zero;
+	private IEnumerator ScaleFrame_Coroutine()
+    {
+            m_Frame.localScale = Vector3.zero;
 
-			var progress = 0f;
+            var duration = 0.45f; // Adjust animation duration
+            var originalScale = m_Frame.localScale;
+            var targetScale = Vector3.one;
+            var bounceHeight = 0.75f; // Adjust bounce height
+            var progress = 0.05f;
 
-			while (progress < 1f)
-			{
-				progress           += Time.deltaTime * 2f;
-				m_Frame.localScale  = Vector3.Lerp(Vector3.zero, Vector3.one, progress);
-				yield return null;
-			}
+            while (progress < 1f)
+            {
+                progress += Time.deltaTime / duration;
+                var t = Mathf.Sin(progress * Mathf.PI) * bounceHeight;
+                m_Frame.localScale = Vector3.Lerp(originalScale, targetScale, progress) + new Vector3(t, t, 0); // Add bounce effect
+                yield return null;
+            }
 
-			m_Frame.localScale = Vector3.one;
-		}
-	}
+            m_Frame.localScale = targetScale;
+        }
+    }
 }

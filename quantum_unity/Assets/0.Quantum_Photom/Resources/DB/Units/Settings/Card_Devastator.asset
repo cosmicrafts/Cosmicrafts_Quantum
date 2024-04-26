@@ -25,13 +25,13 @@ MonoBehaviour:
       Id:
         Value: 2599064263517752003
     Rarity: 0
-    EnergyCost: 2
+    EnergyCost: 1
     ActivationDelay:
-      RawValue: 32768
+      RawValue: 0
     UnitCount: 1
     UnitBehaviors: []
     BaseHealth:
-      RawValue: 9830400
+      RawValue: 12582912
     BaseShield:
       RawValue: 3276800
     HealthPerLevelPercent:
@@ -62,7 +62,7 @@ MonoBehaviour:
           _field_used_: SINGLETARGET
           SingleTarget:
             Damage:
-              RawValue: 3276800
+              RawValue: 655360
             DamagePerLevelPercent:
               RawValue: 655360
           AoE:

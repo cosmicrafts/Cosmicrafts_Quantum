@@ -98,16 +98,23 @@
 
 			m_EnergyText.text = ((int)currentEnergy).ToString();
 
+			/*
 			if (qCardManager->NextFillTime > FP._0)
 			{
 				m_NextCountdown.text  = qCardManager->NextFillTime.AsFloat.ToString("0.0");
-				m_NextCardGroup.alpha = 0.5f;
+				m_NextCardGroup.alpha = 0f;
 			}
 			else
 			{
 				m_NextCountdown.text  = string.Empty;
-				m_NextCardGroup.alpha = 1f;
+				m_NextCardGroup.alpha = 0f;
 			}
+			*/
+
+			// Set NextFillTime to 0
+    		qCardManager->NextFillTime = FP._0;
+
+			m_NextCardGroup.alpha = 0.25f;
 
 			if (m_PlayerRef != Entities.LocalPlayer)
 			{
