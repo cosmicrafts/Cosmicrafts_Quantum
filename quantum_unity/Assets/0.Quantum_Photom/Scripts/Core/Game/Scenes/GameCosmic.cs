@@ -221,8 +221,9 @@ namespace TowerRush
 				return;
 			}
 			
-			if (e.Data.TargetOwner == Entities.LocalPlayerRef)
+			if (e.Data.TargetOwner == Entities.LocalPlayerRef && e.Data.Action == EHealthAction.Remove)
 			{
+				StartCoroutine(ShowDamageAndDeactivate(e.Data.Value.AsFloat, e.Data.AttackMode, e.Data.Target.ToString()));
 				if (e.Data.Action == EHealthAction.Add)
 				{
 					Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
@@ -300,7 +301,17 @@ namespace TowerRush
 			FinishScene();
 		}
 
-
+	private IEnumerator ShowDamageAndDeactivate(float damage, EAttackMode attackMode, string targetId)
+{
+    GameObject targetGameObject = GameObject.Find(targetId);
+    if (targetGameObject != null)
+    {
+        GameObject canvasDmg = Instantiate(CanvasDamage, targetGameObject.transform.position, targetGameObject.transform.rotation);
+        canvasDmg.GetComponent<CanvasDamage>().SetDamage(damage, attackMode);
+        yield return null; // Wait for one frame to ensure visibility
+        canvasDmg.SetActive(false); // Deactivate instead of destroying
+    }
+}
 
 	}
 }
