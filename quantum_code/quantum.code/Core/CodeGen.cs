@@ -2231,7 +2231,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Unit : Quantum.IComponent {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 72;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(32)]
     [ExcludeFromPrototype()]
@@ -2240,6 +2240,8 @@ namespace Quantum {
     [ExcludeFromPrototype()]
     [FramePrinter.PtrQListAttribute(typeof(UnitBehavior))]
     private Quantum.Ptr BehaviorsPtr;
+    [FieldOffset(56)]
+    public FPVector2 Cannon;
     [FieldOffset(40)]
     [ExcludeFromPrototype()]
     public FP Critic;
@@ -2274,6 +2276,7 @@ namespace Quantum {
         var hash = 263;
         hash = hash * 31 + ActivationDelay.GetHashCode();
         hash = hash * 31 + BehaviorsPtr.GetHashCode();
+        hash = hash * 31 + Cannon.GetHashCode();
         hash = hash * 31 + Critic.GetHashCode();
         hash = hash * 31 + DestroyOnDeath.GetHashCode();
         hash = hash * 31 + Evasion.GetHashCode();
@@ -2302,6 +2305,7 @@ namespace Quantum {
         FP.Serialize(&p->ActivationDelay, serializer);
         FP.Serialize(&p->Critic, serializer);
         FP.Serialize(&p->Evasion, serializer);
+        FPVector2.Serialize(&p->Cannon, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -3758,8 +3762,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Prototype(typeof(Unit))]
   public sealed unsafe partial class Unit_Prototype : ComponentPrototype<Unit> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
+    public FPVector2 Cannon;
     partial void MaterializeUser(Frame frame, ref Unit result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
       Unit component = default;
@@ -3767,6 +3770,7 @@ namespace Quantum.Prototypes {
       return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Unit result, in PrototypeMaterializationContext context) {
+      result.Cannon = this.Cannon;
       MaterializeUser(frame, ref result, in context);
     }
     public override void Dispatch(ComponentPrototypeVisitorBase visitor) {

@@ -45,7 +45,7 @@
 				{
 					var unitEntity = CreateEntity(unitSettings.Prefab, TransformPosition(position, unitSettings.UnitCount, idx), rotation);
 					var unit       = Unsafe.GetPointer<Unit>(unitEntity);
-					
+
 					Log.Debug($"Level: {cardInfo.Level}");
 					Log.Debug($"H: {cardInfo.BaseHealth}");
 					Log.Debug($"D: {cardInfo.Damage}");

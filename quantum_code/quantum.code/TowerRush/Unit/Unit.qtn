@@ -11,6 +11,8 @@
 	[ExcludeFromPrototype] AssetRefCardSettings Settings;
 	[ExcludeFromPrototype] FP                   ActivationDelay;
 	[ExcludeFromPrototype] list<UnitBehavior>   Behaviors;
+
+    FPVector2     Cannon;
 }
 
 union UnitBehavior

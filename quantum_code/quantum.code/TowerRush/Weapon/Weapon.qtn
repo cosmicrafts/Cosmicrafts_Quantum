@@ -32,6 +32,7 @@ struct WeaponBehavior_Projectile
 	AssetRefEntityPrototype Prototype;
 	FP                      Speed;
 	ProjectileBehavior      Behavior;
+
 }
 
 enum EWeaponState
