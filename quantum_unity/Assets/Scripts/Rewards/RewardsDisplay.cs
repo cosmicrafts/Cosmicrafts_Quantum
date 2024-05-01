@@ -32,6 +32,15 @@ public class RewardsDisplay : MonoBehaviour
 
     public void SetRewardData(RewardsUser reward)
     {
+
+        Debug.Log($"ID: {reward.IdReward}");
+    Debug.Log($"Reward Type: {reward.RewardType}");
+    Debug.Log($"Prize Amount: {reward.PrizeAmount}");
+    Debug.Log($"Progress: {reward.Progress}/{reward.Total}");
+    Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
+    Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
+    Debug.Log($"Prize Type: {(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}");
+    
         // Determine singular or plural form for game(s) based on reward.Total
         string gameOrGames = reward.Total == 1 ? "Game" : "Games";
         string winOrWins = reward.Total == 1 ? "Win" : "Wins";

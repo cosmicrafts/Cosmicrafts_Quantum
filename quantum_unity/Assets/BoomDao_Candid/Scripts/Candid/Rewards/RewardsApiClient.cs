@@ -52,6 +52,22 @@ namespace CanisterPK.Rewards
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<(UnboundedUInt ReturnArg0, List<Models.Reward> ReturnArg1)> GetAllActiveRewards()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getAllActiveRewards", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<UnboundedUInt, List<Models.Reward>>(this.Converter);
+		}
+
+		public async Task<Dictionary<Principal, List<Models.RewardsUser>>> GetAllUsersRewards()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getAllUsersRewards", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<Dictionary<Principal, List<Models.RewardsUser>>>(this.Converter);
+		}
+
 		public async Task<OptionalValue<Models.Reward>> GetReward(UnboundedUInt arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));

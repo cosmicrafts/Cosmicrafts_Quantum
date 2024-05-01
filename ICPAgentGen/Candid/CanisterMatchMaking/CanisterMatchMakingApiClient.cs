@@ -2,6 +2,7 @@ using EdjCase.ICP.Agent.Agents;
 using EdjCase.ICP.Candid.Models;
 using EdjCase.ICP.Candid;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using CanisterPK.CanisterMatchMaking;
 using EdjCase.ICP.Agent.Responses;
 
@@ -27,6 +28,14 @@ namespace CanisterPK.CanisterMatchMaking
 			CandidArg arg = CandidArg.FromCandid();
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "cancelMatchmaking", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<List<Models.MatchData>> GetAllSearching()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getAllSearching", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.MatchData>>(this.Converter);
 		}
 
 		public async Task<OptionalValue<Models.MatchData>> GetMatchData(UnboundedUInt arg0)
