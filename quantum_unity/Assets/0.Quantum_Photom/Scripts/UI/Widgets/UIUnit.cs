@@ -1,4 +1,6 @@
-﻿namespace TowerRush
+﻿using System.Collections;
+
+namespace TowerRush
 {
 	using Photon.Deterministic;
 	using Quantum;
@@ -76,31 +78,34 @@
         }
 
         // Animate health and shield bars
-        AnimateBar(m_HealthProgressBar, m_LastHealth, quantumHealth->CurrentHealth, quantumHealth->MaxHealth);
-        AnimateBar(m_ShieldProgressBar, m_LastShield, quantumHealth->CurrentShield, quantumHealth->MaxShield);
-
+        StartCoroutine(AnimateBar(m_HealthProgressBar, m_LastHealth, quantumHealth->CurrentHealth, quantumHealth->MaxHealth));
+        StartCoroutine(AnimateBar(m_ShieldProgressBar, m_LastShield, quantumHealth->CurrentShield, quantumHealth->MaxShield));
+        
         m_LastHealth = quantumHealth->CurrentHealth;
         m_LastMaxHealth = quantumHealth->MaxHealth;
         m_LastShield = quantumHealth->CurrentShield;
         m_LastMaxShield = quantumHealth->MaxShield;
     }
 
-    private void AnimateBar(Image bar, FP oldValue, FP newValue, FP maxValue)
+    private IEnumerator AnimateBar(Image bar, FP oldValue, FP newValue, FP maxValue)
     {
         if (bar == null)
-            return;
-
+            yield break;
+    
         float oldFillAmount = oldValue.AsFloat / maxValue.AsFloat;
         float newFillAmount = newValue.AsFloat / maxValue.AsFloat;
-
+    
         if (newFillAmount < oldFillAmount)
         {
-            // Use LeanTween for interpolation, adjust duration as needed
-            LeanTween.value(bar.gameObject, oldFillAmount, newFillAmount, 0.55f)
-                .setOnUpdate((float val) =>
-                {
-                    bar.fillAmount = val;
-                });
+            float duration = 0.55f;
+            float elapsedTime = 0f;
+            while (elapsedTime < duration)
+            {
+                float t = elapsedTime / duration;
+                bar.fillAmount = Mathf.Lerp(oldFillAmount, newFillAmount, t);
+                yield return null;
+                elapsedTime += Time.deltaTime;
+            }
         }
         else
         {

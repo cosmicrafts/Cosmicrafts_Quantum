@@ -4,6 +4,8 @@ using System.Diagnostics;
 using Quantum;
 using UnityEngine;
 using TMPro;
+using Debug = UnityEngine.Debug;
+
 public class CanvasDamage : MonoBehaviour
 {
     [SerializeField]
@@ -19,17 +21,12 @@ public class CanvasDamage : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        transform.rotation = Quaternion.Euler(90f, 90f, transform.rotation.eulerAngles.z);
+        //transform.rotation = Quaternion.Euler(90f, 90f, transform.rotation.eulerAngles.z);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Destroy(gameObject, 1.5f);
-    }
-
+    
     public void SetDamage(float newDamage, Quantum.EAttackMode attackMode)
     {
+        Destroy(gameObject, 1.5f);
         mainCamera = Camera.main;
 
         if (newDamage == 0 && attackMode == EAttackMode.Evasion)
@@ -65,7 +62,8 @@ public class CanvasDamage : MonoBehaviour
         //The UI always look at the camera
         if (mainCamera)
         {
-            transform.LookAt(mainCamera.transform);
+            Debug.Log("Rotando");
+            transform.rotation = mainCamera.transform.rotation;
         }
 
     }
