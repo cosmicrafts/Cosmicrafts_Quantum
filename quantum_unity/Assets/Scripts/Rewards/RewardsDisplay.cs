@@ -3,7 +3,10 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using CanisterPK.CanisterLogin.Models;
+using CanisterPK.CanisterLogin;
 using EdjCase.ICP.Candid.Models;
+using System.Threading.Tasks;
+using Candid;
 
 public class RewardsDisplay : MonoBehaviour
 {
@@ -16,6 +19,9 @@ public class RewardsDisplay : MonoBehaviour
     public TMP_Text finishedText;
     public TMP_Text prizeTypeText;
     public Image prizeImage;
+    public GameObject claimButton;
+
+    private RewardsUser rewardData;
 
     public Sprite fluxSprite;
     public Sprite shardsSprite;
@@ -30,17 +36,22 @@ public class RewardsDisplay : MonoBehaviour
     public Color gamesPlayedColor;
     public Color gamesWonColor;
 
+    public shards ShardsScript;
+    public flux FluxScript;
+    public ChestManager ChestsScript;
+
+
     public void SetRewardData(RewardsUser reward)
     {
 
         Debug.Log($"ID: {reward.IdReward}");
-    Debug.Log($"Reward Type: {reward.RewardType}");
-    Debug.Log($"Prize Amount: {reward.PrizeAmount}");
-    Debug.Log($"Progress: {reward.Progress}/{reward.Total}");
-    Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
-    Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
-    Debug.Log($"Prize Type: {(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}");
-    
+        Debug.Log($"Reward Type: {reward.RewardType}");
+        Debug.Log($"Prize Amount: {reward.PrizeAmount}");
+        Debug.Log($"Progress: {reward.Progress}/{reward.Total}");
+        Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
+        Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
+        Debug.Log($"Prize Type: {(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}");
+
         // Determine singular or plural form for game(s) based on reward.Total
         string gameOrGames = reward.Total == 1 ? "Game" : "Games";
         string winOrWins = reward.Total == 1 ? "Win" : "Wins";
@@ -68,6 +79,8 @@ public class RewardsDisplay : MonoBehaviour
         prizeImage.enabled = selectedSprite != null;
 
         panelToChangeColor.GetComponent<Image>().color = reward.RewardType == RewardType.GamesCompleted ? gamesPlayedColor : gamesWonColor;
+
+        rewardData = reward;
     }
 
 
@@ -128,6 +141,48 @@ public class RewardsDisplay : MonoBehaviour
                 return chest6Sprite;
             default:
                 return null; // Handle cases where the prize amount doesn't match expected values
+        }
+    }
+
+    public async void OnClaimButtonClicked()
+    {
+        LoadingPanel.Instance.ActiveLoadingPanel();
+        if (rewardData != null)
+        {
+            UnboundedUInt rewardID = rewardData.IdReward; // Access the ID from the stored reward data
+            var claimResult = await CandidApiManager.Instance.CanisterLogin.ClaimReward(rewardID);
+            if (claimResult.ReturnArg0)
+            {
+                Debug.Log("Reward claimed successfully!");
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+
+                // Perform actions based on the reward type
+                switch (rewardData.PrizeType)
+                {
+                    case PrizeType.Flux:
+                        FluxScript.FetchBalance();
+                        break;
+                    case PrizeType.Shards:
+                        ShardsScript.FetchBalance();
+                        break;
+                    case PrizeType.Chest:
+                        ChestsScript.UpdateOwnedChests();
+                        break;
+                    default:
+                        Debug.LogError("Unknown reward type");
+                        break;
+                }
+            }
+            else
+            {
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+                Debug.LogError($"Failed to claim reward: {claimResult.ReturnArg1}");
+                // Optionally handle error or inform the user about the failure
+            }
+        }
+        else
+        {
+            Debug.LogError("No reward data available to claim.");
         }
     }
 }

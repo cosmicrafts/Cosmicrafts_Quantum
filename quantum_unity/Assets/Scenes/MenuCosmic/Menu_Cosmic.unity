@@ -23625,7 +23625,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1841273320}
+        m_TargetAssemblyTypeName: RewardsDisplay, Assembly-CSharp
+        m_MethodName: OnClaimButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &434829725
 GameObject:
   m_ObjectHideFlags: 0
@@ -95990,6 +96002,7 @@ MonoBehaviour:
   finishedText: {fileID: 1124654040}
   prizeTypeText: {fileID: 1774681530}
   prizeImage: {fileID: 1462382428}
+  claimButton: {fileID: 433977316}
   fluxSprite: {fileID: 21300000, guid: a8aa5a96dfb2de2448a3bd87933f9023, type: 3}
   shardsSprite: {fileID: 21300000, guid: 558da08cf1dafdd4ab580b1bd944484b, type: 3}
   chest1Sprite: {fileID: 21300000, guid: 9814287683d19be4bb4fb14b638888fa, type: 3}
@@ -96001,6 +96014,9 @@ MonoBehaviour:
   panelToChangeColor: {fileID: 2051142493}
   gamesPlayedColor: {r: 0.7843138, g: 0.9725491, b: 0.24313727, a: 1}
   gamesWonColor: {r: 0.9725491, g: 0.24313727, b: 0.9450981, a: 1}
+  ShardsScript: {fileID: 781813610}
+  FluxScript: {fileID: 1299073782}
+  ChestsScript: {fileID: 536574849}
 --- !u!111 &1841273321
 Animation:
   m_ObjectHideFlags: 0
