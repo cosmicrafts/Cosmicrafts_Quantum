@@ -19,7 +19,8 @@ public class RewardsDisplay : MonoBehaviour
     public TMP_Text finishedText;
     public TMP_Text prizeTypeText;
     public Image prizeImage;
-    public GameObject claimButton;
+    public Button claimButton;
+    public NotificationManager notificationManager;
 
     private RewardsUser rewardData;
 
@@ -39,6 +40,8 @@ public class RewardsDisplay : MonoBehaviour
     public shards ShardsScript;
     public flux FluxScript;
     public ChestManager ChestsScript;
+    public Image claimButtonImage;
+    public Image progressBar;
 
 
     public void SetRewardData(RewardsUser reward)
@@ -81,6 +84,13 @@ public class RewardsDisplay : MonoBehaviour
         panelToChangeColor.GetComponent<Image>().color = reward.RewardType == RewardType.GamesCompleted ? gamesPlayedColor : gamesWonColor;
 
         rewardData = reward;
+        bool isClaimable = reward.Finished;
+        claimButtonImage.enabled = isClaimable; // Enable or disable the claim button based on completion status
+        claimButton.interactable = isClaimable;
+
+        // Update the progress bar
+        float progressRatio = (float)reward.Progress / (float)reward.Total;
+        progressBar.fillAmount = progressRatio;
     }
 
 
@@ -146,9 +156,10 @@ public class RewardsDisplay : MonoBehaviour
 
     public async void OnClaimButtonClicked()
     {
-        LoadingPanel.Instance.ActiveLoadingPanel();
-        if (rewardData != null)
+        
+        if (rewardData != null && rewardData.Finished)
         {
+            LoadingPanel.Instance.ActiveLoadingPanel();
             UnboundedUInt rewardID = rewardData.IdReward; // Access the ID from the stored reward data
             var claimResult = await CandidApiManager.Instance.CanisterLogin.ClaimReward(rewardID);
             if (claimResult.ReturnArg0)
@@ -172,6 +183,8 @@ public class RewardsDisplay : MonoBehaviour
                         Debug.LogError("Unknown reward type");
                         break;
                 }
+                Destroy(gameObject);
+                ShowRewardNotification(rewardData);
             }
             else
             {
@@ -183,6 +196,52 @@ public class RewardsDisplay : MonoBehaviour
         else
         {
             Debug.LogError("No reward data available to claim.");
+        }
+    }
+
+    private void ShowRewardNotification(RewardsUser reward)
+    {
+        string notificationMessage = "";
+        switch (reward.PrizeType)
+        {
+            case PrizeType.Flux:
+                notificationMessage = $"You received {reward.PrizeAmount} Flux!";
+                break;
+            case PrizeType.Shards:
+                notificationMessage = $"You received {reward.PrizeAmount} Shards!";
+                break;
+            case PrizeType.Chest:
+                notificationMessage = $"You received a chest with rarity {GetChestRarity(reward.PrizeAmount)}!";
+                break;
+            default:
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(notificationMessage) && notificationManager != null)
+        {
+            notificationManager.ShowNotification(notificationMessage);
+        }
+    }
+    private string GetChestRarity(UnboundedUInt prizeAmount)
+    {
+        // Implement logic to determine chest rarity based on prize amount
+        // For example:
+        int amount = (int)prizeAmount;
+        if (amount >= 5)
+        {
+            return "Legendary";
+        }
+        else if (amount >= 3)
+        {
+            return "Epic";
+        }
+        else if (amount >= 1)
+        {
+            return "Rare";
+        }
+        else
+        {
+            return "Common";
         }
     }
 }
