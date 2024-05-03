@@ -45,6 +45,11 @@ public unsafe partial class EntityComponentUnit
 		Entity.OnEntityDestroyed.AddListener(OnQuantumEntityDestroyed);
 
 		m_Animator = GetComponentInChildren<Animator>(true);
+		if (m_Animator != null)
+		{
+			m_Animator.writeDefaultValuesOnDisable = true; //Para que al desactivar el objeto, las animaciones vuelvan a 0
+		}
+		
 	}
 
 	protected override void OnDeinitialize()
