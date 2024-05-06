@@ -40,7 +40,7 @@ public class NFTManager : MonoBehaviour
 
     async void Start()
     {
-        await FetchOwnedNFTs();
+       await FetchOwnedNFTs();
     }
 
     
@@ -90,6 +90,8 @@ public class NFTManager : MonoBehaviour
 
             OnMetadataUpdated?.Invoke(tokenId.ToString());
         }
+        nftCollection.AllNFTDatas = AllNFTDatas;
+        nftCollection.RefreshCollection();
     }
 
     // Fetch user's owned NFT tokens
@@ -120,13 +122,13 @@ public class NFTManager : MonoBehaviour
     }
 
     public async Task UpdateNFTMetadata(string tokenId)
-    {
-        Debug.Log($"Starting metadata update for Token ID: {tokenId}");
-        UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenId));
-       // await FetchAndSetNFTMetadata(tokenID);
-        OnMetadataUpdated?.Invoke(tokenId);
-        Debug.Log($"Finished metadata update for Token ID: {tokenId}");
-    }
+{
+    Debug.Log($"Starting metadata update for Token ID: {tokenId}");
+    UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenId));
+    await FetchAndSetNFTMetadata(tokenID); // Ensure metadata is fetched and UI event is triggered
+    OnMetadataUpdated?.Invoke(tokenId);
+    Debug.Log($"Finished metadata update for Token ID: {tokenId}");
+}
 
     public NFTData GetNFTDataById(string tokenId)
     {

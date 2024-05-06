@@ -24,6 +24,7 @@ public class NFTUpgradeUI : MonoBehaviour
     public TMP_Text tokenIdText;
     public TMP_Text levelText;
     public Image avatarImage;
+    public NotificationManager notificationManager;
 
     public static NFTUpgradeUI Instance;
 
@@ -54,7 +55,7 @@ public class NFTUpgradeUI : MonoBehaviour
         damageInfoText.text = $"Damage: {currentDamage} + {damageDiff}";
     }
 
-    private async void OnUpgradeButtonPressed()
+    public async void OnUpgradeButtonPressed()
     {
         string tokenIdToUpgrade = nftCard.TokenId;
         if (string.IsNullOrEmpty(tokenIdToUpgrade))
@@ -96,38 +97,30 @@ public class NFTUpgradeUI : MonoBehaviour
 
             (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
             if (success)
-            {
-                
-                LoadingPanel.Instance.DesactiveLoadingPanel();
-                upgradeScreenUI.gameObject.SetActive(true);
-                
-                ShardsScript.FetchBalance();
-                Debug.Log("NFT upgrade successful!");
-                notificationText.text = "Upgrade successful: " + message;
-                await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade);
+    {
+        Debug.Log("NFT upgrade successful!");
+        notificationText.text = "Upgrade successful: " + message;
+        await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade); // Ensure data is updated
 
-                NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade);
-                nftCard.SetNFTData(updatedData);
-
-               if (updatedData != null)
-                {
-                    nftCard.SetNFTData(updatedData);
-                    UpdateDisplayedNFTInfo();
-                }
-
-                int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
-                int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
-                int updatedDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
-
-                // Calculate differences
-                DisplayUpgradeInfo(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
-                upgradeScreenUI.ActivateUpgradeScreen(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
-            }
-            else
-            {
-                Debug.LogError("NFT upgrade failed: " + message);
-                notificationText.text = "Upgrade failed: " + message;
-            }
+        NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade); // Retrieve updated NFT data
+        if (updatedData != null)
+        {
+            nftCard.SetNFTData(updatedData); // Update card data
+            UpdateDisplayedNFTInfo(); // Refresh displayed info
+            int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
+            int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
+            int updatedDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
+            DisplayUpgradeInfo(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
+            upgradeScreenUI.ActivateUpgradeScreen(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
+        }
+        LoadingPanel.Instance.DesactiveLoadingPanel();
+        upgradeScreenUI.gameObject.SetActive(true);
+    }
+    else
+    {
+        Debug.LogError("NFT upgrade failed: " + message);
+        notificationText.text = "Upgrade failed: " + message;
+    }
         }
         catch (System.Exception ex)
         {
@@ -177,4 +170,23 @@ public class NFTUpgradeUI : MonoBehaviour
         nftCard = selectedCard;
         UpdateDisplayedNFTInfo();
     }
+
+   public void TriggerUpgradeNotification()
+{
+    if (nftCard != null)
+    {
+        // Accessing properties directly from nftCard, not nftCard.nftData
+        string nftName = nftCard.Name;
+        string nftTokenId = nftCard.TokenId;
+        string nftLevel = nftCard.Level;
+
+        string notificationMessage = $"{nftName} with ID {nftTokenId} has been upgraded to Level {ExtractNumber(nftLevel)}";
+        notificationManager.ShowNotification(notificationMessage);
+    }
+    else
+    {
+        Debug.LogError("NFT card is null.");
+    }
+}
+
 }

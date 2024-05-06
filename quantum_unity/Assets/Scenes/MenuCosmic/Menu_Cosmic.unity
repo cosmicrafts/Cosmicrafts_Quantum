@@ -21607,6 +21607,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6200290006879307876}
+        m_TargetAssemblyTypeName: NFTUpgradeUI, Assembly-CSharp
+        m_MethodName: TriggerUpgradeNotification
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &410786273
 GameObject:
   m_ObjectHideFlags: 0
@@ -72835,7 +72847,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1382847038
 RectTransform:
   m_ObjectHideFlags: 0
@@ -115862,6 +115874,7 @@ MonoBehaviour:
   tokenIdText: {fileID: 1202740114}
   levelText: {fileID: 762449927}
   avatarImage: {fileID: 955094131}
+  notificationManager: {fileID: 343384507}
 --- !u!224 &6200290006879307877
 RectTransform:
   m_ObjectHideFlags: 0
