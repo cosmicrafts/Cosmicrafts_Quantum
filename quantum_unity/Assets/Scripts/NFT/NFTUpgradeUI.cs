@@ -97,25 +97,25 @@ public class NFTUpgradeUI : MonoBehaviour
 
             (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
             if (success)
-    {
-        Debug.Log("NFT upgrade successful!");
-        notificationText.text = "Upgrade successful: " + message;
-        await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade); // Ensure data is updated
+            {
+                Debug.Log("NFT upgrade successful!");
+                notificationText.text = "Upgrade successful: " + message;
+                await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade); // Ensure data is updated
 
-        NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade); // Retrieve updated NFT data
-        if (updatedData != null)
-        {
-            nftCard.SetNFTData(updatedData); // Update card data
-            UpdateDisplayedNFTInfo(); // Refresh displayed info
-            int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
-            int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
-            int updatedDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
-            DisplayUpgradeInfo(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
-            upgradeScreenUI.ActivateUpgradeScreen(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
-        }
-        LoadingPanel.Instance.DesactiveLoadingPanel();
-        upgradeScreenUI.gameObject.SetActive(true);
-    }
+                NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade); // Retrieve updated NFT data
+                if (updatedData != null)
+                {
+                    nftCard.SetNFTData(updatedData); // Update card data
+                    UpdateDisplayedNFTInfo(); // Refresh displayed info
+                    int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
+                    int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
+                    int updatedDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
+                    DisplayUpgradeInfo(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
+                    upgradeScreenUI.ActivateUpgradeScreen(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
+                }
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+                upgradeScreenUI.gameObject.SetActive(true);
+            }
     else
     {
         Debug.LogError("NFT upgrade failed: " + message);
