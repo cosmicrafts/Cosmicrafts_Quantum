@@ -23,6 +23,7 @@ union WeaponBehavior
 
 struct WeaponBehavior_SingleTarget
 {
+    AssetRefEntityPrototype PrototypeImpact;
 	FP Damage;
 	FP DamagePerLevelPercent;
 }

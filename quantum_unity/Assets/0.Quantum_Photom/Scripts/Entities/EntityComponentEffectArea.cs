@@ -15,6 +15,6 @@ public unsafe partial class EntityComponentEffectArea
 		var qEffectArea = frame.Unsafe.GetPointer<EffectArea>(Entity.EntityRef);
 
 		var scale = qEffectArea->Radius.AsFloat * 2f;
-		m_Visual.localScale = new Vector3(scale, 0.1f, scale);
+		m_Visual.localScale = new Vector3(scale, scale, scale);
 	}
 }

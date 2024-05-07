@@ -9,7 +9,7 @@
 			switch (Field)
 			{
 				case AOE:          _AoE.FinishProjectile(frame, owner, source, targetPosition, level); break;
-				case SINGLETARGET: _SingleTarget.FinishProjectile(frame, source, target, level);       break;
+				case SINGLETARGET: _SingleTarget.FinishProjectile(frame, owner, source, target, targetPosition, level);       break;
 
 				default:
 					throw new System.NotImplementedException();

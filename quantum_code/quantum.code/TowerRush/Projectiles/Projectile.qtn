@@ -17,6 +17,7 @@ union ProjectileBehavior
 
 struct ProjectileBehavior_SingleTarget
 {
+    AssetRefEntityPrototype Prototype;
 	FP Damage;
 	FP DamagePerLevelPercent;
 }

@@ -48,6 +48,9 @@ MonoBehaviour:
     WeaponBehavior:
       _field_used_: SINGLETARGET
       SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 3787405658912955983
         Damage:
           RawValue: 3276800
         DamagePerLevelPercent:
@@ -61,6 +64,9 @@ MonoBehaviour:
         Behavior:
           _field_used_: 
           SingleTarget:
+            Prototype:
+              Id:
+                Value: 0
             Damage:
               RawValue: 0
             DamagePerLevelPercent:

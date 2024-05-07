@@ -899,6 +899,24 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct EffectAreaBehavior_Empty {
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public FP Vector;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 107;
+        hash = hash * 31 + Vector.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (EffectAreaBehavior_Empty*)ptr;
+        FP.Serialize(&p->Vector, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HealthData {
     public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
@@ -922,7 +940,7 @@ namespace Quantum {
     public FP Value;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 107;
+        var hash = 109;
         hash = hash * 31 + (Byte)Action;
         hash = hash * 31 + (Byte)AttackMode;
         hash = hash * 31 + HideToStats.GetHashCode();
@@ -957,7 +975,7 @@ namespace Quantum {
     public const int MAX_COUNT = 6;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 109;
+        var hash = 113;
         return hash;
       }
     }
@@ -1009,7 +1027,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 113;
+        var hash = 127;
         hash = hash * 31 + BlockedAreasPtr.GetHashCode();
         hash = hash * 31 + MaxX.GetHashCode();
         hash = hash * 31 + MaxY.GetHashCode();
@@ -1045,7 +1063,7 @@ namespace Quantum {
     public FP Radius;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 127;
+        var hash = 131;
         hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + DamagePerLevelPercent.GetHashCode();
         hash = hash * 31 + Prototype.GetHashCode();
@@ -1063,22 +1081,26 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct ProjectileBehavior_SingleTarget {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
-    public FP Damage;
     [FieldOffset(8)]
+    public FP Damage;
+    [FieldOffset(16)]
     public FP DamagePerLevelPercent;
+    [FieldOffset(0)]
+    public AssetRefEntityPrototype Prototype;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 131;
+        var hash = 137;
         hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + DamagePerLevelPercent.GetHashCode();
+        hash = hash * 31 + Prototype.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (ProjectileBehavior_SingleTarget*)ptr;
+        AssetRefEntityPrototype.Serialize(&p->Prototype, serializer);
         FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->DamagePerLevelPercent, serializer);
     }
@@ -1096,7 +1118,7 @@ namespace Quantum {
     public FP PercentValue;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 137;
+        var hash = 139;
         hash = hash * 31 + AbsoluteValue.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + PercentValue.GetHashCode();
@@ -1126,7 +1148,7 @@ namespace Quantum {
     public FP TickTime;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 139;
+        var hash = 149;
         hash = hash * 31 + Duration.GetHashCode();
         hash = hash * 31 + RemainingTime.GetHashCode();
         hash = hash * 31 + RemoveHealth.GetHashCode();
@@ -1152,7 +1174,7 @@ namespace Quantum {
     public FPVector2 Offset;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 149;
+        var hash = 151;
         hash = hash * 31 + Card.GetHashCode();
         hash = hash * 31 + Offset.GetHashCode();
         return hash;
@@ -1179,7 +1201,7 @@ namespace Quantum {
     public FP SpawnTime;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 151;
+        var hash = 157;
         hash = hash * 31 + Card.GetHashCode();
         hash = hash * 31 + Offset.GetHashCode();
         hash = hash * 31 + RemainingSpawnTime.GetHashCode();
@@ -1220,7 +1242,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 157;
+        var hash = 163;
         hash = hash * 31 + BaseValue.GetHashCode();
         hash = hash * 31 + FinalValue.GetHashCode();
         hash = hash * 31 + Flags.GetHashCode();
@@ -1253,7 +1275,7 @@ namespace Quantum {
     public FP Speed;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 163;
+        var hash = 167;
         hash = hash * 31 + Behavior.GetHashCode();
         hash = hash * 31 + Prototype.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
@@ -1269,22 +1291,26 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct WeaponBehavior_SingleTarget {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
-    public FP Damage;
     [FieldOffset(8)]
+    public FP Damage;
+    [FieldOffset(16)]
     public FP DamagePerLevelPercent;
+    [FieldOffset(0)]
+    public AssetRefEntityPrototype PrototypeImpact;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 167;
+        var hash = 173;
         hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + DamagePerLevelPercent.GetHashCode();
+        hash = hash * 31 + PrototypeImpact.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (WeaponBehavior_SingleTarget*)ptr;
+        AssetRefEntityPrototype.Serialize(&p->PrototypeImpact, serializer);
         FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->DamagePerLevelPercent, serializer);
     }
@@ -1323,7 +1349,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 173;
+        var hash = 179;
         hash = hash * 31 + DeltaTime.GetHashCode();
         hash = hash * 31 + FrameMetaData.GetHashCode();
         hash = hash * 31 + Map.GetHashCode();
@@ -1415,7 +1441,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 179;
+        var hash = 181;
         hash = hash * 31 + _Duration.GetHashCode();
         hash = hash * 31 + _HealthOverTime.GetHashCode();
         hash = hash * 31 + _Stats.GetHashCode();
@@ -1450,10 +1476,15 @@ namespace Quantum {
     [FieldOverlap(8)]
     [FramePrinter.PrintIf("_field_used_", Quantum.EffectAreaBehavior.DAMAGE)]
     private EffectAreaBehavior_Damage _Damage;
+    [FieldOffset(8)]
+    [FieldOverlap(8)]
+    [FramePrinter.PrintIf("_field_used_", Quantum.EffectAreaBehavior.EMPTY)]
+    private EffectAreaBehavior_Empty _Empty;
     [FieldOffset(0)]
     private Int32 _field_used_;
     public const Int32 DAMAGE = 1;
     public const Int32 BUFF = 2;
+    public const Int32 EMPTY = 3;
     public Int32 Field {
       get {
         return _field_used_;
@@ -1481,11 +1512,23 @@ namespace Quantum {
         }
       }
     }
+    public EffectAreaBehavior_Empty* Empty {
+      get {
+        fixed (EffectAreaBehavior_Empty* p = &_Empty) {
+          if (_field_used_ != EMPTY) {
+            Native.Utils.Clear(p, 8);
+            _field_used_ = EMPTY;
+          }
+          return p;
+        }
+      }
+    }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 181;
+        var hash = 191;
         hash = hash * 31 + _Buff.GetHashCode();
         hash = hash * 31 + _Damage.GetHashCode();
+        hash = hash * 31 + _Empty.GetHashCode();
         hash = hash * 31 + _field_used_.GetHashCode();
         return hash;
       }
@@ -1498,6 +1541,9 @@ namespace Quantum {
         }
         if (p->_field_used_ == DAMAGE) {
           Quantum.EffectAreaBehavior_Damage.Serialize(&p->_Damage, serializer);
+        }
+        if (p->_field_used_ == EMPTY) {
+          Quantum.EffectAreaBehavior_Empty.Serialize(&p->_Empty, serializer);
         }
     }
   }
@@ -1538,7 +1584,7 @@ namespace Quantum {
       get {
         fixed (ProjectileBehavior_SingleTarget* p = &_SingleTarget) {
           if (_field_used_ != SINGLETARGET) {
-            Native.Utils.Clear(p, 16);
+            Native.Utils.Clear(p, 24);
             _field_used_ = SINGLETARGET;
           }
           return p;
@@ -1547,7 +1593,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 191;
+        var hash = 193;
         hash = hash * 31 + _AoE.GetHashCode();
         hash = hash * 31 + _SingleTarget.GetHashCode();
         hash = hash * 31 + _field_used_.GetHashCode();
@@ -1627,7 +1673,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 193;
+        var hash = 197;
         hash = hash * 31 + _Lifetime.GetHashCode();
         hash = hash * 31 + _SpawnOnDeath.GetHashCode();
         hash = hash * 31 + _Spawner.GetHashCode();
@@ -1686,7 +1732,7 @@ namespace Quantum {
       get {
         fixed (WeaponBehavior_SingleTarget* p = &_SingleTarget) {
           if (_field_used_ != SINGLETARGET) {
-            Native.Utils.Clear(p, 16);
+            Native.Utils.Clear(p, 24);
             _field_used_ = SINGLETARGET;
           }
           return p;
@@ -1695,7 +1741,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 197;
+        var hash = 199;
         hash = hash * 31 + _Projectile.GetHashCode();
         hash = hash * 31 + _SingleTarget.GetHashCode();
         hash = hash * 31 + _field_used_.GetHashCode();
@@ -1742,7 +1788,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 199;
+        var hash = 211;
         hash = hash * 31 + BehaviorsPtr.GetHashCode();
         hash = hash * 31 + Flags.GetHashCode();
         hash = hash * 31 + ID.GetHashCode();
@@ -1785,7 +1831,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 211;
+        var hash = 223;
         hash = hash * 31 + BuffListPtr.GetHashCode();
         return hash;
       }
@@ -1845,7 +1891,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 223;
+        var hash = 227;
         hash = hash * 31 + AvailableCardsPtr.GetHashCode();
         hash = hash * 31 + CardQueuePtr.GetHashCode();
         hash = hash * 31 + CurrentEnergy.GetHashCode();
@@ -1924,7 +1970,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 227;
+        var hash = 229;
         hash = hash * 31 + BehaviorsPtr.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
@@ -2009,7 +2055,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 229;
+        var hash = 233;
         hash = hash * 31 + AlphaArea.GetHashCode();
         hash = hash * 31 + AlphaCastle.GetHashCode();
         hash = hash * 31 + AlphaScore.GetHashCode();
@@ -2070,7 +2116,7 @@ namespace Quantum {
     public FP MaxShield;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 233;
+        var hash = 239;
         hash = hash * 31 + CurrentHealth.GetHashCode();
         hash = hash * 31 + CurrentShield.GetHashCode();
         hash = hash * 31 + Flags.GetHashCode();
@@ -2112,7 +2158,7 @@ namespace Quantum {
     public FP MovementSpeed;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 239;
+        var hash = 241;
         hash = hash * 31 + BusyTime.GetHashCode();
         hash = hash * 31 + DesiredPosition.GetHashCode();
         hash = hash * 31 + Flags.GetHashCode();
@@ -2141,7 +2187,7 @@ namespace Quantum {
     public PlayerRef PlayerRef;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 241;
+        var hash = 251;
         hash = hash * 31 + PlayerRef.GetHashCode();
         return hash;
       }
@@ -2178,7 +2224,7 @@ namespace Quantum {
     public FPVector2 TargetPosition;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 251;
+        var hash = 257;
         hash = hash * 31 + Behavior.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
@@ -2215,7 +2261,7 @@ namespace Quantum {
     public ETargetType Type;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 257;
+        var hash = 263;
         hash = hash * 31 + OwnerPlayerRef.GetHashCode();
         hash = hash * 31 + Size.GetHashCode();
         hash = hash * 31 + (Byte)Type;
@@ -2273,7 +2319,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 263;
+        var hash = 269;
         hash = hash * 31 + ActivationDelay.GetHashCode();
         hash = hash * 31 + BehaviorsPtr.GetHashCode();
         hash = hash * 31 + Cannon.GetHashCode();
@@ -2332,7 +2378,7 @@ namespace Quantum {
     public FP TargetingUpdateTimer;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 269;
+        var hash = 271;
         hash = hash * 31 + Enabled.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Target.GetHashCode();
@@ -2373,7 +2419,7 @@ namespace Quantum {
     }
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 271;
+        var hash = 277;
         hash = hash * 31 + Flags.GetHashCode();
         hash = hash * 31 + StatDictionaryPtr.GetHashCode();
         return hash;
@@ -2437,7 +2483,7 @@ namespace Quantum {
     public FP TargetSize;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 277;
+        var hash = 281;
         hash = hash * 31 + AttackRange.GetHashCode();
         hash = hash * 31 + AttackSpeed.GetHashCode();
         hash = hash * 31 + Behavior.GetHashCode();
@@ -3073,6 +3119,7 @@ namespace Quantum {
       Register(typeof(Quantum.EffectAreaBehavior), Quantum.EffectAreaBehavior.SIZE);
       Register(typeof(Quantum.EffectAreaBehavior_Buff), Quantum.EffectAreaBehavior_Buff.SIZE);
       Register(typeof(Quantum.EffectAreaBehavior_Damage), Quantum.EffectAreaBehavior_Damage.SIZE);
+      Register(typeof(Quantum.EffectAreaBehavior_Empty), Quantum.EffectAreaBehavior_Empty.SIZE);
       Register(typeof(EntityPrototypeRef), EntityPrototypeRef.SIZE);
       Register(typeof(EntityRef), EntityRef.SIZE);
       Register(typeof(FP), FP.SIZE);
@@ -3473,11 +3520,13 @@ namespace Quantum.Prototypes {
     public string _field_used_;
     public EffectAreaBehavior_Damage_Prototype Damage;
     public EffectAreaBehavior_Buff_Prototype Buff;
+    public EffectAreaBehavior_Empty_Prototype Empty;
     partial void MaterializeUser(Frame frame, ref EffectAreaBehavior result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref EffectAreaBehavior result, in PrototypeMaterializationContext context) {
       switch (_field_used_) {
         case "BUFF": this.Buff.Materialize(frame, ref *result.Buff, in context); break;
         case "DAMAGE": this.Damage.Materialize(frame, ref *result.Damage, in context); break;
+        case "EMPTY": this.Empty.Materialize(frame, ref *result.Empty, in context); break;
         case "": case null: break;
         default: PrototypeValidator.UnknownUnionField(_field_used_, in context); break;
       }
@@ -3503,6 +3552,16 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref EffectAreaBehavior_Damage result, in PrototypeMaterializationContext context) {
       result.Damage = this.Damage;
       result.DamagePerLevelPercent = this.DamagePerLevelPercent;
+      MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Prototype(typeof(EffectAreaBehavior_Empty))]
+  public sealed unsafe partial class EffectAreaBehavior_Empty_Prototype : StructPrototype {
+    public FP Vector;
+    partial void MaterializeUser(Frame frame, ref EffectAreaBehavior_Empty result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref EffectAreaBehavior_Empty result, in PrototypeMaterializationContext context) {
+      result.Vector = this.Vector;
       MaterializeUser(frame, ref result, in context);
     }
   }
@@ -3720,12 +3779,14 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Prototype(typeof(ProjectileBehavior_SingleTarget))]
   public sealed unsafe partial class ProjectileBehavior_SingleTarget_Prototype : StructPrototype {
+    public AssetRefEntityPrototype Prototype;
     public FP Damage;
     public FP DamagePerLevelPercent;
     partial void MaterializeUser(Frame frame, ref ProjectileBehavior_SingleTarget result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref ProjectileBehavior_SingleTarget result, in PrototypeMaterializationContext context) {
       result.Damage = this.Damage;
       result.DamagePerLevelPercent = this.DamagePerLevelPercent;
+      result.Prototype = this.Prototype;
       MaterializeUser(frame, ref result, in context);
     }
   }
@@ -3951,12 +4012,14 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Prototype(typeof(WeaponBehavior_SingleTarget))]
   public sealed unsafe partial class WeaponBehavior_SingleTarget_Prototype : StructPrototype {
+    public AssetRefEntityPrototype PrototypeImpact;
     public FP Damage;
     public FP DamagePerLevelPercent;
     partial void MaterializeUser(Frame frame, ref WeaponBehavior_SingleTarget result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref WeaponBehavior_SingleTarget result, in PrototypeMaterializationContext context) {
       result.Damage = this.Damage;
       result.DamagePerLevelPercent = this.DamagePerLevelPercent;
+      result.PrototypeImpact = this.PrototypeImpact;
       MaterializeUser(frame, ref result, in context);
     }
   }

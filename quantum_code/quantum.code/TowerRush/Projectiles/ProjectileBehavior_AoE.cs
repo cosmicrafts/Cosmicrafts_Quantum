@@ -1,4 +1,6 @@
-﻿namespace Quantum
+﻿using System.Globalization;
+
+namespace Quantum
 {
 	using Photon.Deterministic;
 
@@ -9,7 +11,7 @@
 			var entity     = frame.CreateEntity(Prototype, position, FP._0);
 			var effectArea = frame.Unsafe.GetPointer<EffectArea>(entity);
 			effectArea->SourceEntity = source;
-
+			
 			var behavior = new EffectAreaBehavior();
 			behavior.Damage->Damage                = Damage;
 			behavior.Damage->DamagePerLevelPercent = DamagePerLevelPercent;

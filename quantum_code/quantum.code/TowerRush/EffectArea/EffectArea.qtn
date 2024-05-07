@@ -29,6 +29,7 @@ union EffectAreaBehavior
 {
 	EffectAreaBehavior_Damage Damage;
 	EffectAreaBehavior_Buff   Buff;
+    EffectAreaBehavior_Empty  Empty;
 }
 
 struct EffectAreaBehavior_Damage
@@ -40,4 +41,9 @@ struct EffectAreaBehavior_Damage
 struct EffectAreaBehavior_Buff
 {
 	AssetRefEntityPrototype Buff;
+}
+
+struct EffectAreaBehavior_Empty
+{
+    FP Vector;
 }
