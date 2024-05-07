@@ -36,6 +36,10 @@ MonoBehaviour:
     HealthPerLevelPercent:
       RawValue: 655360
     DestroyOnDeath: 0
+    Critic:
+      RawValue: 0
+    Evasion:
+      RawValue: 0
     TargetType: 1
     UnitSize:
       RawValue: 222822
@@ -43,6 +47,9 @@ MonoBehaviour:
     WeaponBehavior:
       _field_used_: PROJECTILE
       SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 0
         Damage:
           RawValue: 0
         DamagePerLevelPercent:
@@ -56,6 +63,9 @@ MonoBehaviour:
         Behavior:
           _field_used_: SINGLETARGET
           SingleTarget:
+            Prototype:
+              Id:
+                Value: 3787405658912955983
             Damage:
               RawValue: 9830400
             DamagePerLevelPercent:

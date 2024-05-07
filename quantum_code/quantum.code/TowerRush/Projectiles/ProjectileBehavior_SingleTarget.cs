@@ -22,7 +22,7 @@
 			effectArea->Behaviors = behaviors;
 			behaviors.Add(behavior);
 			
-			effectArea->Radius = FP._1;
+			effectArea->Radius = FP._0_50;
 			effectArea->Owner                  = owner;
 			//
 
