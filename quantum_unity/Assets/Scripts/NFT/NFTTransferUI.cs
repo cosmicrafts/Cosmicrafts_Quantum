@@ -20,6 +20,12 @@ public class NFTTransferUI : MonoBehaviour
     public Image avatarImage;
     public static NFTTransferUI Instance;
 
+    public NotificationManager notificationManager;
+
+    public SimpleDeactivate deactivationTarget1;
+    public SimpleDeactivate deactivationTarget2;
+
+
     private void Awake()
 {
     Instance = this;
@@ -67,78 +73,81 @@ public class NFTTransferUI : MonoBehaviour
     }
 
     public async void OnTransferButtonPressed()
-    {
-        string tokenIdToTransfer = nftCard.TokenId;
-        if (string.IsNullOrEmpty(recipientPrincipalInput.text) || string.IsNullOrEmpty(tokenIdToTransfer))
-        {
-            Debug.LogError("Recipient Principal or Token ID is empty.");
-            notificationText.text = "Recipient Principal or Token ID is empty.";
-            return;
-        }
-
-        Debug.Log($"Transferring NFT with Token ID: {tokenIdToTransfer}");
-
-        Principal recipientPrincipal = Principal.FromText(recipientPrincipalInput.text);
-        UnboundedUInt tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToTransfer));
-
-        List<UnboundedUInt> tokenIds = new List<UnboundedUInt> { tokenId };
-
-        try
-        {
-            TransferReceipt receipt = await nftManager.TransferNFT(tokenIds, recipientPrincipal);
-
-            if (receipt.Tag == TransferReceiptTag.Ok)
-            {
-                Debug.Log("NFT transfer successful!");
-                notificationText.text = $"NFT transfer successful! Token ID: {tokenIdToTransfer}";
-                // Invoke the removal of the transferred NFT
-                nftManager.RemoveNFT(tokenIdToTransfer);
-            }
-
-            else if (receipt.Tag == TransferReceiptTag.Err)
 {
-    TransferError error = receipt.AsErr();
-    switch (error.Tag)
+    LoadingPanel.Instance.ActiveLoadingPanel();
+    string tokenIdToTransfer = nftCard.TokenId;
+    if (string.IsNullOrEmpty(recipientPrincipalInput.text) || string.IsNullOrEmpty(tokenIdToTransfer))
     {
-        case TransferErrorTag.CreatedInFuture:
-            Debug.LogError("NFT transfer failed: Transfer created in the future.");
-            // Access specific fields if needed
-            var futureInfo = error.AsCreatedInFuture();
-            Debug.LogError($"Ledger Time: {futureInfo.LedgerTime}");
-            break;
-        case TransferErrorTag.Duplicate:
-            Debug.LogError("NFT transfer failed: Duplicate transfer.");
-            // Access specific fields if needed
-            var duplicateInfo = error.AsDuplicate();
-            Debug.LogError($"Duplicate of Transfer ID: {duplicateInfo.DuplicateOf}");
-            break;
-        case TransferErrorTag.GenericError:
-            var genericInfo = error.AsGenericError();
-            Debug.LogError($"NFT transfer failed: Generic error - {genericInfo.Message}");
-            break;
-        case TransferErrorTag.TemporarilyUnavailable:
-            Debug.LogError("NFT transfer failed: Service temporarily unavailable.");
-            break;
-        case TransferErrorTag.TooOld:
-            Debug.LogError("NFT transfer failed: Transfer too old.");
-            break;
-        case TransferErrorTag.Unauthorized:
-            Debug.LogError("NFT transfer failed: Unauthorized.");
-            var unauthorizedInfo = error.AsUnauthorized();
-            Debug.LogError($"Unauthorized Token IDs: {string.Join(", ", unauthorizedInfo.TokenIds)}");
-            break;
-        default:
-            Debug.LogError("NFT transfer failed: Unknown error.");
-            break;
+        Debug.LogError("Recipient Principal or Token ID is empty.");
+        notificationText.text = "Recipient Principal or Token ID is empty.";
+        notificationManager.ShowNotification("Recipient Principal or Token ID is empty.");  // Trigger notification
+        return;
+    }
+
+    Debug.Log($"Transferring NFT with Token ID: {tokenIdToTransfer}");
+
+    Principal recipientPrincipal = Principal.FromText(recipientPrincipalInput.text);
+    UnboundedUInt tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToTransfer));
+
+    List<UnboundedUInt> tokenIds = new List<UnboundedUInt> { tokenId };
+
+    try
+    {
+        TransferReceipt receipt = await nftManager.TransferNFT(tokenIds, recipientPrincipal);
+
+        if (receipt.Tag == TransferReceiptTag.Ok)
+        {
+            Debug.Log("NFT transfer successful!");
+            notificationText.text = $"NFT transfer successful! Token ID: {tokenIdToTransfer}";
+            notificationManager.ShowNotification($"NFT transfer successful! Token ID: {tokenIdToTransfer}");  // Trigger notification
+            nftManager.RemoveNFT(tokenIdToTransfer);
+            LoadingPanel.Instance.DesactiveLoadingPanel();
+            deactivationTarget1?.StartDeactivation();
+            deactivationTarget2?.StartDeactivation();
+        }
+        else
+        {
+            HandleTransferError(receipt.AsErr());
+        }
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"[NFTTransferUI]Exception during NFT transfer: {ex.Message}");
+        notificationText.text = $"Exception during NFT transfer: {ex.Message}";
+        notificationManager.ShowNotification($"Exception during NFT transfer: {ex.Message}");  // Trigger notification
     }
 }
 
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[NFTTransferUI]Exception during NFT transfer: {ex.Message}");
-            notificationText.text = $"Exception during NFT transfer: {ex.Message}";
-        }
+private void HandleTransferError(TransferError error)
+{
+    string errorMessage = "NFT transfer failed: ";
+    switch (error.Tag)
+    {
+        case TransferErrorTag.CreatedInFuture:
+            errorMessage += "Transfer created in the future.";
+            break;
+        case TransferErrorTag.Duplicate:
+            errorMessage += "Duplicate transfer.";
+            break;
+        case TransferErrorTag.GenericError:
+            errorMessage += error.AsGenericError().Message;
+            break;
+        case TransferErrorTag.TemporarilyUnavailable:
+            errorMessage += "Service temporarily unavailable.";
+            break;
+        case TransferErrorTag.TooOld:
+            errorMessage += "Transfer too old.";
+            break;
+        case TransferErrorTag.Unauthorized:
+            errorMessage += "Unauthorized.";
+            break;
+        default:
+            errorMessage += "Unknown error.";
+            break;
     }
+    Debug.LogError(errorMessage);
+    notificationManager.ShowNotification(errorMessage);  // Trigger notification
+    LoadingPanel.Instance.DesactiveLoadingPanel();
+}
 
 }
