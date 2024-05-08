@@ -6,6 +6,7 @@ using Candid;
 using EdjCase.ICP.Candid.Models;
 using Quantum;
 using TMPro;
+using TowerRush;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -88,8 +89,9 @@ public class Login : MonoBehaviour
         
         Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Name: {player.Name}");
         Debug.Log("[Login] Transitioning to the main menu scene...");
-        
-        
+
+
+        Game.Instance.AudioService.ChangeMusicClip("musica2");
         SceneManager.LoadScene(1);
     }
 

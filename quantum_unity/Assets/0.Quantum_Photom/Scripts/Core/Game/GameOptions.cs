@@ -55,7 +55,7 @@
 
 		private static void LoadDefaultValues()
 		{
-			m_MusicVolume  = 1f;
+			m_MusicVolume  = 0.4f;
 			m_SoundsVolume = 1f;
 		}
 

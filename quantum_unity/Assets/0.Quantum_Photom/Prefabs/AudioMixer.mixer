@@ -45,7 +45,7 @@ AudioMixerController:
   m_Snapshots:
   - {fileID: 24500006}
   m_StartSnapshot: {fileID: 24500006}
-  m_SuspendThreshold: -80
+  m_SuspendThreshold: 0.5
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
@@ -56,8 +56,8 @@ AudioMixerController:
   m_AudioMixerGroupViews:
   - guids:
     - 2c9b3eff2925c85499c5b402e86779d1
-    - 4e04adf0d36e8b94f963f3cb4a8c845a
     - bdc02fa46c2b60d4e88ca7605ee7e208
+    - 4e04adf0d36e8b94f963f3cb4a8c845a
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -105,7 +105,9 @@ AudioMixerSnapshotController:
   m_Name: Snapshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: 1020ed5f34bc0e7449b707d3ebd9d4a3
-  m_FloatValues: {}
+  m_FloatValues:
+    cdc7ed90b2575d84285238c8232a3bd5: -38.9
+    851181ca5b28fa74c940281c66f8dcea: 1.5
   m_TransitionOverrides: {}
 --- !u!243 &3019793368667528114
 AudioMixerGroupController:
@@ -137,6 +139,34 @@ AudioMixerEffectController:
   m_EffectName: Attenuation
   m_MixLevel: c3c0d609612624a48801ae2da3077543
   m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!244 &7908484392458078088
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: f5d07899e74b99844b63e51a94d98860
+  m_EffectName: Duck Volume
+  m_MixLevel: 8d6938db80f571249941dd35eca4fc75
+  m_Parameters:
+  - m_ParameterName: Threshold
+    m_GUID: 26da531d26b6ebc4d843ad0c8822130e
+  - m_ParameterName: Ratio
+    m_GUID: fe0ec7072047ead4781b10565242ba9f
+  - m_ParameterName: Attack Time
+    m_GUID: bd148cf13241bb549a23664fef775589
+  - m_ParameterName: Release Time
+    m_GUID: ad2a8cf3fa926404f921e406cd73411b
+  - m_ParameterName: Make-up Gain
+    m_GUID: f904c3e7392168e48a8447204855ca5f
+  - m_ParameterName: Knee
+    m_GUID: 2babe3fbbb6d7764f817162e903f48bb
+  - m_ParameterName: Sidechain Mix
+    m_GUID: 84d948a9fee43194fbd3ab546a22cefb
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0

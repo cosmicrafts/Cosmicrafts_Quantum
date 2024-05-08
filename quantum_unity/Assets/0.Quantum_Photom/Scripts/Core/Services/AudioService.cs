@@ -206,7 +206,7 @@
 			}
 		}
 
-		private void ChangeMusicClip(string clipName)
+		public void ChangeMusicClip(string clipName)
 		{
 			var musicInfo = m_MusicSetup.Find(obj => obj.Name == clipName);
 			if (musicInfo != null)
