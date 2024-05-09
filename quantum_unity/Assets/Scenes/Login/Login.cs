@@ -37,7 +37,7 @@ public class Login : MonoBehaviour
 
     private void Start()
     {
-        Game.Instance.AudioService.ChangeMusicClip("menu");
+        Game.Instance.AudioService.ChangeMusicClip("login");
     }
 
     private void OnDestroy()

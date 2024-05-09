@@ -19,6 +19,7 @@
 		// PRIVATE MEMBERS
 
 		private AudioSource   m_MusicAudio;
+		public AudioSource   m_SoundsAudio;
 
 		private Transform     m_AudioListenerTransform;
 		private Transform     m_ReferenceTransform;
@@ -37,6 +38,7 @@
 			m_AudioListenerTransform.SetParent(transform);
 
 			m_MusicAudio = transform.FindDeep("MusicSource").GetComponent<AudioSource>();
+			m_SoundsAudio = transform.FindDeep("SoundsSource").GetComponent<AudioSource>();
 
 			m_AudioMixer.SetFloat(SOUNDS_VOLUME, ToDb(GameOptions.SoundsVolume));
 			m_AudioMixer.SetFloat(MUSIC_VOLUME,  ToDb(GameOptions.MusicVolume));

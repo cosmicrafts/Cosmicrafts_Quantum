@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using TMPro;
 using System;
 using System.Linq;
+using TowerRush;
 
 
 public class RewardScreenUI : MonoBehaviour
@@ -22,6 +23,8 @@ public class RewardScreenUI : MonoBehaviour
     private int activeRewardsCount = 0;
     public SimpleDeactivate deactivationAnimScript;
     public Animator chestAnimator;
+    
+    public AudioClip rewardSound;
 
     private void Awake()
     {
@@ -52,6 +55,7 @@ public class RewardScreenUI : MonoBehaviour
         LoadingPanel.Instance.DesactiveLoadingPanel();
         StartCoroutine(DeactivateAfterDelay(.35f));
         ShowRewardsUI();
+        Game.Instance.AudioService.m_SoundsAudio.PlayOneShot(rewardSound);
     }
 
     public void ShowRewardsUI()

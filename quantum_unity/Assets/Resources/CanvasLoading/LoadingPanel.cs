@@ -9,6 +9,11 @@ public class LoadingPanel : MonoBehaviour
 {
     private Animator animator;
     private static LoadingPanel _instance;
+
+    public AudioSource audioSource;
+    public AudioClip openingSound;
+    public AudioClip closingSound;
+    
     public static LoadingPanel Instance {
         get 
         {
@@ -30,6 +35,20 @@ public class LoadingPanel : MonoBehaviour
     {
         animator.Play("Close_Panel");
     }
+
+    public void PlayOpeningSound()
+    {
+        audioSource.Stop(); audioSource.clip = openingSound;
+        audioSource.Play();
+    }
     
+    public void PlayClosingSound()
+    {
+        audioSource.Stop(); audioSource.clip = closingSound;
+        audioSource.Play();
+    }
+
+
+
 }
 

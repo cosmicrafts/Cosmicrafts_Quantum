@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
-
+using TowerRush;
+using UnityEngine.Audio;
 
 
 public class TokenAnimation : MonoBehaviour
@@ -11,10 +12,14 @@ public class TokenAnimation : MonoBehaviour
     public RectTransform endPoint;
     public GameObject tokenPrefab;
     public Image sourceImage;
-
+   
+    public AudioClip tokenRewardSound;
+    
     public float duration = 1.0f;
     private Canvas canvas;
     private List<GameObject> tokens = new List<GameObject>();
+
+   
 
     void Start()
     {
@@ -27,11 +32,22 @@ public class TokenAnimation : MonoBehaviour
         {
             Debug.LogError("Some components are not assigned or Canvas is not found.");
         }
+        
     }
+    
+    public void PlayRewardSound()
+    {
+        if (tokenRewardSound != null)
+        {
+            Game.Instance.AudioService.m_SoundsAudio.PlayOneShot(tokenRewardSound);
+        }
+    }  
 
     public void StartAnimation(RectTransform start, RectTransform end, float duration)
     {
         StartCoroutine(AnimateTokens(start, end, duration, 8));
+        PlayRewardSound();
+
     }
 
     IEnumerator AnimateTokens(RectTransform start, RectTransform end, float duration, int count)
