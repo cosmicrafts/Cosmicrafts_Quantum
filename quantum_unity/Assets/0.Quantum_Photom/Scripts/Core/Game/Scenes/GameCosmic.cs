@@ -61,6 +61,8 @@ namespace TowerRush
 
 		protected override void OnActivate()
 		{
+			Game.Instance.AudioService.ChangeMusicClip("gameplay");
+			
 			if (Game.GameplayInfo != null)
 			{
 				StartCoroutine(Activate_Coroutine());

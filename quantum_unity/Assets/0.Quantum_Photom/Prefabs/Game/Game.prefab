@@ -112,6 +112,66 @@ PrefabInstance:
       propertyPath: m_Name
       value: Services
       objectReference: {fileID: 0}
+    - target: {fileID: 2498203003241536584, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 73f9d6dfb770f1743880d1a5a4cb2a4a, type: 3}
+    - target: {fileID: 2498203003241536584, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[0].Clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 73f9d6dfb770f1743880d1a5a4cb2a4a, type: 3}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[0].Name
+      value: login
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[1].Clip
+      value: 
+      objectReference: {fileID: 8300000, guid: b33d58711795fab4a992b89c6a6de75d, type: 3}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[1].Name
+      value: menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[2].Clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5f2837d33c960cf469e8d1652ae981aa, type: 3}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[2].Name
+      value: gameplay
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[0].Volume
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[1].Volume
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498203004149007822, guid: 7ef549eee9b3c3841821015ec5007232,
+        type: 3}
+      propertyPath: m_MusicSetup.Array.data[2].Volume
+      value: 0.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ef549eee9b3c3841821015ec5007232, type: 3}
 --- !u!4 &1181107960256148092 stripped

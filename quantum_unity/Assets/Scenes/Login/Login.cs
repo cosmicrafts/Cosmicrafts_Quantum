@@ -35,6 +35,11 @@ public class Login : MonoBehaviour
         Debug.Log("[Login] Component Awake() - Login instance initialized.");
     }
 
+    private void Start()
+    {
+        Game.Instance.AudioService.ChangeMusicClip("menu");
+    }
+
     private void OnDestroy()
     {
         Debug.Log("[Login] Component OnDestroy() - Cleaning up before destruction.");
@@ -91,7 +96,7 @@ public class Login : MonoBehaviour
         Debug.Log("[Login] Transitioning to the main menu scene...");
 
 
-        Game.Instance.AudioService.ChangeMusicClip("musica2");
+        Game.Instance.AudioService.ChangeMusicClip("menu");
         SceneManager.LoadScene(1);
     }
 
