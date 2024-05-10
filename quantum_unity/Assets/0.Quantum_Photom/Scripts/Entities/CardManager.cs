@@ -142,6 +142,16 @@
 				}
 
 				m_CurrentGhost.transform.position = GetClampedCursorPosition();
+				
+				if (Entities.LocalPlayer == 0)
+				{
+					m_CurrentGhost.transform.eulerAngles = new Vector3(0, 180, 0);
+				}
+				else
+				{
+					m_CurrentGhost.transform.eulerAngles = new Vector3(0, 0, 0);
+				}
+				
 				m_CurrentGhost.SetActive(true);
 			}
 		}
