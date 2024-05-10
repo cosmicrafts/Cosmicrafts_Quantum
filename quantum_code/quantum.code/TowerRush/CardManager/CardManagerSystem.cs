@@ -32,7 +32,7 @@
 		private void ProcessCommand(Frame frame, EntityRef entity, PlayerRef playerRef, UseCardCommand useCard)
 		{
 			var cardManager = frame.Unsafe.GetPointer<CardManager>(entity);
-			cardManager->UseCard(frame, entity, playerRef, useCard.CardIndex, useCard.Position, playerRef * FP.Rad_180);
+			cardManager->UseCard(frame, entity, playerRef, useCard.CardIndex, useCard.Position, FP.Rad_180 + (playerRef * FP.Rad_180) );
 		}
 	}
 }
