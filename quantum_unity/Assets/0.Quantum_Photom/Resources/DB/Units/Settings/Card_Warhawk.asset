@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GhostPrefab: {fileID: 362176384911509551, guid: 57b696bd4ece5f747aa73bf51e5eceed,
     type: 3}
+  prevUIPrefab: {fileID: 362176384911509551, guid: 8d472dff72f40ad47be2c90efb58ddca,
+    type: 3}
   Sprite: {fileID: 21300000, guid: a1bd9480319b37a40ac7296373578505, type: 3}
   DisplayName: Warhawk
   Settings:
@@ -48,6 +50,9 @@ MonoBehaviour:
     WeaponBehavior:
       _field_used_: PROJECTILE
       SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 0
         Damage:
           RawValue: 0
         DamagePerLevelPercent:
@@ -61,6 +66,9 @@ MonoBehaviour:
         Behavior:
           _field_used_: AOE
           SingleTarget:
+            Prototype:
+              Id:
+                Value: 0
             Damage:
               RawValue: 0
             DamagePerLevelPercent:

@@ -5,6 +5,7 @@ public partial class CardSettingsAsset
 {
 	[Header("Unity")]
 	public GameObject GhostPrefab;
+	public GameObject prevUIPrefab;
 
 	[Header("UI")]
 	public Sprite Sprite;

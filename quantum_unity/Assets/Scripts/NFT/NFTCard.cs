@@ -18,7 +18,6 @@
         public Image factionIcon;
         public TMP_Text levelText;
         public TMP_Text costText;
-        public static event Action<NFTCard> OnCardSelected;
 
         
         protected string tokenId;
@@ -71,14 +70,21 @@
             return UnityDB.FindAsset<CardSettingsAsset>(NFTManager.Instance.m_GameplaySettings.Settings.AllCards[cardId].Id).GetEnergyCost();
         }
         
+        public GameObject GetPrefabById(int cardId)
+        {
+            return UnityDB.FindAsset<CardSettingsAsset>(NFTManager.Instance.m_GameplaySettings.Settings.AllCards[cardId].Id).prevUIPrefab;
+        }
+        
         public void SelectCard()
         {
             Debug.Log($"SelectCard called on {tokenId}");
             IsSelected = true;
             unitNameText.color = Color.green;
-            OnCardSelected?.Invoke(this);
-            NFTTransferUI.Instance?.HandleCardDirectly(this);
+            Debug.Log("1");
+            NFTTransferUI.Instance?.HandleCardSelected(this);
+            Debug.Log("2");
             NFTUpgradeUI.Instance?.HandleCardSelected(this);
+            Debug.Log("3");
         }
         public void DeselectCard()
         {

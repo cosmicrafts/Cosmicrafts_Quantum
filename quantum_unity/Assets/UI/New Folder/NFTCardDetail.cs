@@ -23,12 +23,9 @@ public class NFTCardDetail : NFTCard
 
     [Header("ModelRender")]
     //References the object model of the selected card
-    public GameObject Model;
-    //References the mesh renderer model of the selected card
-    public MeshRenderer ModelRender;
-    //References the mesh filter model of the selected card
-    public MeshFilter ModelFilter;
-
+    private GameObject CurrentObjPrev;
+    public GameObject PlaceToInstancePrev;
+    
     /*
     //The text references of specific card stats
     public TMP_Text Txt_HP;
@@ -65,9 +62,6 @@ public class NFTCardDetail : NFTCard
     }
     
 
-    //The particles reference for skills cards
-    GameObject CurrentObjPrev;
-
     public override void SetNFTData(NFTData nftData)
     {
         this.nftData = nftData;
@@ -82,6 +76,7 @@ public class NFTCardDetail : NFTCard
         }
 
         var general = nftData.General.FirstOrDefault();
+       
         if (general != null)
         {
             unitNameText.text = general.Name;
@@ -93,6 +88,9 @@ public class NFTCardDetail : NFTCard
             skinsText.text = general.SkinsText;
             iconImage.sprite = GetIconSpriteById(general.Icon);
             costText.text = GetEnergyCostById( general.UnitId ).ToString();
+
+            if(CurrentObjPrev) { Destroy(CurrentObjPrev); }
+            CurrentObjPrev = Instantiate(GetPrefabById(general.UnitId), PlaceToInstancePrev.transform);
         }
         levelText.text = GetValueFromStats("level");
         healthText.text = GetValueFromStats("health");

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GhostPrefab: {fileID: 5764897130219458937, guid: 16233d0cc593d9449a10f0080ea3e0b9,
     type: 3}
+  prevUIPrefab: {fileID: 5764897130219458937, guid: 55a3ca548f8956a4eb9a2225d3e24377,
+    type: 3}
   Sprite: {fileID: 21300000, guid: d8222d45ddc42124f85c0c7e66561bf7, type: 3}
   DisplayName: Predator
   Settings:
@@ -48,6 +50,9 @@ MonoBehaviour:
     WeaponBehavior:
       _field_used_: PROJECTILE
       SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 0
         Damage:
           RawValue: 0
         DamagePerLevelPercent:
@@ -61,6 +66,9 @@ MonoBehaviour:
         Behavior:
           _field_used_: AOE
           SingleTarget:
+            Prototype:
+              Id:
+                Value: 0
             Damage:
               RawValue: 0
             DamagePerLevelPercent:

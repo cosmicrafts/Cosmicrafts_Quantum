@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GhostPrefab: {fileID: 6812821254429961534, guid: 97110944a49d6ff41992a139a1255ded,
     type: 3}
+  prevUIPrefab: {fileID: 6812821254429961534, guid: dbac967eac083734583c3b7cd70bb5cc,
+    type: 3}
   Sprite: {fileID: 21300000, guid: 2cc4dab451797304fbdc7cdffc5ab784, type: 3}
   DisplayName: Barracuda
   Settings:
@@ -48,6 +50,9 @@ MonoBehaviour:
     WeaponBehavior:
       _field_used_: PROJECTILE
       SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 0
         Damage:
           RawValue: 0
         DamagePerLevelPercent:
@@ -61,6 +66,9 @@ MonoBehaviour:
         Behavior:
           _field_used_: AOE
           SingleTarget:
+            Prototype:
+              Id:
+                Value: 0
             Damage:
               RawValue: 0
             DamagePerLevelPercent:

@@ -38,23 +38,8 @@ public class NFTTransferUI : MonoBehaviour
         DisplayNFTInfo();
     }
 
-    private void OnEnable()
-    {
-        NFTCard.OnCardSelected += HandleCardSelected;
-    }
-
-    private void OnDisable()
-    {
-        NFTCard.OnCardSelected -= HandleCardSelected;
-    }
-
-    public void HandleCardDirectly(NFTCard selectedCard)
-    {
-        Debug.Log($"HandleCardDirectly called with {selectedCard.TokenId}");
-        HandleCardSelected(selectedCard); // Now directly calling the method intended for event handling.
-    }
-
-    private void HandleCardSelected(NFTCard selectedCard)
+    
+    public void HandleCardSelected(NFTCard selectedCard)
     {
         Debug.Log($"HandleCardSelected called with {selectedCard.TokenId}");
         nftCard = selectedCard;

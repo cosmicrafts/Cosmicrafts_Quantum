@@ -149,10 +149,12 @@ public class NFTCollection : MonoBehaviour
             CurrentSelected.DeselectCard();
         }
         CurrentSelected = card;
-        card.SelectCard();
+        
         CardPreview.SetNFTData(card.nftData);
         CardPreview.iconImage.sprite = card.iconImage.sprite;
         CardPreview.gameObject.SetActive(true);
+        
+        card.SelectCard();
     }
 
     //Drags a card
