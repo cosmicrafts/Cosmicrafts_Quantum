@@ -262,12 +262,17 @@ namespace Candid
                 Debug.Log("[CandidApiManager] Login window updated with random agent data.");
             }
         }
+        public void SetTestSeedPhrase(string seedPhrase)
+        {
+            testSeedPhrase = seedPhrase;
+            Debug.Log($"Set testSeedPhrase to: {testSeedPhrase}");
+        }
 
-        private static string testSeedPhrase = "your test seed phrase goes here"; 
+
+        public static string testSeedPhrase = "wrong swear claim hold sunny prepare dove swamp clip home extend exercise"; 
 
         private static Ed25519Identity GenerateEd25519Identity()
     {
-        string testSeedPhrase = "random vivid normal black shoe glide deer stand certain giant diet expand"; 
         byte[] seedBytes = Encoding.UTF8.GetBytes(testSeedPhrase); 
 
         // Deterministic derivation using SHA-256

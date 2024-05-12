@@ -2,14 +2,16 @@ using UnityEngine;
 using NBitcoin;
 using TMPro; // Ensure this is included for TMP_InputField
 using UnityEngine.UI;
+using Candid;
 
 public class SeedGen : MonoBehaviour
 {
     public TMP_InputField seedPhraseInputField; // Adjust to use TMP_InputField
     public Button generateButton; // Assign in the inspector
     public Button copyButton; // Assign in the inspector
-
     private string currentSeedPhrase = "";
+    public NotificationManager notificationManager;
+    public CandidApiManager candidApiManager;
 
     void Start()
     {
@@ -30,6 +32,8 @@ public class SeedGen : MonoBehaviour
         // Display the seed phrase
         Debug.Log($"Seed Phrase: {currentSeedPhrase}");
         seedPhraseInputField.text = currentSeedPhrase; // Use the input field for display
+
+        candidApiManager.SetTestSeedPhrase(currentSeedPhrase);
     }
 
     void CopySeedPhraseToClipboard()
@@ -37,5 +41,9 @@ public class SeedGen : MonoBehaviour
         // Copy the current seed phrase to the clipboard
         GUIUtility.systemCopyBuffer = currentSeedPhrase;
         Debug.Log("Seed Phrase copied to clipboard.");
+        
+        // Show a notification to the user
+        notificationManager.ShowNotification("Seed Phrase copied to clipboard.");
     }
+
 }
