@@ -37,7 +37,7 @@ public class Login : MonoBehaviour
 
     private void Start()
     {
-        Game.Instance.AudioService.ChangeMusicClip("login");
+        //Game.Instance.AudioService.ChangeMusicClip("login");
     }
 
     private void OnDestroy()
@@ -97,7 +97,7 @@ public class Login : MonoBehaviour
 
 
         Game.Instance.AudioService.ChangeMusicClip("menu");
-        SceneManager.LoadScene(1);
+        Game.CurrentScene.FinishScene();
     }
 
     public async void SetPlayerName()

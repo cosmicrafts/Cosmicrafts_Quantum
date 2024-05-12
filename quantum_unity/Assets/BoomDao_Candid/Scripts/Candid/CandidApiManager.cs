@@ -1,3 +1,5 @@
+using TowerRush;
+
 namespace Candid
 {
     using System;
@@ -351,7 +353,7 @@ namespace Candid
             PlayerPrefs.DeleteKey("userPublicKey");
             
             DesInitializeCandidApis();
-            SceneManager.LoadScene(0);
+            Game.Instance.Restart();
             Debug.Log("[CandidApiManager] Logout process completed. Scene reloaded.");
             //NowCanLogin
         }
