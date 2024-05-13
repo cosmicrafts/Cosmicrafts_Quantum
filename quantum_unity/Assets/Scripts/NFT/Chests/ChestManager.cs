@@ -18,6 +18,7 @@ public class ChestManager : MonoBehaviour
     public GameObject chestPrefab;
     public Transform chestDisplayContainer;
     public Toggle updateChestsToggle;
+    public NotificationManager notificationManager;
     private List<UnboundedUInt> currentTokenIds = new List<UnboundedUInt>();
 
     private void Awake()
@@ -124,16 +125,26 @@ public class ChestManager : MonoBehaviour
         var account = new Account(Principal.FromText(userPrincipalId), null);
         var newTokenIds = await GetOwnedChestTokens(account);
 
-        if (newTokenIds.Except(currentTokenIds).Any()) // Check for new chests
+        // Calculate the number of new chests
+        int newChestCount = newTokenIds.Except(currentTokenIds).Count();
+
+        if (newChestCount > 0)
         {
             ownedChestsText.text = $"{newTokenIds.Count}";
             foreach (var tokenId in newTokenIds.Except(currentTokenIds))
             {
                 await FetchAndSetChestData(tokenId);
             }
-            currentTokenIds = newTokenIds; // Update the current list
+
+            // Update currentTokenIds with the newTokenIds
+            currentTokenIds.AddRange(newTokenIds.Except(currentTokenIds));
+
+            // Notify the user about the new chest only if the toggle is on
+            string notificationText = $"Received {newChestCount} new chest{(newChestCount > 1 ? "s" : "")}!";
+            notificationManager.ShowNotification(notificationText);
         }
     }
+
 
     public async Task TransferChest(ChestSO chestSO, UnboundedUInt tokenId, string recipientPrincipalText)
     {
