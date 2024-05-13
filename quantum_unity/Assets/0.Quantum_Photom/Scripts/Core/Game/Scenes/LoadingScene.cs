@@ -22,7 +22,8 @@
 		//	Do not call, because we do NOT want to se Active state just yet
 		//	base.OnActivate();
 
-			StartCoroutine(Show_Coroutine());
+			//StartCoroutine(Show_Coroutine());
+			m_State = EState.Active;
 		}
 
 		protected override void OnDeactivate()
@@ -30,7 +31,8 @@
 		//	Do not call, because we do NOT want to se Finished state just yet
 		//	base.OnDeactivate();
 
-			StartCoroutine(Hide_Coroutine());
+			//StartCoroutine(Hide_Coroutine());
+			m_State = EState.Finished;
 		}
 
 		// PRIVATE METHODS
