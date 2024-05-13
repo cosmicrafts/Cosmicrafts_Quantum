@@ -918,7 +918,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HealthData {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(1)]
     public EHealthAction Action;
@@ -938,6 +938,8 @@ namespace Quantum {
     public Int32 TargetTokenID;
     [FieldOffset(40)]
     public FP Value;
+    [FieldOffset(48)]
+    public FP ValueRefOriginal;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 109;
@@ -950,6 +952,7 @@ namespace Quantum {
         hash = hash * 31 + TargetOwner.GetHashCode();
         hash = hash * 31 + TargetTokenID.GetHashCode();
         hash = hash * 31 + Value.GetHashCode();
+        hash = hash * 31 + ValueRefOriginal.GetHashCode();
         return hash;
       }
     }
@@ -964,6 +967,7 @@ namespace Quantum {
         EntityRef.Serialize(&p->Source, serializer);
         EntityRef.Serialize(&p->Target, serializer);
         FP.Serialize(&p->Value, serializer);
+        FP.Serialize(&p->ValueRefOriginal, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -3645,6 +3649,7 @@ namespace Quantum.Prototypes {
   [Prototype(typeof(HealthData))]
   public sealed unsafe partial class HealthData_Prototype : StructPrototype {
     public FP Value;
+    public FP ValueRefOriginal;
     public MapEntityId Target;
     public Int32 TargetTokenID;
     public PlayerRef TargetOwner;
@@ -3664,6 +3669,7 @@ namespace Quantum.Prototypes {
       result.TargetOwner = this.TargetOwner;
       result.TargetTokenID = this.TargetTokenID;
       result.Value = this.Value;
+      result.ValueRefOriginal = this.ValueRefOriginal;
       MaterializeUser(frame, ref result, in context);
     }
   }

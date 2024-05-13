@@ -68,8 +68,8 @@ namespace Quantum
 				data.SourceTokenID = default; 
 				Log.Debug($"Dont Have UNIT Script In Source: {data.Source}");
 			}
-			
-			
+
+			data.ValueRefOriginal = data.Value;
 			
 			////////////
 			if (frame.Unsafe.TryGetPointer<Unit>(data.Target, out var unit))

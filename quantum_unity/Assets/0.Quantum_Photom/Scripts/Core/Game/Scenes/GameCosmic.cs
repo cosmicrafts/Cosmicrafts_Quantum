@@ -233,6 +233,8 @@ namespace TowerRush
 					Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
 					InstanceCanvasDamage();
 					gmt.AddDamageReceived(e.Data.Value.AsFloat);
+					if (e.Data.AttackMode == EAttackMode.Evasion) { gmt.AddDamageEvaded(e.Data.ValueRefOriginal.AsFloat); }
+
 				}
 			}
 			else
@@ -246,6 +248,8 @@ namespace TowerRush
 					Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
 					InstanceCanvasDamage();
 					gmt.AddDamage(e.Data.Value.AsFloat);
+					if (e.Data.AttackMode == EAttackMode.Critic) { gmt.AddDamageCritic(e.Data.ValueRefOriginal.AsFloat); }
+					
 				}
 			}
 			

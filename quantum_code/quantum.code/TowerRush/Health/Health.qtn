@@ -10,6 +10,7 @@
 struct HealthData
 {
 	FP            Value;
+    FP            ValueRefOriginal;
 	EntityRef     Target;
     int           TargetTokenID;
     PlayerRef     TargetOwner;
