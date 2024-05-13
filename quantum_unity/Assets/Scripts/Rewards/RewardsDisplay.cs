@@ -211,7 +211,7 @@ public class RewardsDisplay : MonoBehaviour
                 notificationMessage = $"You received {reward.PrizeAmount} Shards!";
                 break;
             case PrizeType.Chest:
-                notificationMessage = $"You received a chest with rarity {GetChestRarity(reward.PrizeAmount)}!";
+                notificationMessage = $"You received a {GetChestRarity(reward.PrizeAmount)} Metacube!";
                 break;
             default:
                 break;
@@ -227,21 +227,33 @@ public class RewardsDisplay : MonoBehaviour
         // Implement logic to determine chest rarity based on prize amount
         // For example:
         int amount = (int)prizeAmount;
-        if (amount >= 5)
+        if (amount >= 7)
+        {
+            return "Mythical";
+        }
+        if (amount >= 6)
         {
             return "Legendary";
         }
-        else if (amount >= 3)
+        if (amount >= 5)
         {
             return "Epic";
         }
-        else if (amount >= 1)
+        else if (amount >= 4)
+        {
+            return "Superior";
+        }
+        else if (amount >= 3)
         {
             return "Rare";
         }
-        else
+        else if (amount >= 2)
         {
             return "Common";
+        }
+        else
+        {
+            return "Basic";
         }
     }
 }

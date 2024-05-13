@@ -17,7 +17,7 @@ public class ChestManager : MonoBehaviour
     public TMP_Text ownedChestsText;
     public GameObject chestPrefab;
     public Transform chestDisplayContainer;
-    public Button updateChestsButton;
+    public Toggle updateChestsToggle;
     private List<UnboundedUInt> currentTokenIds = new List<UnboundedUInt>();
 
     private void Awake()
@@ -36,9 +36,11 @@ public class ChestManager : MonoBehaviour
     {
         chestPrefab.SetActive(false);
         await FetchOwnedChests();
-        if (updateChestsButton != null)
+        if (updateChestsToggle != null)
         {
-            updateChestsButton.onClick.AddListener(() => UpdateOwnedChests());
+            updateChestsToggle.onValueChanged.AddListener((value) => {
+                if (value) UpdateOwnedChests();
+            });
         }
     }
 

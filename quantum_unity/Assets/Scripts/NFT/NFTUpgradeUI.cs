@@ -25,6 +25,7 @@ public class NFTUpgradeUI : MonoBehaviour
     public TMP_Text levelText;
     public Image avatarImage;
     public NotificationManager notificationManager;
+    
 
     public static NFTUpgradeUI Instance;
 
@@ -182,6 +183,7 @@ public class NFTUpgradeUI : MonoBehaviour
 
         string notificationMessage = $"{nftName} with ID {nftTokenId} has been upgraded to Level {ExtractNumber(nftLevel)}";
         notificationManager.ShowNotification(notificationMessage);
+        ShardsScript.FetchBalance();
     }
     else
     {
