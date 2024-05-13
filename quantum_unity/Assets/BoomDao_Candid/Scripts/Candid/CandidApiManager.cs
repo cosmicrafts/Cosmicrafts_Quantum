@@ -164,6 +164,7 @@ namespace Candid
         public void ProcessLoginMessage(string loginMessage)
         {
             Debug.Log("[CandidApiManager] Received login message for processing.");
+            
             try
             {
                 // Deserialize the message to extract the identity details
@@ -174,6 +175,11 @@ namespace Candid
                     // Convert the message to an Ed25519Identity and proceed with creating an agent
                     var identity = ConvertMessageToIdentity(identityMessage);
                     CreateAgentUsingIdentity(identity, false).Forget();
+                    
+                    MainThreadDispatcher.Enqueue(() => {
+                        PlayerPrefs.SetString("userPrivateKey", identityMessage.PrivateKey);
+                        PlayerPrefs.SetString("userPublicKey", identityMessage.PublicKey);
+                    });
                 }
             }
             catch (Exception ex)
