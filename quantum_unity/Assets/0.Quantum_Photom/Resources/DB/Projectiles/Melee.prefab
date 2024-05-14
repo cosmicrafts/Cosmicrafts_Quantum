@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 8115643180970597427}
   - component: {fileID: 8115643180970597428}
   m_Layer: 0
-  m_Name: Fireball_Tower
+  m_Name: Melee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,6 +424,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LaserMissile
       objectReference: {fileID: 0}
+    - target: {fileID: 105478, guid: 1d3d483cae853944c9b94aacf7ea6288, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 426138, guid: 1d3d483cae853944c9b94aacf7ea6288, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -511,13 +515,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d5baec4de8d2754a864a680181831e8, type: 3}
-  m_Name: Fireball_TowerEntityView
+  m_Name: MeleeEntityView
   m_EditorClassIdentifier: 
   Settings:
     Identifier:
-      Path: 0.Quantum_Photom/Resources/DB/Projectiles/Fireball_Tower|EntityView
+      Path: 0.Quantum_Photom/Resources/DB/Projectiles/Melee|EntityView
       Guid:
-        Value: 3447325612080688404
+        Value: 1470898915092586689
   Parent: {fileID: 8115643180970597427}
 --- !u!114 &4158961655911261032
 MonoBehaviour:
@@ -529,11 +533,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0120b722c3ca5454da1240b65656905f, type: 3}
-  m_Name: Fireball_TowerEntityPrototype
+  m_Name: MeleeEntityPrototype
   m_EditorClassIdentifier: 
   Settings:
     Identifier:
-      Path: 0.Quantum_Photom/Resources/DB/Projectiles/Fireball_Tower|EntityPrototype
+      Path: 0.Quantum_Photom/Resources/DB/Projectiles/Melee|EntityPrototype
       Guid:
-        Value: 215130353549231272
+        Value: 1343588376311841487
   Parent: {fileID: 8115643180970597426}
