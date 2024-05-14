@@ -13,7 +13,7 @@
 			var context = default(PrototypeMaterializationContext);
 			settings.WeaponBehavior.Materialize(frame, ref Behavior, context);
 
-			Level            = level;
+			Level            = 1;
 			AttackRange      = settings.AttackRange;
 			StartAttackDelay = settings.StartAttackDelay;
 			AttackSpeed      = settings.AttackSpeed;

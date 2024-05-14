@@ -19,10 +19,12 @@ namespace Quantum
 			MaxHealth    = settings.BaseHealth;
 			var perLevel = FP._1 + settings.HealthPerLevelPercent * FP._0_01;
 
-			for (int idx = 1; idx < level; idx++)
+			//Dont up stats from LV
+			/*for (int idx = 1; idx < level; idx++)
 			{
 				MaxHealth *= perLevel;
-			}
+			}*/
+			
 			CurrentHealth = MaxHealth;
 
 			MaxShield = settings.BaseShield;

@@ -95,7 +95,8 @@ public class StartMatch : MonoBehaviour
 						.Select(nftData => new CardInfo
 						{
 							CardSettings = m_GameplaySettings.Settings.AllCards[nftData.General.FirstOrDefault().UnitId],
-							Level = 1,
+							Level = (byte)
+								nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == "level").StatValue,
 							BaseHealth = FP.FromFloat_UNSAFE(
 								nftData.BasicStats.FirstOrDefault(s => s.StatName.ToLower() == "health").StatValue * (HpPorcent * 0.01f)),
 							Damage = FP.FromFloat_UNSAFE(
@@ -103,7 +104,8 @@ public class StartMatch : MonoBehaviour
 							TokenID = int.Parse(nftData.TokenId),
 						}).ToArray(),
 			};
-
+			
+		
 			
 			MatchRequest matchRequest = new MatchRequest();
 			matchRequest.Room                 = GlobalGameData.Instance.actualRoom;
