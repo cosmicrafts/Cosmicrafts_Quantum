@@ -29,7 +29,7 @@ MonoBehaviour:
     Rarity: 0
     EnergyCost: 1
     ActivationDelay:
-      RawValue: 0
+      RawValue: 65536
     UnitCount: 1
     UnitBehaviors: []
     BaseHealth:
@@ -62,7 +62,7 @@ MonoBehaviour:
           Id:
             Value: 446631643286641162
         Speed:
-          RawValue: 393216
+          RawValue: 786432
         Behavior:
           _field_used_: SINGLETARGET
           SingleTarget:
@@ -84,10 +84,10 @@ MonoBehaviour:
             DamagePerLevelPercent:
               RawValue: 0
     AttackRange:
-      RawValue: 327680
+      RawValue: 196608
     AttackSpeed:
       RawValue: 78643
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:
-      RawValue: 91750
+      RawValue: 39321

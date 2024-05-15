@@ -272,7 +272,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    _empty_prototype_dummy_field_: 0
+    Cannon:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
   m_HUDPosition: {fileID: 8907953437385953077}
   m_HUDScale: 0.5
   m_TeamMaterials: []

@@ -255,7 +255,7 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
-  DestroyDelay: 0
+  DestroyDelay: 0.5
   DestroyMoveDelay: 0
   DestroyMoveOffset: {x: 0, y: 0, z: 0}
   Scene: {fileID: 0}
@@ -272,7 +272,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    _empty_prototype_dummy_field_: 0
+    Cannon:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
   m_HUDPosition: {fileID: 5112006439918874818}
   m_HUDScale: 0.5
   m_TeamMaterials: []
