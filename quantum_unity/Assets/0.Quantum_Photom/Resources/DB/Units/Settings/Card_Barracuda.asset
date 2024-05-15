@@ -29,11 +29,11 @@ MonoBehaviour:
     Rarity: 3
     EnergyCost: 1
     ActivationDelay:
-      RawValue: 0
+      RawValue: 65536
     UnitCount: 1
     UnitBehaviors: []
     BaseHealth:
-      RawValue: 16384000
+      RawValue: 12963021
     BaseShield:
       RawValue: 9830400
     HealthPerLevelPercent:
@@ -62,7 +62,7 @@ MonoBehaviour:
           Id:
             Value: 2210417644035088212
         Speed:
-          RawValue: 393216
+          RawValue: 786432
         Behavior:
           _field_used_: AOE
           SingleTarget:
@@ -76,9 +76,9 @@ MonoBehaviour:
           AoE:
             Prototype:
               Id:
-                Value: 2867976968352079687
+                Value: 3787405658912955983
             Radius:
-              RawValue: 98304
+              RawValue: 32768
             Damage:
               RawValue: 1638400
             DamagePerLevelPercent:
@@ -86,8 +86,8 @@ MonoBehaviour:
     AttackRange:
       RawValue: 327680
     AttackSpeed:
-      RawValue: 98304
+      RawValue: 65536
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:
-      RawValue: 98304
+      RawValue: 58982

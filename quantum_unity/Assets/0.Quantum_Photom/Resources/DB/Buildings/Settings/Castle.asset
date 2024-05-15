@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Castle
   m_EditorClassIdentifier: 
   GhostPrefab: {fileID: 0}
+  prevUIPrefab: {fileID: 0}
   Sprite: {fileID: 0}
   DisplayName: 
   Settings:
@@ -30,9 +31,9 @@ MonoBehaviour:
     UnitCount: 1
     UnitBehaviors: []
     BaseHealth:
-      RawValue: 9830400
+      RawValue: 26214400
     BaseShield:
-      RawValue: 3276800
+      RawValue: 13107200
     HealthPerLevelPercent:
       RawValue: 655360
     DestroyOnDeath: 0
@@ -42,7 +43,7 @@ MonoBehaviour:
       RawValue: 0
     TargetType: 1
     UnitSize:
-      RawValue: 222822
+      RawValue: 196608
     AttackTarget: -1
     WeaponBehavior:
       _field_used_: PROJECTILE
@@ -59,7 +60,7 @@ MonoBehaviour:
           Id:
             Value: 215130353549231272
         Speed:
-          RawValue: 393216
+          RawValue: 786432
         Behavior:
           _field_used_: SINGLETARGET
           SingleTarget:
@@ -67,7 +68,7 @@ MonoBehaviour:
               Id:
                 Value: 3787405658912955983
             Damage:
-              RawValue: 9830400
+              RawValue: 2949120
             DamagePerLevelPercent:
               RawValue: 655360
           AoE:
@@ -81,9 +82,9 @@ MonoBehaviour:
             DamagePerLevelPercent:
               RawValue: 0
     AttackRange:
-      RawValue: 524288
+      RawValue: 655360
     AttackSpeed:
-      RawValue: 98304
+      RawValue: 65536
     StartAttackDelay:
       RawValue: 19660
     MovementSpeed:
