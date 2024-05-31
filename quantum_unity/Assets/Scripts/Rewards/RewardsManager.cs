@@ -49,7 +49,7 @@ public class RewardsManager : MonoBehaviour
         }
         else
         {
-            rewardsCountText.text = "All Missions completed";
+            rewardsCountText.text = "0";
         }
     }
 
