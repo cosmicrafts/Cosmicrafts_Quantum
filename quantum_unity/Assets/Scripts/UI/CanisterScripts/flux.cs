@@ -119,11 +119,14 @@ public class flux : MonoBehaviour
             {
                 SetTransferStatus("Transfer failed");
                 Debug.LogError(JsonUtility.ToJson(transferResult.Value));
+                notificationManager.ShowNotification("Transfer failed");
             }
             else
             {
                 SetTransferStatus("Transfer successful");
                 Debug.Log("Transfer successful");
+                notificationManager.ShowNotification("Transfer successful");
+                
             }
 
             // Update balance after transfer
@@ -133,6 +136,7 @@ public class flux : MonoBehaviour
         {
             SetTransferStatus($"Failed to send tokens: {ex.Message}");
             Debug.LogError($"Failed to send tokens: {ex.Message}");
+            notificationManager.ShowNotification($"Failed to send tokens: {ex.Message}");
         }
     }
 

@@ -21,7 +21,7 @@ public class shards : MonoBehaviour
     public TMP_Text tokenNameText; 
     public Image tokenImage; 
     public Sprite referenceImage;
-    public NotificationManager notificationManager; // Reference to NotificationManager
+    public NotificationManager notificationManager;
 
     private const int DECIMAL_PLACES = 6;
 
