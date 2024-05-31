@@ -87,7 +87,7 @@ public class flux : MonoBehaviour
 
         SetTransferStatus("Sending...");
 
-        tranferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt));
+        tranferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt), "Flux");
         LoadingPanel.Instance.ActiveLoadingPanel();
     }
 
@@ -96,7 +96,7 @@ public class flux : MonoBehaviour
         return BigInteger.Parse(value.ToString());
     }
 
-    public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
+    public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount, string tokenName)
     {
         try
         {
@@ -125,8 +125,7 @@ public class flux : MonoBehaviour
             {
                 SetTransferStatus("Transfer successful");
                 Debug.Log("Transfer successful");
-                notificationManager.ShowNotification("Transfer successful");
-                
+                notificationManager.ShowNotification($"Transferred {tokenAmount} {tokenName} successfully");
             }
 
             // Update balance after transfer

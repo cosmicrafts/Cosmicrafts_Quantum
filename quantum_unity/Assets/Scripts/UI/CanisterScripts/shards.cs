@@ -89,7 +89,7 @@ public class shards : MonoBehaviour
         SetTransferStatus("Sending...");
         LoadingPanel.Instance.ActiveLoadingPanel();
 
-        transferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt));
+        transferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt), "Shards");
     }
 
     private BigInteger ConvertToBigInteger(decimal value)
@@ -97,7 +97,7 @@ public class shards : MonoBehaviour
         return BigInteger.Parse(value.ToString());
     }
 
-    public async void transferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
+    public async void transferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount, string tokenName)
     {
         try
         {
@@ -125,7 +125,7 @@ public class shards : MonoBehaviour
             else
             {
                 SetTransferStatus("Transfer successful");
-                notificationManager.ShowNotification("Transfer successful");
+                notificationManager.ShowNotification($"Transferred {tokenAmount} {tokenName} successfully");
                 Debug.Log("Transfer successful");
             }
 
