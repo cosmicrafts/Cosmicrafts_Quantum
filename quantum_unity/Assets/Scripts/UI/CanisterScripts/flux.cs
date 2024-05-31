@@ -9,7 +9,6 @@ using System.Numerics;
 using System.Collections;
 using System.Linq;
 
-
 public class flux : MonoBehaviour
 {
     public TMP_Text balanceText;
@@ -19,9 +18,13 @@ public class flux : MonoBehaviour
     public TMP_Text transferStatusText; 
     public Animator TokenPanel;
     public BigInteger CurrentBalance { get; private set; } = BigInteger.Zero;
-
+    public TMP_Text tokenNameText; 
+    public Image tokenImage; 
+    public Sprite referenceImage;
+    public NotificationManager notificationManager;
 
     private const int DECIMAL_PLACES = 6;
+
     void Start()
     {
         sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
@@ -30,14 +33,14 @@ public class flux : MonoBehaviour
     }
 
     private void OnEnable()
-{
-    BalanceManager.OnBalanceUpdateNeeded += FetchBalance;
-}
+    {
+        BalanceManager.OnBalanceUpdateNeeded += FetchBalance;
+    }
 
-private void OnDisable()
-{
-    BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
-}
+    private void OnDisable()
+    {
+        BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
+    }
 
     public async void FetchBalance()
     {
@@ -69,11 +72,8 @@ private void OnDisable()
 
     private string FormatBalance(UnboundedUInt balance)
     {
-       // string balanceString = balance.ToString().PadLeft(DECIMAL_PLACES + 1, '0'); // Add one to account for the integer part
-      //  return balanceString.Substring(0, balanceString.Length - DECIMAL_PLACES);
-      return balance.ToString();
+        return balance.ToString();
     }
-
 
     private void SendTokenButtonClicked()
     {
@@ -88,95 +88,105 @@ private void OnDisable()
         SetTransferStatus("Sending...");
 
         tranferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt));
+        LoadingPanel.Instance.ActiveLoadingPanel();
     }
 
     private BigInteger ConvertToBigInteger(decimal value)
     {
-        // Scale the decimal value to the appropriate number of decimal places and convert to BigInteger
-       // return new BigInteger(value * (decimal)Math.Pow(10, DECIMAL_PLACES));
-       return BigInteger.Parse(value.ToString());
+        return BigInteger.Parse(value.ToString());
     }
 
     public async void tranferTokens(string recipientPrincipalId, UnboundedUInt tokenAmount)
-{
-    try
     {
-        var fee = await CandidApiManager.Instance.flux.Icrc1Fee();
-
-        var transfer = new CanisterPK.flux.Models.TransferArgs(
-            tokenAmount, // Use the actual tokenAmount here
-            null,
-            new OptionalValue<UnboundedUInt>(fee),
-            null,
-            null,
-            new Account(Principal.FromText(recipientPrincipalId), null)
-        );
-
-        var transferResult = await CandidApiManager.Instance.flux.Icrc1Transfer(transfer);
-
-        // Update status text based on transfer result
-        if (transferResult.Tag == TransferResultTag.Err)
+        try
         {
-            SetTransferStatus("Transfer failed");
-            Debug.LogError(JsonUtility.ToJson(transferResult.Value));
-        }
-        else
-        {
-            SetTransferStatus("Transfer successful");
-            Debug.Log("Transfer successful");
-        }
+            var fee = await CandidApiManager.Instance.flux.Icrc1Fee();
 
-        // Update balance after transfer
-        FetchBalance();
+            var transfer = new CanisterPK.flux.Models.TransferArgs(
+                tokenAmount, // Use the actual tokenAmount here
+                null,
+                new OptionalValue<UnboundedUInt>(fee),
+                null,
+                null,
+                new Account(Principal.FromText(recipientPrincipalId), null)
+            );
+
+            var transferResult = await CandidApiManager.Instance.flux.Icrc1Transfer(transfer);
+            LoadingPanel.Instance.DesactiveLoadingPanel();
+
+            // Update status text based on transfer result
+            if (transferResult.Tag == TransferResultTag.Err)
+            {
+                SetTransferStatus("Transfer failed");
+                Debug.LogError(JsonUtility.ToJson(transferResult.Value));
+            }
+            else
+            {
+                SetTransferStatus("Transfer successful");
+                Debug.Log("Transfer successful");
+            }
+
+            // Update balance after transfer
+            FetchBalance();
+        }
+        catch (Exception ex)
+        {
+            SetTransferStatus($"Failed to send tokens: {ex.Message}");
+            Debug.LogError($"Failed to send tokens: {ex.Message}");
+        }
     }
-    catch (Exception ex)
-    {
-        SetTransferStatus($"Failed to send tokens: {ex.Message}");
-        Debug.LogError($"Failed to send tokens: {ex.Message}");
-    }
-}
 
     private void SetTransferStatus(string status)
     {
         transferStatusText.text = status;
     }
 
-    // Method to start the balance update animation
     private void AnimateBalanceUpdate(UnboundedUInt newBalance)
     {
-        // Assuming you have a method to convert UnboundedUInt to BigInteger or decimal for comparison
         BigInteger newBalanceBigInt = newBalance.ToBigInteger();
         CurrentBalance = newBalanceBigInt;
         StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
     }
 
-    // Coroutine for animating the balance update
-    private IEnumerator IncrementBalanceAnimation(BigInteger targetBalance) {
-    float duration = 0.75f;
-    BigInteger currentBalance;
+    private IEnumerator IncrementBalanceAnimation(BigInteger targetBalance) 
+    {
+        float duration = 0.75f;
+        BigInteger currentBalance;
 
-    if (!BigInteger.TryParse(SanitizeText(balanceText.text), out currentBalance)) {
-        Debug.Log("Current balance is not a valid number, defaulting to zero.");
-        currentBalance = BigInteger.Zero;
+        if (!BigInteger.TryParse(SanitizeText(balanceText.text), out currentBalance)) 
+        {
+            Debug.Log("Current balance is not a valid number, defaulting to zero.");
+            currentBalance = BigInteger.Zero;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration) 
+        {
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / duration);
+
+            BigInteger progressBalance = currentBalance + (targetBalance - currentBalance) * new BigInteger((long)(progress * 100000)) / new BigInteger(100000);
+
+            balanceText.text = progressBalance.ToString();
+            yield return null;
+        }
+
+        balanceText.text = targetBalance.ToString();
     }
 
-    float elapsed = 0f;
-    while (elapsed < duration) {
-        elapsed += Time.deltaTime;
-        float progress = Mathf.Clamp01(elapsed / duration);
-
-        BigInteger progressBalance = currentBalance + (targetBalance - currentBalance) * new BigInteger((long)(progress * 100000)) / new BigInteger(100000);
-
-        balanceText.text = progressBalance.ToString();
-        yield return null;
+    private string SanitizeText(string text) 
+    {
+        return new string(text.Where(char.IsDigit).ToArray());
     }
 
-    balanceText.text = targetBalance.ToString();
-   // Debug.Log($"Final balance text: {balanceText.text}");
-}
+    public void UpdateTokenPanel(string tokenName, Sprite tokenSprite)
+    {
+        tokenNameText.text = tokenName;
+        tokenImage.sprite = tokenSprite;
+    }
 
-    private string SanitizeText(string text) {
-    return new string(text.Where(char.IsDigit).ToArray());
-}
-
+    public void OnUpdateTokenPanelClick()
+    {
+        UpdateTokenPanel("Flux", referenceImage);
+    }
 }

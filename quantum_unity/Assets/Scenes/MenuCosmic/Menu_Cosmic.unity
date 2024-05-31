@@ -40014,9 +40014,9 @@ RectTransform:
   m_Father: {fileID: 1639362160}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 145.0173, y: -381.31927}
   m_SizeDelta: {x: 267.3326, y: 77.6265}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!111 &732138075
@@ -43715,6 +43715,10 @@ MonoBehaviour:
   sendTokenButton: {fileID: 1343227072}
   transferStatusText: {fileID: 553360225}
   ShardsPanel: {fileID: 1586823375}
+  tokenNameText: {fileID: 540888443}
+  tokenImage: {fileID: 497543321}
+  referenceImage: {fileID: 21300000, guid: 558da08cf1dafdd4ab580b1bd944484b, type: 3}
+  notificationManager: {fileID: 343384507}
 --- !u!1 &782678511
 GameObject:
   m_ObjectHideFlags: 0
@@ -45665,7 +45669,7 @@ PrefabInstance:
     - target: {fileID: 1307978278279793640, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1307978278279793640, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
         type: 3}
@@ -45675,7 +45679,7 @@ PrefabInstance:
     - target: {fileID: 1307978278279793640, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1307978278279793640, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
         type: 3}
@@ -45725,12 +45729,12 @@ PrefabInstance:
     - target: {fileID: 1307978278279793640, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 145.0173
       objectReference: {fileID: 0}
     - target: {fileID: 1307978278279793640, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -76.88865
       objectReference: {fileID: 0}
     - target: {fileID: 1307978278279793640, guid: 27ebfd1302b4aaa40ae3dc51339bce7c,
         type: 3}
@@ -66360,9 +66364,9 @@ RectTransform:
   m_Father: {fileID: 1639362160}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 145.0173, y: -295.69278}
   m_SizeDelta: {x: 267.3326, y: 77.6265}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!111 &1187208485
@@ -71827,6 +71831,10 @@ MonoBehaviour:
   sendTokenButton: {fileID: 1343227072}
   transferStatusText: {fileID: 553360225}
   TokenPanel: {fileID: 1325940239}
+  tokenNameText: {fileID: 540888443}
+  tokenImage: {fileID: 497543321}
+  referenceImage: {fileID: 21300000, guid: a8aa5a96dfb2de2448a3bd87933f9023, type: 3}
+  notificationManager: {fileID: 343384507}
 --- !u!1 &1307286697
 GameObject:
   m_ObjectHideFlags: 0
@@ -73822,8 +73830,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 0.02745098, g: 0.53333336, b: 0.85882354, a: 1}
     m_HighlightedColor: {r: 0.018761085, g: 0.3632549, b: 0.5849056, a: 1}
-    m_PressedColor: {r: 0.9294118, g: 0.11764707, b: 0.47450984, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.02745098, g: 0.53333336, b: 0.85882354, a: 1}
+    m_SelectedColor: {r: 0.02745098, g: 0.53333336, b: 0.85882354, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -73843,13 +73851,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 536574839}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 1518176201}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
+        m_MethodName: StartDeactivation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -74346,6 +74354,18 @@ MonoBehaviour:
       - m_Target: {fileID: 781813610}
         m_TargetAssemblyTypeName: shards, Assembly-CSharp
         m_MethodName: FetchBalance
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 781813610}
+        m_TargetAssemblyTypeName: shards, Assembly-CSharp
+        m_MethodName: OnUpdateTokenPanelClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -87773,10 +87793,10 @@ RectTransform:
   m_Father: {fileID: 1992969074}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -185.76178, y: -90.91397}
-  m_SizeDelta: {x: 286.6731, y: 76.94101}
+  m_AnchorMin: {x: 0.66576844, y: 0.5773921}
+  m_AnchorMax: {x: 0.9704053, y: 0.80749387}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1613939551
 MonoBehaviour:
@@ -97455,9 +97475,9 @@ RectTransform:
   m_Father: {fileID: 1639362160}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 145.0173, y: -210.06625}
   m_SizeDelta: {x: 267.3326, y: 77.6265}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!111 &1774719251
@@ -98651,7 +98671,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Fee:
 
-    1 Spiral'
+    1 Token'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7be961daa7917e74fb7100c9012c7b33, type: 2}
   m_sharedMaterial: {fileID: -5712406132433469472, guid: 7be961daa7917e74fb7100c9012c7b33,
@@ -100041,9 +100061,9 @@ RectTransform:
   m_Father: {fileID: 2004582322}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 145.0173, y: -61.38425}
   m_SizeDelta: {x: 263.6238, y: 106.7685}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1841273320
@@ -103465,9 +103485,9 @@ RectTransform:
   m_Father: {fileID: 1639362160}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 145.0173, y: -38.81325}
   m_SizeDelta: {x: 267.3326, y: 77.6265}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!111 &1913454062
@@ -105932,9 +105952,9 @@ RectTransform:
   m_Father: {fileID: 1639362160}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 145.0173, y: -124.43976}
   m_SizeDelta: {x: 267.3326, y: 77.6265}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!111 &1952454747
@@ -116482,6 +116502,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1299073782}
         m_TargetAssemblyTypeName: flux, Assembly-CSharp
         m_MethodName: FetchBalance
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1299073782}
+        m_TargetAssemblyTypeName: flux, Assembly-CSharp
+        m_MethodName: OnUpdateTokenPanelClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
