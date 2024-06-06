@@ -34,13 +34,19 @@ namespace CanisterPK.BoomToken.Models
 		[CandidName("initial_balances")]
 		public Dictionary<Account, UnboundedUInt> InitialBalances { get; set; }
 
-		[CandidName("archive_options")]
-		public InitArgs.ArchiveOptionsInfo ArchiveOptions { get; set; }
-
 		[CandidName("feature_flags")]
 		public OptionalValue<FeatureFlags> FeatureFlags { get; set; }
 
-		public InitArgs(Account mintingAccount, OptionalValue<Account> feeCollectorAccount, UnboundedUInt transferFee, OptionalValue<byte> decimals, OptionalValue<ushort> maxMemoLength, string tokenSymbol, string tokenName, Dictionary<string, MetadataValue> metadata, Dictionary<Account, UnboundedUInt> initialBalances, InitArgs.ArchiveOptionsInfo archiveOptions, OptionalValue<FeatureFlags> featureFlags)
+		[CandidName("maximum_number_of_accounts")]
+		public OptionalValue<ulong> MaximumNumberOfAccounts { get; set; }
+
+		[CandidName("accounts_overflow_trim_quantity")]
+		public OptionalValue<ulong> AccountsOverflowTrimQuantity { get; set; }
+
+		[CandidName("archive_options")]
+		public InitArgs.ArchiveOptionsInfo ArchiveOptions { get; set; }
+
+		public InitArgs(Account mintingAccount, OptionalValue<Account> feeCollectorAccount, UnboundedUInt transferFee, OptionalValue<byte> decimals, OptionalValue<ushort> maxMemoLength, string tokenSymbol, string tokenName, Dictionary<string, MetadataValue> metadata, Dictionary<Account, UnboundedUInt> initialBalances, OptionalValue<FeatureFlags> featureFlags, OptionalValue<ulong> maximumNumberOfAccounts, OptionalValue<ulong> accountsOverflowTrimQuantity, InitArgs.ArchiveOptionsInfo archiveOptions)
 		{
 			this.MintingAccount = mintingAccount;
 			this.FeeCollectorAccount = feeCollectorAccount;
@@ -51,8 +57,10 @@ namespace CanisterPK.BoomToken.Models
 			this.TokenName = tokenName;
 			this.Metadata = metadata;
 			this.InitialBalances = initialBalances;
-			this.ArchiveOptions = archiveOptions;
 			this.FeatureFlags = featureFlags;
+			this.MaximumNumberOfAccounts = maximumNumberOfAccounts;
+			this.AccountsOverflowTrimQuantity = accountsOverflowTrimQuantity;
+			this.ArchiveOptions = archiveOptions;
 		}
 
 		public InitArgs()
@@ -63,6 +71,9 @@ namespace CanisterPK.BoomToken.Models
 		{
 			[CandidName("num_blocks_to_archive")]
 			public ulong NumBlocksToArchive { get; set; }
+
+			[CandidName("max_transactions_per_response")]
+			public OptionalValue<ulong> MaxTransactionsPerResponse { get; set; }
 
 			[CandidName("trigger_threshold")]
 			public ulong TriggerThreshold { get; set; }
@@ -79,14 +90,19 @@ namespace CanisterPK.BoomToken.Models
 			[CandidName("controller_id")]
 			public Principal ControllerId { get; set; }
 
-			public ArchiveOptionsInfo(ulong numBlocksToArchive, ulong triggerThreshold, OptionalValue<ulong> maxMessageSizeBytes, OptionalValue<ulong> cyclesForArchiveCreation, OptionalValue<ulong> nodeMaxMemorySizeBytes, Principal controllerId)
+			[CandidName("more_controller_ids")]
+			public OptionalValue<List<Principal>> MoreControllerIds { get; set; }
+
+			public ArchiveOptionsInfo(ulong numBlocksToArchive, OptionalValue<ulong> maxTransactionsPerResponse, ulong triggerThreshold, OptionalValue<ulong> maxMessageSizeBytes, OptionalValue<ulong> cyclesForArchiveCreation, OptionalValue<ulong> nodeMaxMemorySizeBytes, Principal controllerId, OptionalValue<List<Principal>> moreControllerIds)
 			{
 				this.NumBlocksToArchive = numBlocksToArchive;
+				this.MaxTransactionsPerResponse = maxTransactionsPerResponse;
 				this.TriggerThreshold = triggerThreshold;
 				this.MaxMessageSizeBytes = maxMessageSizeBytes;
 				this.CyclesForArchiveCreation = cyclesForArchiveCreation;
 				this.NodeMaxMemorySizeBytes = nodeMaxMemorySizeBytes;
 				this.ControllerId = controllerId;
+				this.MoreControllerIds = moreControllerIds;
 			}
 
 			public ArchiveOptionsInfo()

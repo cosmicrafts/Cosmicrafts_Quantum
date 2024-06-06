@@ -12,6 +12,7 @@ namespace Candid
    
     using EdjCase.ICP.Candid.Models;
     //using WebSocketSharp;
+    using CanisterPK.database;
     using CanisterPK.CanisterLogin;
     using CanisterPK.CanisterMatchMaking;
     using CanisterPK.CanisterStats;
@@ -61,6 +62,7 @@ namespace Candid
         public static CandidApiManager Instance { get; private set; }
         
         // Canister APIs
+        public DatabaseApiClient database { get; private set; }
         public CanisterLoginApiClient CanisterLogin { get; private set; }
         public CanisterMatchMakingApiClient CanisterMatchMaking { get; private set; }
         public CanisterStatsApiClient CanisterStats { get; private set; }
@@ -385,6 +387,7 @@ namespace Candid
                 
             {
                 //Build Interfaces
+                database = new DatabaseApiClient(agent, Principal.FromText("erbra-lyaaa-aaaap-qhmfa-cai"));
                 CanisterLogin =  new CanisterLoginApiClient(agent, Principal.FromText("woimf-oyaaa-aaaan-qegia-cai"));
                 CanisterMatchMaking =  new CanisterMatchMakingApiClient(agent, Principal.FromText("vqzll-jiaaa-aaaan-qegba-cai"));
                 CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
@@ -405,6 +408,7 @@ namespace Candid
             else
             {
                 //Build Interfaces
+                database = new DatabaseApiClient(agent, Principal.FromText("erbra-lyaaa-aaaap-qhmfa-cai"));
                 CanisterLogin =  new CanisterLoginApiClient(agent, Principal.FromText("woimf-oyaaa-aaaan-qegia-cai"));
                 CanisterMatchMaking =  new CanisterMatchMakingApiClient(agent, Principal.FromText("vqzll-jiaaa-aaaan-qegba-cai"));
                 CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
@@ -428,6 +432,7 @@ namespace Candid
         private void DesInitializeCandidApis()
         {
             Debug.Log("[CandidApiManager] Deinitializing Candid APIs and resetting login data.");
+            database = null;
             CanisterLogin = null;
             CanisterMatchMaking = null;
             CanisterStats = null;

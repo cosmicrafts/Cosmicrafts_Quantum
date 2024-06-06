@@ -2,10 +2,9 @@ using EdjCase.ICP.Agent.Agents;
 using EdjCase.ICP.Candid.Models;
 using EdjCase.ICP.Candid;
 using System.Threading.Tasks;
-using EdjCase.ICP.Agent.Responses;
 using System.Collections.Generic;
 using CanisterPK.BoomToken;
-using EdjCase.ICP.Candid.Mapping;
+using EdjCase.ICP.Agent.Responses;
 using Tokens = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
 namespace CanisterPK.BoomToken
@@ -23,6 +22,38 @@ namespace CanisterPK.BoomToken
 			this.Agent = agent;
 			this.CanisterId = canisterId;
 			this.Converter = converter;
+		}
+
+		public async Task<List<Models.ArchiveInfo>> Archives()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "archives", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.ArchiveInfo>>(this.Converter);
+		}
+
+		public async Task<Models.GetTransactionsResponse> GetTransactions(Models.GetTransactionsRequest arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "get_transactions", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<Models.GetTransactionsResponse>(this.Converter);
+		}
+
+		public async Task<Models.GetBlocksResponse> GetBlocks(Models.GetBlocksArgs arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "get_blocks", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<Models.GetBlocksResponse>(this.Converter);
+		}
+
+		public async Task<Models.DataCertificate> GetDataCertificate()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "get_data_certificate", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<Models.DataCertificate>(this.Converter);
 		}
 
 		public async Task<string> Icrc1Name()
@@ -96,36 +127,12 @@ namespace CanisterPK.BoomToken
 			return reply.ToObjects<Models.TransferResult>(this.Converter);
 		}
 
-		public async Task<List<BoomTokenApiClient.Icrc1SupportedStandardsReturnArg0Item>> Icrc1SupportedStandards()
+		public async Task<List<Models.StandardRecord>> Icrc1SupportedStandards()
 		{
 			CandidArg arg = CandidArg.FromCandid();
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "icrc1_supported_standards", arg);
 			CandidArg reply = response.ThrowOrGetReply();
-			return reply.ToObjects<List<BoomTokenApiClient.Icrc1SupportedStandardsReturnArg0Item>>(this.Converter);
-		}
-
-		public async Task<Models.GetTransactionsResponse> GetTransactions(Models.GetTransactionsRequest arg0)
-		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
-			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "get_transactions", arg);
-			CandidArg reply = response.ThrowOrGetReply();
-			return reply.ToObjects<Models.GetTransactionsResponse>(this.Converter);
-		}
-
-		public async Task<Models.GetBlocksResponse> GetBlocks(Models.GetBlocksArgs arg0)
-		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
-			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "get_blocks", arg);
-			CandidArg reply = response.ThrowOrGetReply();
-			return reply.ToObjects<Models.GetBlocksResponse>(this.Converter);
-		}
-
-		public async Task<Models.DataCertificate> GetDataCertificate()
-		{
-			CandidArg arg = CandidArg.FromCandid();
-			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "get_data_certificate", arg);
-			CandidArg reply = response.ThrowOrGetReply();
-			return reply.ToObjects<Models.DataCertificate>(this.Converter);
+			return reply.ToObjects<List<Models.StandardRecord>>(this.Converter);
 		}
 
 		public async Task<Models.ApproveResult> Icrc2Approve(Models.ApproveArgs arg0)
@@ -148,25 +155,6 @@ namespace CanisterPK.BoomToken
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "icrc2_transfer_from", arg);
 			return reply.ToObjects<Models.TransferFromResult>(this.Converter);
-		}
-
-		public class Icrc1SupportedStandardsReturnArg0Item
-		{
-			[CandidName("name")]
-			public string Name { get; set; }
-
-			[CandidName("url")]
-			public string Url { get; set; }
-
-			public Icrc1SupportedStandardsReturnArg0Item(string name, string url)
-			{
-				this.Name = name;
-				this.Url = url;
-			}
-
-			public Icrc1SupportedStandardsReturnArg0Item()
-			{
-			}
 		}
 	}
 }

@@ -3,6 +3,7 @@ using CanisterPK.BoomToken.Models;
 using System;
 using EdjCase.ICP.Candid.Models;
 using BlockIndex = EdjCase.ICP.Candid.Models.UnboundedUInt;
+using Timestamp = System.UInt64;
 using Tokens = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
 namespace CanisterPK.BoomToken.Models
@@ -184,9 +185,9 @@ namespace CanisterPK.BoomToken.Models
 		public class CreatedInFutureInfo
 		{
 			[CandidName("ledger_time")]
-			public ulong LedgerTime { get; set; }
+			public Timestamp LedgerTime { get; set; }
 
-			public CreatedInFutureInfo(ulong ledgerTime)
+			public CreatedInFutureInfo(Timestamp ledgerTime)
 			{
 				this.LedgerTime = ledgerTime;
 			}
