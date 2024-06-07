@@ -15,6 +15,7 @@ public class ChestTransferUI : MonoBehaviour
     private UnboundedUInt selectedChestTokenId;
     public Image chestImage;
     private ChestInstance selectedChestInstance;
+    public NotificationManager notificationManager;
 
     private void Start()
     {
@@ -69,6 +70,7 @@ public class ChestTransferUI : MonoBehaviour
 
    private async void OnTransferButtonPressed()
     {
+        
         Debug.Log("Transfer button pressed.");
         if (selectedChestInstance == null || selectedChestTokenId == null)
         {
@@ -86,14 +88,22 @@ public class ChestTransferUI : MonoBehaviour
 
         try
         {
+            LoadingPanel.Instance.ActiveLoadingPanel();
             Debug.Log($"Initiating transfer for {selectedChestTokenId} to {recipientPrincipalText}");
             await chestManager.TransferChest(selectedChestInstance.chestSO, selectedChestTokenId, recipientPrincipalText);
             notificationText.text = "Chest transfer initiated. Please wait...";
+            LoadingPanel.Instance.DesactiveLoadingPanel();
+
+            // Show the notification when the transfer is successful
+            string notificationMessage = $"{selectedChestInstance.chestSO.chestName} with ID {selectedChestTokenId} has been transferred.";
+            notificationManager.ShowNotification(notificationMessage);
+
         }
         catch (Exception ex)
         {
             Debug.LogError($"Exception during chest transfer: {ex}");
             notificationText.text = $"Exception during chest transfer: {ex.Message}";
+            LoadingPanel.Instance.DesactiveLoadingPanel();
         }
     }
 }
