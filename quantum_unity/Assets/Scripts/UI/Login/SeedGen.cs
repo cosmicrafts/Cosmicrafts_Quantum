@@ -33,6 +33,9 @@ public class SeedGen : MonoBehaviour
         Debug.Log($"Seed Phrase: {currentSeedPhrase}");
         seedPhraseInputField.text = currentSeedPhrase; // Use the input field for display
 
+        // Save the seed phrase
+        SaveSeedPhrase(currentSeedPhrase);
+
         candidApiManager.SetTestSeedPhrase(currentSeedPhrase);
     }
 
@@ -46,4 +49,9 @@ public class SeedGen : MonoBehaviour
         notificationManager.ShowNotification("Seed Phrase copied to clipboard.");
     }
 
+    void SaveSeedPhrase(string seedPhrase)
+    {
+        PlayerPrefs.SetString("SeedPhrase", seedPhrase);
+        PlayerPrefs.Save();
+    }
 }

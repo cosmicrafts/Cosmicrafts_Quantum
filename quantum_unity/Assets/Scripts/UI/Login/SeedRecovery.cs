@@ -29,6 +29,13 @@ public class SeedRecovery : MonoBehaviour
         candidApiManager.SetTestSeedPhrase(seedPhrase);
         Debug.Log("Seed phrase recovered and set in CandidApiManager.");
 
-        notificationManager.ShowNotification("Seed phrase recovered successfully.");
+        // Save the seed phrase to GlobalGameData
+        GlobalGameData.Instance.SaveSeedPhrase(seedPhrase);
+        Debug.Log("Seed phrase saved to GlobalGameData.");
+
+        notificationManager.ShowNotification("Wallet recovered successfully.");
+
+        // Call StartLoginRandom after successfully saving the seed phrase
+        LoginManager.Instance.StartLoginRandom();
     }
 }

@@ -35,7 +35,6 @@ public class GlobalGameData : MonoBehaviour
     public UserData GetUserData() { if (userData == null) { userData = new UserData(); } return userData; }
     public void SetUserData(UserData _userData) { userData = _userData; }
     
-    
     public Language GetGameLanguage() { return (Language)GetUserData().config.language; }
     public void SetGameLanguage(Language language) {
         Lang.SetLang(language);
@@ -62,13 +61,24 @@ public class GlobalGameData : MonoBehaviour
     public void ClearUser() { userData = null; }
     public string GetVersion() { return Application.version; }
     public void SetAvatarId(int id)
-{
-    if (avatarId != id)
     {
-        avatarId = id;
-        Debug.Log($"GlobalGameData: Setting avatar ID to {id}");
-        OnAvatarIdChanged?.Invoke(id);
+        if (avatarId != id)
+        {
+            avatarId = id;
+            Debug.Log($"GlobalGameData: Setting avatar ID to {id}");
+            OnAvatarIdChanged?.Invoke(id);
+        }
     }
-}
 
+    // Save and load seed phrase
+    public void SaveSeedPhrase(string seedPhrase)
+    {
+        PlayerPrefs.SetString("SeedPhrase", seedPhrase);
+        PlayerPrefs.Save();
+    }
+
+    public string LoadSeedPhrase()
+    {
+        return PlayerPrefs.HasKey("SeedPhrase") ? PlayerPrefs.GetString("SeedPhrase") : null;
+    }
 }
