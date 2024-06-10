@@ -25,9 +25,9 @@ public class NFTUpgradeUI : MonoBehaviour
     public TMP_Text levelText;
     public Image avatarImage;
     public NotificationManager notificationManager;
-    
 
     public static NFTUpgradeUI Instance;
+    private bool isUpgradeInProgress = false;  // Flag to prevent multiple calls
 
     private void Awake()
     {
@@ -43,7 +43,7 @@ public class NFTUpgradeUI : MonoBehaviour
 
     private void FetchAndCheckShardsBalance()
     {
-        BigInteger requiredShards = new BigInteger(11);
+        BigInteger requiredShards = new BigInteger(10);  // Assuming 10 is the correct cost
         bool hasEnoughShards = ShardsScript.CurrentBalance >= requiredShards;
         upgradeButton.interactable = hasEnoughShards;
         notificationText.text = hasEnoughShards ? "" : "You need at least 10 shards to upgrade.";
@@ -58,39 +58,39 @@ public class NFTUpgradeUI : MonoBehaviour
 
     public async void OnUpgradeButtonPressed()
     {
-        string tokenIdToUpgrade = nftCard.TokenId;
-        if (string.IsNullOrEmpty(tokenIdToUpgrade))
-        {
-            Debug.LogError("Token ID is empty.");
-            notificationText.text = "Token ID is empty.";
-            return;
-        }
-
-        LoadingPanel.Instance.ActiveLoadingPanel();
-
-        int currentLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
-        int currentHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
-        int currentDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
-        
-
-        // Log the original token ID string
-        Debug.Log($"Token ID to Upgrade: {tokenIdToUpgrade}");
-
-        UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
-
-        // Log the UnboundedUInt representation of the token ID
-        Debug.Log($"Token ID as UnboundedUInt: {tokenID}");
+        if (isUpgradeInProgress) return;  // Prevent multiple simultaneous calls
+        isUpgradeInProgress = true;
 
         try
         {
-            // Access the CanisterLoginApiClient through CandidApiManager instance
+            string tokenIdToUpgrade = nftCard.TokenId;
+            if (string.IsNullOrEmpty(tokenIdToUpgrade))
+            {
+                Debug.LogError("Token ID is empty.");
+                notificationText.text = "Token ID is empty.";
+                isUpgradeInProgress = false;
+                return;
+            }
+
+            LoadingPanel.Instance.ActiveLoadingPanel();
+
+            int currentLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
+            int currentHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
+            int currentDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
+
+            Debug.Log($"Token ID to Upgrade: {tokenIdToUpgrade}");
+
+            UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
+
+            Debug.Log($"Token ID as UnboundedUInt: {tokenID}");
+
             var apiClient = CandidApiManager.Instance.CanisterLogin;
-            
-            // Check if apiClient is null
+
             if (apiClient == null)
             {
                 Debug.LogError("CanisterLoginApiClient is not initialized.");
                 notificationText.text = "Error: API client not initialized.";
+                isUpgradeInProgress = false;
                 return;
             }
 
@@ -101,13 +101,13 @@ public class NFTUpgradeUI : MonoBehaviour
             {
                 Debug.Log("NFT upgrade successful!");
                 notificationText.text = "Upgrade successful: " + message;
-                await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade); // Ensure data is updated
+                await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade);
 
-                NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade); // Retrieve updated NFT data
+                NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade);
                 if (updatedData != null)
                 {
-                    nftCard.SetNFTData(updatedData); // Update card data
-                    UpdateDisplayedNFTInfo(); // Refresh displayed info
+                    nftCard.SetNFTData(updatedData);
+                    UpdateDisplayedNFTInfo();
                     int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
                     int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
                     int updatedDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
@@ -117,16 +117,20 @@ public class NFTUpgradeUI : MonoBehaviour
                 LoadingPanel.Instance.DesactiveLoadingPanel();
                 upgradeScreenUI.gameObject.SetActive(true);
             }
-    else
-    {
-        Debug.LogError("NFT upgrade failed: " + message);
-        notificationText.text = "Upgrade failed: " + message;
-    }
+            else
+            {
+                Debug.LogError("NFT upgrade failed: " + message);
+                notificationText.text = "Upgrade failed: " + message;
+            }
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"Exception during NFT upgrade: {ex.Message}");
             notificationText.text = $"Exception during upgrade: {ex.Message}";
+        }
+        finally
+        {
+            isUpgradeInProgress = false;
         }
     }
 
@@ -139,12 +143,12 @@ public class NFTUpgradeUI : MonoBehaviour
         }
         else if (allowNotAvailable && input.Contains("Not Available", StringComparison.OrdinalIgnoreCase))
         {
-            return -1; // Or any other default value you prefer
+            return -1;
         }
         else
         {
             Debug.LogError($"Failed to extract number from: {input}");
-            return 0; // Or handle this case as appropriate
+            return 0;
         }
     }
 
@@ -172,23 +176,21 @@ public class NFTUpgradeUI : MonoBehaviour
         UpdateDisplayedNFTInfo();
     }
 
-   public void TriggerUpgradeNotification()
-{
-    if (nftCard != null)
+    public void TriggerUpgradeNotification()
     {
-        // Accessing properties directly from nftCard, not nftCard.nftData
-        string nftName = nftCard.Name;
-        string nftTokenId = nftCard.TokenId;
-        string nftLevel = nftCard.Level;
+        if (nftCard != null)
+        {
+            string nftName = nftCard.Name;
+            string nftTokenId = nftCard.TokenId;
+            string nftLevel = nftCard.Level;
 
-        string notificationMessage = $"{nftName} with ID {nftTokenId} has been upgraded to Level {ExtractNumber(nftLevel)}";
-        notificationManager.ShowNotification(notificationMessage);
-        ShardsScript.FetchBalance();
+            string notificationMessage = $"{nftName} with ID {nftTokenId} has been upgraded to Level {ExtractNumber(nftLevel)}";
+            notificationManager.ShowNotification(notificationMessage);
+            ShardsScript.FetchBalance();
+        }
+        else
+        {
+            Debug.LogError("NFT card is null.");
+        }
     }
-    else
-    {
-        Debug.LogError("NFT card is null.");
-    }
-}
-
 }
