@@ -116,6 +116,7 @@ public class NFTUpgradeUI : MonoBehaviour
                 }
                 LoadingPanel.Instance.DesactiveLoadingPanel();
                 upgradeScreenUI.gameObject.SetActive(true);
+                //ShardsScript.FetchBalance();
             }
             else
             {
@@ -186,7 +187,6 @@ public class NFTUpgradeUI : MonoBehaviour
 
             string notificationMessage = $"{nftName} with ID {nftTokenId} has been upgraded to Level {ExtractNumber(nftLevel)}";
             notificationManager.ShowNotification(notificationMessage);
-            ShardsScript.FetchBalance();
         }
         else
         {
