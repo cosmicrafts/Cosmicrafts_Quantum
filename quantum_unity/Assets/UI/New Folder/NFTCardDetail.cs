@@ -2,11 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-/*
- * This is a detailed view of the selected card on the deck collection menu
- * Shows more data and a 3D preview of the selected card
- * Gets the base references and funcions of UICard code
- */
+
 public class NFTCardDetail : NFTCard
 {
     [Header("CardDetailSlots")]
@@ -22,22 +18,9 @@ public class NFTCardDetail : NFTCard
     public Sprite[] factionSprites;
 
     [Header("ModelRender")]
-    //References the object model of the selected card
     private GameObject CurrentObjPrev;
     public GameObject PlaceToInstancePrev;
-    
-    /*
-    //The text references of specific card stats
-    public TMP_Text Txt_HP;
-    public TMP_Text Txt_Shield;
-    public TMP_Text Txt_Dmg;
 
-    //The images bars references of specific card stats
-    public Image Bar_HP;
-    public Image Bar_Shield;
-    public Image Bar_Dmg;
-    */
-    
     void OnEnable()
     {
         NFTManager.OnMetadataUpdated += OnNFTMetadataUpdated;
@@ -56,11 +39,10 @@ public class NFTCardDetail : NFTCard
             NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenId);
             if (updatedData != null)
             {
-                UpdateUI(updatedData); // Assuming you have an UpdateUI method in NFTCardDetail
+                UpdateUI(updatedData);
             }
         }
     }
-    
 
     public override void SetNFTData(NFTData nftData)
     {
@@ -68,7 +50,7 @@ public class NFTCardDetail : NFTCard
         tokenId = nftData.TokenId;
         iconImage.sprite = GetIconSpriteById(nftData.General.FirstOrDefault()?.Icon ?? 0);
         tokenIdText.text = tokenId;
-        
+
         if (nftData == null)
         {
             Debug.LogWarning("NFTData not assigned.");
@@ -76,39 +58,58 @@ public class NFTCardDetail : NFTCard
         }
 
         var general = nftData.General.FirstOrDefault();
-       
+
         if (general != null)
         {
             unitNameText.text = general.Name;
             descriptionText.text = general.Description;
-            //factionIcon.text = general.Faction;
             SetFactionIcon(general.Faction);
             unitClassText.text = general.Class;
             rarityText.text = general.Rarity.ToString();
             skinsText.text = general.SkinsText;
             iconImage.sprite = GetIconSpriteById(general.Icon);
-            costText.text = GetEnergyCostById( general.UnitId ).ToString();
+            costText.text = GetEnergyCostById(general.UnitId).ToString();
 
-            if(CurrentObjPrev) { Destroy(CurrentObjPrev); }
+            if (CurrentObjPrev) { Destroy(CurrentObjPrev); }
             CurrentObjPrev = Instantiate(GetPrefabById(general.UnitId), PlaceToInstancePrev.transform);
         }
+        UpdateStatsUI();
+    }
+
+    public void UpdateStatsUI()
+    {
+        if (nftData == null)
+        {
+            Debug.LogWarning("NFTData is null when updating stats UI.");
+            return;
+        }
+
         levelText.text = GetValueFromStats("level");
         healthText.text = GetValueFromStats("health");
         damageText.text = GetValueFromStats("damage");
         skillsText.text = string.Join(", ", nftData.Skills.Select(s => $"{s.SkillName}: {s.SkillValue}"));
         skinsText.text = string.Join("\n", nftData.Skins.Select(s => $"{s.SkinName} - {s.SkinDescription}"));
+
+        Debug.Log($"Updated NFTCardDetail: Level={levelText.text}, Health={healthText.text}, Damage={damageText.text}");
     }
 
     private void SetFactionIcon(string factionText)
     {
-       // Debug.Log($"Attempting to set faction icon for: {factionText}");
         int index = -1;
 
-        // Your switch statement...
+        switch (factionText.ToLower())
+        {
+            case "faction1":
+                index = 0;
+                break;
+            case "faction2":
+                index = 1;
+                break;
+            // Add other cases as necessary
+        }
 
         if (index >= 0 && index < factionSprites.Length)
         {
-            Debug.Log($"Setting faction sprite at index: {index}");
             factionImage.sprite = factionSprites[index];
         }
         else
@@ -117,74 +118,10 @@ public class NFTCardDetail : NFTCard
         }
     }
 
-    public void UpdateUI(NFTData nftData) {
-    SetNFTData(nftData); // This method already exists in your code
-    // You can add more UI update logic here if necessary
-    }
-
-
-    
-    //Sets the UI data from a selected card from NFT data
-    /*
-    public override void SetData(NFTCard data)
+    public void UpdateUI(NFTData updatedData)
     {
-        //Set the basic properties
-        Data = data;
-        IsSelected = false;
-        IsSkill = (NFTClass)data.EntType == NFTClass.Skill;
-
-        //Set the name, description and cost of the card
-        Txt_Name.text = Lang.GetEntityName(data.KeyId);
-        Txt_Details.text = Lang.GetEntityDescription(data.KeyId);
-        Txt_Cost.text = data.EnergyCost.ToString();
-
-        //Deletes the last particules preview if exist
-        if (CurrentObjPrev != null)
-        {
-            Destroy(CurrentObjPrev);
-        }
-
-        //Types
-        if (IsSkill)
-        {
-            //SKILLS
-            SpellCard SkillPrefab = ResourcesServices.LoadCardPrefab(data.KeyId, IsSkill).GetComponent<SpellCard>();
-            CurrentObjPrev = Instantiate(SkillPrefab.PreviewEffect, Model.transform.position, Quaternion.identity);
-            Model.SetActive(false);
-            Txt_HP.transform.parent.gameObject.SetActive(false);
-            Txt_Shield.transform.parent.gameObject.SetActive(false);
-            Txt_Dmg.transform.parent.gameObject.SetActive(false);
-            Txt_Type.text = Lang.GetText("mn_skill");
-        } else
-        {
-            Debug.Log("Show Preview Model");
-            //UNITS
-            Model.SetActive(true);
-            GameObject UnitPrefab = ResourcesServices.LoadCardPrefab(data.KeyId, IsSkill);
-            //UnitPrefab.GetComponent<GameCharacter>().CanMove = false;
-            CurrentObjPrev = Instantiate(UnitPrefab, Model.transform);
-            
-            //ModelFilter.mesh = UnitPrefab.UnitMesh.transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>().sharedMesh;
-            //ModelRender.material = UnitPrefab.UnitMesh.transform.GetChild(0).GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial;
-            
-            Txt_HP.transform.parent.gameObject.SetActive(true);
-            Txt_Shield.transform.parent.gameObject.SetActive(true);
-            Txt_Dmg.transform.parent.gameObject.SetActive(true);
-            
-            Debug.Log("3");
-
-            NFTsUnit unitdata = data as NFTsUnit;
-            Txt_HP.text = unitdata.HitPoints.ToString();
-            Bar_HP.fillAmount = (float)unitdata.HitPoints / 200f;
-            Txt_Shield.text = unitdata.Shield.ToString();
-            Bar_Shield.fillAmount = (float)unitdata.Shield / 200f;
-            Txt_Dmg.text = unitdata.Dammage.ToString();
-            Bar_Dmg.fillAmount = (float)unitdata.Dammage / 100f;
-            Txt_Type.text = Lang.GetText(unitdata.EntType == (int)NFTClass.Station ? "mn_station" : "mn_ship");
-        }
+        Debug.Log("Updating UI with new NFTData");
+        SetNFTData(updatedData);
+        UpdateStatsUI();
     }
-    */
-    
-    
-    
 }

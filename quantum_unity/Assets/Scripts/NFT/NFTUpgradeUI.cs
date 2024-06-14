@@ -13,11 +13,12 @@ public class NFTUpgradeUI : MonoBehaviour
     public Button upgradeButton;
     public TMP_Text notificationText;
     public NFTCard nftCard;
+    public NFTCardDetail nftCardDetail;  // Reference to the detailed view
     public TMP_Text levelInfoText;
     public TMP_Text hpInfoText;
     public TMP_Text damageInfoText;
     public NFTUpgradeScreenUI upgradeScreenUI;
-    public shards ShardsScript;
+    public shards shardsScript;
 
     [Header("NFT Display Info")]
     public TMP_Text nameText;
@@ -25,6 +26,7 @@ public class NFTUpgradeUI : MonoBehaviour
     public TMP_Text levelText;
     public Image avatarImage;
     public NotificationManager notificationManager;
+    public TMP_Text tokenCostText;
 
     public static NFTUpgradeUI Instance;
     private bool isUpgradeInProgress = false;  // Flag to prevent multiple calls
@@ -43,10 +45,26 @@ public class NFTUpgradeUI : MonoBehaviour
 
     private void FetchAndCheckShardsBalance()
     {
-        BigInteger requiredShards = new BigInteger(10);  // Assuming 10 is the correct cost
-        bool hasEnoughShards = ShardsScript.CurrentBalance >= requiredShards;
-        upgradeButton.interactable = hasEnoughShards;
-        notificationText.text = hasEnoughShards ? "" : "You need at least 10 shards to upgrade.";
+        if (nftCard != null)
+        {
+            int currentLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
+            int upgradeCost = CalculateCost(currentLevel);
+            upgradeCost += 1;  // Add 1 token fee
+
+            tokenCostText.text = upgradeCost.ToString();
+
+            BigInteger requiredShards = new BigInteger(upgradeCost);
+            bool hasEnoughShards = shardsScript.CurrentBalance >= requiredShards;
+            upgradeButton.interactable = hasEnoughShards;
+            notificationText.text = hasEnoughShards ? "" : $"You need at least {upgradeCost} shards to upgrade.";
+
+            // Set the color of the button and cost text based on the button state
+            Color disabledColor = new Color32(0x9D, 0x9D, 0x9D, 0xFF); // #9D9D9D
+            Color enabledColor = Color.white;
+
+            tokenCostText.color = hasEnoughShards ? enabledColor : disabledColor;
+            upgradeButton.GetComponentInChildren<TMP_Text>().color = hasEnoughShards ? enabledColor : disabledColor;
+        }
     }
 
     private void DisplayUpgradeInfo(int currentLevel, int updatedLevel, int currentHP, int hpDiff, int currentDamage, int damageDiff)
@@ -77,13 +95,9 @@ public class NFTUpgradeUI : MonoBehaviour
             int currentLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
             int currentHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
             int currentDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
+            int upgradeCost = CalculateCost(currentLevel) + 1;  // Add 1 token fee
 
-            Debug.Log($"Token ID to Upgrade: {tokenIdToUpgrade}");
-
-            UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
-
-            Debug.Log($"Token ID as UnboundedUInt: {tokenID}");
-
+            // Send the upgrade request to the blockchain
             var apiClient = CandidApiManager.Instance.CanisterLogin;
 
             if (apiClient == null)
@@ -91,32 +105,48 @@ public class NFTUpgradeUI : MonoBehaviour
                 Debug.LogError("CanisterLoginApiClient is not initialized.");
                 notificationText.text = "Error: API client not initialized.";
                 isUpgradeInProgress = false;
+                LoadingPanel.Instance.DesactiveLoadingPanel();
                 return;
             }
 
+            UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
             Debug.Log($"Triggering NFT upgrade for Token ID: {tokenIdToUpgrade}");
 
             (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
+
             if (success)
             {
                 Debug.Log("NFT upgrade successful!");
                 notificationText.text = "Upgrade successful: " + message;
-                await NFTManager.Instance.UpdateNFTMetadata(tokenIdToUpgrade);
 
-                NFTData updatedData = NFTManager.Instance.GetNFTDataById(tokenIdToUpgrade);
-                if (updatedData != null)
+                // Calculate new values locally
+                int newLevel = currentLevel + 1;
+                int newHP = currentHP + (currentHP / 10);
+                int newDamage = currentDamage + (currentDamage / 10);
+
+                // Update local NFT data
+                nftCard.UpdateStats(newLevel, newHP, newDamage);
+                UpdateDisplayedNFTInfo();
+
+                // Also update the detailed view
+                if (nftCardDetail != null && nftCardDetail.TokenId == tokenIdToUpgrade)
                 {
-                    nftCard.SetNFTData(updatedData);
-                    UpdateDisplayedNFTInfo();
-                    int updatedLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
-                    int updatedHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
-                    int updatedDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
-                    DisplayUpgradeInfo(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
-                    upgradeScreenUI.ActivateUpgradeScreen(currentLevel, updatedLevel, currentHP, updatedHP - currentHP, currentDamage, updatedDamage - currentDamage);
+                    nftCardDetail.UpdateUI(nftCard.nftData);
+                    nftCardDetail.UpdateStatsUI(); // Explicitly call to update the stats UI
                 }
-                LoadingPanel.Instance.DesactiveLoadingPanel();
+
+                // Display new values immediately
+                DisplayUpgradeInfo(currentLevel, newLevel, currentHP, newHP - currentHP, currentDamage, newDamage - currentDamage);
+
+                // Trigger UI update for upgrade screen
+                upgradeScreenUI.ActivateUpgradeScreen(currentLevel, newLevel, currentHP, newHP - currentHP, currentDamage, newDamage - currentDamage);
                 upgradeScreenUI.gameObject.SetActive(true);
-                //ShardsScript.FetchBalance();
+
+                // Update the shard balance locally
+                shardsScript.UpdateBalanceLocally(upgradeCost);
+
+                // Refresh the upgrade cost and button state
+                FetchAndCheckShardsBalance();
             }
             else
             {
@@ -132,6 +162,7 @@ public class NFTUpgradeUI : MonoBehaviour
         finally
         {
             isUpgradeInProgress = false;
+            LoadingPanel.Instance.DesactiveLoadingPanel();
         }
     }
 
@@ -153,6 +184,16 @@ public class NFTUpgradeUI : MonoBehaviour
         }
     }
 
+    private int CalculateCost(int level)
+    {
+        int cost = 9;
+        for (int i = 2; i < level; i++)
+        {
+            cost += cost / 3; // Increase cost by ~33%
+        }
+        return cost;
+    }
+
     private void UpdateDisplayedNFTInfo()
     {
         if (nftCard != null && nftCard.nftData != null)
@@ -168,6 +209,9 @@ public class NFTUpgradeUI : MonoBehaviour
             {
                 Debug.Log("avatarImage is null!");
             }
+
+            // Refresh the upgrade cost and button state
+            FetchAndCheckShardsBalance();
         }
     }
 
@@ -175,6 +219,13 @@ public class NFTUpgradeUI : MonoBehaviour
     {
         nftCard = selectedCard;
         UpdateDisplayedNFTInfo();
+
+        // Also set the detailed view if it's the same card
+        if (nftCardDetail != null && nftCardDetail.TokenId == selectedCard.TokenId)
+        {
+            nftCardDetail.SetNFTData(selectedCard.nftData);
+            nftCardDetail.UpdateUI(selectedCard.nftData);
+        }
     }
 
     public void TriggerUpgradeNotification()

@@ -76,6 +76,12 @@ public class shards : MonoBehaviour
         return balance.ToString();
     }
 
+    public void UpdateBalanceLocally(int cost)
+    {
+        CurrentBalance -= new BigInteger(cost);
+        balanceText.text = CurrentBalance.ToString();
+    }
+
     private void SendTokenButtonClicked()
     {
         if (!decimal.TryParse(tokenAmountInputField.text, out decimal tokenAmount))
