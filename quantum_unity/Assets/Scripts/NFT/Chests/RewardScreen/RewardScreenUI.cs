@@ -7,10 +7,9 @@ using System;
 using System.Linq;
 using TowerRush;
 
-
 public class RewardScreenUI : MonoBehaviour
 {
-    public Image displayImage; 
+    public Image displayImage;
     public Button tapTarget;
     public UnityEvent onActivateRewardScreen = new UnityEvent();
     public Transform rewardsContainer;
@@ -23,7 +22,7 @@ public class RewardScreenUI : MonoBehaviour
     private int activeRewardsCount = 0;
     public SimpleDeactivate deactivationAnimScript;
     public Animator chestAnimator;
-    
+
     public AudioClip rewardSound;
 
     private void Awake()
@@ -31,6 +30,7 @@ public class RewardScreenUI : MonoBehaviour
         onActivateRewardScreen.AddListener(ActivateRewardScreen);
         tapTarget.onClick.AddListener(HandleTapToOpen);
     }
+
     public void ActivateRewardScreen()
     {
         gameObject.SetActive(true);
@@ -121,14 +121,14 @@ public class RewardScreenUI : MonoBehaviour
             if (rewardButton != null)
             {
                 rewardButton.onClick.AddListener(() => {
-                    // Call the respective function to update balance based on the token type
+                    // Call the respective function to update balance locally based on the token type
                     if (tokenType == "Flux")
                     {
-                        FluxScript.FetchBalance(); // Assuming FetchBalance updates the balance
+                        FluxScript.UpdateBalanceLocally(-amount);
                     }
                     else if (tokenType == "Shards")
                     {
-                        ShardsScript.FetchBalance(); // Similarly for shards
+                        ShardsScript.UpdateBalanceLocally(-amount);
                     }
 
                     // Play the animation associated with the reward
@@ -147,7 +147,6 @@ public class RewardScreenUI : MonoBehaviour
                     {
                         StartCoroutine(StartDeactivationWithDelay(0.5f));
                     }
-                
                 });
             }
         }
@@ -156,7 +155,7 @@ public class RewardScreenUI : MonoBehaviour
     IEnumerator StartDeactivationWithDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        if(deactivationAnimScript != null)
+        if (deactivationAnimScript != null)
         {
             deactivationAnimScript.StartDeactivation();
         }
@@ -165,13 +164,12 @@ public class RewardScreenUI : MonoBehaviour
             Debug.LogError("DeactivationAnim script not assigned.");
         }
     }
-    
+
     IEnumerator DestroyAfterAnimation(GameObject instance, float delay)
     {
         yield return new WaitForSeconds(delay);
         Destroy(instance);
     }
-
 
     public void HandleRewardMessage(string message)
     {
@@ -208,5 +206,4 @@ public class RewardScreenUI : MonoBehaviour
         string value = segment.Substring(startIndex, endIndex - startIndex).Trim(new char[] { '\"', ' ', '}' });
         return value;
     }
-
 }

@@ -187,9 +187,13 @@ public class NFTUpgradeUI : MonoBehaviour
     private int CalculateCost(int level)
     {
         int cost = 9;
-        for (int i = 2; i < level; i++)
+        if (level > 1)
         {
-            cost += cost / 3; // Increase cost by ~33%
+            cost += 1; // For level 1 upgrade, add 1 token fee
+            for (int i = 2; i <= level; i++)
+            {
+                cost += cost / 3; // Increase cost by ~33%
+            }
         }
         return cost;
     }
