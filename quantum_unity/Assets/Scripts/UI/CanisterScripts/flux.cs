@@ -91,6 +91,12 @@ public class flux : MonoBehaviour
         LoadingPanel.Instance.ActiveLoadingPanel();
     }
 
+        public void UpdateBalanceLocally(int cost)
+    {
+        CurrentBalance -= new BigInteger(cost);
+        balanceText.text = CurrentBalance.ToString();
+    }
+
     private BigInteger ConvertToBigInteger(decimal value)
     {
         return BigInteger.Parse(value.ToString());

@@ -91,7 +91,7 @@ public class ChestManager : MonoBehaviour
                 int rarity = (int)metadata.AsNat();
                 if (rarity >= 1 && rarity <= chestSOsByRarity.Length)
                 {
-                    ChestSO chestSO = chestSOsByRarity[rarity - 1]; // Adjust for zero-based indexing
+                    ChestSO chestSO = chestSOsByRarity[rarity - 0]; // Adjust for zero-based indexing
                     InstantiateChestPrefab(tokenId, chestSO);
                 }
                 else
