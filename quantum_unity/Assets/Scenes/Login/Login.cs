@@ -117,14 +117,9 @@ public class Login : MonoBehaviour
                     Debug.Log("[LoginPostCreate] Player information retrieved.");
                     CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
                     
-                    
                     Debug.Log("[Login] INIT MINT");
-                    var MintInnfo = 
-                        await CandidApiManager.Instance.CanisterLogin.MintDeck(
-                            player.Id, 
-                            (UnboundedUInt.FromUInt64(0), (UnboundedUInt.FromUInt64(0)) )
-                            );
-                   
+                    var MintInnfo = await CandidApiManager.Instance.CanisterLogin.MintDeck(player.Id);
+                
                     if (MintInnfo.ReturnArg0)
                     {
                         Debug.Log("[Login] MINT SUCCESS");
@@ -134,8 +129,6 @@ public class Login : MonoBehaviour
                     {
                         Debug.LogError("[Login] ERROR MINT NFTs");
                     }
-                        
-                    
                 }
                 else
                 {
@@ -146,7 +139,7 @@ public class Login : MonoBehaviour
             }
         }
     }
-    
+        
     public void BackLoginMenu()
     {
         Debug.Log("[Login] User selected to return to the login menu.");

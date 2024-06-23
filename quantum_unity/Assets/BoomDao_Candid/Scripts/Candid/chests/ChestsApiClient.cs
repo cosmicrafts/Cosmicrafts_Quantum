@@ -178,5 +178,12 @@ namespace CanisterPK.chests
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "openChest", arg);
 			return reply.ToObjects<Models.OpenReceipt>(this.Converter);
 		}
+
+		public async Task<Models.Result> UpdateChestMetadata(Models.UpdateArgs arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateChestMetadata", arg);
+			return reply.ToObjects<Models.Result>(this.Converter);
+		}
 	}
 }

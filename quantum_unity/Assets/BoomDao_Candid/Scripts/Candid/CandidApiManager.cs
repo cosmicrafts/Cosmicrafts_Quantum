@@ -22,6 +22,7 @@ namespace Candid
     using CanisterPK.flux;
     using CanisterPK.chests;
     using CanisterPK.Rewards;
+    using CanisterPK.tournaments;
     using Candid.IcpLedger;
     using CanisterPK.BoomToken;
     using Boom;
@@ -74,6 +75,7 @@ namespace Candid
         public RewardsApiClient rewards { get; private set; }
         public IcpLedgerApiClient icptoken { get; private set; }
         public BoomTokenApiClient boomToken { get; private set; }
+        public TournamentsApiClient tournaments { get; private set; }
 
         // Login Data
         public enum DataState { None, Loading, Ready }
@@ -397,6 +399,7 @@ namespace Candid
                 flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));  
                 chests = new ChestsApiClient(agent, Principal.FromText("w4fdk-fiaaa-aaaap-qccgq-cai"));
                 rewards = new RewardsApiClient(agent, Principal.FromText("bm5s5-qqaaa-aaaap-qcgfq-cai"));
+                tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
                 
                 icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
                 boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
@@ -418,6 +421,7 @@ namespace Candid
                 flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));  
                 chests = new ChestsApiClient(agent, Principal.FromText("w4fdk-fiaaa-aaaap-qccgq-cai"));
                 rewards = new RewardsApiClient(agent, Principal.FromText("bm5s5-qqaaa-aaaap-qcgfq-cai"));
+                tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
 
                 icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
                 boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
@@ -444,6 +448,7 @@ namespace Candid
             rewards = null;
             icptoken = null;
             boomToken = null;
+            tournaments = null;
 
             //Set Login Data
             loginData = new LoginData(null, null, null, false, DataState.None);

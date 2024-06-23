@@ -7,7 +7,6 @@ using CanisterPK.CanisterLogin;
 using EdjCase.ICP.Agent.Responses;
 using EdjCase.ICP.Candid.Mapping;
 using TokenID = EdjCase.ICP.Candid.Models.UnboundedUInt;
-using Balance = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
 namespace CanisterPK.CanisterLogin
 {
@@ -40,6 +39,13 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<UnboundedUInt> GenerateUUID64()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "generateUUID64", arg);
+			return reply.ToObjects<UnboundedUInt>(this.Converter);
+		}
+
 		public async Task<List<Models.Player>> GetAllPlayers()
 		{
 			CandidArg arg = CandidArg.FromCandid();
@@ -61,14 +67,6 @@ namespace CanisterPK.CanisterLogin
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getMyPlayerData", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<OptionalValue<Models.Player>>(this.Converter);
-		}
-
-		public async Task<Balance> GetNFTUpgradeCost()
-		{
-			CandidArg arg = CandidArg.FromCandid();
-			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getNFTUpgradeCost", arg);
-			CandidArg reply = response.ThrowOrGetReply();
-			return reply.ToObjects<Balance>(this.Converter);
 		}
 
 		public async Task<OptionalValue<Models.Player>> GetPlayer()
@@ -122,9 +120,9 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
-		public async Task<(bool ReturnArg0, string ReturnArg1)> MintDeck(Principal arg0, (UnboundedUInt, UnboundedUInt) arg1)
+		public async Task<(bool ReturnArg0, string ReturnArg1)> MintDeck(Principal arg0)
 		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintDeck", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
 		}

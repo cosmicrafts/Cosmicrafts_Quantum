@@ -27,7 +27,7 @@ public class PruebaCanisters : MonoBehaviour
     {
 
         var fee = await CandidApiManager.Instance.testicrc1.Icrc1Fee();
-        
+
         var transfer = new CanisterPK.testicrc1.Models.TransferArgs(
             UnboundedUInt.FromBigInteger(1000000),
             null,
