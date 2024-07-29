@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Numerics;
 
 public class Login : MonoBehaviour
 {
@@ -20,10 +21,14 @@ public class Login : MonoBehaviour
 
     [SerializeField] private GameObject chooseUsername;
 
-    private void Awake()
+    private async void Awake()
     {
-        GlobalGameData.Instance = null;
-        
+        // Ensure GlobalGameData is initialized
+        if (GlobalGameData.Instance == null)
+        {
+            GlobalGameData.Instance = new GlobalGameData();
+        }
+
         if (Instance != null)
         {
             Debug.LogWarning("[Login] Instance already exists. Destroying duplicate.");
@@ -33,6 +38,8 @@ public class Login : MonoBehaviour
 
         Instance = this;
         Debug.Log("[Login] Component Awake() - Login instance initialized.");
+
+        await InitializeLogin();
     }
 
     private void Start()
@@ -45,7 +52,40 @@ public class Login : MonoBehaviour
         Debug.Log("[Login] Component OnDestroy() - Cleaning up before destruction.");
         if (LoginManager.Instance != null) LoginManager.Instance.CancelLogin();
     }
-    
+
+    private async Task InitializeLogin()
+    {
+        Debug.Log("[Login] Initializing login...");
+        var playerInfo = await CandidApiManager.Instance.CanisterLogin.GetPlayer();
+        if (playerInfo.HasValue)
+        {
+            Debug.Log("[Login] Player already exists.");
+            CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
+            await MintDeckAsync(player.Id);
+            await FetchAllData(player);
+            UpdateUserDataAndTransition(player);
+        }
+        else
+        {
+            Debug.LogWarning("[Login] No player information available. Prompting user for username.");
+            chooseUsername.SetActive(true);
+        }
+    }
+
+    private async Task MintDeckAsync(Principal playerId)
+    {
+        Debug.Log("[Login] Initiating deck minting...");
+        var mintInfo = await CandidApiManager.Instance.CanisterLogin.MintDeck(playerId);
+        if (mintInfo.ReturnArg0)
+        {
+            Debug.Log("[Login] MINT SUCCESS");
+        }
+        else
+        {
+            Debug.LogError("[Login] ERROR MINT NFTs");
+        }
+    }
+
     public void UpdateWindow(CandidApiManager.LoginData state)
     {
         Debug.Log($"[Login] UpdateWindow called with state: {state.state}, IsAnon: {state.asAnon}, Principal: {state.principal}, AccountId: {state.accountIdentifier}");
@@ -64,7 +104,7 @@ public class Login : MonoBehaviour
         LoadingPanel.Instance.ActiveLoadingPanel();
         CandidApiManager.Instance.StartLogin();
     }
-    
+
     public async void UserLoginSuccessfull()
     {
         Debug.Log("[Login] Checking player information post-login...");
@@ -73,6 +113,7 @@ public class Login : MonoBehaviour
         {
             Debug.Log("[Login] Player information retrieved.");
             CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
+            await FetchAllData(player);
             UpdateUserDataAndTransition(player);
         }
         else
@@ -83,18 +124,40 @@ public class Login : MonoBehaviour
         }
     }
 
-    private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
+    private async Task FetchAllData(CanisterPK.CanisterLogin.Models.Player player)
+    {
+        var generalMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+        var userMissionsTask = CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+        var achievementsTask = CandidApiManager.Instance.CanisterLogin.GetAchievements();
+
+        await Task.WhenAll(generalMissionsTask, userMissionsTask, achievementsTask);
+
+        var generalMissions = await generalMissionsTask;
+        var userMissions = await userMissionsTask;
+        var achievements = await achievementsTask;
+
+        // Handle the fetched data (e.g., store them in GlobalGameData, etc.)
+        Debug.Log($"Fetched General Missions: {generalMissions.Count}");
+        Debug.Log($"Fetched User Missions: {userMissions.Count}");
+        Debug.Log($"Fetched Achievements: {achievements.Count}");
+
+        // You can store these in GlobalGameData or handle them as needed
+       // GlobalGameData.Instance.SetGeneralMissions(generalMissions);
+       // GlobalGameData.Instance.SetUserMissions(userMissions);
+       // GlobalGameData.Instance.SetAchievements(achievements);
+    }
+
+    private void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
     {
         // Update GlobalGameData with player details immediately
         UserData user = GlobalGameData.Instance.GetUserData();
         user.Level = (int)player.Level;
-        user.NikeName = player.Name;
+        user.NikeName = player.Username; // Assuming 'Username' is the correct field from the backend
         user.WalletId = player.Id.ToString();
         SaveData.SaveGameUser();
-        
-        Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Name: {player.Name}");
-        Debug.Log("[Login] Transitioning to the main menu scene...");
 
+        Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
+        Debug.Log("[Login] Transitioning to the main menu scene...");
 
         Game.Instance.AudioService.ChangeMusicClip("menu");
         Game.CurrentScene.FinishScene();
@@ -106,7 +169,9 @@ public class Login : MonoBehaviour
         {
             Debug.Log($"[Login] Attempting to create a new player with name: {inputNameField.text}");
             LoadingPanel.Instance.ActiveLoadingPanel();
-            var request = await CandidApiManager.Instance.CanisterLogin.CreatePlayer(inputNameField.text);
+            // Hardcoding AvatarID as 1 for now
+            UnboundedUInt avatarID = UnboundedUInt.FromBigInteger(BigInteger.One); // This can be changed later
+            var request = await CandidApiManager.Instance.CanisterLogin.RegisterPlayer(inputNameField.text, avatarID);
 
             if (request.ReturnArg0)
             {
@@ -116,19 +181,12 @@ public class Login : MonoBehaviour
                 {
                     Debug.Log("[LoginPostCreate] Player information retrieved.");
                     CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
-                    
+
                     Debug.Log("[Login] INIT MINT");
-                    var MintInnfo = await CandidApiManager.Instance.CanisterLogin.MintDeck(player.Id);
-                
-                    if (MintInnfo.ReturnArg0)
-                    {
-                        Debug.Log("[Login] MINT SUCCESS");
-                        UpdateUserDataAndTransition(player);
-                    }
-                    else
-                    {
-                        Debug.LogError("[Login] ERROR MINT NFTs");
-                    }
+                    await MintDeckAsync(player.Id);
+                    await FetchAllData(player);
+
+                    UpdateUserDataAndTransition(player);
                 }
                 else
                 {
@@ -139,7 +197,7 @@ public class Login : MonoBehaviour
             }
         }
     }
-        
+
     public void BackLoginMenu()
     {
         Debug.Log("[Login] User selected to return to the login menu.");

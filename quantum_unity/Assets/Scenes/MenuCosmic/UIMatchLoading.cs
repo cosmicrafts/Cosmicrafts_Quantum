@@ -1,15 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Candid;
-using CanisterPK.CanisterMatchMaking.Models;
+using CanisterPK.CanisterLogin.Models;
 using TowerRush;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using WebSocketSharp;
 
 public class UIMatchLoading : MonoBehaviour
 {
@@ -21,22 +16,33 @@ public class UIMatchLoading : MonoBehaviour
     public Image Img_VsIcon;
     public Image Img_VsEmblem;
     
-    //Loading Bar (used when a new scene is loading)
+    // Loading Bar (used when a new scene is loading)
     public Image LocalGameLoadingBar;
 
     private static UIMatchLoading _instance;
-    public static UIMatchLoading Instance {
+    public static UIMatchLoading Instance
+    {
         get 
         {
-            if (_instance == null) { _instance = Instantiate( ResourcesServices.LoadUIMatchLoading() ).GetComponent<UIMatchLoading>(); }
+            if (_instance == null)
+            {
+                _instance = Instantiate(ResourcesServices.LoadUIMatchLoading()).GetComponent<UIMatchLoading>();
+            }
             return _instance;
         }
     }
 
     private void Awake()
     {
-        if (!_instance) { _instance = this; DontDestroyOnLoad(gameObject); }
-        else { Destroy(gameObject); }
+        if (!_instance)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void MatchPreStarting()
@@ -56,98 +62,87 @@ public class UIMatchLoading : MonoBehaviour
 
     public async void GetMatchData()
     {
-        
-        var matchDataRequest = await CandidApiManager.Instance.CanisterMatchMaking.GetMyMatchData();
+        var matchDataRequest = await CandidApiManager.Instance.CanisterLogin.GetMyMatchData();
         
         if (matchDataRequest.ReturnArg0.HasValue)
         {
-            CanisterPK.CanisterMatchMaking.Models.FullMatchData matchData = matchDataRequest.ReturnArg0.ValueOrDefault;
+            FullMatchData matchData = matchDataRequest.ReturnArg0.ValueOrDefault;
 
-            GlobalGameData.Instance.actualRoom = "GameCosmicQuantum: " + matchData.GameId;
-            GlobalGameData.Instance.actualNumberRoom = matchData.GameId;
+            GlobalGameData.Instance.actualRoom = "GameCosmicQuantum: " + matchData.MatchID;
+            GlobalGameData.Instance.actualNumberRoom = matchData.MatchID;
             
-            UserData UserData1 = new UserData();
-            UserData UserData2 = new UserData();
+            UserData userData1 = new UserData();
+            UserData userData2 = new UserData();
 
-            CanisterPK.CanisterMatchMaking.Models.FullPlayerInfo tempData1 = new FullPlayerInfo();
-            CanisterPK.CanisterMatchMaking.Models.FullPlayerInfo tempData2 = new FullPlayerInfo();
+            FullMatchData.Player1Info player1 = matchData.Player1;
+            FullMatchData.Player2Info.Player2InfoValue player2 = matchData.Player2.ValueOrDefault;
 
-                                              tempData1 = matchData.Player1;
-            if (matchData.Player2.HasValue) { tempData2 = matchData.Player2.ValueOrDefault; }
-            
-            UserData1.WalletId = tempData1.Id.ToString();
-            UserData1.NikeName = tempData1.PlayerName;
-            UserData1.Level = (int) tempData1.Elo;
-           
-            if (tempData1.PlayerGameData.IsNullOrEmpty())
+            userData1.WalletId = player1.Id.ToString();
+            userData1.NikeName = player1.Username;
+            userData1.Level = (int)player1.Elo;
+
+            if (string.IsNullOrEmpty(player1.PlayerGameData))
             {
-                UserData1.CharacterNFTId = 1;
-                UserData1.DeckNFTsKeyIds = new List<string>();
-                Debug.Log("Error el jugador no tiene datos guardados");
+                userData1.CharacterNFTId = 1;
+                userData1.DeckNFTsKeyIds = new List<string>();
+                Debug.Log("Error: player 1 has no saved data.");
             }
             else
             {
-                UIMatchMaking.MatchPlayerData matchPlayerData1 = JsonUtility.FromJson<UIMatchMaking.MatchPlayerData>(tempData1.PlayerGameData);
-                UserData1.CharacterNFTId = matchPlayerData1.userAvatar;
-                UserData1.DeckNFTsKeyIds = matchPlayerData1.listSavedKeys; 
+                UIMatchMaking.MatchPlayerData matchPlayerData1 = JsonUtility.FromJson<UIMatchMaking.MatchPlayerData>(player1.PlayerGameData);
+                userData1.CharacterNFTId = matchPlayerData1.userAvatar;
+                userData1.DeckNFTsKeyIds = matchPlayerData1.listSavedKeys; 
             }
-            
-            if (tempData2.PlayerGameData.IsNullOrEmpty())
+
+            if (player2 == null || string.IsNullOrEmpty(player2.PlayerGameData))
             {
-                UserData2.WalletId = "Error, no información";
-                UserData2.NikeName = "Error, no información";
-                UserData2.Level = 999;
-                UserData1.CharacterNFTId = 1;
-                UserData1.DeckNFTsKeyIds = new List<string>();
-                Debug.Log("Error el jugador no tiene datos guardados");
+                userData2.WalletId = "Error, no information";
+                userData2.NikeName = "Error, no information";
+                userData2.Level = 999;
+                userData2.CharacterNFTId = 1;
+                userData2.DeckNFTsKeyIds = new List<string>();
+                Debug.Log("Error: player 2 has no saved data.");
             }
             else
             {
-                UserData2.WalletId = tempData2.Id.ToString();
-                UserData2.NikeName = tempData2.PlayerName;
-                UserData2.Level = (int) tempData2.Elo;
-                UIMatchMaking.MatchPlayerData matchPlayerData2 = JsonUtility.FromJson<UIMatchMaking.MatchPlayerData>(tempData2.PlayerGameData);
-                UserData2.CharacterNFTId = matchPlayerData2.userAvatar;
-                UserData2.DeckNFTsKeyIds = matchPlayerData2.listSavedKeys;
+                userData2.WalletId = player2.Id.ToString();
+                userData2.NikeName = player2.Username;
+                userData2.Level = (int)player2.Elo;
+                UIMatchMaking.MatchPlayerData matchPlayerData2 = JsonUtility.FromJson<UIMatchMaking.MatchPlayerData>(player2.PlayerGameData);
+                userData2.CharacterNFTId = matchPlayerData2.userAvatar;
+                userData2.DeckNFTsKeyIds = matchPlayerData2.listSavedKeys;
             }
 
-          
-           
-
-            if ((int) matchDataRequest.ReturnArg1 != 0)
+            if ((int)matchDataRequest.ReturnArg1 != 0)
             {
-                if ((int) matchDataRequest.ReturnArg1 == 1)
+                if ((int)matchDataRequest.ReturnArg1 == 1)
                 {
-                    MatchStarting(UserData1, UserData2);
+                    MatchStarting(userData1, userData2);
                 }
-                else if ((int) matchDataRequest.ReturnArg1 == 2)
+                else if ((int)matchDataRequest.ReturnArg1 == 2)
                 {
-                    MatchStarting(UserData2, UserData1);
+                    MatchStarting(userData2, userData1);
                 }
             }
-            
-            
         }
         else
         {
-            Debug.Log("No hay info del match");
+            Debug.Log("No match data available.");
         }
-        
     }
     
-    public void MatchStarting(UserData MyUserData, UserData VsUserData)
+    public void MatchStarting(UserData myUserData, UserData vsUserData)
     {
         Debug.Log("MATCH STARTING");
         
-        Txt_VsWalletId.text = VsUserData.WalletId;
-        Txt_VsNikeName.text = VsUserData.NikeName;
-        Txt_VsLevel.text = VsUserData.Level.ToString();
+        Txt_VsWalletId.text = vsUserData.WalletId;
+        Txt_VsNikeName.text = vsUserData.NikeName;
+        Txt_VsLevel.text = vsUserData.Level.ToString();
         
         Img_VsIcon.sprite = ResourcesServices.ValidateSprite(null);
         Img_VsEmblem.sprite = ResourcesServices.ValidateSprite(null);
         
         StartCoroutine(LoadLocalGame());
-        
     }
     
     IEnumerator LoadLocalGame()
@@ -159,9 +154,6 @@ public class UIMatchLoading : MonoBehaviour
     public void OnInitMatch()
     {
         Debug.Log("MATCH FINISH");
-        
         Destroy(this.gameObject);
     }
-    
-    
 }

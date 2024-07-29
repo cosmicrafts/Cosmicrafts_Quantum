@@ -3,14 +3,11 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using CanisterPK.CanisterLogin.Models;
-using CanisterPK.CanisterLogin;
 using EdjCase.ICP.Candid.Models;
-using System.Threading.Tasks;
 using Candid;
 
 public class RewardsDisplay : MonoBehaviour
 {
-    // Existing fields...
     public TMP_Text idText;
     public TMP_Text rewardTypeText;
     public TMP_Text prizeAmountText;
@@ -22,7 +19,7 @@ public class RewardsDisplay : MonoBehaviour
     public Button claimButton;
     public NotificationManager notificationManager;
 
-    private RewardsUser rewardData;
+    private MissionsUser rewardData;
 
     public Sprite fluxSprite;
     public Sprite shardsSprite;
@@ -43,56 +40,49 @@ public class RewardsDisplay : MonoBehaviour
     public Image claimButtonImage;
     public Image progressBar;
 
-
-    public void SetRewardData(RewardsUser reward)
+    public void SetRewardData(MissionsUser reward)
     {
-
-        Debug.Log($"ID: {reward.IdReward}");
+        Debug.Log($"ID: {reward.IdMission}");
         Debug.Log($"Reward Type: {reward.RewardType}");
-        Debug.Log($"Prize Amount: {reward.PrizeAmount}");
+        Debug.Log($"Prize Amount: {reward.RewardAmount}");
         Debug.Log($"Progress: {reward.Progress}/{reward.Total}");
         Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
         Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
-        Debug.Log($"Prize Type: {(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}");
 
-        // Determine singular or plural form for game(s) based on reward.Total
         string gameOrGames = reward.Total == 1 ? "Game" : "Games";
         string winOrWins = reward.Total == 1 ? "Win" : "Wins";
 
-        string missionText = reward.RewardType switch
+        string missionText = reward.MissionType switch
         {
-            RewardType.GamesCompleted => $"Play {reward.Total} {gameOrGames}",
-            RewardType.GamesWon => $"{winOrWins} {reward.Total} {gameOrGames}",
-            _ => "Unknown Mission" // Default case if there are other types
+            MissionType.GamesCompleted => $"Play {reward.Total} {gameOrGames}",
+            MissionType.GamesWon => $"{winOrWins} {reward.Total} {gameOrGames}",
+            _ => "Unknown Mission"
         };
         rewardTypeText.text = missionText;
 
-        idText.text = $"ID: {reward.IdReward}";
-        prizeAmountText.text = $"{reward.PrizeAmount}";
+        idText.text = $"ID: {reward.IdMission}";
+        prizeAmountText.text = $"{reward.RewardAmount}";
         progressText.text = $"{reward.Progress}/{reward.Total}";
 
-        // Date and time formatting to display "Time remaining"
         expirationText.text = CalculateTimeRemaining(reward.Expiration);
 
         finishedText.text = $"Completed: {(reward.Finished ? "Yes" : "No")}";
-        prizeTypeText.text = $"Reward: {(reward.PrizeType == PrizeType.Shards ? "Shards" : reward.PrizeType == PrizeType.Chest ? "Chest" : "Flux")}";
+        prizeTypeText.text = $"Reward: {(reward.RewardType == MissionRewardType.Shards ? "Shards" : reward.RewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
 
-        Sprite selectedSprite = GetPrizeSprite(reward.PrizeType, reward.PrizeAmount);
+        Sprite selectedSprite = GetPrizeSprite(reward.RewardType, reward.RewardAmount);
         prizeImage.sprite = selectedSprite;
         prizeImage.enabled = selectedSprite != null;
 
-        panelToChangeColor.GetComponent<Image>().color = reward.RewardType == RewardType.GamesCompleted ? gamesPlayedColor : gamesWonColor;
+        panelToChangeColor.GetComponent<Image>().color = reward.MissionType == MissionType.GamesCompleted ? gamesPlayedColor : gamesWonColor;
 
         rewardData = reward;
         bool isClaimable = reward.Finished;
-        claimButtonImage.enabled = isClaimable; // Enable or disable the claim button based on completion status
+        claimButtonImage.enabled = isClaimable;
         claimButton.interactable = isClaimable;
 
-        // Update the progress bar
-        float progressRatio = (float)reward.Progress / (float)reward.Total;
+    float progressRatio = (float)(ulong)reward.Progress / (float)(ulong)reward.Total;
         progressBar.fillAmount = progressRatio;
     }
-
 
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
     {
@@ -116,24 +106,24 @@ public class RewardsDisplay : MonoBehaviour
         return $"Time remaining: {formattedTime}";
     }
 
-    private Sprite GetPrizeSprite(PrizeType prizeType, UnboundedUInt prizeAmount)
+    private Sprite GetPrizeSprite(MissionRewardType prizeType, UnboundedUInt prizeAmount)
     {
         switch (prizeType)
         {
-            case PrizeType.Shards:
+            case MissionRewardType.Shards:
                 return shardsSprite;
-            case PrizeType.Flux:
+            case MissionRewardType.Flux:
                 return fluxSprite;
-            case PrizeType.Chest:
+            case MissionRewardType.Chest:
                 return SelectChestSprite(prizeAmount);
             default:
-                return null; // Handle unknown prize type
+                return null;
         }
     }
 
-   private Sprite SelectChestSprite(UnboundedUInt prizeAmount)
+    private Sprite SelectChestSprite(UnboundedUInt prizeAmount)
     {
-        int amount = (int)prizeAmount; // Assuming this cast is safe given your data model
+        int amount = (int)prizeAmount;
 
         switch (amount)
         {
@@ -150,33 +140,31 @@ public class RewardsDisplay : MonoBehaviour
             case 6:
                 return chest6Sprite;
             default:
-                return null; // Handle cases where the prize amount doesn't match expected values
+                return null;
         }
     }
 
     public async void OnClaimButtonClicked()
     {
-        
         if (rewardData != null && rewardData.Finished)
         {
             LoadingPanel.Instance.ActiveLoadingPanel();
-            UnboundedUInt rewardID = rewardData.IdReward; // Access the ID from the stored reward data
-            var claimResult = await CandidApiManager.Instance.CanisterLogin.ClaimReward(rewardID);
+            UnboundedUInt rewardID = rewardData.IdMission;
+            var claimResult = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardID);
             if (claimResult.ReturnArg0)
             {
                 Debug.Log("Reward claimed successfully!");
                 LoadingPanel.Instance.DesactiveLoadingPanel();
 
-                // Perform actions based on the reward type
-                switch (rewardData.PrizeType)
+                switch (rewardData.RewardType)
                 {
-                    case PrizeType.Flux:
+                    case MissionRewardType.Flux:
                         FluxScript.FetchBalance();
                         break;
-                    case PrizeType.Shards:
+                    case MissionRewardType.Shards:
                         ShardsScript.FetchBalance();
                         break;
-                    case PrizeType.Chest:
+                    case MissionRewardType.Chest:
                         ChestsScript.UpdateOwnedChests();
                         break;
                     default:
@@ -190,7 +178,6 @@ public class RewardsDisplay : MonoBehaviour
             {
                 LoadingPanel.Instance.DesactiveLoadingPanel();
                 Debug.LogError($"Failed to claim reward: {claimResult.ReturnArg1}");
-                // Optionally handle error or inform the user about the failure
             }
         }
         else
@@ -199,19 +186,19 @@ public class RewardsDisplay : MonoBehaviour
         }
     }
 
-    private void ShowRewardNotification(RewardsUser reward)
+    private void ShowRewardNotification(MissionsUser reward)
     {
         string notificationMessage = "";
-        switch (reward.PrizeType)
+        switch (reward.RewardType)
         {
-            case PrizeType.Flux:
-                notificationMessage = $"You received {reward.PrizeAmount} Flux!";
+            case MissionRewardType.Flux:
+                notificationMessage = $"You received {reward.RewardAmount} Flux!";
                 break;
-            case PrizeType.Shards:
-                notificationMessage = $"You received {reward.PrizeAmount} Shards!";
+            case MissionRewardType.Shards:
+                notificationMessage = $"You received {reward.RewardAmount} Shards!";
                 break;
-            case PrizeType.Chest:
-                notificationMessage = $"You received a {GetChestRarity(reward.PrizeAmount)} Metacube!";
+            case MissionRewardType.Chest:
+                notificationMessage = $"You received a {GetChestRarity(reward.RewardAmount)} Metacube!";
                 break;
             default:
                 break;
@@ -222,10 +209,9 @@ public class RewardsDisplay : MonoBehaviour
             notificationManager.ShowNotification(notificationMessage);
         }
     }
+
     private string GetChestRarity(UnboundedUInt prizeAmount)
     {
-        // Implement logic to determine chest rarity based on prize amount
-        // For example:
         int amount = (int)prizeAmount;
         if (amount >= 7)
         {

@@ -35,7 +35,7 @@ public class RewardsManager : MonoBehaviour
 
     private async Task FetchUserRewards()
     {
-        var rewards = await CandidApiManager.Instance.CanisterLogin.GetUserRewards();
+        var rewards = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
         Debug.Log($"Fetched {rewards.Count} rewards.");
 
         foreach (var reward in rewards)
@@ -53,8 +53,7 @@ public class RewardsManager : MonoBehaviour
         }
     }
 
-
-    private void InstantiateRewardPrefab(RewardsUser reward)
+    private void InstantiateRewardPrefab(MissionsUser reward)
     {
         var instance = Instantiate(rewardPrefab, rewardsContainer);
         instance.SetActive(true);

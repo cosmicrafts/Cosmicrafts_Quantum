@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine.UI;
 using EdjCase.ICP.Candid.Models;
 using CanisterPK.CanisterLogin;
-using CanisterPK.chests.Models;
 using Candid;
 using System;
 
@@ -50,7 +49,7 @@ public class ChestOpenerUI : MonoBehaviour
             }
 
             Debug.Log($"Triggering chest opening for Token ID: {selectedTokenId}");
-            (bool success, string message) = await apiClient.OpenChests(selectedTokenId);
+            (bool success, string message) = await apiClient.OpenChest(selectedTokenId);
 
             if (success)
             {

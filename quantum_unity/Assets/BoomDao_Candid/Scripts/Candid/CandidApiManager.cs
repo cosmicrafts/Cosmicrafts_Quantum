@@ -3,50 +3,28 @@ using TowerRush;
 namespace Candid
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
-
     using Cysharp.Threading.Tasks;
-    
-   
     using EdjCase.ICP.Candid.Models;
     //using WebSocketSharp;
-    using CanisterPK.database;
     using CanisterPK.CanisterLogin;
-    using CanisterPK.CanisterMatchMaking;
-    using CanisterPK.CanisterStats;
     using CanisterPK.testnft;
     using CanisterPK.testicrc1;
-    using CanisterPK.validator;
     using CanisterPK.flux;
     using CanisterPK.chests;
-    using CanisterPK.Rewards;
     using CanisterPK.tournaments;
     using Candid.IcpLedger;
     using CanisterPK.BoomToken;
-    using Boom;
 
     using Org.BouncyCastle.Crypto.Digests;
-    using Org.BouncyCastle.Crypto.Generators;
-    using Org.BouncyCastle.Crypto.Signers;
     using Org.BouncyCastle.Crypto.Parameters;
-    using Org.BouncyCastle.Security;
-    using Org.BouncyCastle.Asn1;
 
-    using EdjCase.ICP.Agent;
     using EdjCase.ICP.Agent.Agents;
     using EdjCase.ICP.Agent.Identities;
-    using EdjCase.ICP.Agent.Models;
 
     using Newtonsoft.Json;
-    
-    using UnityEngine.SceneManagement;
-    using Unity.VisualScripting;
     using UnityEngine;
-
-    using System.Collections.Concurrent; //not needed so far
-    using System.IO;
+    using System.Collections.Concurrent;
 
     public class IdentityMessage
     {
@@ -63,19 +41,21 @@ namespace Candid
         public static CandidApiManager Instance { get; private set; }
         
         // Canister APIs
-        public DatabaseApiClient database { get; private set; }
         public CanisterLoginApiClient CanisterLogin { get; private set; }
-        public CanisterMatchMakingApiClient CanisterMatchMaking { get; private set; }
-        public CanisterStatsApiClient CanisterStats { get; private set; }
+
+        // ICRCs
         public TestnftApiClient testnft { get; private set; }
         public Testicrc1ApiClient testicrc1{ get; private set; }
-        public ValidatorApiClient Validator { get; private set; }
         public FluxApiClient flux { get; private set; }
         public ChestsApiClient chests { get; private set; }
-        public RewardsApiClient rewards { get; private set; }
+
+
         public IcpLedgerApiClient icptoken { get; private set; }
         public BoomTokenApiClient boomToken { get; private set; }
+
         public TournamentsApiClient tournaments { get; private set; }
+
+        
 
         // Login Data
         public enum DataState { None, Loading, Ready }
@@ -311,9 +291,6 @@ namespace Candid
         return new Ed25519Identity(publicKey.GetEncoded(), privateKey.GetEncoded()); 
     }
 
-
-        
-        
         public void OnLoginCompleted(string json)
         {
             Debug.Log("[CandidApiManager] OnLoginCompleted called. Login completed. Creating agent...");
@@ -389,21 +366,14 @@ namespace Candid
                 
             {
                 //Build Interfaces
-                database = new DatabaseApiClient(agent, Principal.FromText("erbra-lyaaa-aaaap-qhmfa-cai"));
-                CanisterLogin =  new CanisterLoginApiClient(agent, Principal.FromText("woimf-oyaaa-aaaan-qegia-cai"));
-                CanisterMatchMaking =  new CanisterMatchMakingApiClient(agent, Principal.FromText("vqzll-jiaaa-aaaan-qegba-cai"));
-                CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
-                testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));           
+                CanisterLogin =  new CanisterLoginApiClient(agent, Principal.FromText("fdaor-cqaaa-aaaao-ai7nq-cai"));
+                testnft = new TestnftApiClient(agent, Principal.FromText("etqmj-zyaaa-aaaap-aakaq-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
-                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));                
                 flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));  
-                chests = new ChestsApiClient(agent, Principal.FromText("w4fdk-fiaaa-aaaap-qccgq-cai"));
-                rewards = new RewardsApiClient(agent, Principal.FromText("bm5s5-qqaaa-aaaap-qcgfq-cai"));
+                chests = new ChestsApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
                 tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
-                
                 icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
                 boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
-
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
                 
@@ -411,21 +381,14 @@ namespace Candid
             else
             {
                 //Build Interfaces
-                database = new DatabaseApiClient(agent, Principal.FromText("erbra-lyaaa-aaaap-qhmfa-cai"));
-                CanisterLogin =  new CanisterLoginApiClient(agent, Principal.FromText("woimf-oyaaa-aaaan-qegia-cai"));
-                CanisterMatchMaking =  new CanisterMatchMakingApiClient(agent, Principal.FromText("vqzll-jiaaa-aaaan-qegba-cai"));
-                CanisterStats =  new CanisterStatsApiClient(agent, Principal.FromText("jybso-3iaaa-aaaan-qeima-cai"));
-                testnft = new TestnftApiClient(agent, Principal.FromText("phgme-naaaa-aaaap-abwda-cai"));                
+                CanisterLogin =  new CanisterLoginApiClient(agent, Principal.FromText("fdaor-cqaaa-aaaao-ai7nq-cai"));
+                testnft = new TestnftApiClient(agent, Principal.FromText("etqmj-zyaaa-aaaap-aakaq-cai"));                
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
-                Validator = new ValidatorApiClient(agent, Principal.FromText("2dzox-tqaaa-aaaan-qlphq-cai"));
                 flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));  
-                chests = new ChestsApiClient(agent, Principal.FromText("w4fdk-fiaaa-aaaap-qccgq-cai"));
-                rewards = new RewardsApiClient(agent, Principal.FromText("bm5s5-qqaaa-aaaap-qcgfq-cai"));
+                chests = new ChestsApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
                 tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
-
                 icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
                 boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
-
                 //Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
                 
@@ -436,16 +399,12 @@ namespace Candid
         private void DesInitializeCandidApis()
         {
             Debug.Log("[CandidApiManager] Deinitializing Candid APIs and resetting login data.");
-            database = null;
+
             CanisterLogin = null;
-            CanisterMatchMaking = null;
-            CanisterStats = null;
             testnft = null;
             testicrc1 = null;
-            Validator = null;
             flux = null;
             chests = null;
-            rewards = null;
             icptoken = null;
             boomToken = null;
             tournaments = null;

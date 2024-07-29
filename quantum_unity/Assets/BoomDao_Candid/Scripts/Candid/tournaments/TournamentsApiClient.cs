@@ -25,17 +25,10 @@ namespace CanisterPK.tournaments
 			this.Converter = converter;
 		}
 
-		public async Task<bool> AdminUpdateMatchResult(UnboundedUInt arg0, Principal arg1, string arg2)
+		public async Task<bool> AdminUpdateMatch(UnboundedUInt arg0, UnboundedUInt arg1, UnboundedUInt arg2, string arg3)
 		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "adminUpdateMatchResult", arg);
-			return reply.ToObjects<bool>(this.Converter);
-		}
-
-		public async Task<bool> CloseRegistration(UnboundedUInt arg0)
-		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "closeRegistration", arg);
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter), CandidTypedValue.FromObject(arg3, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "adminUpdateMatch", arg);
 			return reply.ToObjects<bool>(this.Converter);
 		}
 
@@ -53,17 +46,10 @@ namespace CanisterPK.tournaments
 			return reply.ToObjects<bool>(this.Converter);
 		}
 
-		public async Task<bool> DisputeMatch(UnboundedUInt arg0, string arg1)
+		public async Task<bool> DisputeMatch(UnboundedUInt arg0, UnboundedUInt arg1, string arg2)
 		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "disputeMatch", arg);
-			return reply.ToObjects<bool>(this.Converter);
-		}
-
-		public async Task<bool> ForfeitMatch(UnboundedUInt arg0, Principal arg1)
-		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "forfeitMatch", arg);
 			return reply.ToObjects<bool>(this.Converter);
 		}
 
@@ -91,12 +77,12 @@ namespace CanisterPK.tournaments
 			return reply.ToObjects<List<Models.Tournament>>(this.Converter);
 		}
 
-		public async Task<List<TournamentsApiClient.GetRegisteredUsersReturnArg0Item>> GetRegisteredUsers(UnboundedUInt arg0)
+		public async Task<List<Principal>> GetRegisteredUsers(UnboundedUInt arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getRegisteredUsers", arg);
 			CandidArg reply = response.ThrowOrGetReply();
-			return reply.ToObjects<List<TournamentsApiClient.GetRegisteredUsersReturnArg0Item>>(this.Converter);
+			return reply.ToObjects<List<Principal>>(this.Converter);
 		}
 
 		public async Task<TournamentsApiClient.GetTournamentBracketReturnArg0> GetTournamentBracket(UnboundedUInt arg0)
@@ -114,20 +100,6 @@ namespace CanisterPK.tournaments
 			return reply.ToObjects<bool>(this.Converter);
 		}
 
-		public async Task<bool> ManageDispute(UnboundedUInt arg0, string arg1)
-		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "manageDispute", arg);
-			return reply.ToObjects<bool>(this.Converter);
-		}
-
-		public async Task<bool> ResolveDispute(UnboundedUInt arg0, string arg1)
-		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "resolveDispute", arg);
-			return reply.ToObjects<bool>(this.Converter);
-		}
-
 		public async Task<bool> SubmitFeedback(UnboundedUInt arg0, string arg1)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
@@ -135,7 +107,7 @@ namespace CanisterPK.tournaments
 			return reply.ToObjects<bool>(this.Converter);
 		}
 
-		public async Task<bool> SubmitMatchResult(UnboundedUInt arg0, Principal arg1, string arg2)
+		public async Task<bool> SubmitMatchResult(UnboundedUInt arg0, UnboundedUInt arg1, string arg2)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "submitMatchResult", arg);
@@ -149,31 +121,10 @@ namespace CanisterPK.tournaments
 			return reply.ToObjects<bool>(this.Converter);
 		}
 
-		public class GetRegisteredUsersReturnArg0Item
+		public async Task UpdateBracketAfterMatchUpdate(UnboundedUInt arg0, UnboundedUInt arg1, Principal arg2)
 		{
-			[CandidName("avatarId")]
-			public UnboundedUInt AvatarId { get; set; }
-
-			[CandidName("elo")]
-			public UnboundedUInt Elo { get; set; }
-
-			[CandidName("principal")]
-			public Principal Principal { get; set; }
-
-			[CandidName("username")]
-			public string Username { get; set; }
-
-			public GetRegisteredUsersReturnArg0Item(UnboundedUInt avatarId, UnboundedUInt elo, Principal principal, string username)
-			{
-				this.AvatarId = avatarId;
-				this.Elo = elo;
-				this.Principal = principal;
-				this.Username = username;
-			}
-
-			public GetRegisteredUsersReturnArg0Item()
-			{
-			}
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
+			await this.Agent.CallAndWaitAsync(this.CanisterId, "updateBracketAfterMatchUpdate", arg);
 		}
 
 		public class GetTournamentBracketReturnArg0

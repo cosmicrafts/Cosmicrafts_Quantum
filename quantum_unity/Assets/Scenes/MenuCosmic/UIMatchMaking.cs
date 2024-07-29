@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Candid;
-using CanisterPK.CanisterMatchMaking.Models;
+using CanisterPK.CanisterLogin.Models;
 using EdjCase.ICP.Candid.Models;
 using Newtonsoft.Json;
 using TMPro;
@@ -43,11 +43,11 @@ public class UIMatchMaking : MonoBehaviour
 
         Debug.Log(JsonUtility.ToJson(matchPlayerData));
 
-        var matchSearchingInfo = await CandidApiManager.Instance.CanisterMatchMaking.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
+        var matchSearchingInfo = await CandidApiManager.Instance.CanisterLogin.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
         
         Debug.Log("Status: "+ matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
         
-        if(matchSearchingInfo.ReturnArg0 == SearchStatus.Assigned)
+        if(matchSearchingInfo.ReturnArg0 == MMSearchStatus.Assigned)
         {
             bool isGameMatched = false;
             sendPlayerActive = true; SendPlayerActive();
@@ -55,7 +55,7 @@ public class UIMatchMaking : MonoBehaviour
             while (!isGameMatched && SearchingScreen.activeSelf)
             {
                 if(this.gameObject == null) { break; }
-                var isGameMatchedRequest = await CandidApiManager.Instance.CanisterMatchMaking.IsGameMatched();
+                var isGameMatchedRequest = await CandidApiManager.Instance.CanisterLogin.IsGameMatched();
                 Debug.Log("Ya estoy asignado a una sala: " + matchSearchingInfo.ReturnArg1 +" espero ser matched: " + isGameMatchedRequest.ReturnArg1);
                 isGameMatched = isGameMatchedRequest.ReturnArg0;
                 Debug.Log("IsGameMatched: "+ isGameMatched );
@@ -71,7 +71,7 @@ public class UIMatchMaking : MonoBehaviour
         while (sendPlayerActive && SearchingScreen.activeSelf)
         {
             if(this.gameObject == null) { break; }
-            var isActive = await CandidApiManager.Instance.CanisterMatchMaking.SetPlayerActive();
+            var isActive = await CandidApiManager.Instance.CanisterLogin.SetPlayerActive();
             Debug.Log("estoy activo: "+ isActive);
 
             if (!isActive)
@@ -85,7 +85,7 @@ public class UIMatchMaking : MonoBehaviour
     }
     public async void CancelSearch()
     {
-        var cancelMatchmaking = await CandidApiManager.Instance.CanisterMatchMaking.CancelMatchmaking();
+        var cancelMatchmaking = await CandidApiManager.Instance.CanisterLogin.CancelMatchmaking();
         Debug.Log("Quiero Cancelar la busqueda: " + cancelMatchmaking.ReturnArg1);
         if (cancelMatchmaking.ReturnArg0)
         {

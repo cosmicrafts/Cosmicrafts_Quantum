@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Threading.Tasks;
 using EdjCase.ICP.Candid.Models;
-using System.Threading.Tasks;
-using CanisterPK.CanisterStats.Models;
+using System.Numerics; 
 using Candid;
 using System;
-using System.Numerics;
+using CanisterPK.CanisterLogin;
+
 
 public class StatisticsManager : MonoBehaviour
 {
@@ -30,47 +30,76 @@ public class StatisticsManager : MonoBehaviour
         // Example call to send test statistics
         await SendTestGameStatistics();
     }
-    
-    public async Task<bool> SaveFinishedGameStatistics(BigInteger gameID, string characterID, BigInteger botDifficulty, 
-        BigInteger botMode, double damageCritic, double damageDealt, double damageEvaded, double damageTaken, 
-        double deploys, double energyChargeRate, double energyGenerated, double energyUsed, double energyWasted, 
-        BigInteger faction, BigInteger gameMode, double kills, double secRemaining, bool wonGame, double xpEarned)
+
+
+public async Task<bool> SaveFinishedGameStatistics(BigInteger gameID, string characterID, BigInteger botDifficulty, 
+    BigInteger botMode, double damageCritic, double damageDealt, double damageEvaded, double damageTaken, 
+    double deploys, double energyChargeRate, double energyGenerated, double energyUsed, double energyWasted, 
+    BigInteger faction, BigInteger gameMode, double kills, double secRemaining, bool wonGame, double xpEarned)
+{
+    // Convert values to BigInteger as UnboundedUInt requires
+    BigInteger damageCriticBigInt = new BigInteger(damageCritic);
+    BigInteger damageDealtBigInt = new BigInteger(damageDealt);
+    BigInteger damageEvadedBigInt = new BigInteger(damageEvaded);
+    BigInteger damageTakenBigInt = new BigInteger(damageTaken);
+    BigInteger deploysBigInt = new BigInteger(deploys);
+    BigInteger energyChargeRateBigInt = new BigInteger(energyChargeRate);
+    BigInteger energyGeneratedBigInt = new BigInteger(energyGenerated);
+    BigInteger energyUsedBigInt = new BigInteger(energyUsed);
+    BigInteger energyWastedBigInt = new BigInteger(energyWasted);
+    BigInteger killsBigInt = new BigInteger(kills);
+    BigInteger secRemainingBigInt = new BigInteger(secRemaining);
+    BigInteger xpEarnedBigInt = new BigInteger(xpEarned);
+    BigInteger characterIDBigInt = BigInteger.Parse(characterID); // Convert string to BigInteger
+
+    // Convert BigInteger to UnboundedUInt
+    UnboundedUInt gameIDUnbounded = UnboundedUInt.FromBigInteger(gameID);
+    UnboundedUInt botDifficultyUnbounded = UnboundedUInt.FromBigInteger(botDifficulty);
+    UnboundedUInt botModeUnbounded = UnboundedUInt.FromBigInteger(botMode);
+    UnboundedUInt factionUnbounded = UnboundedUInt.FromBigInteger(faction);
+    UnboundedUInt gameModeUnbounded = UnboundedUInt.FromBigInteger(gameMode);
+    UnboundedUInt damageCriticUnbounded = UnboundedUInt.FromBigInteger(damageCriticBigInt);
+    UnboundedUInt damageDealtUnbounded = UnboundedUInt.FromBigInteger(damageDealtBigInt);
+    UnboundedUInt damageEvadedUnbounded = UnboundedUInt.FromBigInteger(damageEvadedBigInt);
+    UnboundedUInt damageTakenUnbounded = UnboundedUInt.FromBigInteger(damageTakenBigInt);
+    UnboundedUInt deploysUnbounded = UnboundedUInt.FromBigInteger(deploysBigInt);
+    UnboundedUInt energyChargeRateUnbounded = UnboundedUInt.FromBigInteger(energyChargeRateBigInt);
+    UnboundedUInt energyGeneratedUnbounded = UnboundedUInt.FromBigInteger(energyGeneratedBigInt);
+    UnboundedUInt energyUsedUnbounded = UnboundedUInt.FromBigInteger(energyUsedBigInt);
+    UnboundedUInt energyWastedUnbounded = UnboundedUInt.FromBigInteger(energyWastedBigInt);
+    UnboundedUInt killsUnbounded = UnboundedUInt.FromBigInteger(killsBigInt);
+    UnboundedUInt secRemainingUnbounded = UnboundedUInt.FromBigInteger(secRemainingBigInt);
+    UnboundedUInt xpEarnedUnbounded = UnboundedUInt.FromBigInteger(xpEarnedBigInt);
+    UnboundedUInt characterIDUnbounded = UnboundedUInt.FromBigInteger(characterIDBigInt);
+
+    CanisterLoginApiClient.SaveFinishedGameArg1 saveFinishedGameArg1 = new CanisterLoginApiClient.SaveFinishedGameArg1
     {
-        // Convert BigInteger to UnboundedUInt
-        UnboundedUInt gameIDUnbounded = UnboundedUInt.FromBigInteger(gameID);
-        UnboundedUInt botDifficultyUnbounded = UnboundedUInt.FromBigInteger(botDifficulty);
-        UnboundedUInt botModeUnbounded = UnboundedUInt.FromBigInteger(botMode);
-        UnboundedUInt factionUnbounded = UnboundedUInt.FromBigInteger(faction);
-        UnboundedUInt gameModeUnbounded = UnboundedUInt.FromBigInteger(gameMode);
+        BotDifficulty = botDifficultyUnbounded,
+        BotMode = botModeUnbounded,
+        CharacterID = characterIDUnbounded,
+        DamageCritic = damageCriticUnbounded,
+        DamageDealt = damageDealtUnbounded,
+        DamageEvaded = damageEvadedUnbounded,
+        DamageTaken = damageTakenUnbounded,
+        Deploys = deploysUnbounded,
+        EnergyChargeRate = energyChargeRateUnbounded,
+        EnergyGenerated = energyGeneratedUnbounded,
+        EnergyUsed = energyUsedUnbounded,
+        EnergyWasted = energyWastedUnbounded,
+        Faction = factionUnbounded,
+        GameMode = gameModeUnbounded,
+        Kills = killsUnbounded,
+        SecRemaining = secRemainingUnbounded,
+        WonGame = wonGame,
+        XpEarned = xpEarnedUnbounded
+    };
 
-        BasicStats stats = new BasicStats
-        {
-            BotDifficulty = botDifficultyUnbounded,
-            BotMode = botModeUnbounded,
-            CharacterID = characterID,
-            DamageCritic = damageCritic,
-            DamageDealt = damageDealt,
-            DamageEvaded = damageEvaded,
-            DamageTaken = damageTaken,
-            Deploys = deploys,
-            EnergyChargeRate = energyChargeRate,
-            EnergyGenerated = energyGenerated,
-            EnergyUsed = energyUsed,
-            EnergyWasted = energyWasted,
-            Faction = factionUnbounded,
-            GameMode = gameModeUnbounded,
-            Kills = kills,
-            SecRemaining = secRemaining,
-            WonGame = wonGame,
-            XpEarned = xpEarned
-        };
+    // Call the canister to save the game statistics
+    var result = await CandidApiManager.Instance.CanisterLogin.SaveFinishedGame(gameIDUnbounded, saveFinishedGameArg1);
 
-        // Call the canister to save the game statistics
-        var result = await CandidApiManager.Instance.CanisterStats.SaveFinishedGame(gameIDUnbounded, stats);
-
-        Debug.Log($"Game stats saved for Game ID {gameID}: {result.ReturnArg0}");
-        return result.ReturnArg0;
-    }
+    Debug.Log($"Game stats saved for Game ID {gameID}: {result.ReturnArg0}");
+    return result.ReturnArg0;
+}
 
     public async Task GetPlayerStats(string principalId)
     {
@@ -78,7 +107,7 @@ public class StatisticsManager : MonoBehaviour
         {
             Principal playerPrincipal = Principal.FromText(principalId);
 
-            var playerStatsOpt = await CandidApiManager.Instance.CanisterStats.GetPlayerStats(playerPrincipal);
+            var playerStatsOpt = await CandidApiManager.Instance.CanisterLogin.GetPlayerStats(playerPrincipal);
 
             // Use GetValueOrDefault() to safely access the value
             var playerStats = playerStatsOpt.GetValueOrDefault();

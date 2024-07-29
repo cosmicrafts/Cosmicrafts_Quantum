@@ -10,6 +10,9 @@ namespace CanisterPK.tournaments.Models
 		[CandidName("id")]
 		public UnboundedUInt Id { get; set; }
 
+		[CandidName("nextMatchId")]
+		public OptionalValue<UnboundedUInt> NextMatchId { get; set; }
+
 		[CandidName("participants")]
 		public List<Principal> Participants { get; set; }
 
@@ -19,12 +22,17 @@ namespace CanisterPK.tournaments.Models
 		[CandidName("status")]
 		public string Status { get; set; }
 
-		public Match(UnboundedUInt id, List<Principal> participants, OptionalValue<Match.ResultValue> result, string status)
+		[CandidName("tournamentId")]
+		public UnboundedUInt TournamentId { get; set; }
+
+		public Match(UnboundedUInt id, OptionalValue<UnboundedUInt> nextMatchId, List<Principal> participants, OptionalValue<Match.ResultValue> result, string status, UnboundedUInt tournamentId)
 		{
 			this.Id = id;
+			this.NextMatchId = nextMatchId;
 			this.Participants = participants;
 			this.Result = result;
 			this.Status = status;
+			this.TournamentId = tournamentId;
 		}
 
 		public Match()

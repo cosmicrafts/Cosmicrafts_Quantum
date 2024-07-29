@@ -1,14 +1,13 @@
- using System;
- using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
- using System.Globalization;
- using Candid;
- using TMPro;
- using UnityEngine;
+using System.Globalization;
+using Candid;
+using TMPro;
+using UnityEngine;
 
 public class UIProfile2 : MonoBehaviour
 {
-
     [Header("GameObjects")] 
     public GameObject loading;
     public GameObject error;
@@ -31,7 +30,6 @@ public class UIProfile2 : MonoBehaviour
     public TMP_Text energyUsed;
     public TMP_Text energyWasted;
 
-
     private async void Start()
     {
         GetInfoToProfile();
@@ -49,7 +47,7 @@ public class UIProfile2 : MonoBehaviour
     public async void GetInfoToProfile()
     {
         Debug.Log("GetInfoToProfile");
-        var playerGameStats = await CandidApiManager.Instance.CanisterStats.GetMyStats();
+        var playerGameStats = await CandidApiManager.Instance.CanisterLogin.GetMyStats();
         
         if (playerGameStats.HasValue)
         {
@@ -61,30 +59,24 @@ public class UIProfile2 : MonoBehaviour
             gamesPlayed.text = playerGameStatsValue.GamesPlayed.ToString();
             gamesWins.text = playerGameStatsValue.GamesWon.ToString();
             
-            damageDealt.text = playerGameStatsValue.TotalDamageDealt.ToString(CultureInfo.InvariantCulture);
-            damageEvaded.text = playerGameStatsValue.TotalDamageEvaded.ToString(CultureInfo.InvariantCulture);
-            criticalDamage.text = playerGameStatsValue.TotalDamageCrit.ToString(CultureInfo.InvariantCulture);
-            damageTaken.text = playerGameStatsValue.TotalDamageTaken.ToString(CultureInfo.InvariantCulture);
-            xpEarned.text = playerGameStatsValue.TotalXpEarned.ToString(CultureInfo.InvariantCulture);
+            damageDealt.text = playerGameStatsValue.TotalDamageDealt.ToString();
+            damageEvaded.text = playerGameStatsValue.TotalDamageEvaded.ToString();
+            criticalDamage.text = playerGameStatsValue.TotalDamageCrit.ToString();
+            damageTaken.text = playerGameStatsValue.TotalDamageTaken.ToString();
+            xpEarned.text = playerGameStatsValue.TotalXpEarned.ToString();
             
-            energyGenerated.text = playerGameStatsValue.EnergyGenerated.ToString(CultureInfo.InvariantCulture);
-            energyUsed.text = playerGameStatsValue.EnergyUsed.ToString(CultureInfo.InvariantCulture);
-            energyWasted.text = playerGameStatsValue.EnergyWasted.ToString(CultureInfo.InvariantCulture);
+            energyGenerated.text = playerGameStatsValue.EnergyGenerated.ToString();
+            energyUsed.text = playerGameStatsValue.EnergyUsed.ToString();
+            energyWasted.text = playerGameStatsValue.EnergyWasted.ToString();
             
-            //loading.SetActive(false);
-            //content.SetActive(true);
+            loading.SetActive(false);
+            content.SetActive(true);
         }
         else
         {
-            //loading.SetActive(false);
-            //error.SetActive(true);
+            loading.SetActive(false);
+            error.SetActive(true);
             Debug.Log("No hay info de Stats");
         }
-        
-            
-            
-            
     }
-
-    
 }
