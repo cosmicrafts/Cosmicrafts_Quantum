@@ -31,10 +31,10 @@ namespace CanisterPK.CanisterLogin
 			this.Converter = converter;
 		}
 
-		public async Task<(bool ReturnArg0, string ReturnArg1)> AddFriend(PlayerId arg0)
+		public async Task<(bool ReturnArg0, string ReturnArg1)> AcceptFriendRequest(PlayerId arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "addFriend", arg);
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "acceptFriendRequest", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
@@ -49,6 +49,13 @@ namespace CanisterPK.CanisterLogin
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			await this.Agent.CallAndWaitAsync(this.CanisterId, "assignAchievementsToUser", arg);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> BlockUser(PlayerId arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "blockUser", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> CancelMatchmaking()
@@ -107,6 +114,13 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string, UnboundedUInt>(this.Converter);
 		}
 
+		public async Task<(bool ReturnArg0, string ReturnArg1)> DeclineFriendRequest(PlayerId arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "declineFriendRequest", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
 		public async Task<List<(Models.AchievementCategory, List<Models.Achievement>, List<Models.IndividualAchievementProgress>)>> GetAchievements()
 		{
 			CandidArg arg = CandidArg.FromCandid();
@@ -130,12 +144,28 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<List<Models.MatchData>>(this.Converter);
 		}
 
+		public async Task<CanisterLoginApiClient.GetBlockedUsersReturnArg0> GetBlockedUsers()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getBlockedUsers", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<CanisterLoginApiClient.GetBlockedUsersReturnArg0>(this.Converter);
+		}
+
 		public async Task<Models.OverallStats> GetCosmicraftsStats()
 		{
 			CandidArg arg = CandidArg.FromCandid();
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getCosmicraftsStats", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<Models.OverallStats>(this.Converter);
+		}
+
+		public async Task<List<Models.FriendRequest>> GetFriendRequests()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getFriendRequests", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.FriendRequest>>(this.Converter);
 		}
 
 		public async Task<CanisterLoginApiClient.GetFriendsListReturnArg0> GetFriendsList()
@@ -232,11 +262,12 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<OptionalValue<Models.FullMatchData>, UnboundedUInt>(this.Converter);
 		}
 
-		public async Task<OptionalValue<Models.Player>> GetMyProfile()
+		public async Task<Models.PrivacySetting> GetMyPrivacySettings()
 		{
 			CandidArg arg = CandidArg.FromCandid();
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getMyProfile", arg);
-			return reply.ToObjects<OptionalValue<Models.Player>>(this.Converter);
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getMyPrivacySettings", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<Models.PrivacySetting>(this.Converter);
 		}
 
 		public async Task<OptionalValue<Models.PlayerGamesStats>> GetMyStats()
@@ -247,10 +278,19 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<OptionalValue<Models.PlayerGamesStats>>(this.Converter);
 		}
 
+		public async Task<List<Models.Notification>> GetNotifications()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getNotifications", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.Notification>>(this.Converter);
+		}
+
 		public async Task<OptionalValue<Models.Player>> GetPlayer()
 		{
 			CandidArg arg = CandidArg.FromCandid();
-			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getPlayer", arg);
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getPlayer", arg);
+			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<OptionalValue<Models.Player>>(this.Converter);
 		}
 
@@ -331,11 +371,11 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
-		public async Task<(bool ReturnArg0, PlayerId ReturnArg1, bool ReturnArg2, string ReturnArg3, UnboundedUInt ReturnArg4)> RegisterPlayer(Username arg0, AvatarID arg1)
+		public async Task<(bool ReturnArg0, OptionalValue<Models.Player> ReturnArg1, string ReturnArg2)> RegisterPlayer(Username arg0, AvatarID arg1)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "registerPlayer", arg);
-			return reply.ToObjects<bool, PlayerId, bool, string, UnboundedUInt>(this.Converter);
+			return reply.ToObjects<bool, OptionalValue<Models.Player>, string>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> SaveFinishedGame(MatchID arg0, CanisterLoginApiClient.SaveFinishedGameArg1 arg1)
@@ -369,11 +409,25 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<List<Models.Player>>(this.Converter);
 		}
 
+		public async Task<(bool ReturnArg0, string ReturnArg1)> SendFriendRequest(PlayerId arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "sendFriendRequest", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
 		public async Task<bool> SetPlayerActive()
 		{
 			CandidArg arg = CandidArg.FromCandid();
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "setPlayerActive", arg);
 			return reply.ToObjects<bool>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> SetPrivacySetting(Models.PrivacySetting arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "setPrivacySetting", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
 		public async Task<CanisterLoginApiClient.TestReturnArg0> Test(PlayerId arg0)
@@ -384,6 +438,13 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<CanisterLoginApiClient.TestReturnArg0>(this.Converter);
 		}
 
+		public async Task<(bool ReturnArg0, string ReturnArg1)> UnblockUser(PlayerId arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "unblockUser", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
 		public async Task<List<(Models.AchievementCategory, List<Models.Achievement>, List<Models.IndividualAchievementProgress>)>> UpdateAndGetAchievements()
 		{
 			CandidArg arg = CandidArg.FromCandid();
@@ -391,11 +452,11 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<List<(Models.AchievementCategory, List<Models.Achievement>, List<Models.IndividualAchievementProgress>)>>(this.Converter);
 		}
 
-		public async Task<(bool ReturnArg0, PlayerId ReturnArg1)> UpdateAvatar(AvatarID arg0)
+		public async Task<(bool ReturnArg0, PlayerId ReturnArg1, string ReturnArg2)> UpdateAvatar(AvatarID arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateAvatar", arg);
-			return reply.ToObjects<bool, PlayerId>(this.Converter);
+			return reply.ToObjects<bool, PlayerId, string>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> UpdateCategoryProgress(PlayerId arg0, UnboundedUInt arg1)
@@ -405,11 +466,11 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
-		public async Task<(bool ReturnArg0, PlayerId ReturnArg1)> UpdateDescription(Description arg0)
+		public async Task<(bool ReturnArg0, PlayerId ReturnArg1, string ReturnArg2)> UpdateDescription(Description arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateDescription", arg);
-			return reply.ToObjects<bool, PlayerId>(this.Converter);
+			return reply.ToObjects<bool, PlayerId, string>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> UpdateGeneralAchievementProgress(PlayerId arg0, UnboundedUInt arg1)
@@ -426,11 +487,11 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
-		public async Task<(bool ReturnArg0, PlayerId ReturnArg1)> UpdateUsername(Username arg0)
+		public async Task<(bool ReturnArg0, PlayerId ReturnArg1, string ReturnArg2)> UpdateUsername(Username arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateUsername", arg);
-			return reply.ToObjects<bool, PlayerId>(this.Converter);
+			return reply.ToObjects<bool, PlayerId, string>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> UpgradeNFT(TokenID arg0)
@@ -438,6 +499,13 @@ namespace CanisterPK.CanisterLogin
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "upgradeNFT", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public class GetBlockedUsersReturnArg0 : List<PlayerId>
+		{
+			public GetBlockedUsersReturnArg0()
+			{
+			}
 		}
 
 		public class GetFriendsListReturnArg0 : OptionalValue<CanisterLoginApiClient.GetFriendsListReturnArg0.GetFriendsListReturnArg0Value>

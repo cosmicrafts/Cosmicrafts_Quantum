@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CanisterPK.testnft;
 using EdjCase.ICP.Agent.Responses;
 using System.Collections.Generic;
+using EdjCase.ICP.Candid.Mapping;
 using TokenId = EdjCase.ICP.Candid.Models.UnboundedUInt;
 
 namespace CanisterPK.testnft
@@ -22,6 +23,14 @@ namespace CanisterPK.testnft
 			this.Agent = agent;
 			this.CanisterId = canisterId;
 			this.Converter = converter;
+		}
+
+		public async Task<TestnftApiClient.GetNFTsReturnArg0> GetNFTs()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getNFTs", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<TestnftApiClient.GetNFTsReturnArg0>(this.Converter);
 		}
 
 		public async Task<Models.Account> GetCollectionOwner()
@@ -172,11 +181,11 @@ namespace CanisterPK.testnft
 			return reply.ToObjects<Models.MintReceipt>(this.Converter);
 		}
 
-		public async Task<Models.MintReceipt> MintDeck(List<Models.MintArgs> arg0)
+		public async Task<(bool ReturnArg0, string ReturnArg1, TestnftApiClient.MintDeckReturnArg2 ReturnArg2)> MintDeck()
 		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg arg = CandidArg.FromCandid();
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "mintDeck", arg);
-			return reply.ToObjects<Models.MintReceipt>(this.Converter);
+			return reply.ToObjects<bool, string, TestnftApiClient.MintDeckReturnArg2>(this.Converter);
 		}
 
 		public async Task<Models.UpgradeReceipt> UpgradeNFT(Models.UpgradeArgs arg0)
@@ -184,6 +193,39 @@ namespace CanisterPK.testnft
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "upgradeNFT", arg);
 			return reply.ToObjects<Models.UpgradeReceipt>(this.Converter);
+		}
+
+		public class GetNFTsReturnArg0 : List<TestnftApiClient.GetNFTsReturnArg0.GetNFTsReturnArg0Element>
+		{
+			public GetNFTsReturnArg0()
+			{
+			}
+
+			public class GetNFTsReturnArg0Element
+			{
+				[CandidTag(0U)]
+				public TokenId F0 { get; set; }
+
+				[CandidTag(1U)]
+				public Models.TokenMetadata F1 { get; set; }
+
+				public GetNFTsReturnArg0Element(TokenId f0, Models.TokenMetadata f1)
+				{
+					this.F0 = f0;
+					this.F1 = f1;
+				}
+
+				public GetNFTsReturnArg0Element()
+				{
+				}
+			}
+		}
+
+		public class MintDeckReturnArg2 : List<TokenId>
+		{
+			public MintDeckReturnArg2()
+			{
+			}
 		}
 	}
 }

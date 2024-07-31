@@ -1,16 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Candid;
 using EdjCase.ICP.Candid.Models;
-using Quantum;
 using TMPro;
 using TowerRush;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using System.Numerics;
 
 public class Login : MonoBehaviour
@@ -56,7 +49,7 @@ public class Login : MonoBehaviour
         if (playerInfo.HasValue)
         {
             Debug.Log("[Login] Player already exists.");
-            CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
+            var player = playerInfo.ValueOrDefault;
             await MintDeckAsync(player.Id);
             UpdateUserDataAndTransition(player);
         }
@@ -70,7 +63,7 @@ public class Login : MonoBehaviour
     private async Task MintDeckAsync(Principal playerId)
     {
         Debug.Log("[Login] Initiating deck minting...");
-        var mintInfo = await CandidApiManager.Instance.CanisterLogin.MintDeck(playerId);
+        var mintInfo = await CandidApiManager.Instance.testnft.MintDeck();
         if (mintInfo.ReturnArg0)
         {
             Debug.Log("[Login] MINT SUCCESS");
@@ -107,7 +100,7 @@ public class Login : MonoBehaviour
         if (playerInfo.HasValue)
         {
             Debug.Log("[Login] Player information retrieved.");
-            CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
+            var player = playerInfo.ValueOrDefault;
             UpdateUserDataAndTransition(player);
         }
         else
@@ -151,7 +144,7 @@ public class Login : MonoBehaviour
                 if (playerInfo.HasValue)
                 {
                     Debug.Log("[LoginPostCreate] Player information retrieved.");
-                    CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
+                    var player = playerInfo.ValueOrDefault;
 
                     Debug.Log("[Login] INIT MINT");
                     await MintDeckAsync(player.Id);
