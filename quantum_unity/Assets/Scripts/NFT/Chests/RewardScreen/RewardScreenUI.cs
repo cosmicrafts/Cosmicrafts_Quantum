@@ -55,7 +55,6 @@ public class RewardScreenUI : MonoBehaviour
         LoadingPanel.Instance.DesactiveLoadingPanel();
         StartCoroutine(DeactivateAfterDelay(.35f));
         ShowRewardsUI();
-        Game.Instance.AudioService.m_SoundsAudio.PlayOneShot(rewardSound);
     }
 
     public void ShowRewardsUI()

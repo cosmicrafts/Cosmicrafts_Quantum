@@ -1,6 +1,7 @@
 ﻿namespace TowerRush.Core
 {
 	using System.Collections;
+	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.Audio;
 
@@ -19,13 +20,14 @@
 		// PRIVATE MEMBERS
 
 		private AudioSource   m_MusicAudio;
-		public AudioSource   m_SoundsAudio;
-
+		private AudioSource   m_SoundsAudio;
 		private Transform     m_AudioListenerTransform;
 		private Transform     m_ReferenceTransform;
 		private Coroutine     m_FadeSoundsCoroutine;
 		private Coroutine     m_FadeMusicCoroutine;
 		private string        m_CurrentMusic;
+		private List<AudioSource> activeAudioSources = new List<AudioSource>();
+		private int maxAudioSources = 5; // Set your limit here
 
 		// PUBLIC METHODS
 
@@ -113,6 +115,34 @@
 		public void SetReferenceTransform(Transform referenceTransform)
 		{
 			m_ReferenceTransform = referenceTransform;
+		}
+
+		public void PlayAudio(AudioClip clip, string tag)
+		{
+			if (activeAudioSources.Count >= maxAudioSources)
+			{
+				Debug.LogWarning("Maximum number of audio sources reached.");
+				return;
+			}
+
+			GameObject audioObject = new GameObject("AudioSource");
+			AudioSource audioSource = audioObject.AddComponent<AudioSource>();
+			audioSource.clip = clip;
+			audioSource.tag = tag;
+			audioSource.Play();
+
+			Debug.Log($"Playing audio clip '{clip.name}' with tag '{tag}'");
+
+			activeAudioSources.Add(audioSource);
+
+			StartCoroutine(RemoveAudioSourceWhenFinished(audioSource));
+		}
+
+		private IEnumerator RemoveAudioSourceWhenFinished(AudioSource source)
+		{
+			yield return new WaitUntil(() => !source.isPlaying);
+			activeAudioSources.Remove(source);
+			Destroy(source.gameObject);
 		}
 
 		// PRIVATE METHODS
@@ -227,7 +257,8 @@
 
 		private void OnGameOptionsChanged()
 		{
-
+			m_AudioMixer.SetFloat(SOUNDS_VOLUME, ToDb(GameOptions.SoundsVolume));
+			m_AudioMixer.SetFloat(MUSIC_VOLUME,  ToDb(GameOptions.MusicVolume));
 		}
 
 		private float FromDb(float db)

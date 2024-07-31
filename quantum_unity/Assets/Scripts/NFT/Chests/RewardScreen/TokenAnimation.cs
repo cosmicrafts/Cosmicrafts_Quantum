@@ -39,7 +39,6 @@ public class TokenAnimation : MonoBehaviour
     {
         if (tokenRewardSound != null)
         {
-            Game.Instance.AudioService.m_SoundsAudio.PlayOneShot(tokenRewardSound);
         }
     }  
 

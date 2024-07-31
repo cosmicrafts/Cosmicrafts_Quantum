@@ -23,11 +23,7 @@ public class Login : MonoBehaviour
 
     private async void Awake()
     {
-        // Ensure GlobalGameData is initialized
-        if (GlobalGameData.Instance == null)
-        {
-            GlobalGameData.Instance = new GlobalGameData();
-        }
+        GlobalGameData.Instance = null;
 
         if (Instance != null)
         {
@@ -62,7 +58,6 @@ public class Login : MonoBehaviour
             Debug.Log("[Login] Player already exists.");
             CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
             await MintDeckAsync(player.Id);
-            await FetchAllData(player);
             UpdateUserDataAndTransition(player);
         }
         else
@@ -113,7 +108,6 @@ public class Login : MonoBehaviour
         {
             Debug.Log("[Login] Player information retrieved.");
             CanisterPK.CanisterLogin.Models.Player player = playerInfo.ValueOrDefault;
-            await FetchAllData(player);
             UpdateUserDataAndTransition(player);
         }
         else
@@ -124,30 +118,7 @@ public class Login : MonoBehaviour
         }
     }
 
-    private async Task FetchAllData(CanisterPK.CanisterLogin.Models.Player player)
-    {
-        var generalMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
-        var userMissionsTask = CandidApiManager.Instance.CanisterLogin.GetUserMissions();
-        var achievementsTask = CandidApiManager.Instance.CanisterLogin.GetAchievements();
-
-        await Task.WhenAll(generalMissionsTask, userMissionsTask, achievementsTask);
-
-        var generalMissions = await generalMissionsTask;
-        var userMissions = await userMissionsTask;
-        var achievements = await achievementsTask;
-
-        // Handle the fetched data (e.g., store them in GlobalGameData, etc.)
-        Debug.Log($"Fetched General Missions: {generalMissions.Count}");
-        Debug.Log($"Fetched User Missions: {userMissions.Count}");
-        Debug.Log($"Fetched Achievements: {achievements.Count}");
-
-        // You can store these in GlobalGameData or handle them as needed
-       // GlobalGameData.Instance.SetGeneralMissions(generalMissions);
-       // GlobalGameData.Instance.SetUserMissions(userMissions);
-       // GlobalGameData.Instance.SetAchievements(achievements);
-    }
-
-    private void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
+    private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
     {
         // Update GlobalGameData with player details immediately
         UserData user = GlobalGameData.Instance.GetUserData();
@@ -184,7 +155,6 @@ public class Login : MonoBehaviour
 
                     Debug.Log("[Login] INIT MINT");
                     await MintDeckAsync(player.Id);
-                    await FetchAllData(player);
 
                     UpdateUserDataAndTransition(player);
                 }
