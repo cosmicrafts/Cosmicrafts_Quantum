@@ -29,7 +29,9 @@ public class RewardsDisplay : MonoBehaviour
     public Sprite chest4Sprite;
     public Sprite chest5Sprite;
     public Sprite chest6Sprite;
-
+    public Sprite chest7Sprite;
+    public Sprite chest8Sprite;
+    
     public GameObject panelToChangeColor;
     public Color gamesPlayedColor;
     public Color gamesWonColor;
@@ -42,6 +44,8 @@ public class RewardsDisplay : MonoBehaviour
 
     public void SetRewardData(MissionsUser reward)
     {
+        rewardData = reward;
+
         Debug.Log($"ID: {reward.IdMission}");
         Debug.Log($"Reward Type: {reward.RewardType}");
         Debug.Log($"Prize Amount: {reward.RewardAmount}");
@@ -75,12 +79,11 @@ public class RewardsDisplay : MonoBehaviour
 
         panelToChangeColor.GetComponent<Image>().color = reward.MissionType == MissionType.GamesCompleted ? gamesPlayedColor : gamesWonColor;
 
-        rewardData = reward;
         bool isClaimable = reward.Finished;
         claimButtonImage.enabled = isClaimable;
         claimButton.interactable = isClaimable;
 
-    float progressRatio = (float)(ulong)reward.Progress / (float)(ulong)reward.Total;
+        float progressRatio = (float)(ulong)reward.Progress / (float)(ulong)reward.Total;
         progressBar.fillAmount = progressRatio;
     }
 
@@ -149,35 +152,33 @@ public class RewardsDisplay : MonoBehaviour
         if (rewardData != null && rewardData.Finished)
         {
             LoadingPanel.Instance.ActiveLoadingPanel();
-            UnboundedUInt rewardID = rewardData.IdMission;
-            var claimResult = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardID);
-            if (claimResult.ReturnArg0)
+            bool success;
+
+            if (MissionManager.Instance.UserMissions.Contains(rewardData))
+            {
+                success = await MissionManager.Instance.ClaimUserReward(rewardData.IdMission);
+            }
+            else if (MissionManager.Instance.GeneralMissions.Contains(rewardData))
+            {
+                success = await MissionManager.Instance.ClaimGeneralReward(rewardData.IdMission);
+            }
+            else
+            {
+                Debug.LogError("Unknown mission type.");
+                success = false;
+            }
+
+            if (success)
             {
                 Debug.Log("Reward claimed successfully!");
                 LoadingPanel.Instance.DesactiveLoadingPanel();
-
-                switch (rewardData.RewardType)
-                {
-                    case MissionRewardType.Flux:
-                        FluxScript.FetchBalance();
-                        break;
-                    case MissionRewardType.Shards:
-                        ShardsScript.FetchBalance();
-                        break;
-                    case MissionRewardType.Chest:
-                        ChestsScript.UpdateOwnedChests();
-                        break;
-                    default:
-                        Debug.LogError("Unknown reward type");
-                        break;
-                }
                 Destroy(gameObject);
                 ShowRewardNotification(rewardData);
             }
             else
             {
                 LoadingPanel.Instance.DesactiveLoadingPanel();
-                Debug.LogError($"Failed to claim reward: {claimResult.ReturnArg1}");
+                Debug.LogError("Failed to claim reward.");
             }
         }
         else
