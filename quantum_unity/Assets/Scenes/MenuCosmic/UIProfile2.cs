@@ -8,10 +8,6 @@ using UnityEngine;
 
 public class UIProfile2 : MonoBehaviour
 {
-    [Header("GameObjects")] 
-    public GameObject loading;
-    public GameObject error;
-    public GameObject content;
 
     [Header("Overview")] 
     public TMP_Text since;
@@ -38,9 +34,6 @@ public class UIProfile2 : MonoBehaviour
     public void OpenProfile()
     {
         Debug.Log("awake");
-        loading.SetActive(true);
-        error.SetActive(false);
-        content.SetActive(false);
         GetInfoToProfile();
     }
 
@@ -69,13 +62,9 @@ public class UIProfile2 : MonoBehaviour
             energyUsed.text = playerGameStatsValue.EnergyUsed.ToString();
             energyWasted.text = playerGameStatsValue.EnergyWasted.ToString();
             
-            loading.SetActive(false);
-            content.SetActive(true);
         }
         else
         {
-            loading.SetActive(false);
-            error.SetActive(true);
             Debug.Log("No hay info de Stats");
         }
     }
