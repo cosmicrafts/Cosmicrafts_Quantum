@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CanisterPK.CanisterLogin;
 using CanisterPK.CanisterLogin.Models;
 using EdjCase.ICP.Candid.Models;
 
@@ -40,41 +39,29 @@ public class RewardsManager : MonoBehaviour
             await missionManager.InitializeMissions();
         }
 
-        // Wait for MissionManager to initialize and fetch missions
-        await WaitForMissionManagerInitialization();
-
         // Populate rewards UI
         if (MissionManager.Instance != null)
         {
-            Debug.Log("[RewardsManager] Populating User Missions UI");
-            PopulateRewardsUI(MissionManager.Instance.UserMissions, "User");
-
-            Debug.Log("[RewardsManager] Populating General Missions UI");
-            PopulateRewardsUI(MissionManager.Instance.GeneralMissions, "General");
+            Debug.Log("[RewardsManager] Populating Missions UI");
+            PopulateRewardsUI(MissionManager.Instance.UserMissions, MissionManager.Instance.GeneralMissions);
         }
     }
 
-    private async Task WaitForMissionManagerInitialization()
+    private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUser> generalMissions)
     {
-        // Ensure MissionManager is initialized and has fetched the missions
-        while (MissionManager.Instance == null || MissionManager.Instance.UserMissions == null || MissionManager.Instance.GeneralMissions == null)
+        List<MissionsUser> allMissions = new List<MissionsUser>();
+        if (userMissions != null)
         {
-            Debug.LogWarning("Waiting for MissionManager to initialize...");
-            await Task.Delay(500); // Wait for 500ms before checking again
+            allMissions.AddRange(userMissions);
         }
-    }
-
-    private void PopulateRewardsUI(List<MissionsUser> missions, string missionType)
-    {
-        if (missions == null)
+        if (generalMissions != null)
         {
-            Debug.LogWarning($"[RewardsManager] {missionType} Missions list is null.");
-            return;
+            allMissions.AddRange(generalMissions);
         }
 
-        if (missions.Count == 0)
+        if (allMissions.Count == 0)
         {
-            Debug.LogWarning($"[RewardsManager] No {missionType} missions to display.");
+            Debug.LogWarning("[RewardsManager] No missions to display.");
             return;
         }
 
@@ -84,13 +71,13 @@ public class RewardsManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (var mission in missions)
+        foreach (var mission in allMissions)
         {
-            Debug.Log($"[RewardsManager] Instantiating {missionType} mission with ID: {mission.IdMission}");
+            Debug.Log($"[RewardsManager] Instantiating mission with ID: {mission.IdMission}");
             InstantiateRewardPrefab(mission);
         }
 
-        rewardsCountText.text = missions.Count.ToString();
+        rewardsCountText.text = allMissions.Count.ToString();
     }
 
     private void InstantiateRewardPrefab(MissionsUser mission)
@@ -102,6 +89,8 @@ public class RewardsManager : MonoBehaviour
         }
 
         var instance = Instantiate(rewardPrefab, rewardsContainer);
+        Debug.Log($"Instantiated prefab for mission ID: {mission.IdMission} - Parent: {instance.transform.parent.name}");
+
         instance.SetActive(true);
 
         var display = instance.GetComponent<RewardsDisplay>();

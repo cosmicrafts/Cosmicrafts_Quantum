@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CanisterPK.CanisterLogin.Models;
 using EdjCase.ICP.Candid.Models;
+using Newtonsoft.Json;
 using Candid;
 
 public class MissionManager : MonoBehaviour
@@ -33,26 +34,46 @@ public class MissionManager : MonoBehaviour
 
         // Fetch user and general missions
         Debug.Log("[MissionManager] Fetching user missions...");
-        UserMissions = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+        UserMissions = await FetchUserMissions();
         Debug.Log($"[MissionManager] Fetched {UserMissions.Count} user missions.");
 
         Debug.Log("[MissionManager] Fetching general missions...");
-        GeneralMissions = await CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+        GeneralMissions = await FetchGeneralMissions();
         Debug.Log($"[MissionManager] Fetched {GeneralMissions.Count} general missions.");
     }
 
     public async Task RefreshUserMissions()
     {
         Debug.Log("[MissionManager] Refreshing user missions...");
-        UserMissions = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+        UserMissions = await FetchUserMissions();
         Debug.Log($"[MissionManager] Refreshed user missions: {UserMissions.Count}");
     }
 
     public async Task RefreshGeneralMissions()
     {
         Debug.Log("[MissionManager] Refreshing general missions...");
-        GeneralMissions = await CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+        GeneralMissions = await FetchGeneralMissions();
         Debug.Log($"[MissionManager] Refreshed general missions: {GeneralMissions.Count}");
+    }
+
+    private async Task<List<MissionsUser>> FetchUserMissions()
+    {
+        var userMissions = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+        LogRawResponse(userMissions);
+        return userMissions;
+    }
+
+    private async Task<List<MissionsUser>> FetchGeneralMissions()
+    {
+        var generalMissions = await CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+        LogRawResponse(generalMissions);
+        return generalMissions;
+    }
+
+    private void LogRawResponse<T>(T response)
+    {
+        string rawResponse = JsonConvert.SerializeObject(response, Formatting.Indented);
+        Debug.Log($"[MissionManager] Raw response: {rawResponse}");
     }
 
     public async Task<bool> ClaimUserReward(UnboundedUInt rewardID)
