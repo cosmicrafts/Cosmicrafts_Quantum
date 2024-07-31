@@ -28,12 +28,25 @@ public class Login : MonoBehaviour
         Instance = this;
         Debug.Log("[Login] Component Awake() - Login instance initialized.");
 
+        await WaitForCandidApiInitialization();
         await InitializeLogin();
+    }
+
+    private async Task WaitForCandidApiInitialization()
+    {
+        Debug.Log("[Login] Waiting for CandidApiManager initialization...");
+
+        while (CandidApiManager.Instance == null || CandidApiManager.Instance.CanisterLogin == null)
+        {
+            await Task.Yield(); // Wait until CandidApiManager and CanisterLogin are initialized
+        }
+
+        Debug.Log("[Login] CandidApiManager initialized.");
     }
 
     private void Start()
     {
-        //Game.Instance.AudioService.ChangeMusicClip("login");
+        // Game.Instance.AudioService.ChangeMusicClip("login");
     }
 
     private void OnDestroy()
@@ -45,6 +58,7 @@ public class Login : MonoBehaviour
     private async Task InitializeLogin()
     {
         Debug.Log("[Login] Initializing login...");
+
         var playerInfo = await CandidApiManager.Instance.CanisterLogin.GetPlayer();
         if (playerInfo.HasValue)
         {
@@ -63,6 +77,7 @@ public class Login : MonoBehaviour
     private async Task MintDeckAsync(Principal playerId)
     {
         Debug.Log("[Login] Initiating deck minting...");
+
         var mintInfo = await CandidApiManager.Instance.testnft.MintDeck();
         if (mintInfo.ReturnArg0)
         {
