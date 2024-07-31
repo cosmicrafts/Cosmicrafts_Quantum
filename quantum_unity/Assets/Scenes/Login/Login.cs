@@ -14,6 +14,8 @@ public class Login : MonoBehaviour
 
     [SerializeField] private GameObject chooseUsername;
 
+    private bool isMintingDeck = false; // Flag to prevent duplicate minting calls
+
     private async void Awake()
     {
         GlobalGameData.Instance = null;
@@ -64,18 +66,23 @@ public class Login : MonoBehaviour
         {
             Debug.Log("[Login] Player already exists.");
             var player = playerInfo.ValueOrDefault;
-            await MintDeckAsync(player.Id);
             UpdateUserDataAndTransition(player);
         }
         else
         {
             Debug.LogWarning("[Login] No player information available. Prompting user for username.");
+
+            // Start minting in the background
+            _ = MintDeckAsync();
             chooseUsername.SetActive(true);
         }
     }
 
-    private async Task MintDeckAsync(Principal playerId)
+    private async Task MintDeckAsync()
     {
+        if (isMintingDeck) return; // Prevent duplicate calls
+        isMintingDeck = true;
+
         Debug.Log("[Login] Initiating deck minting...");
 
         var mintInfo = await CandidApiManager.Instance.testnft.MintDeck();
@@ -162,7 +169,7 @@ public class Login : MonoBehaviour
                     var player = playerInfo.ValueOrDefault;
 
                     Debug.Log("[Login] INIT MINT");
-                    await MintDeckAsync(player.Id);
+                    _ = MintDeckAsync(); // Mint in the background
 
                     UpdateUserDataAndTransition(player);
                 }
