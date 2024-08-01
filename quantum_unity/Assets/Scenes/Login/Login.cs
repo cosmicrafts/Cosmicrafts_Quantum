@@ -133,21 +133,32 @@ public class Login : MonoBehaviour
         }
     }
 
-    private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
-    {
-        // Update GlobalGameData with player details immediately
-        UserData user = GlobalGameData.Instance.GetUserData();
-        user.Level = (int)player.Level;
-        user.NikeName = player.Username; // Assuming 'Username' is the correct field from the backend
-        user.WalletId = player.Id.ToString();
-        SaveData.SaveGameUser();
+private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
+{
+    // Update GlobalGameData with player details immediately
+    UserData user = GlobalGameData.Instance.GetUserData();
+    user.Level = (int)player.Level;
+    user.NikeName = player.Username;
+    user.WalletId = player.Id.ToString();
+    SaveData.SaveGameUser();
 
-        Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
-        Debug.Log("[Login] Transitioning to the main menu scene...");
+    Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
 
-        Game.Instance.AudioService.ChangeMusicClip("menu");
-        Game.CurrentScene.FinishScene();
-    }
+    // Concurrently create user-specific mission and fetch general missions
+    var principal = Principal.FromText(user.WalletId); // Use WalletId for CreateUserMission
+    var createMissionTask = CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
+    var fetchGeneralMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+
+    await Task.WhenAll(createMissionTask, fetchGeneralMissionsTask);
+
+    var generalMissions = fetchGeneralMissionsTask.Result;
+    Debug.Log($"[Login] Fetched {generalMissions.Count} general missions.");
+
+    Debug.Log("[Login] Transitioning to the main menu scene...");
+    Game.Instance.AudioService.ChangeMusicClip("menu");
+    Game.CurrentScene.FinishScene();
+}
+
 
     public async void SetPlayerName()
     {
