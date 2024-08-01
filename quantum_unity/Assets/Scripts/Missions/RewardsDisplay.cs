@@ -90,15 +90,19 @@ public class RewardsDisplay : MonoBehaviour
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
     {
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(unixTimeStamp / 1000000000).ToLocalTime();
-        return dateTime;
+        dateTime = dateTime.AddSeconds((double)unixTimeStamp / 1000000000);
+        return dateTime.ToLocalTime();
     }
 
     private string CalculateTimeRemaining(ulong unixTimeStamp)
     {
-        DateTime now = DateTime.UtcNow;
-        DateTime expiryDate = UnixTimeStampToDateTime(unixTimeStamp);
-        TimeSpan timeRemaining = expiryDate - now;
+        // Blockchain time is in UTC, so we need to convert it to local time
+        DateTime blockchainTimeUtc = UnixTimeStampToDateTime(unixTimeStamp);
+        DateTime localTime = blockchainTimeUtc.ToLocalTime();
+        
+        DateTime now = DateTime.Now; // Local machine time
+
+        TimeSpan timeRemaining = localTime - now;
 
         if (timeRemaining.TotalSeconds < 0)
         {
@@ -108,6 +112,7 @@ public class RewardsDisplay : MonoBehaviour
         string formattedTime = $"{(int)timeRemaining.TotalDays}d {(int)timeRemaining.Hours}h {(int)timeRemaining.Minutes}m";
         return $"Time remaining: {formattedTime}";
     }
+
 
     private Sprite GetPrizeSprite(MissionRewardType prizeType, UnboundedUInt prizeAmount)
     {
