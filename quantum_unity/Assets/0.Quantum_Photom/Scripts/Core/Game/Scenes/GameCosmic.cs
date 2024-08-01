@@ -322,14 +322,27 @@ namespace TowerRush
                 WonGame = playerStats.WonGame,
                 XpEarned = playerStats.XpEarned
             };
+            
 
             // Display loading panel
             LoadingPanel.Instance.ActiveLoadingPanel();
+            var fetchUserMissionsTask = MissionManager.Instance.SearchActiveUserMissions();
+            var fetchGeneralMissionsTask = MissionManager.Instance.SearchActiveGeneralMissions();
+
 
             // Call the API to save the finished game
             var statsSend = await CandidApiManager.Instance.CanisterLogin.SaveFinishedGame(GlobalGameData.Instance.actualNumberRoom, saveFinishedGameArg1);
             Debug.Log("StatSend: " + statsSend.ReturnArg0);
             Debug.Log("Res: " + statsSend.ReturnArg1);
+
+            // Await the missions fetching tasks
+            var activeUserMissions = await fetchUserMissionsTask;
+            var activeGeneralMissions = await fetchGeneralMissionsTask;
+
+            // Log the fetched active missions
+            Debug.Log($"[SendStats] Fetched {activeUserMissions.Count} active user missions.");
+            Debug.Log($"[SendStats] Fetched {activeGeneralMissions.Count} active general missions.");
+
             LoadingPanel.Instance.DesactiveLoadingPanel();
 
             // Finish the scene

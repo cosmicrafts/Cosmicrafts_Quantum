@@ -32,38 +32,51 @@ public class MissionManager : MonoBehaviour
     {
         Debug.Log("[MissionManager] Initializing missions");
 
-        // Fetch active user and general missions concurrently
-        var fetchUserMissionsTask = SearchActiveUserMissions();
-        var fetchGeneralMissionsTask = SearchActiveGeneralMissions();
+        // Fetch user and general missions concurrently
+        var fetchUserMissionsTask = FetchUserMissions();
+        var fetchGeneralMissionsTask = FetchGeneralMissions();
 
         await Task.WhenAll(fetchUserMissionsTask, fetchGeneralMissionsTask);
 
         UserMissions = fetchUserMissionsTask.Result;
         GeneralMissions = fetchGeneralMissionsTask.Result;
+
+        Debug.Log($"[MissionManager] Fetched {UserMissions.Count} user missions.");
+        Debug.Log($"[MissionManager] Fetched {GeneralMissions.Count} general missions.");
     }
 
     public async Task RefreshUserMissions()
     {
         Debug.Log("[MissionManager] Refreshing user missions...");
-        UserMissions = await SearchActiveUserMissions();
+        UserMissions = await FetchUserMissions();
+        Debug.Log($"[MissionManager] Refreshed user missions: {UserMissions.Count}");
     }
 
     public async Task RefreshGeneralMissions()
     {
         Debug.Log("[MissionManager] Refreshing general missions...");
-        GeneralMissions = await SearchActiveGeneralMissions();
+        GeneralMissions = await FetchGeneralMissions();
+        Debug.Log($"[MissionManager] Refreshed general missions: {GeneralMissions.Count}");
     }
 
-    private async Task<List<MissionsUser>> SearchActiveUserMissions()
+    private async Task<List<MissionsUser>> FetchUserMissions()
     {
-        var userMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveUserMissions();
+        var userMissions = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+        LogRawResponse(userMissions);
         return userMissions;
     }
 
-    private async Task<List<MissionsUser>> SearchActiveGeneralMissions()
+    private async Task<List<MissionsUser>> FetchGeneralMissions()
     {
-        var generalMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveGeneralMissions();
+        var generalMissions = await CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+        LogRawResponse(generalMissions);
         return generalMissions;
+    }
+
+    private void LogRawResponse<T>(T response)
+    {
+        string rawResponse = JsonConvert.SerializeObject(response, Formatting.Indented);
+        Debug.Log($"[MissionManager] Raw response: {rawResponse}");
     }
 
     public async Task<bool> ClaimUserReward(UnboundedUInt rewardID)
@@ -90,5 +103,21 @@ public class MissionManager : MonoBehaviour
         }
         Debug.LogWarning("[MissionManager] Failed to claim general reward.");
         return false;
+    }
+
+    public async Task<List<MissionsUser>> SearchActiveUserMissions()
+    {
+        Debug.Log("[MissionManager] Searching active user missions...");
+        var activeUserMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveUserMissions();
+        Debug.Log($"[MissionManager] Found {activeUserMissions.Count} active user missions.");
+        return activeUserMissions;
+    }
+
+    public async Task<List<MissionsUser>> SearchActiveGeneralMissions()
+    {
+        Debug.Log("[MissionManager] Searching active general missions...");
+        var activeGeneralMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveGeneralMissions();
+        Debug.Log($"[MissionManager] Found {activeGeneralMissions.Count} active general missions.");
+        return activeGeneralMissions;
     }
 }

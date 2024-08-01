@@ -45,6 +45,12 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task AssignAchievementsToUser(PlayerId arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			await this.Agent.CallAndWaitAsync(this.CanisterId, "assignAchievementsToUser", arg);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1)> BlockUser(PlayerId arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
@@ -98,6 +104,13 @@ namespace CanisterPK.CanisterLogin
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter), CandidTypedValue.FromObject(arg3, this.Converter), CandidTypedValue.FromObject(arg4, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "createIndividualAchievement", arg);
+			return reply.ToObjects<bool, string, UnboundedUInt>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1, UnboundedUInt ReturnArg2)> CreateUserMission(PlayerId arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "createUserMission", arg);
 			return reply.ToObjects<bool, string, UnboundedUInt>(this.Converter);
 		}
 
@@ -372,26 +385,18 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
-		public async Task<List<Models.MissionsUser>> SearchActiveGeneralMissions()
+		public async Task<List<Models.MissionsUser>> SearchActiveGeneralMissions(Principal arg0)
 		{
-			CandidArg arg = CandidArg.FromCandid();
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "searchActiveGeneralMissions", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<List<Models.MissionsUser>>(this.Converter);
 		}
 
-		public async Task<List<Models.MissionsUser>> SearchActiveUserMissions()
-		{
-			CandidArg arg = CandidArg.FromCandid();
-			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "searchActiveUserMissions", arg);
-			CandidArg reply = response.ThrowOrGetReply();
-			return reply.ToObjects<List<Models.MissionsUser>>(this.Converter);
-		}
-
-		public async Task<List<Models.MissionsUser>> SearchGeneralMissions(Principal arg0)
+		public async Task<List<Models.MissionsUser>> SearchActiveUserMissions(PlayerId arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
-			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "searchGeneralMissions", arg);
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "searchActiveUserMissions", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<List<Models.MissionsUser>>(this.Converter);
 		}
