@@ -113,102 +113,85 @@ public class RewardsDisplay : MonoBehaviour
         return $"Time remaining: {formattedTime}";
     }
 
-
     private Sprite GetPrizeSprite(MissionRewardType prizeType, UnboundedUInt prizeAmount)
     {
-        switch (prizeType)
+        return prizeType switch
         {
-            case MissionRewardType.Shards:
-                return shardsSprite;
-            case MissionRewardType.Flux:
-                return fluxSprite;
-            case MissionRewardType.Chest:
-                return SelectChestSprite(prizeAmount);
-            default:
-                return null;
-        }
+            MissionRewardType.Shards => shardsSprite,
+            MissionRewardType.Flux => fluxSprite,
+            MissionRewardType.Chest => SelectChestSprite(prizeAmount),
+            _ => null
+        };
     }
 
     private Sprite SelectChestSprite(UnboundedUInt prizeAmount)
     {
         int amount = (int)prizeAmount;
 
-        switch (amount)
+        return amount switch
         {
-            case 1:
-                return chest1Sprite;
-            case 2:
-                return chest2Sprite;
-            case 3:
-                return chest3Sprite;
-            case 4:
-                return chest4Sprite;
-            case 5:
-                return chest5Sprite;
-            case 6:
-                return chest6Sprite;
-            default:
-                return null;
-        }
+            1 => chest1Sprite,
+            2 => chest2Sprite,
+            3 => chest3Sprite,
+            4 => chest4Sprite,
+            5 => chest5Sprite,
+            6 => chest6Sprite,
+            7 => chest7Sprite,
+            8 => chest8Sprite,
+            _ => null
+        };
     }
-
-    public async void OnClaimButtonClicked()
+public async void OnClaimButtonClicked()
+{
+    if (rewardData != null && rewardData.Finished)
     {
-        if (rewardData != null && rewardData.Finished)
+        LoadingPanel.Instance.ActiveLoadingPanel();
+        bool success;
+
+        if (RewardsManager.Instance.UserMissions.Contains(rewardData))
         {
-            LoadingPanel.Instance.ActiveLoadingPanel();
-            bool success;
-
-            if (MissionManager.Instance.UserMissions.Contains(rewardData))
-            {
-                success = await MissionManager.Instance.ClaimUserReward(rewardData.IdMission);
-            }
-            else if (MissionManager.Instance.GeneralMissions.Contains(rewardData))
-            {
-                success = await MissionManager.Instance.ClaimGeneralReward(rewardData.IdMission);
-            }
-            else
-            {
-                Debug.LogError("Unknown mission type.");
-                success = false;
-            }
-
-            if (success)
-            {
-                Debug.Log("Reward claimed successfully!");
-                LoadingPanel.Instance.DesactiveLoadingPanel();
-                Destroy(gameObject);
-                ShowRewardNotification(rewardData);
-            }
-            else
-            {
-                LoadingPanel.Instance.DesactiveLoadingPanel();
-                Debug.LogError("Failed to claim reward.");
-            }
+            success = await RewardsManager.Instance.ClaimUserReward(rewardData.IdMission);
+            await RewardsManager.Instance.RefreshUserMissions(); // Refresh the missions after claiming the reward
+        }
+        else if (RewardsManager.Instance.GeneralMissions.Contains(rewardData))
+        {
+            success = await RewardsManager.Instance.ClaimGeneralReward(rewardData.IdMission);
+            await RewardsManager.Instance.RefreshGeneralMissions(); // Refresh the missions after claiming the reward
         }
         else
         {
-            Debug.LogError("No reward data available to claim.");
+            Debug.LogError("Unknown mission type.");
+            success = false;
+        }
+
+        if (success)
+        {
+            Debug.Log("Reward claimed successfully!");
+            LoadingPanel.Instance.DesactiveLoadingPanel();
+            Destroy(gameObject);
+            ShowRewardNotification(rewardData);
+        }
+        else
+        {
+            LoadingPanel.Instance.DesactiveLoadingPanel();
+            Debug.LogError("Failed to claim reward.");
         }
     }
+    else
+    {
+        Debug.LogError("No reward data available to claim.");
+    }
+}
 
     private void ShowRewardNotification(MissionsUser reward)
     {
-        string notificationMessage = "";
-        switch (reward.RewardType)
+        string notificationMessage = reward.RewardType switch
         {
-            case MissionRewardType.Flux:
-                notificationMessage = $"You received {reward.RewardAmount} Flux!";
-                break;
-            case MissionRewardType.Shards:
-                notificationMessage = $"You received {reward.RewardAmount} Shards!";
-                break;
-            case MissionRewardType.Chest:
-                notificationMessage = $"You received a {GetChestRarity(reward.RewardAmount)} Metacube!";
-                break;
-            default:
-                break;
-        }
+            MissionRewardType.Flux => $"You received {reward.RewardAmount} Flux!",
+            MissionRewardType.Shards => $"You received {reward.RewardAmount} Shards!",
+            MissionRewardType.Chest => $"You received a {GetChestRarity(reward.RewardAmount)} Metacube!",
+            _ => string.Empty
+        };
 
         if (!string.IsNullOrEmpty(notificationMessage) && notificationManager != null)
         {
@@ -219,33 +202,15 @@ public class RewardsDisplay : MonoBehaviour
     private string GetChestRarity(UnboundedUInt prizeAmount)
     {
         int amount = (int)prizeAmount;
-        if (amount >= 7)
+        return amount switch
         {
-            return "Mythical";
-        }
-        if (amount >= 6)
-        {
-            return "Legendary";
-        }
-        if (amount >= 5)
-        {
-            return "Epic";
-        }
-        else if (amount >= 4)
-        {
-            return "Superior";
-        }
-        else if (amount >= 3)
-        {
-            return "Rare";
-        }
-        else if (amount >= 2)
-        {
-            return "Common";
-        }
-        else
-        {
-            return "Basic";
-        }
+            >= 7 => "Mythical",
+            6 => "Legendary",
+            5 => "Epic",
+            4 => "Superior",
+            3 => "Rare",
+            2 => "Common",
+            _ => "Basic"
+        };
     }
 }
