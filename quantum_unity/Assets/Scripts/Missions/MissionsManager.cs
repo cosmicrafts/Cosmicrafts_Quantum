@@ -32,13 +32,16 @@ public class MissionManager : MonoBehaviour
     {
         Debug.Log("[MissionManager] Initializing missions");
 
-        // Fetch user and general missions
-        Debug.Log("[MissionManager] Fetching user missions...");
-        UserMissions = await FetchUserMissions();
-        Debug.Log($"[MissionManager] Fetched {UserMissions.Count} user missions.");
+        // Fetch user and general missions concurrently
+        var fetchUserMissionsTask = FetchUserMissions();
+        var fetchGeneralMissionsTask = FetchGeneralMissions();
 
-        Debug.Log("[MissionManager] Fetching general missions...");
-        GeneralMissions = await FetchGeneralMissions();
+        await Task.WhenAll(fetchUserMissionsTask, fetchGeneralMissionsTask);
+
+        UserMissions = fetchUserMissionsTask.Result;
+        GeneralMissions = fetchGeneralMissionsTask.Result;
+
+        Debug.Log($"[MissionManager] Fetched {UserMissions.Count} user missions.");
         Debug.Log($"[MissionManager] Fetched {GeneralMissions.Count} general missions.");
     }
 
