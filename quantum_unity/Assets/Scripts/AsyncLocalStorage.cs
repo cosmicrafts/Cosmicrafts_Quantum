@@ -1,29 +1,45 @@
 using System;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public static class AsyncLocalStorage
 {
-    // Save data asynchronously
+    // A 32-byte (256-bit) encryption key for AES
+    private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("S5hVAGhIl9vH9sgYO5zemf6XNMyIak5L");
+
+    // Save data asynchronously with encryption
     public static async Task SaveDataAsync(string key, string jsonData)
     {
         try
         {
-            string path = GetFilePath(key);
-            using (StreamWriter writer = new StreamWriter(path))
+            using (Aes aesAlg = Aes.Create())
             {
-                await writer.WriteAsync(jsonData);
-                Debug.Log($"[AsyncLocalStorage] Successfully saved data for key: {key} at path: {path}");
+                aesAlg.Key = EncryptionKey;
+                aesAlg.GenerateIV();
+                string iv = Convert.ToBase64String(aesAlg.IV);
+
+                string encryptedData = Encrypt(jsonData, aesAlg.Key, aesAlg.IV);
+
+                // Save the encrypted data with IV
+                string dataToSave = $"{iv}:{encryptedData}";
+                string path = GetFilePath(key);
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    await writer.WriteAsync(dataToSave);
+                    Debug.Log($"[AsyncLocalStorage] Successfully saved encrypted data for key: {key} at path: {path}");
+                }
             }
         }
         catch (Exception ex)
         {
-            Debug.LogError($"[AsyncLocalStorage] Error saving data for key: {key}. Exception: {ex.Message}");
+            Debug.LogError($"[AsyncLocalStorage] Error saving encrypted data for key: {key}. Exception: {ex.Message}");
         }
     }
 
-    // Load data asynchronously
+    // Load data asynchronously with decryption
     public static async Task<string> LoadDataAsync(string key)
     {
         string path = GetFilePath(key);
@@ -33,8 +49,27 @@ public static class AsyncLocalStorage
             {
                 using (StreamReader reader = new StreamReader(path))
                 {
-                    string jsonData = await reader.ReadToEndAsync();
-                    Debug.Log($"[AsyncLocalStorage] Successfully loaded data for key: {key} from path: {path}");
+                    string dataToLoad = await reader.ReadToEndAsync();
+
+                    // Ensure data is in the expected format with one colon separator
+                    int colonIndex = dataToLoad.IndexOf(':');
+                    if (colonIndex == -1 || colonIndex >= dataToLoad.Length - 1)
+                    {
+                        Debug.LogError($"[AsyncLocalStorage] Invalid data format for key: {key}. Data: {dataToLoad}");
+                        throw new Exception("Invalid data format. Missing IV or encrypted data.");
+                    }
+
+                    string iv = dataToLoad.Substring(0, colonIndex);
+                    string encryptedData = dataToLoad.Substring(colonIndex + 1);
+
+                    if (string.IsNullOrEmpty(iv) || string.IsNullOrEmpty(encryptedData))
+                    {
+                        Debug.LogError($"[AsyncLocalStorage] Invalid data components for key: {key}. IV: {iv}, Data: {encryptedData}");
+                        throw new Exception("Invalid data format. IV or encrypted data is empty.");
+                    }
+
+                    string jsonData = Decrypt(encryptedData, EncryptionKey, Convert.FromBase64String(iv));
+                    Debug.Log($"[AsyncLocalStorage] Successfully loaded and decrypted data for key: {key} from path: {path}");
                     return jsonData;
                 }
             }
@@ -46,7 +81,7 @@ public static class AsyncLocalStorage
         }
         catch (Exception ex)
         {
-            Debug.LogError($"[AsyncLocalStorage] Error loading data for key: {key}. Exception: {ex.Message}");
+            Debug.LogError($"[AsyncLocalStorage] Error loading or decrypting data for key: {key}. Exception: {ex.Message}");
             return null;
         }
     }
@@ -77,5 +112,46 @@ public static class AsyncLocalStorage
     private static string GetFilePath(string key)
     {
         return Path.Combine(Application.persistentDataPath, key + ".json");
+    }
+
+    // Encryption method with IV
+    private static string Encrypt(string plainText, byte[] key, byte[] iv)
+    {
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
+
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+            using (MemoryStream msEncrypt = new MemoryStream())
+            {
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                {
+                    swEncrypt.Write(plainText);
+                }
+                return Convert.ToBase64String(msEncrypt.ToArray());
+            }
+        }
+    }
+
+    // Decryption method with IV
+    private static string Decrypt(string cipherText, byte[] key, byte[] iv)
+    {
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
+
+            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+            using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+            {
+                return srDecrypt.ReadToEnd();
+            }
+        }
     }
 }
