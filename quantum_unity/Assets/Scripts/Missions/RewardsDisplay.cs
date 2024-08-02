@@ -42,50 +42,69 @@ public class RewardsDisplay : MonoBehaviour
     public Image claimButtonImage;
     public Image progressBar;
 
-    public void SetRewardData(MissionsUser reward)
+public void SetRewardData(MissionsUser reward)
+{
+    rewardData = reward;
+
+    Debug.Log($"ID: {reward.IdMission}");
+    Debug.Log($"Reward Type: {reward.RewardType}");
+    Debug.Log($"Prize Amount: {reward.RewardAmount}");
+    Debug.Log($"Progress: {reward.Progress}/{reward.Total}");
+    Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
+    Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
+
+    string missionText = reward.MissionType switch
     {
-        rewardData = reward;
+        MissionType.GamesCompleted => $"Play {reward.Total} {(reward.Total == 1 ? "Game" : "Games")}",
+        MissionType.GamesWon => $"Win {reward.Total} {(reward.Total == 1 ? "Game" : "Games")}",
+        MissionType.DamageDealt => $"Deal {reward.Total} Damage",
+        MissionType.DamageTaken => $"Take {reward.Total} Damage",
+        MissionType.EnergyUsed => $"Use {reward.Total} Energy",
+        MissionType.FactionPlayed => $"Play as {reward.Total} Different Factions",
+        MissionType.GameModePlayed => $"Play {reward.Total} Different Game Modes",
+        MissionType.Kills => $"Achieve {reward.Total} Kills",
+        MissionType.UnitsDeployed => $"Deploy {reward.Total} Units",
+        MissionType.XPEarned => $"Earn {reward.Total} XP",
+        _ => "Unknown Mission"
+    };
+    rewardTypeText.text = missionText;
 
-        Debug.Log($"ID: {reward.IdMission}");
-        Debug.Log($"Reward Type: {reward.RewardType}");
-        Debug.Log($"Prize Amount: {reward.RewardAmount}");
-        Debug.Log($"Progress: {reward.Progress}/{reward.Total}");
-        Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
-        Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
+    idText.text = $"ID: {reward.IdMission}";
+    prizeAmountText.text = $"{reward.RewardAmount}";
+    progressText.text = $"{reward.Progress}/{reward.Total}";
 
-        string gameOrGames = reward.Total == 1 ? "Game" : "Games";
-        string winOrWins = reward.Total == 1 ? "Win" : "Wins";
+    expirationText.text = CalculateTimeRemaining(reward.Expiration);
 
-        string missionText = reward.MissionType switch
-        {
-            MissionType.GamesCompleted => $"Play {reward.Total} {gameOrGames}",
-            MissionType.GamesWon => $"{winOrWins} {reward.Total} {gameOrGames}",
-            _ => "Unknown Mission"
-        };
-        rewardTypeText.text = missionText;
+    finishedText.text = $"Completed: {(reward.Finished ? "Yes" : "No")}";
+    prizeTypeText.text = $"Reward: {(reward.RewardType == MissionRewardType.Shards ? "Shards" : reward.RewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
 
-        idText.text = $"ID: {reward.IdMission}";
-        prizeAmountText.text = $"{reward.RewardAmount}";
-        progressText.text = $"{reward.Progress}/{reward.Total}";
+    Sprite selectedSprite = GetPrizeSprite(reward.RewardType, reward.RewardAmount);
+    prizeImage.sprite = selectedSprite;
+    prizeImage.enabled = selectedSprite != null;
 
-        expirationText.text = CalculateTimeRemaining(reward.Expiration);
+    panelToChangeColor.GetComponent<Image>().color = reward.MissionType switch
+    {
+        MissionType.GamesCompleted => gamesPlayedColor,
+        MissionType.GamesWon => gamesWonColor,
+        MissionType.DamageDealt => gamesPlayedColor,
+        MissionType.DamageTaken => gamesWonColor,
+        MissionType.EnergyUsed => gamesPlayedColor,
+        MissionType.FactionPlayed => gamesWonColor,
+        MissionType.GameModePlayed => gamesPlayedColor,
+        MissionType.Kills => gamesWonColor,
+        MissionType.UnitsDeployed => gamesPlayedColor,
+        MissionType.XPEarned => gamesWonColor,
+        _ => gamesPlayedColor
+    };
 
-        finishedText.text = $"Completed: {(reward.Finished ? "Yes" : "No")}";
-        prizeTypeText.text = $"Reward: {(reward.RewardType == MissionRewardType.Shards ? "Shards" : reward.RewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
+    bool isClaimable = reward.Finished;
+    claimButtonImage.enabled = isClaimable;
+    claimButton.interactable = isClaimable;
 
-        Sprite selectedSprite = GetPrizeSprite(reward.RewardType, reward.RewardAmount);
-        prizeImage.sprite = selectedSprite;
-        prizeImage.enabled = selectedSprite != null;
+    float progressRatio = (float)(ulong)reward.Progress / (float)(ulong)reward.Total;
+    progressBar.fillAmount = progressRatio;
+}
 
-        panelToChangeColor.GetComponent<Image>().color = reward.MissionType == MissionType.GamesCompleted ? gamesPlayedColor : gamesWonColor;
-
-        bool isClaimable = reward.Finished;
-        claimButtonImage.enabled = isClaimable;
-        claimButton.interactable = isClaimable;
-
-        float progressRatio = (float)(ulong)reward.Progress / (float)(ulong)reward.Total;
-        progressBar.fillAmount = progressRatio;
-    }
 
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
     {

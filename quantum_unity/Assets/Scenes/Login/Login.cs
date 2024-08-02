@@ -5,6 +5,7 @@ using TMPro;
 using TowerRush;
 using UnityEngine;
 using System.Numerics;
+using System;
 
 public class Login : MonoBehaviour
 {
@@ -135,29 +136,46 @@ public class Login : MonoBehaviour
 
 private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
 {
-    // Update GlobalGameData with player details immediately
-    UserData user = GlobalGameData.Instance.GetUserData();
-    user.Level = (int)player.Level;
-    user.NikeName = player.Username;
-    user.WalletId = player.Id.ToString();
-    SaveData.SaveGameUser();
+    try
+    {
+        // Update GlobalGameData with player details immediately
+        UserData user = GlobalGameData.Instance.GetUserData();
+        user.Level = (int)player.Level;
+        user.NikeName = player.Username;
+        user.WalletId = player.Id.ToString();
+        SaveData.SaveGameUser();
 
-    Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
+        Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
 
-    // Concurrently create user-specific mission and fetch general missions
-    var principal = Principal.FromText(user.WalletId); // Use WalletId for CreateUserMission
-    var createMissionTask = CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
-    var fetchGeneralMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+        // Create user-specific mission and fetch general missions
+        var principal = Principal.FromText(user.WalletId); // Use WalletId for CreateUserMission
+        var createMissionTask = CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
+        var fetchGeneralMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
 
-    await Task.WhenAll(createMissionTask, fetchGeneralMissionsTask);
+        await Task.WhenAll(createMissionTask, fetchGeneralMissionsTask);
 
-    var generalMissions = fetchGeneralMissionsTask.Result;
-    Debug.Log($"[Login] Fetched {generalMissions.Count} general missions.");
+        // Check results
+        if (createMissionTask.IsCompletedSuccessfully && fetchGeneralMissionsTask.IsCompletedSuccessfully)
+        {
+            var generalMissions = fetchGeneralMissionsTask.Result;
+            Debug.Log($"[Login] Fetched {generalMissions.Count} general missions.");
+        }
+        else
+        {
+            Debug.LogError("[Login] One or both tasks failed.");
+        }
 
-    Debug.Log("[Login] Transitioning to the main menu scene...");
-    Game.Instance.AudioService.ChangeMusicClip("menu");
-    Game.CurrentScene.FinishScene();
+        // Transition to the main menu scene
+        Debug.Log("[Login] Transitioning to the main menu scene...");
+        Game.Instance.AudioService.ChangeMusicClip("menu");
+        Game.CurrentScene.FinishScene();
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[Login] Error occurred during login process: {ex.Message}");
+    }
 }
+
 
 
     public async void SetPlayerName()
