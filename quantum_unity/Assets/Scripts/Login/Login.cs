@@ -153,7 +153,7 @@ public class Login : MonoBehaviour
             // Transition to the dashboard canvas
             Debug.Log("[Login] Transitioning to the dashboard...");
             loginCanvas.SetActive(false);
-            Game.CurrentScene.FinishScene();
+            //Game.CurrentScene.FinishScene();
             dashboardCanvas.SetActive(true);
         }
         catch (Exception ex)
