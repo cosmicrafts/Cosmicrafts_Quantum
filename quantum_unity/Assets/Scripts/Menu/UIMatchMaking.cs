@@ -11,7 +11,6 @@ using EdjCase.ICP.Candid.Models;
 using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIMatchMaking : MonoBehaviour
@@ -60,7 +59,7 @@ public class UIMatchMaking : MonoBehaviour
                 isGameMatched = isGameMatchedRequest.ReturnArg0;
                 Debug.Log("IsGameMatched: "+ isGameMatched );
                 
-                await Task.Delay(500);
+                await Task.Delay(300);
                 
                 if(isGameMatched) { sendPlayerActive = false; MatchFound(); }
             }
@@ -80,7 +79,7 @@ public class UIMatchMaking : MonoBehaviour
                 break;
             }
             
-            await Task.Delay(2000);
+            await Task.Delay(5000);
         }
     }
     public async void CancelSearch()

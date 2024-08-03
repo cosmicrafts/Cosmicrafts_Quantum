@@ -150,28 +150,10 @@ public class Login : MonoBehaviour
             SaveData.SaveGameUser();
 
             Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
-
-            // Create user-specific mission and fetch general missions
-            var principal = Principal.FromText(user.WalletId); // Use WalletId for CreateUserMission
-            var createMissionTask = CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
-            var fetchGeneralMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
-
-            await Task.WhenAll(createMissionTask, fetchGeneralMissionsTask);
-
-            // Check results
-            if (createMissionTask.IsCompletedSuccessfully && fetchGeneralMissionsTask.IsCompletedSuccessfully)
-            {
-                var generalMissions = fetchGeneralMissionsTask.Result;
-                Debug.Log($"[Login] Fetched {generalMissions.Count} general missions.");
-            }
-            else
-            {
-                Debug.LogError("[Login] One or both tasks failed.");
-            }
-
             // Transition to the dashboard canvas
             Debug.Log("[Login] Transitioning to the dashboard...");
             loginCanvas.SetActive(false);
+            Game.CurrentScene.FinishScene();
             dashboardCanvas.SetActive(true);
         }
         catch (Exception ex)
