@@ -24,6 +24,7 @@ public class shards : MonoBehaviour
     public NotificationManager notificationManager;
 
     private const int DECIMAL_PLACES = 6;
+    private Coroutine balanceAnimationCoroutine;
 
     void Start()
     {
@@ -40,6 +41,13 @@ public class shards : MonoBehaviour
     private void OnDisable()
     {
         BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
+
+        // Stop any ongoing balance animation coroutine
+        if (balanceAnimationCoroutine != null)
+        {
+            StopCoroutine(balanceAnimationCoroutine);
+            balanceAnimationCoroutine = null;
+        }
     }
 
     public async void FetchBalance()
@@ -51,6 +59,12 @@ public class shards : MonoBehaviour
         {
             var account = new CanisterPK.testicrc1.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
             var balance = await CandidApiManager.Instance.testicrc1.Icrc1BalanceOf(account);
+
+            if (balance == null)
+            {
+                Debug.LogError("[shards] Fetched balance is null.");
+                return;
+            }
 
             // Trigger the balance animation with the new balance
             AnimateBalanceUpdate(balance);
@@ -153,9 +167,21 @@ public class shards : MonoBehaviour
 
     private void AnimateBalanceUpdate(UnboundedUInt newBalance)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.LogWarning("AnimateBalanceUpdate called on an inactive GameObject.");
+            return;
+        }
+
         BigInteger newBalanceBigInt = newBalance.ToBigInteger();
         CurrentBalance = newBalanceBigInt;
-        StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
+
+        if (balanceAnimationCoroutine != null)
+        {
+            StopCoroutine(balanceAnimationCoroutine);
+        }
+
+        balanceAnimationCoroutine = StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
     }
 
     private IEnumerator IncrementBalanceAnimation(BigInteger targetBalance) 

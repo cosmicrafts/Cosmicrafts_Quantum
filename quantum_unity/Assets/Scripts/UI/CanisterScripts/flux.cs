@@ -24,6 +24,7 @@ public class flux : MonoBehaviour
     public NotificationManager notificationManager;
 
     private const int DECIMAL_PLACES = 6;
+    private Coroutine balanceAnimationCoroutine;
 
     void Start()
     {
@@ -40,6 +41,13 @@ public class flux : MonoBehaviour
     private void OnDisable()
     {
         BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
+
+        // Stop any ongoing balance animation coroutine
+        if (balanceAnimationCoroutine != null)
+        {
+            StopCoroutine(balanceAnimationCoroutine);
+            balanceAnimationCoroutine = null;
+        }
     }
 
     public async void FetchBalance()
@@ -51,6 +59,12 @@ public class flux : MonoBehaviour
         {
             var account = new CanisterPK.flux.Models.Account1(Principal.FromText(principalId), new Account1.SubaccountInfo());
             var balance = await CandidApiManager.Instance.flux.Icrc1BalanceOf(account);
+
+            if (balance == null)
+            {
+                Debug.LogError("[flux] Fetched balance is null.");
+                return;
+            }
 
             // Trigger the balance animation with the new balance
             AnimateBalanceUpdate(balance);
@@ -86,12 +100,12 @@ public class flux : MonoBehaviour
         BigInteger tokenAmountBigInt = ConvertToBigInteger(tokenAmount);
 
         SetTransferStatus("Sending...");
+        LoadingPanel.Instance.ActiveLoadingPanel();
 
         tranferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt), "Flux");
-        LoadingPanel.Instance.ActiveLoadingPanel();
     }
 
-        public void UpdateBalanceLocally(int cost)
+    public void UpdateBalanceLocally(int cost)
     {
         CurrentBalance -= new BigInteger(cost);
         balanceText.text = CurrentBalance.ToString();
@@ -152,9 +166,21 @@ public class flux : MonoBehaviour
 
     private void AnimateBalanceUpdate(UnboundedUInt newBalance)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.LogWarning("AnimateBalanceUpdate called on an inactive GameObject.");
+            return;
+        }
+
         BigInteger newBalanceBigInt = newBalance.ToBigInteger();
         CurrentBalance = newBalanceBigInt;
-        StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
+
+        if (balanceAnimationCoroutine != null)
+        {
+            StopCoroutine(balanceAnimationCoroutine);
+        }
+
+        balanceAnimationCoroutine = StartCoroutine(IncrementBalanceAnimation(newBalanceBigInt));
     }
 
     private IEnumerator IncrementBalanceAnimation(BigInteger targetBalance) 
