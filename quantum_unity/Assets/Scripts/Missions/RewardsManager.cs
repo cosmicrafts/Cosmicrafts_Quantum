@@ -60,67 +60,65 @@ public class RewardsManager : MonoBehaviour
         PopulateRewardsUI(activeUserMissions, activeGeneralMissions);
     }
 
-private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUser> generalMissions)
-{
-    // Combine user and general missions into one list
-    List<MissionsUser> allMissions = new List<MissionsUser>();
-    if (userMissions != null)
+    private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUser> generalMissions)
     {
-        allMissions.AddRange(userMissions);
-    }
-    if (generalMissions != null)
-    {
-        allMissions.AddRange(generalMissions);
-    }
-
-    if (allMissions.Count == 0)
-    {
-        Debug.LogWarning("[RewardsManager] No missions to display.");
-        return;
-    }
-
-    int currentChildIndex = 0;
-
-    // Iterate through all missions and update or create UI elements
-    foreach (var mission in allMissions)
-    {
-        Debug.Log($"[RewardsManager] Processing mission with ID: {mission.IdMission}");
-
-        if (currentChildIndex < rewardsContainer.childCount)
+        // Combine user and general missions into one list
+        List<MissionsUser> allMissions = new List<MissionsUser>();
+        if (userMissions != null)
         {
-            // Update existing child
-            var child = rewardsContainer.GetChild(currentChildIndex);
-            var display = child.GetComponent<RewardsDisplay>();
-            if (display != null)
+            allMissions.AddRange(userMissions);
+        }
+        if (generalMissions != null)
+        {
+            allMissions.AddRange(generalMissions);
+        }
+
+        if (allMissions.Count == 0)
+        {
+            Debug.LogWarning("[RewardsManager] No missions to display.");
+            return;
+        }
+
+        int currentChildIndex = 0;
+
+        // Iterate through all missions and update or create UI elements
+        foreach (var mission in allMissions)
+        {
+            Debug.Log($"[RewardsManager] Processing mission with ID: {mission.IdMission}");
+
+            if (currentChildIndex < rewardsContainer.childCount)
             {
-                display.SetRewardData(mission);
-                child.gameObject.SetActive(true);
-                Debug.Log($"[RewardsManager] Updated reward for mission ID: {mission.IdMission}");
+                // Update existing child
+                var child = rewardsContainer.GetChild(currentChildIndex);
+                var display = child.GetComponent<RewardsDisplay>();
+                if (display != null)
+                {
+                    display.SetRewardData(mission);
+                    child.gameObject.SetActive(true);
+                    Debug.Log($"[RewardsManager] Updated reward for mission ID: {mission.IdMission}");
+                }
+                else
+                {
+                    Debug.LogError("RewardsDisplay component is missing from the child prefab!");
+                }
             }
             else
             {
-                Debug.LogError("RewardsDisplay component is missing from the child prefab!");
+                // Instantiate a new child
+                InstantiateRewardPrefab(mission);
             }
+
+            currentChildIndex++;
         }
-        else
+
+        // Deactivate any remaining unused children
+        for (int i = currentChildIndex; i < rewardsContainer.childCount; i++)
         {
-            // Instantiate a new child
-            InstantiateRewardPrefab(mission);
+            rewardsContainer.GetChild(i).gameObject.SetActive(false);
         }
 
-        currentChildIndex++;
+        rewardsCountText.text = allMissions.Count.ToString();
     }
-
-    // Deactivate any remaining unused children
-    for (int i = currentChildIndex; i < rewardsContainer.childCount; i++)
-    {
-        rewardsContainer.GetChild(i).gameObject.SetActive(false);
-    }
-
-    rewardsCountText.text = allMissions.Count.ToString();
-}
-
-
 
     private void InstantiateRewardPrefab(MissionsUser mission)
     {
@@ -193,14 +191,14 @@ private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUse
 
     private void OnEnable()
     {
-        RewardsManager.Instance.OnMissionClaimed += HandleMissionClaimed;
-        RewardsManager.Instance.OnMissionRemoved += HandleMissionRemoved;
+        OnMissionClaimed += HandleMissionClaimed;
+        OnMissionRemoved += HandleMissionRemoved;
     }
 
     private void OnDisable()
     {
-        RewardsManager.Instance.OnMissionClaimed -= HandleMissionClaimed;
-        RewardsManager.Instance.OnMissionRemoved -= HandleMissionRemoved;
+        OnMissionClaimed -= HandleMissionClaimed;
+        OnMissionRemoved -= HandleMissionRemoved;
     }
 
     private void HandleMissionClaimed(MissionsUser mission)
@@ -219,7 +217,17 @@ private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUse
 
     private void HandleMissionRemoved(MissionsUser mission)
     {
-        // Handle mission removal logic if different from claimed
+        // Find the corresponding UI element and deactivate it
+        foreach (Transform child in rewardsContainer)
+        {
+            var display = child.GetComponent<RewardsDisplay>();
+            if (display != null && display.rewardData == mission)
+            {
+                display.SetRewardData(null);
+                child.gameObject.SetActive(false);
+                break;
+            }
+        }
     }
 
     public async Task<bool> ClaimUserReward(UnboundedUInt rewardID)
@@ -273,7 +281,6 @@ private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUse
             return false;
         }
     }
-
 
     private Principal GetPrincipal()
     {

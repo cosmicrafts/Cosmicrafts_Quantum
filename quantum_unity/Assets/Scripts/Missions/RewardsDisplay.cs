@@ -53,7 +53,7 @@ public void SetRewardData(MissionsUser reward)
     Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
     Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
 
-    string missionText = reward.MissionType switch
+    string missionText = reward.Total == 0 ? "Free Chest" : reward.MissionType switch
     {
         MissionType.GamesCompleted => $"Play {reward.Total} {(reward.Total == 1 ? "Game" : "Games")}",
         MissionType.GamesWon => $"Win {reward.Total} {(reward.Total == 1 ? "Game" : "Games")}",
@@ -104,7 +104,6 @@ public void SetRewardData(MissionsUser reward)
     float progressRatio = reward.Total == 0 ? 1f : (float)(ulong)reward.Progress / (float)(ulong)reward.Total; // Set progress to 100% if Total is 0
     progressBar.fillAmount = progressRatio;
 }
-
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
     {
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
