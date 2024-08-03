@@ -60,7 +60,7 @@ public class UIMatchMaking : MonoBehaviour
                 isGameMatched = isGameMatchedRequest.ReturnArg0;
                 Debug.Log("IsGameMatched: "+ isGameMatched );
                 
-                await Task.Delay(500);
+                await Task.Delay(250);
                 
                 if(isGameMatched) { sendPlayerActive = false; MatchFound(); }
             }
@@ -80,7 +80,7 @@ public class UIMatchMaking : MonoBehaviour
                 break;
             }
             
-            await Task.Delay(2000);
+            await Task.Delay(5000);
         }
     }
     public async void CancelSearch()

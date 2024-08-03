@@ -28,14 +28,31 @@ public class LeagueManager : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.Log("Subscribing to OnLeagueChanged event.");
-        EloManagement.Instance.OnLeagueChanged += UpdateLeagueUI;
+        StartCoroutine(SubscribeToEventWithDelay());
     }
 
     void OnDisable()
     {
         Debug.Log("Unsubscribing from OnLeagueChanged event.");
-        EloManagement.Instance.OnLeagueChanged -= UpdateLeagueUI;
+        if (EloManagement.Instance != null)
+        {
+            EloManagement.Instance.OnLeagueChanged -= UpdateLeagueUI;
+        }
+    }
+
+    private IEnumerator SubscribeToEventWithDelay()
+    {
+        yield return new WaitForSeconds(1f);
+
+        Debug.Log("Subscribing to OnLeagueChanged event.");
+        if (EloManagement.Instance != null)
+        {
+            EloManagement.Instance.OnLeagueChanged += UpdateLeagueUI;
+        }
+        else
+        {
+            Debug.LogError("EloManagement.Instance is null.");
+        }
     }
 
     private void HandleLeagueChange(LeagueSO newLeague)

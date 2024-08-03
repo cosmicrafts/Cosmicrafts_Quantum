@@ -19,7 +19,7 @@ public class RewardsDisplay : MonoBehaviour
     public Button claimButton;
     public NotificationManager notificationManager;
 
-    private MissionsUser rewardData;
+    public MissionsUser rewardData { get; private set; }
 
     public Sprite fluxSprite;
     public Sprite shardsSprite;
@@ -97,14 +97,13 @@ public void SetRewardData(MissionsUser reward)
         _ => gamesPlayedColor
     };
 
-    bool isClaimable = reward.Finished;
+    bool isClaimable = reward.Finished || reward.Total == 0; // Added condition for reward.Total == 0
     claimButtonImage.enabled = isClaimable;
     claimButton.interactable = isClaimable;
 
-    float progressRatio = (float)(ulong)reward.Progress / (float)(ulong)reward.Total;
+    float progressRatio = reward.Total == 0 ? 1f : (float)(ulong)reward.Progress / (float)(ulong)reward.Total; // Set progress to 100% if Total is 0
     progressBar.fillAmount = progressRatio;
 }
-
 
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
     {

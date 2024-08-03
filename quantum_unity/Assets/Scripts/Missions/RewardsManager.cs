@@ -19,6 +19,10 @@ public class RewardsManager : MonoBehaviour
     public List<MissionsUser> UserMissions { get; private set; }
     public List<MissionsUser> GeneralMissions { get; private set; }
 
+    public event Action<MissionsUser> OnMissionClaimed;
+    public event Action<MissionsUser> OnMissionUpdated;
+    public event Action<MissionsUser> OnMissionRemoved;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -56,38 +60,67 @@ public class RewardsManager : MonoBehaviour
         PopulateRewardsUI(activeUserMissions, activeGeneralMissions);
     }
 
-    private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUser> generalMissions)
+private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUser> generalMissions)
+{
+    // Combine user and general missions into one list
+    List<MissionsUser> allMissions = new List<MissionsUser>();
+    if (userMissions != null)
     {
-        List<MissionsUser> allMissions = new List<MissionsUser>();
-        if (userMissions != null)
-        {
-            allMissions.AddRange(userMissions);
-        }
-        if (generalMissions != null)
-        {
-            allMissions.AddRange(generalMissions);
-        }
+        allMissions.AddRange(userMissions);
+    }
+    if (generalMissions != null)
+    {
+        allMissions.AddRange(generalMissions);
+    }
 
-        if (allMissions.Count == 0)
-        {
-            Debug.LogWarning("[RewardsManager] No missions to display.");
-            return;
-        }
+    if (allMissions.Count == 0)
+    {
+        Debug.LogWarning("[RewardsManager] No missions to display.");
+        return;
+    }
 
-        // Clean up any existing children in the container
-        foreach (Transform child in rewardsContainer)
-        {
-            Destroy(child.gameObject);
-        }
+    int currentChildIndex = 0;
 
-        foreach (var mission in allMissions)
+    // Iterate through all missions and update or create UI elements
+    foreach (var mission in allMissions)
+    {
+        Debug.Log($"[RewardsManager] Processing mission with ID: {mission.IdMission}");
+
+        if (currentChildIndex < rewardsContainer.childCount)
         {
-            Debug.Log($"[RewardsManager] Instantiating mission with ID: {mission.IdMission}");
+            // Update existing child
+            var child = rewardsContainer.GetChild(currentChildIndex);
+            var display = child.GetComponent<RewardsDisplay>();
+            if (display != null)
+            {
+                display.SetRewardData(mission);
+                child.gameObject.SetActive(true);
+                Debug.Log($"[RewardsManager] Updated reward for mission ID: {mission.IdMission}");
+            }
+            else
+            {
+                Debug.LogError("RewardsDisplay component is missing from the child prefab!");
+            }
+        }
+        else
+        {
+            // Instantiate a new child
             InstantiateRewardPrefab(mission);
         }
 
-        rewardsCountText.text = allMissions.Count.ToString();
+        currentChildIndex++;
     }
+
+    // Deactivate any remaining unused children
+    for (int i = currentChildIndex; i < rewardsContainer.childCount; i++)
+    {
+        rewardsContainer.GetChild(i).gameObject.SetActive(false);
+    }
+
+    rewardsCountText.text = allMissions.Count.ToString();
+}
+
+
 
     private void InstantiateRewardPrefab(MissionsUser mission)
     {
@@ -158,57 +191,89 @@ public class RewardsManager : MonoBehaviour
         }
     }
 
-    public async Task<bool> ClaimUserReward(UnboundedUInt rewardID)
+    private void OnEnable()
     {
-        for (int attempt = 0; attempt < 3; attempt++)
+        RewardsManager.Instance.OnMissionClaimed += HandleMissionClaimed;
+        RewardsManager.Instance.OnMissionRemoved += HandleMissionRemoved;
+    }
+
+    private void OnDisable()
+    {
+        RewardsManager.Instance.OnMissionClaimed -= HandleMissionClaimed;
+        RewardsManager.Instance.OnMissionRemoved -= HandleMissionRemoved;
+    }
+
+    private void HandleMissionClaimed(MissionsUser mission)
+    {
+        // Find the corresponding UI element and remove it
+        foreach (Transform child in rewardsContainer)
         {
-            try
+            var display = child.GetComponent<RewardsDisplay>();
+            if (display != null && display.rewardData == mission)
             {
-                var result = await CandidApiManager.Instance.CanisterLogin.ClaimUserReward(rewardID);
-                if (result.ReturnArg0)
-                {
-                    Debug.Log("[RewardsManager] User reward claimed successfully.");
-                    await RefreshUserMissions(); // Refresh the user missions after claiming
-                    var principal = GetPrincipal();
-                    await CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal); // Create a new user mission
-                    return true;
-                }
-                Debug.LogWarning("[RewardsManager] Failed to claim user reward.");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[RewardsManager] Error claiming user reward (attempt {attempt + 1}/3): {ex.Message}");
-                if (attempt < 2) await Task.Delay(1000); // Retry after a delay
+                Destroy(child.gameObject);
+                break;
             }
         }
-        return false;
+    }
+
+    private void HandleMissionRemoved(MissionsUser mission)
+    {
+        // Handle mission removal logic if different from claimed
+    }
+
+    public async Task<bool> ClaimUserReward(UnboundedUInt rewardID)
+    {
+        try
+        {
+            var result = await CandidApiManager.Instance.CanisterLogin.ClaimUserReward(rewardID);
+            if (result.ReturnArg0)
+            {
+                Debug.Log("[RewardsManager] User reward claimed successfully.");
+                var mission = UserMissions.Find(m => m.IdMission == rewardID);
+                if (mission != null)
+                {
+                    UserMissions.Remove(mission);
+                    OnMissionClaimed?.Invoke(mission);
+                }
+                return true;
+            }
+            Debug.LogWarning("[RewardsManager] Failed to claim user reward.");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[RewardsManager] Error claiming user reward: {ex.Message}");
+            return false;
+        }
     }
 
     public async Task<bool> ClaimGeneralReward(UnboundedUInt rewardID)
     {
-        for (int attempt = 0; attempt < 3; attempt++)
+        try
         {
-            try
+            var result = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardID);
+            if (result.ReturnArg0)
             {
-                var result = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardID);
-                if (result.ReturnArg0)
+                Debug.Log("[RewardsManager] General reward claimed successfully.");
+                var mission = GeneralMissions.Find(m => m.IdMission == rewardID);
+                if (mission != null)
                 {
-                    Debug.Log("[RewardsManager] General reward claimed successfully.");
-                    await RefreshGeneralMissions(); // Refresh the general missions after claiming
-                    return true;
+                    GeneralMissions.Remove(mission);
+                    OnMissionClaimed?.Invoke(mission);
                 }
-                Debug.LogWarning("[RewardsManager] Failed to claim general reward.");
-                return false;
+                return true;
             }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[RewardsManager] Error claiming general reward (attempt {attempt + 1}/3): {ex.Message}");
-                if (attempt < 2) await Task.Delay(1000); // Retry after a delay
-            }
+            Debug.LogWarning("[RewardsManager] Failed to claim general reward.");
+            return false;
         }
-        return false;
+        catch (Exception ex)
+        {
+            Debug.LogError($"[RewardsManager] Error claiming general reward: {ex.Message}");
+            return false;
+        }
     }
+
 
     private Principal GetPrincipal()
     {
