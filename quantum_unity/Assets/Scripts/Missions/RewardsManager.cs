@@ -244,6 +244,20 @@ public class RewardsManager : MonoBehaviour
                     UserMissions.Remove(mission);
                     OnMissionClaimed?.Invoke(mission);
                 }
+
+                // Create a new mission after successful claim
+                var principal = GetPrincipal();
+                var createMissionTask = await CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
+                if (createMissionTask.ReturnArg0)
+                {
+                    Debug.Log("[RewardsManager] New user mission created successfully.");
+                    await FetchAndPopulateRewardsUI();
+                }
+                else
+                {
+                    Debug.LogWarning("[RewardsManager] Failed to create new user mission.");
+                }
+
                 return true;
             }
             Debug.LogWarning("[RewardsManager] Failed to claim user reward.");
