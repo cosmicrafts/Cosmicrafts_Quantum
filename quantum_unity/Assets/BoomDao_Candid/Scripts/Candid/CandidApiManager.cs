@@ -356,15 +356,18 @@ private void AbortLogin()
             //NowCanLogin
         }
 
-        private UniTask InitializeCandidApis(IAgent agent, bool asAnon = false)
+        private async UniTask InitializeCandidApis(IAgent agent, bool asAnon = false)
         {
             Debug.Log($"[CandidApiManager] Initializing Candid APIs. Anonymous: {asAnon}");
             var userPrincipal = agent.Identity.GetPublicKey().ToPrincipal().ToText();
-            string userAccountIdentity;
-            //Check if anon setup is required
+
+            // Simulate an asynchronous operation (e.g., switch to a background thread)
+            await UniTask.Yield();
+
+            // Check if anon setup is required
             if (asAnon)
             {
-                //Build Interfaces
+                // Build Interfaces
                 CanisterLogin = new CanisterLoginApiClient(agent, Principal.FromText("fdaor-cqaaa-aaaao-ai7nq-cai"));
                 testnft = new TestnftApiClient(agent, Principal.FromText("etqmj-zyaaa-aaaap-aakaq-cai"));
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
@@ -373,13 +376,13 @@ private void AbortLogin()
                 tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
                 icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
                 boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
-                //Set Login Data
+                
+                // Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
-
             }
             else
             {
-                //Build Interfaces
+                // Build Interfaces
                 CanisterLogin = new CanisterLoginApiClient(agent, Principal.FromText("fdaor-cqaaa-aaaao-ai7nq-cai"));
                 testnft = new TestnftApiClient(agent, Principal.FromText("etqmj-zyaaa-aaaap-aakaq-cai"));
                 testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
@@ -388,12 +391,13 @@ private void AbortLogin()
                 tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
                 icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
                 boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
-                //Set Login Data
+                
+                // Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
-
             }
             Debug.Log("[CandidApiManager] Candid APIs initialized successfully.");
         }
+
 
         private void DesInitializeCandidApis()
         {
