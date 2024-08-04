@@ -2,11 +2,9 @@ using System.Threading.Tasks;
 using Candid;
 using EdjCase.ICP.Candid.Models;
 using TMPro;
-using TowerRush;
 using UnityEngine;
 using System.Numerics;
 using System;
-using Cosmicrafts.Data;
 using Cosmicrafts.Managers;
 
 public class Login : MonoBehaviour
@@ -20,6 +18,7 @@ public class Login : MonoBehaviour
     [SerializeField] private GameObject dashboardCanvas;
 
     private bool isMintingDeck = false;
+    private bool isRegisteringPlayer = false;
 
     private async void Awake()
     {
@@ -105,6 +104,8 @@ public class Login : MonoBehaviour
         {
             Debug.LogError("[Login] ERROR MINT NFTs");
         }
+
+        isMintingDeck = false;
     }
 
     public void UpdateWindow(CandidApiManager.LoginData state)
@@ -160,7 +161,6 @@ public class Login : MonoBehaviour
                 var playerData = GameDataManager.Instance.playerData;
                 playerData.Level = (int)player.Level;
                 playerData.Username = player.Username;
-                playerData.PrincipalId = player.Id.ToString();
 
                 // Save player data using GameDataManager
                 GameDataManager.Instance.SavePlayerData();
@@ -183,8 +183,10 @@ public class Login : MonoBehaviour
 
     public async void SetPlayerName()
     {
-        if (!string.IsNullOrEmpty(inputNameField.text))
+        if (!isRegisteringPlayer && !string.IsNullOrEmpty(inputNameField.text))
         {
+            isRegisteringPlayer = true;
+
             Debug.Log($"[Login] Attempting to create a new player with name: {inputNameField.text}");
             LoadingPanel.Instance.ActiveLoadingPanel();
             // Hardcoding AvatarID as 1 for now
@@ -212,6 +214,8 @@ public class Login : MonoBehaviour
                     chooseUsername.SetActive(true);
                 }
             }
+
+            isRegisteringPlayer = false;
         }
     }
 

@@ -26,6 +26,7 @@ namespace Candid
     using UnityEngine;
     using System.Collections.Concurrent;
     using System.Threading.Tasks;
+    using Cosmicrafts.Managers;
 
     public class IdentityMessage
     {
@@ -48,6 +49,7 @@ namespace Candid
         public IcpLedgerApiClient icptoken { get; private set; }
         public BoomTokenApiClient boomToken { get; private set; }
         public TournamentsApiClient tournaments { get; private set; }
+        public string PrincipalId { get; private set; }
 
         // Login Data
         public enum DataState { None, Loading, Ready }
@@ -360,6 +362,14 @@ private void AbortLogin()
         {
             Debug.Log($"[CandidApiManager] Initializing Candid APIs. Anonymous: {asAnon}");
             var userPrincipal = agent.Identity.GetPublicKey().ToPrincipal().ToText();
+
+            PrincipalId = userPrincipal;  // Save the principal here
+
+            if (GameDataManager.Instance != null)
+            {
+                GameDataManager.Instance.playerData.PrincipalId = PrincipalId; // Set PrincipalId
+                GameDataManager.Instance.SavePlayerData(); // Save updated playerData
+            }
 
             // Simulate an asynchronous operation (e.g., switch to a background thread)
             await UniTask.Yield();
