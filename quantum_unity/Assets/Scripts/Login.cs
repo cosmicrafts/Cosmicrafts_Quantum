@@ -42,7 +42,7 @@ public class Login : MonoBehaviour
 
         while (CandidApiManager.Instance == null || CandidApiManager.Instance.CanisterLogin == null)
         {
-            await Task.Yield(); // Wait until CandidApiManager and CanisterLogin are initialized
+            await Task.Yield();
         }
 
         Debug.Log("[Login] CandidApiManager initialized.");
@@ -52,7 +52,7 @@ public class Login : MonoBehaviour
     {
         if (GameDataManager.Instance != null)
         {
-            GameDataManager.Instance.LoadPlayerData(); // Load player data using GameDataManager
+            GameDataManager.Instance.LoadPlayerData();
             Debug.Log("[Login] Player data loaded.");
         }
         else
@@ -81,18 +81,19 @@ public class Login : MonoBehaviour
         else
         {
             Debug.LogWarning("[Login] No player information available. Prompting user for username.");
-
-            // Start minting in the background
-            _ = MintDeckAsync();
             chooseUsername.SetActive(true);
         }
     }
 
     private async Task MintDeckAsync()
     {
-        if (isMintingDeck) return; // Prevent duplicate calls
-        isMintingDeck = true;
+        if (isMintingDeck)
+        {
+            Debug.LogWarning("[Login] Deck minting already in progress, skipping duplicate request.");
+            return;
+        }
 
+        isMintingDeck = true;
         Debug.Log("[Login] Initiating deck minting...");
 
         var mintInfo = await CandidApiManager.Instance.testnft.MintDeck();
@@ -104,8 +105,6 @@ public class Login : MonoBehaviour
         {
             Debug.LogError("[Login] ERROR MINT NFTs");
         }
-
-        isMintingDeck = false;
     }
 
     public void UpdateWindow(CandidApiManager.LoginData state)
@@ -157,7 +156,6 @@ public class Login : MonoBehaviour
         {
             if (GameDataManager.Instance != null)
             {
-                // Update playerData with player details except for PrincipalId
                 var playerData = GameDataManager.Instance.playerData;
                 playerData.Level = (int)player.Level;
                 playerData.Username = player.Username;
@@ -168,11 +166,9 @@ public class Login : MonoBehaviour
                 playerData.RegistrationDate = (long)player.RegistrationDate.ToBigInteger();
                 playerData.IsLoggedIn = true;
 
-                // Save player data using GameDataManager
                 GameDataManager.Instance.SavePlayerData();
                 Debug.Log($"[Login] PlayerData updated and saved with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
 
-                Debug.Log("[Login] Transitioning to the dashboard...");
                 loginCanvas.SetActive(false);
                 dashboardCanvas.SetActive(true);
             }
@@ -195,8 +191,7 @@ public class Login : MonoBehaviour
 
             Debug.Log($"[Login] Attempting to create a new player with name: {inputNameField.text}");
             LoadingPanel.Instance.ActiveLoadingPanel();
-            // Hardcoding AvatarID as 1 for now
-            UnboundedUInt avatarID = UnboundedUInt.FromBigInteger(BigInteger.One); // This can be changed later
+            UnboundedUInt avatarID = UnboundedUInt.FromBigInteger(BigInteger.One);
             var request = await CandidApiManager.Instance.CanisterLogin.RegisterPlayer(inputNameField.text, avatarID);
 
             if (request.ReturnArg0)
@@ -209,7 +204,7 @@ public class Login : MonoBehaviour
                     var player = playerInfo.ValueOrDefault;
 
                     Debug.Log("[Login] INIT MINT");
-                    _ = MintDeckAsync(); // Mint in the background
+                    _ = MintDeckAsync();
 
                     UpdatePlayerDataAndTransition(player);
                 }
