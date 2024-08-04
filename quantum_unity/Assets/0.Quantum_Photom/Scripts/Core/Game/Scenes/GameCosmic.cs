@@ -8,6 +8,7 @@ using Candid;
 using Quantum;
 using TowerRush.Core;
 using System.Collections;
+using Cosmicrafts.Managers;
 
 namespace TowerRush
 {
@@ -269,75 +270,79 @@ namespace TowerRush
             }
         }
 
-        public async void SendStats()
-        {
-            // Create a new instance of PlayerStats and populate it
-            PlayerStats playerStats = new PlayerStats
-            {
-                EnergyUsed = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyUsed())),
-                EnergyGenerated = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyGenerated())),
-                EnergyWasted = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyWasted())),
-                EnergyChargeRate = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyChargeRatePerSec())),
-                XpEarned = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetScore())),
-                DamageDealt = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamage())),
-                DamageTaken = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamageReceived())),
-                DamageCritic = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamageCritic())),
-                DamageEvaded = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamageEvaded())),
-                Kills = UnboundedUInt.FromBigInteger(new BigInteger(gmt.GetKills())),
-                Deploys = UnboundedUInt.FromBigInteger(new BigInteger(gmt.GetDeploys())),
-                SecRemaining = UnboundedUInt.FromBigInteger(new BigInteger(gmt.GetSecRemaining())),
-                WonGame = gmt.GetIsWin(),
-                Faction = UnboundedUInt.FromBigInteger(BigInteger.Zero),
-                CharacterID = UnboundedUInt.FromBigInteger(BigInteger.Parse("0")),
-                GameMode = UnboundedUInt.FromBigInteger(BigInteger.Zero),
-                BotMode = UnboundedUInt.FromBigInteger(BigInteger.Zero),
-                BotDifficulty = UnboundedUInt.FromBigInteger(BigInteger.Zero)
-            };
+public async void SendStats()
+{
+    // Collect player stats
+    PlayerStats playerStats = new PlayerStats
+    {
+        EnergyUsed = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyUsed())),
+        EnergyGenerated = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyGenerated())),
+        EnergyWasted = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyWasted())),
+        EnergyChargeRate = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetEnergyChargeRatePerSec())),
+        XpEarned = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetScore())),
+        DamageDealt = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamage())),
+        DamageTaken = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamageReceived())),
+        DamageCritic = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamageCritic())),
+        DamageEvaded = UnboundedUInt.FromBigInteger(new BigInteger((int)gmt.GetDamageEvaded())),
+        Kills = UnboundedUInt.FromBigInteger(new BigInteger(gmt.GetKills())),
+        Deploys = UnboundedUInt.FromBigInteger(new BigInteger(gmt.GetDeploys())),
+        SecRemaining = UnboundedUInt.FromBigInteger(new BigInteger(gmt.GetSecRemaining())),
+        WonGame = gmt.GetIsWin(),
+        Faction = UnboundedUInt.FromBigInteger(BigInteger.Zero),
+        CharacterID = UnboundedUInt.FromBigInteger(BigInteger.Parse("0")),
+        GameMode = UnboundedUInt.FromBigInteger(BigInteger.Zero),
+        BotMode = UnboundedUInt.FromBigInteger(BigInteger.Zero),
+        BotDifficulty = UnboundedUInt.FromBigInteger(BigInteger.Zero)
+    };
 
-            // Create a new instance of BasicStats and populate it with the playerStats
-            BasicStats basicStats = new BasicStats
-            {
-                PlayerStats = new List<PlayerStats> { playerStats }
-            };
+    // Create basic stats
+    BasicStats basicStats = new BasicStats
+    {
+        PlayerStats = new List<PlayerStats> { playerStats }
+    };
 
-            // Create a new instance of SaveFinishedGameArg1 and populate it with the values from playerStats
-            CanisterLoginApiClient.SaveFinishedGameArg1 saveFinishedGameArg1 = new CanisterLoginApiClient.SaveFinishedGameArg1
-            {
-                BotDifficulty = playerStats.BotDifficulty,
-                BotMode = playerStats.BotMode,
-                CharacterID = playerStats.CharacterID,
-                DamageCritic = playerStats.DamageCritic,
-                DamageDealt = playerStats.DamageDealt,
-                DamageEvaded = playerStats.DamageEvaded,
-                DamageTaken = playerStats.DamageTaken,
-                Deploys = playerStats.Deploys,
-                EnergyChargeRate = playerStats.EnergyChargeRate,
-                EnergyGenerated = playerStats.EnergyGenerated,
-                EnergyUsed = playerStats.EnergyUsed,
-                EnergyWasted = playerStats.EnergyWasted,
-                Faction = playerStats.Faction,
-                GameMode = playerStats.GameMode,
-                Kills = playerStats.Kills,
-                SecRemaining = playerStats.SecRemaining,
-                WonGame = playerStats.WonGame,
-                XpEarned = playerStats.XpEarned
-            };
-            
+    // Prepare save finished game argument
+    CanisterLoginApiClient.SaveFinishedGameArg1 saveFinishedGameArg1 = new CanisterLoginApiClient.SaveFinishedGameArg1
+    {
+        BotDifficulty = playerStats.BotDifficulty,
+        BotMode = playerStats.BotMode,
+        CharacterID = playerStats.CharacterID,
+        DamageCritic = playerStats.DamageCritic,
+        DamageDealt = playerStats.DamageDealt,
+        DamageEvaded = playerStats.DamageEvaded,
+        DamageTaken = playerStats.DamageTaken,
+        Deploys = playerStats.Deploys,
+        EnergyChargeRate = playerStats.EnergyChargeRate,
+        EnergyGenerated = playerStats.EnergyGenerated,
+        EnergyUsed = playerStats.EnergyUsed,
+        EnergyWasted = playerStats.EnergyWasted,
+        Faction = playerStats.Faction,
+        GameMode = playerStats.GameMode,
+        Kills = playerStats.Kills,
+        SecRemaining = playerStats.SecRemaining,
+        WonGame = playerStats.WonGame,
+        XpEarned = playerStats.XpEarned
+    };
 
-            // Display loading panel
-            LoadingPanel.Instance.ActiveLoadingPanel();
+    // Display loading panel and call API
+    LoadingPanel.Instance.ActiveLoadingPanel();
 
+    var statsSend = await CandidApiManager.Instance.CanisterLogin.SaveFinishedGame(GameDataManager.Instance.playerData.actualNumberRoom, saveFinishedGameArg1);
+    Debug.Log("StatSend: " + statsSend.ReturnArg0);
+    Debug.Log("Res: " + statsSend.ReturnArg1);
 
+    LoadingPanel.Instance.DesactiveLoadingPanel();
 
-            // Call the API to save the finished game
-            var statsSend = await CandidApiManager.Instance.CanisterLogin.SaveFinishedGame(GlobalGameData.Instance.actualNumberRoom, saveFinishedGameArg1);
-            Debug.Log("StatSend: " + statsSend.ReturnArg0);
-            Debug.Log("Res: " + statsSend.ReturnArg1);
+    // Display results UI and wait for button press
+    UIResults.SetActive(true);
+        FinishScene();
+}
 
-            LoadingPanel.Instance.DesactiveLoadingPanel();
+public void OnFinishButtonPressed()
+{
+    // Finish the scene when the button is pressed
+    FinishScene();
+}
 
-            // Finish the scene
-            FinishScene();
-        }
     }
 }

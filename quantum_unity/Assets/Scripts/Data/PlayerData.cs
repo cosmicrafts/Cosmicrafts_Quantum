@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CanisterPK.CanisterLogin.Models;
+using EdjCase.ICP.Candid.Models;
 
 namespace Cosmicrafts.Data
 {
@@ -31,13 +32,14 @@ namespace Cosmicrafts.Data
         public DateTime Registered { get; set; }
         public Config config = new Config();
         public string LastMapSelected = "0";
+        public UnboundedUInt actualNumberRoom = 0;
+        public bool IsLoggedIn { get; set; } = false;
 
         // Newly added properties to match the Player class
         public string Description { get; set; }
         public double Elo { get; set; }
         public List<FriendDetails> Friends { get; set; }
         public long RegistrationDate { get; set; }
-
         public event Action<int> OnAvatarIdChanged;
     }
 
@@ -47,6 +49,7 @@ namespace Cosmicrafts.Data
         public int Language = 0;
         public TypeMatch CurrentMatch = TypeMatch.multi;
         public int ModeSelected = 9;
+        
     }
 
     public enum TypeMatch { bots, multi }

@@ -166,6 +166,7 @@ public class Login : MonoBehaviour
                 playerData.Elo = player.Elo;
                 playerData.Friends = player.Friends;
                 playerData.RegistrationDate = (long)player.RegistrationDate.ToBigInteger();
+                playerData.IsLoggedIn = true;
 
                 // Save player data using GameDataManager
                 GameDataManager.Instance.SavePlayerData();

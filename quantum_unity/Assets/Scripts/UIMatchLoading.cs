@@ -5,7 +5,7 @@ using CanisterPK.CanisterLogin.Models;
 using TowerRush;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Cosmicrafts.Managers;
 public class UIMatchLoading : MonoBehaviour
 {
     [Header("UI Match and Stats from Game")]
@@ -70,6 +70,9 @@ public class UIMatchLoading : MonoBehaviour
 
             GlobalGameData.Instance.actualRoom = "GameCosmicQuantum: " + matchData.MatchID;
             GlobalGameData.Instance.actualNumberRoom = matchData.MatchID;
+
+            GameDataManager.Instance.playerData.actualNumberRoom = matchData.MatchID;
+            GameDataManager.Instance.SavePlayerData();
             
             UserData userData1 = new UserData();
             UserData userData2 = new UserData();
