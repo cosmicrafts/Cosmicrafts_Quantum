@@ -43,6 +43,9 @@ public class UIMainMenu : MonoBehaviour
             }
 
             levelText.text = playerData.Level.ToString();
+
+            // Refresh all properties after initializing main UI elements
+            RefreshAllPropertys();
         }
         else
         {

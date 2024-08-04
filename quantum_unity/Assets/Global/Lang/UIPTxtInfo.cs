@@ -47,43 +47,50 @@ public class UIPTxtInfo : MonoBehaviour
         }
     }
 
-    void OnDestroy()
-    {
-        LoadProperty();
-    }
-
     public void SetText(string text)
     {
+        text = text.Trim();  // Trim any leading or trailing spaces
+
         Text myText = GetComponent<Text>();
-        if (myText != null) { myText.text = text; }
-
-        TMP_Text myTmp = GetComponent<TMP_Text>();
-        if (myTmp != null) { myTmp.text = text; }
-    }
-
-private string ConvertUnixTimestampToDateString(long unixTimestampInNanoseconds)
-{
-    try
-    {
-        // Convert nanoseconds to milliseconds
-        long unixTimestampInMilliseconds = unixTimestampInNanoseconds / 1_000_000;
-
-        // Ensure the timestamp is within the valid range for DateTimeOffset
-        if (unixTimestampInMilliseconds < -62135596800000 || unixTimestampInMilliseconds > 253402300799999)
-        {
-            Debug.LogError($"Unix timestamp is out of range for DateTimeOffset: {unixTimestampInMilliseconds}");
-            return "Invalid Date";
+        if (myText != null) 
+        { 
+            myText.text = string.Empty;  // Clear previous text
+            myText.text = text;
+            Debug.Log($"[UIPTxtInfo] Set Text component text to: {text}");
         }
 
-        DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(unixTimestampInMilliseconds);
-        return dateTimeOffset.ToString("MMMM yyyy"); // Format as Month and Year
+        TMP_Text myTmp = GetComponent<TMP_Text>();
+        if (myTmp != null) 
+        { 
+            myTmp.text = string.Empty;  // Clear previous text
+            myTmp.text = text;
+            Debug.Log($"[UIPTxtInfo] Set TMP_Text component text to: {text}");
+        }
     }
-    catch (ArgumentOutOfRangeException ex)
+
+    private string ConvertUnixTimestampToDateString(long unixTimestampInNanoseconds)
     {
-        Debug.LogError($"Unix timestamp is out of range for DateTimeOffset: {ex.Message}");
-        return "Invalid Date";
+        try
+        {
+            // Convert nanoseconds to milliseconds
+            long unixTimestampInMilliseconds = unixTimestampInNanoseconds / 1_000_000;
+
+            // Ensure the timestamp is within the valid range for DateTimeOffset
+            if (unixTimestampInMilliseconds < -62135596800000 || unixTimestampInMilliseconds > 253402300799999)
+            {
+                Debug.LogError($"Unix timestamp is out of range for DateTimeOffset: {unixTimestampInMilliseconds}");
+                return "Invalid Date";
+            }
+
+            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(unixTimestampInMilliseconds);
+            return dateTimeOffset.ToString("MMMM yyyy"); // Format as Month and Year
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            Debug.LogError($"Unix timestamp is out of range for DateTimeOffset: {ex.Message}");
+            return "Invalid Date";
+        }
     }
-}
 
     public void LoadProperty()
     {
