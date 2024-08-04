@@ -42,11 +42,8 @@ public class GuestLogin : MonoBehaviour
         LoginManager.Instance.StartLoginRandom();
     }
 
-    void SaveSeedPhrase(string seedPhrase)
+    async void SaveSeedPhrase(string seedPhrase)
     {
-        GlobalGameData.Instance.SaveSeedPhrase(seedPhrase);
-        PlayerPrefs.SetString("SeedPhrase", seedPhrase);
-        PlayerPrefs.Save();
-        Debug.Log("Seed phrase saved to GlobalGameData and PlayerPrefs.");
+        await AsyncLocalStorage.SaveDataAsync("SeedPhrase", seedPhrase);
     }
 }

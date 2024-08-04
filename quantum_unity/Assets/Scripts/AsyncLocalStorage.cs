@@ -11,7 +11,7 @@ public static class AsyncLocalStorage
     private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("S5hVAGhIl9vH9sgYO5zemf6XNMyIak5L");
 
     // Save data asynchronously with encryption
-    public static async Task SaveDataAsync(string key, string jsonData)
+    public static async Task SaveDataAsync(string key, string data)
     {
         try
         {
@@ -21,7 +21,7 @@ public static class AsyncLocalStorage
                 aesAlg.GenerateIV();
                 string iv = Convert.ToBase64String(aesAlg.IV);
 
-                string encryptedData = Encrypt(jsonData, aesAlg.Key, aesAlg.IV);
+                string encryptedData = Encrypt(data, aesAlg.Key, aesAlg.IV);
 
                 // Save the encrypted data with IV
                 string dataToSave = $"{iv}:{encryptedData}";
@@ -68,9 +68,9 @@ public static class AsyncLocalStorage
                         throw new Exception("Invalid data format. IV or encrypted data is empty.");
                     }
 
-                    string jsonData = Decrypt(encryptedData, EncryptionKey, Convert.FromBase64String(iv));
+                    string data = Decrypt(encryptedData, EncryptionKey, Convert.FromBase64String(iv));
                     Debug.Log($"[AsyncLocalStorage] Successfully loaded and decrypted data for key: {key} from path: {path}");
-                    return jsonData;
+                    return data;
                 }
             }
             else

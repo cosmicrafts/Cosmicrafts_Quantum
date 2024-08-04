@@ -15,7 +15,7 @@ public class Login : MonoBehaviour
 
     [SerializeField] private GameObject chooseUsername;
 
-    private bool isMintingDeck = false; // Flag to prevent duplicate minting calls
+    private bool isMintingDeck = false;
 
     private async void Awake()
     {
@@ -50,6 +50,8 @@ public class Login : MonoBehaviour
     private void Start()
     {
         // Game.Instance.AudioService.ChangeMusicClip("login");
+
+        // Save principal to playerstore
     }
 
     private void OnDestroy()
@@ -146,24 +148,6 @@ private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.P
         SaveData.SaveGameUser();
 
         Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
-
-        // Create user-specific mission and fetch general missions
-        var principal = Principal.FromText(user.WalletId); // Use WalletId for CreateUserMission
-        var createMissionTask = CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
-        var fetchGeneralMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
-
-        await Task.WhenAll(createMissionTask, fetchGeneralMissionsTask);
-
-        // Check results
-        if (createMissionTask.IsCompletedSuccessfully && fetchGeneralMissionsTask.IsCompletedSuccessfully)
-        {
-            var generalMissions = fetchGeneralMissionsTask.Result;
-            Debug.Log($"[Login] Fetched {generalMissions.Count} general missions.");
-        }
-        else
-        {
-            Debug.LogError("[Login] One or both tasks failed.");
-        }
 
         // Transition to the main menu scene
         Debug.Log("[Login] Transitioning to the main menu scene...");
