@@ -7,6 +7,7 @@ using CanisterPK.BoomToken.Models;
 using EdjCase.ICP.Candid.Models;
 using TMPro;
 using UnityEngine;
+using Cosmicrafts.Managers;
 
 namespace Cosmicrafts.Data
 {
@@ -37,17 +38,33 @@ namespace Cosmicrafts.Data
             BalanceManager.OnBalanceUpdateNeeded -= FetchBalance;
         }
 
-        public async void FetchBalance()
+        public void FetchBalance()
+        {
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[boomtoken] GameDataManager instance is null.");
+                return;
+            }
+
+            var playerData = GameDataManager.Instance.playerData;
+            if (playerData == null)
+            {
+                Debug.LogError("Failed to load player data.");
+                return;
+            }
+
+            string principalId = playerData.PrincipalId;
+            Debug.Log($"Fetching balance for Principal ID: {principalId}");
+
+            var account = new CanisterPK.BoomToken.Models.Account(Principal.FromText(principalId), new Account.SubaccountInfo());
+            FetchAndAnimateBalance(account);
+        }
+
+        private async void FetchAndAnimateBalance(CanisterPK.BoomToken.Models.Account account)
         {
             try
             {
-                PlayerData playerData = await AsyncDataManager.LoadPlayerDataAsync();
-                string principalId = playerData.PrincipalId;
-                Debug.Log($"Fetching balance for Principal ID: {principalId}");
-
-                var account = new CanisterPK.BoomToken.Models.Account(Principal.FromText(principalId), new Account.SubaccountInfo());
                 var balance = await CandidApiManager.Instance.boomToken.Icrc1BalanceOf(account);
-
                 // Trigger the balance animation with the new balance
                 AnimateBalanceUpdate(balance);
 

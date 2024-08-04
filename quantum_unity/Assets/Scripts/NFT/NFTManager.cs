@@ -1,14 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Numerics;
 using Candid;
 using CanisterPK.testnft.Models;
 using EdjCase.ICP.Candid.Models;
+using Cosmicrafts.Managers;
 
 namespace Cosmicrafts.Data
 {
@@ -17,7 +15,7 @@ namespace Cosmicrafts.Data
         public static NFTManager Instance { get; private set; }
         public NFTCollection nftCollection;
 
-        public List<NFTData> AllNFTDatas = null;
+        public List<NFTData> AllNFTDatas = new List<NFTData>();
 
         public GameplaySettingsAsset m_GameplaySettings;
 
@@ -35,6 +33,7 @@ namespace Cosmicrafts.Data
             else
             {
                 Instance = this;
+                DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
             }
         }
 
@@ -43,11 +42,16 @@ namespace Cosmicrafts.Data
             await FetchOwnedNFTs();
         }
 
-
         // Fetch user's owned NFTs
         async Task FetchOwnedNFTs()
         {
-            var userData = await AsyncDataManager.LoadPlayerDataAsync();
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTManager] GameDataManager instance is null.");
+                return;
+            }
+
+            var userData = GameDataManager.Instance.playerData;
             if (userData == null)
             {
                 Debug.LogError("Failed to load player data.");
@@ -105,7 +109,13 @@ namespace Cosmicrafts.Data
 
         public async Task<TransferReceipt> TransferNFT(List<UnboundedUInt> tokenIds, Principal recipientPrincipal)
         {
-            var userData = await AsyncDataManager.LoadPlayerDataAsync();
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTManager] GameDataManager instance is null.");
+                return null;
+            }
+
+            var userData = GameDataManager.Instance.playerData;
             if (userData == null)
             {
                 Debug.LogError("Failed to load player data.");

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using WebSocketSharp;
 using TMPro;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class ChatManager : MonoBehaviour
 {
@@ -20,12 +21,19 @@ public class ChatManager : MonoBehaviour
     private Queue<Action> mainThreadActions = new Queue<Action>();
     public string username;
 
-    private async void Start()
+    private void Start()
     {
-        var userData = await AsyncDataManager.LoadPlayerDataAsync();
-        if (userData != null)
+        if (GameDataManager.Instance != null)
         {
-            SetUsername(userData.Username);
+            var userData = GameDataManager.Instance.playerData;
+            if (userData != null)
+            {
+                SetUsername(userData.Username);
+            }
+        }
+        else
+        {
+            Debug.LogError("[ChatManager] GameDataManager instance is null.");
         }
 
         ConnectToServer();
@@ -129,6 +137,18 @@ public class ChatManager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         scrollRect.normalizedPosition = new Vector2(0, 0);
+    }
+
+    private void Update()
+    {
+        // Execute actions queued on the main thread
+        lock (mainThreadActions)
+        {
+            while (mainThreadActions.Count > 0)
+            {
+                mainThreadActions.Dequeue().Invoke();
+            }
+        }
     }
 
     private void OnDestroy()

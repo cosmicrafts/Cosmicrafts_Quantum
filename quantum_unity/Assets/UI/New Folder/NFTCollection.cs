@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Cosmicrafts.Managers;
+
 
 namespace Cosmicrafts.Data
 {
@@ -46,10 +48,15 @@ namespace Cosmicrafts.Data
             NFTManager.OnNFTTransferred -= RemoveNFTFromCollection;
         }
 
-        async void Start()
+        void Start()
         {
-            // Load player data using AsyncLocalStorage
-            playerData = await AsyncDataManager.LoadPlayerDataAsync();
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTCollection] GameDataManager instance is null.");
+                return;
+            }
+
+            playerData = GameDataManager.Instance.playerData;
             RefreshCollection();
         }
 
@@ -95,10 +102,15 @@ namespace Cosmicrafts.Data
         }
 
         //Updates the UI collection with the current data and filters
-        public async void RefreshCollection()
+        public void RefreshCollection()
         {
-            // Load player data to ensure it is up to date
-            playerData = await AsyncDataManager.LoadPlayerDataAsync();
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTCollection] GameDataManager instance is null.");
+                return;
+            }
+
+            playerData = GameDataManager.Instance.playerData;
 
             if (AllNFTDatas == null || AllNFTDatas.Count == 0)
             {
@@ -217,10 +229,15 @@ namespace Cosmicrafts.Data
             EnterCard = null;
         }
 
-        private async void SavePlayerData()
+        private void SavePlayerData()
         {
-            // Save player data using AsyncLocalStorage
-            await AsyncDataManager.SavePlayerDataAsync(playerData);
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTCollection] GameDataManager instance is null.");
+                return;
+            }
+
+            GameDataManager.Instance.SavePlayerData();
         }
     }
 }

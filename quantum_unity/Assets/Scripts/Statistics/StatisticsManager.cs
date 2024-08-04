@@ -6,6 +6,7 @@ using Candid;
 using System;
 using CanisterPK.CanisterLogin;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class StatisticsManager : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class StatisticsManager : MonoBehaviour
         else
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
         }
     }
 
@@ -157,7 +159,13 @@ public class StatisticsManager : MonoBehaviour
 
     private async Task FetchPlayerStatistics()
     {
-        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("[StatisticsManager] GameDataManager instance is null.");
+            return;
+        }
+
+        var userData = GameDataManager.Instance.playerData;
         if (userData != null)
         {
             await GetPlayerStats(userData.PrincipalId);

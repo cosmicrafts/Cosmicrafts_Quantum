@@ -8,7 +8,7 @@ using System;
 using System.Numerics;
 using System.Collections;
 using System.Linq;
-using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class shards : MonoBehaviour
 {
@@ -53,9 +53,21 @@ public class shards : MonoBehaviour
 
     public async void FetchBalance()
     {
-        PlayerData playerData = await AsyncDataManager.LoadPlayerDataAsync();
-        string principalId = playerData.PrincipalId;
-        Debug.Log($"Fetching balance for Principal ID: {principalId}");
+        if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[boomtoken] GameDataManager instance is null.");
+                return;
+            }
+
+            var playerData = GameDataManager.Instance.playerData;
+            if (playerData == null)
+            {
+                Debug.LogError("Failed to load player data.");
+                return;
+            }
+
+            string principalId = playerData.PrincipalId;
+            Debug.Log($"Fetching balance for Principal ID: {principalId}");
 
         try
         {

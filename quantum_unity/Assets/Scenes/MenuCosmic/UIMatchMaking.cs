@@ -8,6 +8,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using Cosmicrafts.Managers;
+using Cosmicrafts.Data;
 
 public class UIMatchMaking : MonoBehaviour
 {
@@ -24,11 +26,17 @@ public class UIMatchMaking : MonoBehaviour
         public List<string> listSavedKeys;
     }
 
-    public async void StartSearch()
+    public void StartSearch()
     {
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("[UIMatchMaking] GameDataManager instance is null.");
+            return;
+        }
+
         SearchingScreen.SetActive(true);
 
-        var playerData = await AsyncDataManager.LoadPlayerDataAsync();
+        var playerData = GameDataManager.Instance.playerData;
 
         MatchPlayerData matchPlayerData = new MatchPlayerData
         {
@@ -38,7 +46,7 @@ public class UIMatchMaking : MonoBehaviour
 
         Debug.Log(JsonUtility.ToJson(matchPlayerData));
 
-        var matchSearchingInfo = await CandidApiManager.Instance.CanisterLogin.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
+        var matchSearchingInfo = CandidApiManager.Instance.CanisterLogin.GetMatchSearching(JsonUtility.ToJson(matchPlayerData)).Result;
 
         Debug.Log("Status: " + matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
 
@@ -51,12 +59,12 @@ public class UIMatchMaking : MonoBehaviour
             while (!isGameMatched && SearchingScreen.activeSelf)
             {
                 if (this.gameObject == null) { break; }
-                var isGameMatchedRequest = await CandidApiManager.Instance.CanisterLogin.IsGameMatched();
+                var isGameMatchedRequest = CandidApiManager.Instance.CanisterLogin.IsGameMatched().Result;
                 Debug.Log("Ya estoy asignado a una sala: " + matchSearchingInfo.ReturnArg1 + " espero ser matched: " + isGameMatchedRequest.ReturnArg1);
                 isGameMatched = isGameMatchedRequest.ReturnArg0;
                 Debug.Log("IsGameMatched: " + isGameMatched);
 
-                await Task.Delay(250);
+                Task.Delay(250).Wait();
 
                 if (isGameMatched)
                 {

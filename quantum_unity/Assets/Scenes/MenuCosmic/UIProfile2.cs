@@ -2,6 +2,8 @@ using Candid;
 using TMPro;
 using UnityEngine;
 using System.Threading.Tasks;
+using Cosmicrafts.Managers;
+
 public class UIProfile2 : MonoBehaviour
 {
     [Header("Overview")] 
@@ -28,13 +30,13 @@ public class UIProfile2 : MonoBehaviour
 
     public async void OpenProfile()
     {
-        Debug.Log("awake");
+        Debug.Log("Profile opened");
         await GetInfoToProfile();
     }
 
     public async Task GetInfoToProfile()
     {
-        Debug.Log("GetInfoToProfile");
+        Debug.Log("Fetching profile info");
         var playerGameStats = await CandidApiManager.Instance.CanisterLogin.GetMyStats();
         
         if (playerGameStats.HasValue)
@@ -59,7 +61,7 @@ public class UIProfile2 : MonoBehaviour
         }
         else
         {
-            Debug.Log("No hay info de Stats");
+            Debug.Log("No stats information available");
         }
     }
 }

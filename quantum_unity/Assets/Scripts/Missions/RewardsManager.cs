@@ -7,6 +7,7 @@ using EdjCase.ICP.Candid.Models;
 using Candid;
 using CanisterPK.CanisterLogin.Models;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class RewardsManager : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class RewardsManager : MonoBehaviour
         else
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
         }
     }
 
@@ -152,7 +154,7 @@ public class RewardsManager : MonoBehaviour
         try
         {
             Debug.Log("[RewardsManager] Searching active user missions...");
-            var principal = await GetPrincipalAsync();
+            var principal = GetPrincipal();
             var activeUserMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveUserMissions(principal);
             Debug.Log($"[RewardsManager] Found {activeUserMissions.Count} active user missions.");
             return activeUserMissions;
@@ -169,7 +171,7 @@ public class RewardsManager : MonoBehaviour
         try
         {
             Debug.Log("[RewardsManager] Searching active general missions...");
-            var principal = await GetPrincipalAsync();
+            var principal = GetPrincipal();
             var activeGeneralMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveGeneralMissions(principal);
             Debug.Log($"[RewardsManager] Found {activeGeneralMissions.Count} active general missions.");
             return activeGeneralMissions;
@@ -181,9 +183,15 @@ public class RewardsManager : MonoBehaviour
         }
     }
 
-    private async Task<Principal> GetPrincipalAsync()
+    private Principal GetPrincipal()
     {
-        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("[RewardsManager] GameDataManager instance is null.");
+            return null;
+        }
+
+        var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
             Debug.LogError("Failed to load player data.");
@@ -246,7 +254,7 @@ public class RewardsManager : MonoBehaviour
                     OnMissionClaimed?.Invoke(mission);
                 }
 
-                var principal = await GetPrincipalAsync();
+                var principal = GetPrincipal();
                 var createMissionTask = await CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
                 if (createMissionTask.ReturnArg0)
                 {

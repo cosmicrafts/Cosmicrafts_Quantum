@@ -7,6 +7,7 @@ using CanisterPK.CanisterLogin;
 using CanisterPK.CanisterLogin.Models;
 using TMPro;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class EloManagement : MonoBehaviour
 {
@@ -36,7 +37,13 @@ public class EloManagement : MonoBehaviour
 
     public async Task UpdatePlayerElo()
     {
-        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("[EloManagement] GameDataManager instance is null.");
+            return;
+        }
+
+        var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
             Debug.LogError("Failed to load player data.");

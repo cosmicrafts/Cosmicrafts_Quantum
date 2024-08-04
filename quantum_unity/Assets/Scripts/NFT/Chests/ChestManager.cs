@@ -10,6 +10,7 @@ using CanisterPK.chests.Models;
 using EdjCase.ICP.Candid.Models;
 using System.Numerics;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class ChestManager : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class ChestManager : MonoBehaviour
         else
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
         }
     }
 
@@ -66,7 +68,13 @@ public class ChestManager : MonoBehaviour
 
     private async Task FetchOwnedChests()
     {
-        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("[ChestManager] GameDataManager instance is null.");
+            return;
+        }
+
+        var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
             Debug.LogError("Failed to load player data.");
@@ -128,7 +136,13 @@ public class ChestManager : MonoBehaviour
 
     public async void UpdateOwnedChests()
     {
-        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("[ChestManager] GameDataManager instance is null.");
+            return;
+        }
+
+        var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
             Debug.LogError("Failed to load player data.");
@@ -157,7 +171,13 @@ public class ChestManager : MonoBehaviour
 
     public async Task TransferChest(ChestSO chestSO, UnboundedUInt tokenId, string recipientPrincipalText)
     {
-        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("[ChestManager] GameDataManager instance is null.");
+            return;
+        }
+
+        var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
             Debug.LogError("Failed to load player data.");

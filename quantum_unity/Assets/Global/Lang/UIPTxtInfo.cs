@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public enum PlayerProperty
 {
@@ -30,10 +31,17 @@ public class UIPTxtInfo : MonoBehaviour
 
     private PlayerData playerData;
 
-    async void Start()
+    void Start()
     {
-        playerData = await AsyncDataManager.LoadPlayerDataAsync();
-        LoadProperty();
+        if (GameDataManager.Instance != null)
+        {
+            playerData = GameDataManager.Instance.playerData;
+            LoadProperty();
+        }
+        else
+        {
+            Debug.LogError("[UIPTxtInfo] GameDataManager instance is null in Start.");
+        }
     }
 
     void OnDestroy()
