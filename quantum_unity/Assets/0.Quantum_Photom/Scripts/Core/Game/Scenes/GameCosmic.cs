@@ -162,7 +162,6 @@ namespace TowerRush
             Debug.Log("ChangeState: " + stateChanged.State);
             if (stateChanged.State == EGameplayState.Deactivate)
             {
-                SendStats();
             }
         }
 
@@ -197,6 +196,7 @@ namespace TowerRush
             }
 
             gmt.SetIsWin(isWin);
+            SendStats();
         }
 
         private void OnHealthChanged(EventOnHealthChanged e)
@@ -338,11 +338,6 @@ public async void SendStats()
         FinishScene();
 }
 
-public void OnFinishButtonPressed()
-{
-    // Finish the scene when the button is pressed
-    FinishScene();
-}
 
     }
 }
