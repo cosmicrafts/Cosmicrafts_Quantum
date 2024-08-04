@@ -21,7 +21,6 @@ public class StatisticsManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
         }
     }
 

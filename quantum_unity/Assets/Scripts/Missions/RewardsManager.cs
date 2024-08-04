@@ -33,7 +33,6 @@ public class RewardsManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Ensure the manager persists across scenes
         }
     }
 
