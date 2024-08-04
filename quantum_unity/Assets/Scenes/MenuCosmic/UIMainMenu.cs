@@ -24,9 +24,12 @@ public class UIMainMenu : MonoBehaviour
     private async void Awake()
     {
         UIPropertys = new List<UIPTxtInfo>();
-        foreach (UIPTxtInfo prop in FindObjectsOfType<UIPTxtInfo>()) { UIPropertys.Add(prop); }
-        
-        // Get WalletID and username from AsyncLocalStorage and assign them to the TMP_Text variables
+        foreach (UIPTxtInfo prop in FindObjectsOfType<UIPTxtInfo>())
+        {
+            UIPropertys.Add(prop);
+        }
+
+        // Get WalletID, Username, and Level from AsyncLocalStorage
         string walletId = await AsyncLocalStorage.LoadDataAsync("PrincipalId");
         string username = await AsyncLocalStorage.LoadDataAsync("Username");
         string level = await AsyncLocalStorage.LoadDataAsync("Level");
@@ -50,9 +53,16 @@ public class UIMainMenu : MonoBehaviour
             levelText.text = level;
         }
 
-        if (getInfoFromCanister) { /*GetInfoUserFromCanister();*/ }
-        else { LoadingPanel.Instance.DesactiveLoadingPanel(); }
+        if (getInfoFromCanister)
+        {
+            // GetInfoUserFromCanister();
+        }
+        else
+        {
+            LoadingPanel.Instance.DesactiveLoadingPanel();
+        }
     }
+
     
     public void ChangeLang(int lang)
     {

@@ -15,6 +15,8 @@ public class Login : MonoBehaviour
     public TMP_Text infoTxt;
 
     [SerializeField] private GameObject chooseUsername;
+    [SerializeField] private GameObject loginCanvas;
+    [SerializeField] private GameObject dashboardCanvas;
 
     private bool isMintingDeck = false;
     private PlayerData playerData;
@@ -142,20 +144,25 @@ public class Login : MonoBehaviour
             playerData.Level = (int)player.Level;
             playerData.Username = player.Username;
             playerData.PrincipalId = player.Id.ToString();
-            await AsyncDataManager.SavePlayerDataAsync(playerData);
 
-            Debug.Log($"[Login] PlayerData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
+            // Save player data to AsyncLocalStorage
+            await AsyncLocalStorage.SaveDataAsync("PrincipalId", playerData.PrincipalId);
+            await AsyncLocalStorage.SaveDataAsync("Username", playerData.Username);
+            await AsyncLocalStorage.SaveDataAsync("Level", playerData.Level.ToString());
 
-            // Transition to the main menu scene
-            Debug.Log("[Login] Transitioning to the main menu scene...");
-            Game.Instance.AudioService.ChangeMusicClip("menu");
-            Game.CurrentScene.FinishScene();
+            Debug.Log($"[Login] PlayerData updated and saved with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
+
+            Debug.Log("[Login] Transitioning to the dashboard...");
+            loginCanvas.SetActive(false);
+            //Game.CurrentScene.FinishScene();
+            dashboardCanvas.SetActive(true);
         }
         catch (Exception ex)
         {
             Debug.LogError($"[Login] Error occurred during login process: {ex.Message}");
         }
     }
+
 
     public async void SetPlayerName()
     {

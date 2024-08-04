@@ -48,6 +48,7 @@ namespace Cosmicrafts.Data
 
         async void Start()
         {
+            // Load player data using AsyncLocalStorage
             playerData = await AsyncDataManager.LoadPlayerDataAsync();
             RefreshCollection();
         }
@@ -94,18 +95,14 @@ namespace Cosmicrafts.Data
         }
 
         //Updates the UI collection with the current data and filters
-        public void RefreshCollection()
+        public async void RefreshCollection()
         {
+            // Load player data to ensure it is up to date
+            playerData = await AsyncDataManager.LoadPlayerDataAsync();
+
             if (AllNFTDatas == null || AllNFTDatas.Count == 0)
             {
                 Debug.Log("No NFT Data available for collection.");
-                return;
-            }
-
-            // Ensure NftCardPrefab is assigned
-            if (NftCardPrefab == null)
-            {
-                Debug.LogError("NftCardPrefab is not assigned.");
                 return;
             }
 
@@ -122,39 +119,22 @@ namespace Cosmicrafts.Data
             var deckNFTs = AllNFTDatas.Take(6).ToList();
             for (int i = 0; i < deckNFTs.Count; i++)
             {
-                if (Deck[i] != null)
-                {
-                    Deck[i].SetNFTData(deckNFTs[i]);
-                    Deck[i].gameObject.SetActive(true);
-                }
-                else
-                {
-                    Debug.LogWarning($"Deck slot {i} is not assigned.");
-                }
+                Deck[i].SetNFTData(deckNFTs[i]);
+                Deck[i].gameObject.SetActive(true);
             }
 
             // Hide unused deck slots if any.
             for (int i = deckNFTs.Count; i < Deck.Length; i++)
             {
-                if (Deck[i] != null)
-                {
-                    Deck[i].gameObject.SetActive(false);
-                }
+                Deck[i].gameObject.SetActive(false);
             }
 
             // Display the rest of the collection, excluding those in the deck.
             foreach (NFTData nftData in AllNFTDatas.Skip(6))
             {
                 NFTCard card = Instantiate(NftCardPrefab.gameObject, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
-                if (card != null)
-                {
-                    card.SetNFTData(nftData);
-                    card.gameObject.SetActive(true);
-                }
-                else
-                {
-                    Debug.LogError("Failed to instantiate NFTCard.");
-                }
+                card.SetNFTData(nftData);
+                card.gameObject.SetActive(true);
             }
 
             NftCardPrefab.gameObject.SetActive(false); // Hide the prefab template.
@@ -163,7 +143,6 @@ namespace Cosmicrafts.Data
             playerData.DeckNFTsKeyIds = deckNFTs.Select(nft => nft.TokenId).ToList();
             SavePlayerData();
         }
-
 
         //Selects a card
         public void SelectCard(NFTCard card)
@@ -240,6 +219,7 @@ namespace Cosmicrafts.Data
 
         private async void SavePlayerData()
         {
+            // Save player data using AsyncLocalStorage
             await AsyncDataManager.SavePlayerDataAsync(playerData);
         }
     }
