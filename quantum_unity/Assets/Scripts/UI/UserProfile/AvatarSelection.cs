@@ -1,21 +1,22 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Cosmicrafts.Managers;
-using Candid;
 using System.Threading.Tasks;
 using EdjCase.ICP.Candid.Models;
 using System.Numerics;
+using Candid;
 
 public class AvatarSelection : MonoBehaviour
 {
     [SerializeField] private GameObject avatarButtonPrefab;
     [SerializeField] private Transform scrollContent;
-
+    private int initialAvatarId;
     private bool isUpdatingAvatar = false; // Flag to track if an update is in progress
 
     private void Start()
     {
         PopulateAvatarButtons();
+        initialAvatarId = GameDataManager.Instance.playerData.AvatarID;
     }
 
     private void PopulateAvatarButtons()
@@ -101,14 +102,14 @@ public class AvatarSelection : MonoBehaviour
     // Public method to be called by UI button
     public void OnUpdateAvatarButtonClicked()
     {
-        if (!isUpdatingAvatar)
+        if (!isUpdatingAvatar && GameDataManager.Instance.playerData.AvatarID != initialAvatarId)
         {
             int avatarId = GameDataManager.Instance.playerData.AvatarID;
             _ = UpdateAvatarOnBlockchain(avatarId);
         }
         else
         {
-            Debug.LogWarning("Avatar update is already in progress.");
+            Debug.LogWarning("Avatar update is already in progress or no change detected.");
         }
     }
 }

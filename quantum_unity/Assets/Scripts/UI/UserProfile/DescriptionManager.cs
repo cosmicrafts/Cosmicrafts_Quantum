@@ -8,6 +8,7 @@ public class DescriptionManager : MonoBehaviour
 {
     [SerializeField] private TMP_InputField descriptionInputField; // Reference to the input field for description
     private const string defaultPlaceholderText = "Write down something about yourself.";
+    private string initialDescription;
 
     private void Start()
     {
@@ -18,15 +19,15 @@ public class DescriptionManager : MonoBehaviour
         }
 
         // Load the current description into the input field
-        string currentDescription = GameDataManager.Instance.playerData.Description;
+        initialDescription = GameDataManager.Instance.playerData.Description;
 
-        if (string.IsNullOrEmpty(currentDescription))
+        if (string.IsNullOrEmpty(initialDescription))
         {
             descriptionInputField.placeholder.GetComponent<TMP_Text>().text = defaultPlaceholderText;
         }
         else
         {
-            descriptionInputField.text = currentDescription;
+            descriptionInputField.text = initialDescription;
         }
 
         // Add listener to update local description
@@ -43,13 +44,16 @@ public class DescriptionManager : MonoBehaviour
     // Public method to be called by UI button
     public async void OnSaveDescriptionButtonClicked()
     {
-        string newDescription = GameDataManager.Instance.playerData.Description;
-
-        bool success = await UpdateDescriptionOnBlockchain(newDescription);
-
-        if (success)
+        if (GameDataManager.Instance.playerData.Description != initialDescription)
         {
-            Debug.Log("[DescriptionManager] Description updated successfully on the blockchain.");
+            string newDescription = GameDataManager.Instance.playerData.Description;
+            bool success = await UpdateDescriptionOnBlockchain(newDescription);
+
+            if (success)
+            {
+                initialDescription = newDescription;
+                Debug.Log("[DescriptionManager] Description updated successfully on the blockchain.");
+            }
         }
     }
 
