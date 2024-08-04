@@ -21,89 +21,71 @@ public class UIMainMenu : MonoBehaviour
     List<UIPTxtInfo> UIPropertys;
     public UIMatchMaking uiMatchMaking;
     
-    private void Awake()
+    private async void Awake()
     {
         UIPropertys = new List<UIPTxtInfo>();
         foreach (UIPTxtInfo prop in FindObjectsOfType<UIPTxtInfo>()) { UIPropertys.Add(prop); }
         
-        // Get WalletID and username from GlobalGameData and assign them to the TMP_Text variables
-        UserData userData = GlobalGameData.Instance.GetUserData();
-        if (userData != null)
+        // Get WalletID and username from AsyncLocalStorage and assign them to the TMP_Text variables
+        string walletId = await AsyncLocalStorage.LoadDataAsync("PrincipalId");
+        string username = await AsyncLocalStorage.LoadDataAsync("Username");
+        string level = await AsyncLocalStorage.LoadDataAsync("Level");
+
+        if (!string.IsNullOrEmpty(walletId))
         {
-            string walletId = userData.WalletId;
             if (walletId.Length > 8) // Check if WalletID is long enough to shorten
             {
                 walletId = walletId.Substring(0, 5) + "..." + walletId.Substring(walletId.Length - 3);
             }
             walletIdText.text = walletId;
-            usernameText.text = userData.NikeName;
-            levelText.text = userData.Level.ToString();
         }
 
-        
+        if (!string.IsNullOrEmpty(username))
+        {
+            usernameText.text = username;
+        }
+
+        if (!string.IsNullOrEmpty(level))
+        {
+            levelText.text = level;
+        }
+
         if (getInfoFromCanister) { /*GetInfoUserFromCanister();*/ }
         else { LoadingPanel.Instance.DesactiveLoadingPanel(); }
     }
-   
-    /*public async void GetInfoUserFromCanister()
-    {
-        var playerDataRequest = await CandidApiManager.Instance.CanisterLogin.GetMyPlayerData();
-
-        if (playerDataRequest.HasValue)
-        {
-            CanisterPK.CanisterLogin.Models.Player playerData = playerDataRequest.ValueOrDefault;
-            UserData user = GlobalGameData.Instance.GetUserData();
-            user.Level = (int)playerData.Level;
-            user.NikeName = playerData.Name;
-            user.WalletId = playerData.Id.ToString();
-
-            Debug.Log("Nickname: " + user.NikeName +  " Level: " + user.Level + " WalletId: " + user.WalletId );
-        }
-        else { Debug.Log("playerDataRequest Dont HasValue"); }
-        
-        LoadingPanel.Instance.DesactiveLoadingPanel();
-    }*/
     
     public void ChangeLang(int lang)
     {
-        GlobalGameData.Instance.SetGameLanguage((Language)lang);
+        PlayerPrefs.SetInt("GameLanguage", lang);
         RefreshAllPropertys();
     }
     
-    public void PlayCurrentMode()
+    public async void PlayCurrentMode()
     {
-        switch (GlobalGameData.Instance.GetUserData().config.currentMatch)
+        string currentMatch = await AsyncLocalStorage.LoadDataAsync("CurrentMatch");
+        switch (currentMatch)
         {
-            case TypeMatch.multi:
-            {
+            case "multi":
                 uiMatchMaking.StartSearch();
                 break;
-            }
-            case TypeMatch.bots:
-            {
-                Debug.Log($"CURRENT MATCH: {GlobalGameData.Instance.GetUserData().config.currentMatch}");
+            case "bots":
+                Debug.Log($"CURRENT MATCH: {currentMatch}");
                 break;
-            }
             default:
-            {
-                Debug.Log($"CURRENT MATCH: {GlobalGameData.Instance.GetUserData().config.currentMatch}");
+                Debug.Log($"CURRENT MATCH: {currentMatch}");
                 break;
-            }
-                
         }
     }
-
-  
 
     //Refresh a specific UI propertie of the player
     public void RefreshProperty(PlayerProperty property)
     {
         foreach (UIPTxtInfo prop in UIPropertys.Where(f => f.Property == property)) { prop.LoadProperty(); }
     }
+
     //Refresh all the UI references properties of the player
     public void RefreshAllPropertys()
     {
         foreach (UIPTxtInfo prop in UIPropertys) { prop.LoadProperty(); }
     }
-    
 }

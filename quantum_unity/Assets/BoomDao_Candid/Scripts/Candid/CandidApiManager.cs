@@ -356,7 +356,7 @@ private void AbortLogin()
             //NowCanLogin
         }
 
-        private async UniTask InitializeCandidApis(IAgent agent, bool asAnon = false)
+        private UniTask InitializeCandidApis(IAgent agent, bool asAnon = false)
         {
             Debug.Log($"[CandidApiManager] Initializing Candid APIs. Anonymous: {asAnon}");
             var userPrincipal = agent.Identity.GetPublicKey().ToPrincipal().ToText();

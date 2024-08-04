@@ -1,16 +1,13 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Cosmicrafts.Data;
 
-/*
- * This code shows a player property on a UI element (UI component)
- */
-
-//Types of properties of the player
 public enum PlayerProperty
 {
     Name,
-    WalletId,
+    PrincipalId,
     Level,
     Xp,
     Xpbar,
@@ -29,12 +26,13 @@ public enum PlayerProperty
 
 public class UIPTxtInfo : MonoBehaviour
 {
-    //The player property
     public PlayerProperty Property;
 
-    //Load and show the property when begins
-    void Start()
+    private PlayerData playerData;
+
+    async void Start()
     {
+        playerData = await AsyncDataManager.LoadPlayerDataAsync();
         LoadProperty();
     }
 
@@ -45,129 +43,80 @@ public class UIPTxtInfo : MonoBehaviour
 
     public void SetText(string text)
     {
-        Text mytext = GetComponent<Text>();
-        if (mytext != null) { mytext.text = text; }
+        Text myText = GetComponent<Text>();
+        if (myText != null) { myText.text = text; }
 
-        TMP_Text mytmp = GetComponent<TMP_Text>();
-        if (mytmp != null) { mytmp.text = text; }
+        TMP_Text myTmp = GetComponent<TMP_Text>();
+        if (myTmp != null) { myTmp.text = text; }
     }
+
     public void LoadProperty()
     {
-        //Check if the player data exist
-        if (!GlobalGameData.Instance.UserIsInit()) { return; }
+        if (playerData == null) { return; }
 
-        //Show the selected property
         switch (Property)
         {
             case PlayerProperty.Name:
-                {
-                    UserData user = GlobalGameData.Instance.GetUserData();
-                    SetText(user.NikeName);
-                }
+                SetText(playerData.Username);
                 break;
-            case PlayerProperty.WalletId:
-                {
-                    UserData user = GlobalGameData.Instance.GetUserData();
-                    SetText(Utils.GetWalletIDShort(user.WalletId)); 
-                }
+            case PlayerProperty.PrincipalId:
+                SetText(Utils.GetWalletIDShort(playerData.PrincipalId));
                 break;
             case PlayerProperty.Level:
-                {
-                    SetText($"{Lang.GetText("mn_lvl")} {GlobalGameData.Instance.GetUserData().Level}");
-                }
+                SetText($"{Lang.GetText("mn_lvl")} {playerData.Level}");
                 break;
             case PlayerProperty.Xp:
-                {
-                    SetText($"Error XP");
-                }
+                SetText($"Error XP");
                 break;
             case PlayerProperty.XpProgress:
-                {
-                    SetText($"XX/XX");
-                }
+                SetText($"XX/XX");
                 break;
             case PlayerProperty.Xpbar:
-                {
-                    Debug.Log("Error XPBar UIPTxtInfo");
-                    /*UserProgress userProgress = GlobalGameData.Instance.GetUserProgress();
-                    Image myimage = GetComponent<Image>();
-                    myimage.fillAmount = (float)userProgress.GetXp() / (float)userProgress.GetNextXpGoal();*/
-                }
+                Debug.Log("Error XPBar UIPTxtInfo");
                 break;
             case PlayerProperty.Character:
-                {
-                    Debug.Log("Error CharacterImage UIPTxtInfo");
-                    /*NFTsCharacter nFTsCharacter = GlobalGameData.Instance.GetUserCharacter();
-                    Image myimage = GetComponent<Image>();
-                    myimage.sprite = ResourcesServices.ValidateSprite(nFTsCharacter.IconSprite);*/
-                }
+                Debug.Log("Error CharacterImage UIPTxtInfo");
                 break;
             case PlayerProperty.CharacterName:
-                {
-                    string key = GlobalGameData.Instance.GetUserData().CharacterNFTId.ToString();
-                    SetText(Lang.GetEntityName(key));
-                }
+                SetText(Lang.GetEntityName(playerData.CharacterNFTId.ToString()));
                 break;
             case PlayerProperty.Avatar:
-                {
-                    Debug.Log("Error Avatar UIPTxtInfo");
-                    /*User user = GlobalGameData.Instance.GetUserData();
-                    Image myimage = GetComponent<Image>();
-                    myimage.sprite = ResourcesServices.LoadAvatarUser(user.Avatar);*/
-                }
+                Debug.Log("Error Avatar UIPTxtInfo");
                 break;
             case PlayerProperty.Score:
-                {
-                    SetText("ErrorScore");
-                }
+                SetText("ErrorScore");
                 break;
             case PlayerProperty.Emblem:
-                {
-                    Debug.Log("Error Emblem UIPTxtInfo");
-                    /*NFTsCharacter nFTsCharacter = GlobalGameData.Instance.GetUserCharacter();
-                    Image myimage = GetComponent<Image>();
-                    myimage.sprite = ResourcesServices.LoadCharacterEmblem(nFTsCharacter.KeyId);*/
-                }
+                Debug.Log("Error Emblem UIPTxtInfo");
                 break;
             case PlayerProperty.Description:
-                {
-                    Debug.Log("Error Description UIPTxtInfo");
-                    /*string key = GlobalGameData.Instance.GetUserCharacter().KeyId;
-                    SetText(Lang.GetEntityDescription(key));*/
-                }
+                Debug.Log("Error Description UIPTxtInfo");
                 break;
             case PlayerProperty.CurrentElo:
-            // Directly use the current ELO points stored in EloManagement
-            SetText(EloManagement.Instance.CurrentEloPoints.ToString());
-            break;
-
-        case PlayerProperty.CurrentLeague:
-            // Fetch the current league based on the current ELO
-            LeagueSO currentLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
-            if (currentLeague != null)
-            {
-                SetText(currentLeague.leagueName);
-            }
-            break;
-
-        case PlayerProperty.CurrentSubLeague:
-            // Fetch the current subleague based on the current ELO
-            LeagueSO currentSubLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
-            if (currentSubLeague != null)
-            {
-                SetText(currentSubLeague.subLeagueName);
-            }
-            break;
-
-        case PlayerProperty.CurrentLeagueIcon:
-            // Fetch the league icon based on the current ELO
-            LeagueSO leagueWithIcon = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
-            Image myImage = GetComponent<Image>();
-            if (myImage != null && leagueWithIcon != null)
-            {
-                myImage.sprite = leagueWithIcon.leagueSprite;
-            }
-            break;
+                SetText(EloManagement.Instance.CurrentEloPoints.ToString());
+                break;
+            case PlayerProperty.CurrentLeague:
+                LeagueSO currentLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+                if (currentLeague != null)
+                {
+                    SetText(currentLeague.leagueName);
+                }
+                break;
+            case PlayerProperty.CurrentSubLeague:
+                LeagueSO currentSubLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+                if (currentSubLeague != null)
+                {
+                    SetText(currentSubLeague.subLeagueName);
+                }
+                break;
+            case PlayerProperty.CurrentLeagueIcon:
+                LeagueSO leagueWithIcon = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+                Image myImage = GetComponent<Image>();
+                if (myImage != null && leagueWithIcon != null)
+                {
+                    myImage.sprite = leagueWithIcon.leagueSprite;
+                }
+                break;
         }
     }
 }

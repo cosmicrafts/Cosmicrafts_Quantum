@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Candid;
+using System.Threading.Tasks;
 
 public class SeedRecovery : MonoBehaviour
 {
@@ -10,12 +11,14 @@ public class SeedRecovery : MonoBehaviour
     public CandidApiManager candidApiManager;
     public NotificationManager notificationManager;
 
+    private const string SeedPhraseKey = "SeedPhrase";
+
     private void Start()
     {
         recoverButton.onClick.AddListener(RecoverSeedPhrase);
     }
 
-    private void RecoverSeedPhrase()
+    private async void RecoverSeedPhrase()
     {
         string seedPhrase = seedPhraseInputField.text;
 
@@ -29,13 +32,23 @@ public class SeedRecovery : MonoBehaviour
         candidApiManager.SetTestSeedPhrase(seedPhrase);
         Debug.Log("Seed phrase recovered and set in CandidApiManager.");
 
-        // Save the seed phrase to GlobalGameData
-        GlobalGameData.Instance.SaveSeedPhrase(seedPhrase);
-        Debug.Log("Seed phrase saved to GlobalGameData.");
+        // Save the seed phrase using AsyncLocalStorage
+        await SaveSeedPhraseAsync(seedPhrase);
+        Debug.Log("Seed phrase saved using AsyncLocalStorage.");
 
         notificationManager.ShowNotification("Wallet recovered successfully.");
 
         // Call StartLoginRandom after successfully saving the seed phrase
         LoginManager.Instance.StartLoginRandom();
+    }
+
+    private async Task SaveSeedPhraseAsync(string seedPhrase)
+    {
+        await AsyncLocalStorage.SaveDataAsync(SeedPhraseKey, seedPhrase);
+    }
+
+    public static async Task<string> LoadSeedPhraseAsync()
+    {
+        return await AsyncLocalStorage.LoadDataAsync(SeedPhraseKey);
     }
 }

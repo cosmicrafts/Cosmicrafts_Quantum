@@ -8,6 +8,7 @@ using System;
 using System.Numerics;
 using System.Collections;
 using System.Linq;
+using Cosmicrafts.Data;
 
 public class flux : MonoBehaviour
 {
@@ -52,7 +53,8 @@ public class flux : MonoBehaviour
 
     public async void FetchBalance()
     {
-        string principalId = GlobalGameData.Instance.GetUserData().WalletId;
+        PlayerData playerData = await AsyncDataManager.LoadPlayerDataAsync();
+        string principalId = playerData.PrincipalId;
         Debug.Log($"Fetching balance for Principal ID: {principalId}");
 
         try

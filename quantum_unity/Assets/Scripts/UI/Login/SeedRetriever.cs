@@ -1,6 +1,8 @@
 using UnityEngine;
-using TMPro; // Ensure this is included for TMP_InputField
+using TMPro;
 using UnityEngine.UI;
+using System.Threading.Tasks;
+using Cosmicrafts.Data;
 
 public class SeedRetriever : MonoBehaviour
 {
@@ -10,19 +12,19 @@ public class SeedRetriever : MonoBehaviour
 
     private string currentSeedPhrase = "";
 
-    void Start()
+    async void Start()
     {
         // Attach button listener
         copyButton.onClick.AddListener(CopySeedPhraseToClipboard);
 
         // Load and display the saved seed phrase
-        LoadAndDisplaySeedPhrase();
+        await LoadAndDisplaySeedPhraseAsync();
     }
 
-    void LoadAndDisplaySeedPhrase()
+    private async Task LoadAndDisplaySeedPhraseAsync()
     {
         // Load the saved seed phrase
-        currentSeedPhrase = GlobalGameData.Instance.LoadSeedPhrase();
+        currentSeedPhrase = await SeedRecovery.LoadSeedPhraseAsync();
         
         if (!string.IsNullOrEmpty(currentSeedPhrase))
         {
@@ -38,7 +40,7 @@ public class SeedRetriever : MonoBehaviour
         }
     }
 
-    void CopySeedPhraseToClipboard()
+    private void CopySeedPhraseToClipboard()
     {
         if (!string.IsNullOrEmpty(currentSeedPhrase))
         {

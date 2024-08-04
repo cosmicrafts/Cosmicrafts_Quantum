@@ -1,11 +1,12 @@
-using UnityEngine;
-using TMPro;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CanisterPK.CanisterLogin.Models;
+using UnityEngine;
+using TMPro;
 using EdjCase.ICP.Candid.Models;
 using Candid;
-using System;
+using CanisterPK.CanisterLogin.Models;
+using Cosmicrafts.Data;
 
 public class RewardsManager : MonoBehaviour
 {
@@ -15,7 +16,6 @@ public class RewardsManager : MonoBehaviour
     public GameObject rewardPrefab;
     public Transform rewardsContainer;
 
-    // Store missions here
     public List<MissionsUser> UserMissions { get; private set; }
     public List<MissionsUser> GeneralMissions { get; private set; }
 
@@ -38,8 +38,6 @@ public class RewardsManager : MonoBehaviour
     async void Start()
     {
         rewardPrefab.SetActive(false);
-
-        // Fetch and populate rewards UI
         await FetchAndPopulateRewardsUI();
     }
 
@@ -50,7 +48,6 @@ public class RewardsManager : MonoBehaviour
         var fetchUserMissionsTask = SearchActiveUserMissions();
         var fetchGeneralMissionsTask = SearchActiveGeneralMissions();
 
-        // Await the missions fetching tasks
         var activeUserMissions = await fetchUserMissionsTask;
         var activeGeneralMissions = await fetchGeneralMissionsTask;
 
@@ -62,7 +59,6 @@ public class RewardsManager : MonoBehaviour
 
     private void PopulateRewardsUI(List<MissionsUser> userMissions, List<MissionsUser> generalMissions)
     {
-        // Combine user and general missions into one list
         List<MissionsUser> allMissions = new List<MissionsUser>();
         if (userMissions != null)
         {
@@ -81,14 +77,12 @@ public class RewardsManager : MonoBehaviour
 
         int currentChildIndex = 0;
 
-        // Iterate through all missions and update or create UI elements
         foreach (var mission in allMissions)
         {
             Debug.Log($"[RewardsManager] Processing mission with ID: {mission.IdMission}");
 
             if (currentChildIndex < rewardsContainer.childCount)
             {
-                // Update existing child
                 var child = rewardsContainer.GetChild(currentChildIndex);
                 var display = child.GetComponent<RewardsDisplay>();
                 if (display != null)
@@ -104,14 +98,12 @@ public class RewardsManager : MonoBehaviour
             }
             else
             {
-                // Instantiate a new child
                 InstantiateRewardPrefab(mission);
             }
 
             currentChildIndex++;
         }
 
-        // Deactivate any remaining unused children
         for (int i = currentChildIndex; i < rewardsContainer.childCount; i++)
         {
             rewardsContainer.GetChild(i).gameObject.SetActive(false);
@@ -160,7 +152,7 @@ public class RewardsManager : MonoBehaviour
         try
         {
             Debug.Log("[RewardsManager] Searching active user missions...");
-            var principal = GetPrincipal();
+            var principal = await GetPrincipalAsync();
             var activeUserMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveUserMissions(principal);
             Debug.Log($"[RewardsManager] Found {activeUserMissions.Count} active user missions.");
             return activeUserMissions;
@@ -177,7 +169,7 @@ public class RewardsManager : MonoBehaviour
         try
         {
             Debug.Log("[RewardsManager] Searching active general missions...");
-            var principal = GetPrincipal();
+            var principal = await GetPrincipalAsync();
             var activeGeneralMissions = await CandidApiManager.Instance.CanisterLogin.SearchActiveGeneralMissions(principal);
             Debug.Log($"[RewardsManager] Found {activeGeneralMissions.Count} active general missions.");
             return activeGeneralMissions;
@@ -187,6 +179,17 @@ public class RewardsManager : MonoBehaviour
             Debug.LogError($"[RewardsManager] Error searching active general missions: {ex.Message}");
             return new List<MissionsUser>();
         }
+    }
+
+    private async Task<Principal> GetPrincipalAsync()
+    {
+        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (userData == null)
+        {
+            Debug.LogError("Failed to load player data.");
+            return null;
+        }
+        return Principal.FromText(userData.PrincipalId);
     }
 
     private void OnEnable()
@@ -203,7 +206,6 @@ public class RewardsManager : MonoBehaviour
 
     private void HandleMissionClaimed(MissionsUser mission)
     {
-        // Find the corresponding UI element and remove it
         foreach (Transform child in rewardsContainer)
         {
             var display = child.GetComponent<RewardsDisplay>();
@@ -217,7 +219,6 @@ public class RewardsManager : MonoBehaviour
 
     private void HandleMissionRemoved(MissionsUser mission)
     {
-        // Find the corresponding UI element and deactivate it
         foreach (Transform child in rewardsContainer)
         {
             var display = child.GetComponent<RewardsDisplay>();
@@ -245,8 +246,7 @@ public class RewardsManager : MonoBehaviour
                     OnMissionClaimed?.Invoke(mission);
                 }
 
-                // Create a new mission after successful claim
-                var principal = GetPrincipal();
+                var principal = await GetPrincipalAsync();
                 var createMissionTask = await CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
                 if (createMissionTask.ReturnArg0)
                 {
@@ -294,12 +294,5 @@ public class RewardsManager : MonoBehaviour
             Debug.LogError($"[RewardsManager] Error claiming general reward: {ex.Message}");
             return false;
         }
-    }
-
-    private Principal GetPrincipal()
-    {
-        // Obtain the principal from GlobalGameData
-        string userPrincipalId = GlobalGameData.Instance.GetUserData().WalletId;
-        return Principal.FromText(userPrincipalId);
     }
 }

@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-
 using Candid;
 using CanisterPK.testnft.Models;
 using EdjCase.ICP.Candid.Models;
@@ -49,15 +47,20 @@ namespace Cosmicrafts.Data
         // Fetch user's owned NFTs
         async Task FetchOwnedNFTs()
         {
-            string userPrincipalId = GlobalGameData.Instance.GetUserData().WalletId;
-            var account = new Account(Principal.FromText(userPrincipalId), null);
+            var userData = await AsyncDataManager.LoadPlayerDataAsync();
+            if (userData == null)
+            {
+                Debug.LogError("Failed to load player data.");
+                return;
+            }
+
+            var account = new Account(Principal.FromText(userData.PrincipalId), null);
             var tokens = await GetOwnedNFTs(account);
 
             if (tokens != null && tokens.Count > 0)
             {
                 foreach (var tokenId in tokens)
                 {
-                    // Debug.Log("[NFTManager] Getting Token: "+ tokenId);
                     await FetchAndSetNFTMetadata(tokenId);
                 }
 
@@ -76,17 +79,14 @@ namespace Cosmicrafts.Data
                 NFTData nftData = NFTMetadataParser.Parse(metadataDictionary);
                 nftData.TokenId = tokenId.ToString();
 
-                // Check if NFTData with this tokenId already exists
                 var existingData = AllNFTDatas.FirstOrDefault(nd => nd.TokenId == tokenId.ToString());
                 if (existingData != null)
                 {
-                    // Update existing NFTData
                     var index = AllNFTDatas.IndexOf(existingData);
                     AllNFTDatas[index] = nftData.Clone();
                 }
                 else
                 {
-                    // Add new NFTData
                     AllNFTDatas.Add(nftData.Clone());
                 }
 
@@ -105,37 +105,41 @@ namespace Cosmicrafts.Data
 
         public async Task<TransferReceipt> TransferNFT(List<UnboundedUInt> tokenIds, Principal recipientPrincipal)
         {
-            var senderPrincipalText = GlobalGameData.Instance.GetUserData().WalletId; // Use the correct property
-            var senderAccount = new Account(Principal.FromText(senderPrincipalText), new OptionalValue<List<byte>>()); // Adapt if necessary
-            var recipientAccount = new Account(recipientPrincipal, new OptionalValue<List<byte>>()); // Adapt based on actual Account constructor
+            var userData = await AsyncDataManager.LoadPlayerDataAsync();
+            if (userData == null)
+            {
+                Debug.LogError("Failed to load player data.");
+                return null;
+            }
+
+            var senderAccount = new Account(Principal.FromText(userData.PrincipalId), new OptionalValue<List<byte>>());
+            var recipientAccount = new Account(recipientPrincipal, new OptionalValue<List<byte>>());
 
             var transferArgs = new TransferArgs
             {
-                CreatedAtTime = new OptionalValue<ulong>(), // Set this if needed
+                CreatedAtTime = new OptionalValue<ulong>(),
                 From = new OptionalValue<Account>(senderAccount),
-                IsAtomic = new OptionalValue<bool>(true), // Set based on your requirement
-                Memo = new OptionalValue<List<byte>>(System.Text.Encoding.UTF8.GetBytes("Transfer Memo").ToList()), // Ensure System.Linq is used
-                SpenderSubaccount = new OptionalValue<List<byte>>(), // Assuming no specific subaccount
+                IsAtomic = new OptionalValue<bool>(true),
+                Memo = new OptionalValue<List<byte>>(System.Text.Encoding.UTF8.GetBytes("Transfer Memo").ToList()),
+                SpenderSubaccount = new OptionalValue<List<byte>>(),
                 To = recipientAccount,
-                TokenIds = tokenIds // Correctly using List<UnboundedUInt>
+                TokenIds = tokenIds
             };
 
             return await CandidApiManager.Instance.testnft.Icrc7Transfer(transferArgs);
-
         }
 
         public async Task UpdateNFTMetadata(string tokenId)
         {
             Debug.Log($"Starting metadata update for Token ID: {tokenId}");
             UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenId));
-            await FetchAndSetNFTMetadata(tokenID); // Ensure metadata is fetched and UI event is triggered
+            await FetchAndSetNFTMetadata(tokenID);
             OnMetadataUpdated?.Invoke(tokenId);
             Debug.Log($"Finished metadata update for Token ID: {tokenId}");
         }
 
         public NFTData GetNFTDataById(string tokenId)
         {
-            // Search for the NFTData with the matching tokenId
             return AllNFTDatas.FirstOrDefault(nftData => nftData.TokenId == tokenId);
         }
 
@@ -144,6 +148,5 @@ namespace Cosmicrafts.Data
             AllNFTDatas.RemoveAll(nft => nft.TokenId == tokenId);
             OnNFTTransferred?.Invoke(tokenId);
         }
-
     }
 }

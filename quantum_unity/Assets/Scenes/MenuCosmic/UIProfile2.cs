@@ -1,14 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
 using Candid;
 using TMPro;
 using UnityEngine;
-
+using System.Threading.Tasks;
 public class UIProfile2 : MonoBehaviour
 {
-
     [Header("Overview")] 
     public TMP_Text since;
     public TMP_Text timePlayed;
@@ -20,7 +15,7 @@ public class UIProfile2 : MonoBehaviour
     public TMP_Text damageEvaded;
     public TMP_Text criticalDamage;
     public TMP_Text damageTaken;
-    public TMP_Text xpEarned ;
+    public TMP_Text xpEarned;
     
     public TMP_Text energyGenerated;
     public TMP_Text energyUsed;
@@ -28,16 +23,16 @@ public class UIProfile2 : MonoBehaviour
 
     private async void Start()
     {
-        GetInfoToProfile();
+        await GetInfoToProfile();
     }
 
-    public void OpenProfile()
+    public async void OpenProfile()
     {
         Debug.Log("awake");
-        GetInfoToProfile();
+        await GetInfoToProfile();
     }
 
-    public async void GetInfoToProfile()
+    public async Task GetInfoToProfile()
     {
         Debug.Log("GetInfoToProfile");
         var playerGameStats = await CandidApiManager.Instance.CanisterLogin.GetMyStats();
@@ -61,7 +56,6 @@ public class UIProfile2 : MonoBehaviour
             energyGenerated.text = playerGameStatsValue.EnergyGenerated.ToString();
             energyUsed.text = playerGameStatsValue.EnergyUsed.ToString();
             energyWasted.text = playerGameStatsValue.EnergyWasted.ToString();
-            
         }
         else
         {

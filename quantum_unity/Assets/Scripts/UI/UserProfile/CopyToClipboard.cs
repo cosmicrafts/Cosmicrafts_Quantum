@@ -1,26 +1,32 @@
 using UnityEngine;
-using TMPro;
 
 public class CopyToClipboard : MonoBehaviour
 {
     public NotificationManager notificationManager;
 
-    public void CopyText()
+    public async void CopyText()
     {
-        // Directly fetch the full wallet ID from GlobalGameData or similar
-        string fullWalletId = GlobalGameData.Instance.GetUserData().WalletId;
+        // Fetch the PrincipalId from AsyncLocalStorage
+        string fullPrincipalId = await AsyncLocalStorage.LoadDataAsync("PrincipalId");
         
-        GUIUtility.systemCopyBuffer = fullWalletId; // Copy the full Wallet ID to clipboard
-        Debug.Log("Full Wallet ID copied to clipboard: " + fullWalletId);
-
-        // Show notification
-        if (notificationManager != null)
+        if (!string.IsNullOrEmpty(fullPrincipalId))
         {
-            notificationManager.ShowNotification("Principal ID copied to clipboard!");
+            GUIUtility.systemCopyBuffer = fullPrincipalId; // Copy the PrincipalId to clipboard
+            Debug.Log("Principal ID copied to clipboard: " + fullPrincipalId);
+
+            // Show notification
+            if (notificationManager != null)
+            {
+                notificationManager.ShowNotification("Principal ID copied to clipboard!");
+            }
+            else
+            {
+                Debug.LogWarning("NotificationManager reference not set in CopyToClipboard script.");
+            }
         }
         else
         {
-            Debug.LogWarning("NotificationManager reference not set in CopyToClipboard script.");
+            Debug.LogError("Failed to load Principal ID from AsyncLocalStorage.");
         }
     }
 }

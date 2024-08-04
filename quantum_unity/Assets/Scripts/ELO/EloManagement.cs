@@ -6,6 +6,7 @@ using EdjCase.ICP.Candid.Models;
 using CanisterPK.CanisterLogin;
 using CanisterPK.CanisterLogin.Models;
 using TMPro;
+using Cosmicrafts.Data;
 
 public class EloManagement : MonoBehaviour
 {
@@ -36,8 +37,14 @@ public class EloManagement : MonoBehaviour
 
     public async Task UpdatePlayerElo()
     {
-        string walletId = GlobalGameData.Instance.GetUserData().WalletId;
-        Principal playerPrincipal = Principal.FromText(walletId);
+        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (userData == null)
+        {
+            Debug.LogError("Failed to load player data.");
+            return;
+        }
+
+        Principal playerPrincipal = Principal.FromText(userData.PrincipalId);
 
         try
         {

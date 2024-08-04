@@ -10,6 +10,7 @@ using System.Collections;
 using System.Linq;
 using Candid.IcpLedger.Models;
 using System.Collections.Generic;
+using Cosmicrafts.Data;
 
 
 public class icptoken : MonoBehaviour
@@ -43,7 +44,8 @@ private void OnDisable()
 
     public async void FetchBalance()
 {
-    string principalId = GlobalGameData.Instance.GetUserData().WalletId;
+    PlayerData playerData = await AsyncDataManager.LoadPlayerDataAsync();
+        string principalId = playerData.PrincipalId;
     Debug.Log($"Fetching balance for Principal ID: {principalId}");
 
     try

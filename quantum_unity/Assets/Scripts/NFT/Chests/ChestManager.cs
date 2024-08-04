@@ -9,11 +9,12 @@ using Candid;
 using CanisterPK.chests.Models;
 using EdjCase.ICP.Candid.Models;
 using System.Numerics;
+using Cosmicrafts.Data;
 
 public class ChestManager : MonoBehaviour
 {
-    [SerializeField] private ChestSO[] chestSOsByRarity; 
-    public static ChestManager Instance { get; private set; } 
+    [SerializeField] private ChestSO[] chestSOsByRarity;
+    public static ChestManager Instance { get; private set; }
     public TMP_Text ownedChestsText;
     public GameObject chestPrefab;
     public Transform chestDisplayContainer;
@@ -39,7 +40,8 @@ public class ChestManager : MonoBehaviour
         await FetchOwnedChests();
         if (updateChestsToggle != null)
         {
-            updateChestsToggle.onValueChanged.AddListener((value) => {
+            updateChestsToggle.onValueChanged.AddListener((value) =>
+            {
                 if (value) UpdateOwnedChests();
             });
         }
@@ -64,13 +66,19 @@ public class ChestManager : MonoBehaviour
 
     private async Task FetchOwnedChests()
     {
-        string userPrincipalId = GlobalGameData.Instance.GetUserData().WalletId;
-        var account = new Account(Principal.FromText(userPrincipalId), null);
+        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (userData == null)
+        {
+            Debug.LogError("Failed to load player data.");
+            return;
+        }
+
+        var account = new Account(Principal.FromText(userData.PrincipalId), null);
         var tokenIds = await GetOwnedChestTokens(account);
 
         if (tokenIds != null && tokenIds.Count > 0)
         {
-            ownedChestsText.text = $"{tokenIds.Count}"; 
+            ownedChestsText.text = $"{tokenIds.Count}";
             foreach (var tokenId in tokenIds)
             {
                 await FetchAndSetChestData(tokenId);
@@ -87,11 +95,10 @@ public class ChestManager : MonoBehaviour
             var metadataDictionary = metadataResult.Value as Dictionary<string, Metadata>;
             if (metadataDictionary != null && metadataDictionary.TryGetValue("rarity", out Metadata metadata))
             {
-                // Ensure the rarity is an int and within the bounds of your ChestSO array
                 int rarity = (int)metadata.AsNat();
                 if (rarity >= 1 && rarity <= chestSOsByRarity.Length)
                 {
-                    ChestSO chestSO = chestSOsByRarity[rarity - 0]; // Adjust for zero-based indexing
+                    ChestSO chestSO = chestSOsByRarity[rarity - 1];
                     InstantiateChestPrefab(tokenId, chestSO);
                 }
                 else
@@ -113,7 +120,7 @@ public class ChestManager : MonoBehaviour
         instance.SetActive(true);
     }
 
-    private async Task<List<UnboundedUInt>> GetOwnedChestTokens(Account account) // Renamed for clarity
+    private async Task<List<UnboundedUInt>> GetOwnedChestTokens(Account account)
     {
         var tokenListResult = await CandidApiManager.Instance.chests.Icrc7TokensOf(account);
         return tokenListResult.Tag == TokensOfResultTag.Ok ? tokenListResult.AsOk() : new List<UnboundedUInt>();
@@ -121,11 +128,16 @@ public class ChestManager : MonoBehaviour
 
     public async void UpdateOwnedChests()
     {
-        string userPrincipalId = GlobalGameData.Instance.GetUserData().WalletId;
-        var account = new Account(Principal.FromText(userPrincipalId), null);
+        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (userData == null)
+        {
+            Debug.LogError("Failed to load player data.");
+            return;
+        }
+
+        var account = new Account(Principal.FromText(userData.PrincipalId), null);
         var newTokenIds = await GetOwnedChestTokens(account);
 
-        // Calculate the number of new chests
         int newChestCount = newTokenIds.Except(currentTokenIds).Count();
 
         if (newChestCount > 0)
@@ -136,44 +148,43 @@ public class ChestManager : MonoBehaviour
                 await FetchAndSetChestData(tokenId);
             }
 
-            // Update currentTokenIds with the newTokenIds
             currentTokenIds.AddRange(newTokenIds.Except(currentTokenIds));
 
-            // Notify the user about the new chest only if the toggle is on
             string notificationText = $"Received {newChestCount} new chest{(newChestCount > 1 ? "s" : "")}!";
             notificationManager.ShowNotification(notificationText);
         }
     }
 
-
     public async Task TransferChest(ChestSO chestSO, UnboundedUInt tokenId, string recipientPrincipalText)
     {
-    Debug.Log($"Attempting to transfer chest: {chestSO.chestName} with Token ID: {tokenId} to {recipientPrincipalText}");
-    var recipientPrincipal = Principal.FromText(recipientPrincipalText);
-    // Prepare the transfer arguments
-    var transferArgs = new CanisterPK.chests.Models.TransferArgs
-    {
-        // Assuming you have a sender account setup similar to NFTManager
-        From = new OptionalValue<Account>(new Account(Principal.FromText(GlobalGameData.Instance.GetUserData().WalletId), null)),
-        To = new Account(recipientPrincipal, null),
-        TokenIds = new List<UnboundedUInt> { tokenId }
-    };
-    // Perform the transfer
-    var transferReceipt = await CandidApiManager.Instance.chests.Icrc7Transfer(transferArgs);
-    
-    // Check the Tag to determine if the transfer was successful
-    if (transferReceipt.Tag == TransferReceiptTag.Ok)
-    {
-        Debug.Log("Chest transferred successfully.");
-        // Update UI and internal state
-        RemoveChestAndRefreshCount(tokenId);
-    }
-    else if (transferReceipt.Tag == TransferReceiptTag.Err)
-    {
-        // Extract error information if available
-        TransferError errorInfo = transferReceipt.AsErr();
-        // Handle different error types (you may add more detailed handling based on error types)
-        Debug.LogError($"Failed to transfer chest: {errorInfo.Tag}");
-    }
+        var userData = await AsyncDataManager.LoadPlayerDataAsync();
+        if (userData == null)
+        {
+            Debug.LogError("Failed to load player data.");
+            return;
+        }
+
+        Debug.Log($"Attempting to transfer chest: {chestSO.chestName} with Token ID: {tokenId} to {recipientPrincipalText}");
+        var recipientPrincipal = Principal.FromText(recipientPrincipalText);
+
+        var transferArgs = new CanisterPK.chests.Models.TransferArgs
+        {
+            From = new OptionalValue<Account>(new Account(Principal.FromText(userData.PrincipalId), null)),
+            To = new Account(recipientPrincipal, null),
+            TokenIds = new List<UnboundedUInt> { tokenId }
+        };
+
+        var transferReceipt = await CandidApiManager.Instance.chests.Icrc7Transfer(transferArgs);
+
+        if (transferReceipt.Tag == TransferReceiptTag.Ok)
+        {
+            Debug.Log("Chest transferred successfully.");
+            RemoveChestAndRefreshCount(tokenId);
+        }
+        else if (transferReceipt.Tag == TransferReceiptTag.Err)
+        {
+            TransferError errorInfo = transferReceipt.AsErr();
+            Debug.LogError($"Failed to transfer chest: {errorInfo.Tag}");
+        }
     }
 }
