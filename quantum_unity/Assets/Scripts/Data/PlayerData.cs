@@ -17,6 +17,7 @@ namespace Cosmicrafts.Data
         public DateTime LastConnection { get; set; }
         public DateTime Registered { get; set; }
         public Config config = new Config();
+        public string LastMapSelected = "0";
     }
 
     [Serializable]
