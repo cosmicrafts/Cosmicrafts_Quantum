@@ -20,7 +20,6 @@ public class StatisticsManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Optional based on your game's needs
         }
     }
 

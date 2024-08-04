@@ -26,7 +26,6 @@ public class EloManagement : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
     }
 
