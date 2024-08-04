@@ -157,10 +157,15 @@ public class Login : MonoBehaviour
         {
             if (GameDataManager.Instance != null)
             {
-                // Update playerData with player details immediately
+                // Update playerData with player details except for PrincipalId
                 var playerData = GameDataManager.Instance.playerData;
                 playerData.Level = (int)player.Level;
                 playerData.Username = player.Username;
+                playerData.AvatarID = (int)player.Avatar;
+                playerData.Description = player.Description;
+                playerData.Elo = player.Elo;
+                playerData.Friends = player.Friends;
+                playerData.RegistrationDate = (long)player.RegistrationDate.ToBigInteger();
 
                 // Save player data using GameDataManager
                 GameDataManager.Instance.SavePlayerData();

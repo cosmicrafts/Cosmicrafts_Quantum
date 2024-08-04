@@ -1,12 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
+using Cosmicrafts.Managers;
+using Candid;
+using System.Threading.Tasks;
+using EdjCase.ICP.Candid.Models;
+using System.Numerics;
 
 public class AvatarSelection : MonoBehaviour
 {
     [SerializeField] private GameObject avatarButtonPrefab;
     [SerializeField] private Transform scrollContent;
 
+    private bool isUpdatingAvatar = false; // Flag to track if an update is in progress
 
     private void Start()
     {
@@ -57,7 +62,53 @@ public class AvatarSelection : MonoBehaviour
 
     private void SelectAvatar(int id)
     {
-        GlobalGameData.Instance.SetAvatarId(id);
+        // Update the local player data
+        GameDataManager.Instance.playerData.AvatarID = id;
+        GameDataManager.Instance.SavePlayerData();
+
+        // Optionally, you can also trigger an event or a method to refresh the UI
         Debug.Log($"Avatar selected: {id}");
+    }
+
+    public async Task<bool> UpdateAvatarOnBlockchain(int newAvatarId)
+    {
+        if (isUpdatingAvatar) return false; // Prevent multiple updates at the same time
+
+        isUpdatingAvatar = true;
+
+        try
+        {
+            var response = await CandidApiManager.Instance.CanisterLogin.UpdateAvatar(UnboundedUInt.FromBigInteger(new BigInteger(newAvatarId)));
+            if (response.ReturnArg0)
+            {
+                GameDataManager.Instance.playerData.AvatarID = newAvatarId;
+                GameDataManager.Instance.SavePlayerData();
+                Debug.Log($"Avatar updated to ID: {newAvatarId}");
+                return true;
+            }
+            else
+            {
+                Debug.LogError($"Failed to update avatar. Reason: {response.ReturnArg1}");
+                return false;
+            }
+        }
+        finally
+        {
+            isUpdatingAvatar = false;
+        }
+    }
+
+    // Public method to be called by UI button
+    public void OnUpdateAvatarButtonClicked()
+    {
+        if (!isUpdatingAvatar)
+        {
+            int avatarId = GameDataManager.Instance.playerData.AvatarID;
+            _ = UpdateAvatarOnBlockchain(avatarId);
+        }
+        else
+        {
+            Debug.LogWarning("Avatar update is already in progress.");
+        }
     }
 }

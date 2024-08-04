@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Newtonsoft.Json;
 using System.Linq;
-using Candid;
-using EdjCase.ICP.Candid.Models;
 using TMPro;
-using UnityEngine.Networking;
 using Cosmicrafts.Managers;
-using Cosmicrafts.Data;
 
 public class UIMainMenu : MonoBehaviour
 {

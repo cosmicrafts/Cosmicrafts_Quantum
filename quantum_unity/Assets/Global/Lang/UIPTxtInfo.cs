@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +22,10 @@ public enum PlayerProperty
     CurrentElo,
     CurrentLeague,
     CurrentSubLeague,
-    CurrentLeagueIcon
+    CurrentLeagueIcon,
+    Friends,
+    RegistrationDate,
+    Email
 }
 
 public class UIPTxtInfo : MonoBehaviour
@@ -58,6 +61,30 @@ public class UIPTxtInfo : MonoBehaviour
         if (myTmp != null) { myTmp.text = text; }
     }
 
+private string ConvertUnixTimestampToDateString(long unixTimestampInNanoseconds)
+{
+    try
+    {
+        // Convert nanoseconds to milliseconds
+        long unixTimestampInMilliseconds = unixTimestampInNanoseconds / 1_000_000;
+
+        // Ensure the timestamp is within the valid range for DateTimeOffset
+        if (unixTimestampInMilliseconds < -62135596800000 || unixTimestampInMilliseconds > 253402300799999)
+        {
+            Debug.LogError($"Unix timestamp is out of range for DateTimeOffset: {unixTimestampInMilliseconds}");
+            return "Invalid Date";
+        }
+
+        DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(unixTimestampInMilliseconds);
+        return dateTimeOffset.ToString("MMMM yyyy"); // Format as Month and Year
+    }
+    catch (ArgumentOutOfRangeException ex)
+    {
+        Debug.LogError($"Unix timestamp is out of range for DateTimeOffset: {ex.Message}");
+        return "Invalid Date";
+    }
+}
+
     public void LoadProperty()
     {
         if (playerData == null) { return; }
@@ -89,7 +116,7 @@ public class UIPTxtInfo : MonoBehaviour
                 SetText(Lang.GetEntityName(playerData.CharacterNFTId.ToString()));
                 break;
             case PlayerProperty.Avatar:
-                Debug.Log("Error Avatar UIPTxtInfo");
+                SetText(playerData.AvatarID.ToString());  // Displaying avatar ID as text, update this as needed
                 break;
             case PlayerProperty.Score:
                 SetText("ErrorScore");
@@ -98,32 +125,41 @@ public class UIPTxtInfo : MonoBehaviour
                 Debug.Log("Error Emblem UIPTxtInfo");
                 break;
             case PlayerProperty.Description:
-                Debug.Log("Error Description UIPTxtInfo");
+                SetText(playerData.Description);
                 break;
             case PlayerProperty.CurrentElo:
-                SetText(EloManagement.Instance.CurrentEloPoints.ToString());
+                SetText(playerData.Elo.ToString());
                 break;
             case PlayerProperty.CurrentLeague:
-                LeagueSO currentLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+                LeagueSO currentLeague = LeagueManager.Instance.GetCurrentLeague(playerData.Elo);
                 if (currentLeague != null)
                 {
                     SetText(currentLeague.leagueName);
                 }
                 break;
             case PlayerProperty.CurrentSubLeague:
-                LeagueSO currentSubLeague = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+                LeagueSO currentSubLeague = LeagueManager.Instance.GetCurrentLeague(playerData.Elo);
                 if (currentSubLeague != null)
                 {
                     SetText(currentSubLeague.subLeagueName);
                 }
                 break;
             case PlayerProperty.CurrentLeagueIcon:
-                LeagueSO leagueWithIcon = LeagueManager.Instance.GetCurrentLeague(EloManagement.Instance.CurrentEloPoints);
+                LeagueSO leagueWithIcon = LeagueManager.Instance.GetCurrentLeague(playerData.Elo);
                 Image myImage = GetComponent<Image>();
                 if (myImage != null && leagueWithIcon != null)
                 {
                     myImage.sprite = leagueWithIcon.leagueSprite;
                 }
+                break;
+            case PlayerProperty.Friends:
+                SetText(playerData.Friends.Count.ToString());  // Displaying the number of friends as text
+                break;
+            case PlayerProperty.RegistrationDate:
+                SetText(ConvertUnixTimestampToDateString(playerData.RegistrationDate));
+                break;
+            case PlayerProperty.Email:
+                SetText(playerData.Email);
                 break;
         }
     }

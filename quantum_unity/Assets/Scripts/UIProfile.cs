@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using Cosmicrafts.Managers;
 
-public class UIProfile2 : MonoBehaviour
+public class UIProfile : MonoBehaviour
 {
     [Header("Overview")] 
     public TMP_Text since;

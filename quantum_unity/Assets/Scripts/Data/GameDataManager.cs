@@ -1,5 +1,9 @@
 using UnityEngine;
 using Cosmicrafts.Data;
+using Candid;
+using System.Threading.Tasks;
+using EdjCase.ICP.Candid.Models;
+using System.Numerics;
 
 namespace Cosmicrafts.Managers
 {
@@ -8,6 +12,7 @@ namespace Cosmicrafts.Managers
         public static GameDataManager Instance { get; private set; }
 
         public PlayerData playerData;
+        private bool isUpdatingAvatar = false; // Flag to prevent multiple updates
 
         private void Awake()
         {
@@ -29,6 +34,7 @@ namespace Cosmicrafts.Managers
             PlayerPrefs.SetString("PrincipalId", playerData.PrincipalId);
             PlayerPrefs.SetString("Username", playerData.Username);
             PlayerPrefs.SetInt("Level", playerData.Level);
+            PlayerPrefs.SetInt("AvatarID", playerData.AvatarID); // Save AvatarID
             // Save additional fields as needed
             PlayerPrefs.Save();
             Debug.Log("[GameDataManager] Player data saved.");
@@ -43,6 +49,7 @@ namespace Cosmicrafts.Managers
                 playerData.PrincipalId = PlayerPrefs.GetString("PrincipalId");
                 playerData.Username = PlayerPrefs.GetString("Username");
                 playerData.Level = PlayerPrefs.GetInt("Level");
+                playerData.AvatarID = PlayerPrefs.GetInt("AvatarID", 1);
                 // Load additional fields as needed
                 Debug.Log("[GameDataManager] Player data loaded.");
             }

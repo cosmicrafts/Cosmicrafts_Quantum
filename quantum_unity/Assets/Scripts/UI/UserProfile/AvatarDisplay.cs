@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using Cosmicrafts.Managers;
+
 
 public class AvatarDisplay : MonoBehaviour
 {
@@ -9,32 +11,29 @@ public class AvatarDisplay : MonoBehaviour
 
     private void Awake()
     {
-        UpdateAvatarImage(GlobalGameData.Instance.avatarId); 
-        GlobalGameData.Instance.OnAvatarIdChanged += UpdateAvatarImage; 
+        UpdateAvatarImage(GameDataManager.Instance.playerData.AvatarID);
+        GameDataManager.Instance.playerData.OnAvatarIdChanged += UpdateAvatarImage;
     }
 
     private void OnDestroy()
     {
-        GlobalGameData.Instance.OnAvatarIdChanged -= UpdateAvatarImage;
+        GameDataManager.Instance.playerData.OnAvatarIdChanged -= UpdateAvatarImage;
     }
 
     private void UpdateAvatarImage(int avatarId)
-{
-
-    string formattedId = avatarId < 10 ? $"0{avatarId}" : avatarId.ToString();
-    string imagePath = Path.Combine(avatarsFolderPath, $"Avatar_{formattedId}");
-    Sprite avatarSprite = Resources.Load<Sprite>(imagePath);
-
-    if (avatarSprite != null)
     {
-        avatarImage.sprite = avatarSprite;
-      //  Debug.Log($"Displaying avatar ID {avatarId} with sprite {avatarSprite.name}");
-    }
-    else
-    {
-        Debug.LogError($"Avatar image not found for ID {avatarId}, looked for {imagePath}");
-    }
-}
+        string formattedId = avatarId < 10 ? $"0{avatarId}" : avatarId.ToString();
+        string imagePath = Path.Combine(avatarsFolderPath, $"Avatar_{formattedId}");
+        Sprite avatarSprite = Resources.Load<Sprite>(imagePath);
 
-
+        if (avatarSprite != null)
+        {
+            avatarImage.sprite = avatarSprite;
+            // Debug.Log($"Displaying avatar ID {avatarId} with sprite {avatarSprite.name}");
+        }
+        else
+        {
+            Debug.LogError($"Avatar image not found for ID {avatarId}, looked for {imagePath}");
+        }
+    }
 }
