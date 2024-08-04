@@ -6,6 +6,7 @@ using TowerRush;
 using UnityEngine;
 using System.Numerics;
 using System;
+using Cosmicrafts.Data;
 
 public class Login : MonoBehaviour
 {
@@ -16,11 +17,10 @@ public class Login : MonoBehaviour
     [SerializeField] private GameObject chooseUsername;
 
     private bool isMintingDeck = false;
+    private PlayerData playerData;
 
     private async void Awake()
     {
-        GlobalGameData.Instance = null;
-
         if (Instance != null)
         {
             Debug.LogWarning("[Login] Instance already exists. Destroying duplicate.");
@@ -47,11 +47,10 @@ public class Login : MonoBehaviour
         Debug.Log("[Login] CandidApiManager initialized.");
     }
 
-    private void Start()
+    private async void Start()
     {
-        // Game.Instance.AudioService.ChangeMusicClip("login");
-
-        // Save principal to playerstore
+        playerData = await AsyncDataManager.LoadPlayerDataAsync(); // Load user data asynchronously
+        Debug.Log("[Login] Player data loaded.");
     }
 
     private void OnDestroy()
@@ -69,7 +68,7 @@ public class Login : MonoBehaviour
         {
             Debug.Log("[Login] Player already exists.");
             var player = playerInfo.ValueOrDefault;
-            UpdateUserDataAndTransition(player);
+            UpdatePlayerDataAndTransition(player);
         }
         else
         {
@@ -104,11 +103,10 @@ public class Login : MonoBehaviour
         Debug.Log($"[Login] UpdateWindow called with state: {state.state}, IsAnon: {state.asAnon}, Principal: {state.principal}, AccountId: {state.accountIdentifier}");
         bool isLoading = state.state == CandidApiManager.DataState.Loading;
 
-        UserData user = GlobalGameData.Instance.GetUserData();
-        user.WalletId = state.principal;
-        Debug.Log($"[Login] Global game data updated with principal: {state.principal}");
+        playerData.PrincipalId = state.principal;
+        Debug.Log($"[Login] Player data updated with principal: {state.principal}");
 
-        UserLoginSuccessfull();
+        UserLoginSuccessful();
     }
 
     public void StartWebLogin()
@@ -118,7 +116,7 @@ public class Login : MonoBehaviour
         CandidApiManager.Instance.StartLogin();
     }
 
-    public async void UserLoginSuccessfull()
+    public async void UserLoginSuccessful()
     {
         Debug.Log("[Login] Checking player information post-login...");
         var playerInfo = await CandidApiManager.Instance.CanisterLogin.GetPlayer();
@@ -126,7 +124,7 @@ public class Login : MonoBehaviour
         {
             Debug.Log("[Login] Player information retrieved.");
             var player = playerInfo.ValueOrDefault;
-            UpdateUserDataAndTransition(player);
+            UpdatePlayerDataAndTransition(player);
         }
         else
         {
@@ -136,31 +134,28 @@ public class Login : MonoBehaviour
         }
     }
 
-private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
-{
-    try
+    private async void UpdatePlayerDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
     {
-        // Update GlobalGameData with player details immediately
-        UserData user = GlobalGameData.Instance.GetUserData();
-        user.Level = (int)player.Level;
-        user.NikeName = player.Username;
-        user.WalletId = player.Id.ToString();
-        SaveData.SaveGameUser();
+        try
+        {
+            // Update playerData with player details immediately
+            playerData.Level = (int)player.Level;
+            playerData.Username = player.Username;
+            playerData.PrincipalId = player.Id.ToString();
+            await AsyncDataManager.SavePlayerDataAsync(playerData);
 
-        Debug.Log($"[Login] UserData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
+            Debug.Log($"[Login] PlayerData updated with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
 
-        // Transition to the main menu scene
-        Debug.Log("[Login] Transitioning to the main menu scene...");
-        Game.Instance.AudioService.ChangeMusicClip("menu");
-        Game.CurrentScene.FinishScene();
+            // Transition to the main menu scene
+            Debug.Log("[Login] Transitioning to the main menu scene...");
+            Game.Instance.AudioService.ChangeMusicClip("menu");
+            Game.CurrentScene.FinishScene();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Login] Error occurred during login process: {ex.Message}");
+        }
     }
-    catch (Exception ex)
-    {
-        Debug.LogError($"[Login] Error occurred during login process: {ex.Message}");
-    }
-}
-
-
 
     public async void SetPlayerName()
     {
@@ -184,7 +179,7 @@ private async void UpdateUserDataAndTransition(CanisterPK.CanisterLogin.Models.P
                     Debug.Log("[Login] INIT MINT");
                     _ = MintDeckAsync(); // Mint in the background
 
-                    UpdateUserDataAndTransition(player);
+                    UpdatePlayerDataAndTransition(player);
                 }
                 else
                 {
