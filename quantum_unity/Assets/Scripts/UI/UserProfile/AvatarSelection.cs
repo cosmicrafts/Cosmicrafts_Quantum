@@ -12,6 +12,7 @@ public class AvatarSelection : MonoBehaviour
     [SerializeField] private Transform scrollContent;
     private int initialAvatarId;
     private bool isUpdatingAvatar = false; // Flag to track if an update is in progress
+    private bool avatarChanged = false; // Flag to track if avatar has been changed
 
     private void Start()
     {
@@ -66,6 +67,7 @@ public class AvatarSelection : MonoBehaviour
         // Update the local player data
         GameDataManager.Instance.playerData.AvatarID = id;
         GameDataManager.Instance.SavePlayerData();
+        avatarChanged = true; // Set flag to true when avatar is changed
 
         // Optionally, you can also trigger an event or a method to refresh the UI
         Debug.Log($"Avatar selected: {id}");
@@ -84,6 +86,8 @@ public class AvatarSelection : MonoBehaviour
             {
                 GameDataManager.Instance.playerData.AvatarID = newAvatarId;
                 GameDataManager.Instance.SavePlayerData();
+                initialAvatarId = newAvatarId; // Update initialAvatarId to the new value
+                avatarChanged = false; // Reset the flag after successful update
                 Debug.Log($"Avatar updated to ID: {newAvatarId}");
                 return true;
             }
@@ -102,7 +106,7 @@ public class AvatarSelection : MonoBehaviour
     // Public method to be called by UI button
     public void OnUpdateAvatarButtonClicked()
     {
-        if (!isUpdatingAvatar && GameDataManager.Instance.playerData.AvatarID != initialAvatarId)
+        if (!isUpdatingAvatar && avatarChanged)
         {
             int avatarId = GameDataManager.Instance.playerData.AvatarID;
             _ = UpdateAvatarOnBlockchain(avatarId);

@@ -9,6 +9,7 @@ public class DescriptionManager : MonoBehaviour
     [SerializeField] private TMP_InputField descriptionInputField; // Reference to the input field for description
     private const string defaultPlaceholderText = "Write down something about yourself.";
     private string initialDescription;
+    private bool descriptionChanged = false; // Flag to track if description has been changed
 
     private void Start()
     {
@@ -38,20 +39,23 @@ public class DescriptionManager : MonoBehaviour
     {
         GameDataManager.Instance.playerData.Description = newDescription;
         GameDataManager.Instance.SavePlayerData();
+        descriptionChanged = true; // Set flag to true when description is changed
         Debug.Log($"[DescriptionManager] Local description updated to: {newDescription}");
     }
 
     // Public method to be called by UI button
     public async void OnSaveDescriptionButtonClicked()
     {
-        if (GameDataManager.Instance.playerData.Description != initialDescription)
+        if (descriptionChanged)
         {
             string newDescription = GameDataManager.Instance.playerData.Description;
+
             bool success = await UpdateDescriptionOnBlockchain(newDescription);
 
             if (success)
             {
                 initialDescription = newDescription;
+                descriptionChanged = false; // Reset the flag after successful update
                 Debug.Log("[DescriptionManager] Description updated successfully on the blockchain.");
             }
         }

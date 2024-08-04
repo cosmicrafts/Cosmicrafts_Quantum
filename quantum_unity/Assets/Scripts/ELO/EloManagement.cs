@@ -3,10 +3,7 @@ using System;
 using UnityEngine;
 using Candid;
 using EdjCase.ICP.Candid.Models;
-using CanisterPK.CanisterLogin;
-using CanisterPK.CanisterLogin.Models;
 using TMPro;
-using Cosmicrafts.Data;
 using Cosmicrafts.Managers;
 
 public class EloManagement : MonoBehaviour
@@ -62,6 +59,10 @@ public class EloManagement : MonoBehaviour
 
             // Update UI element with new rounded down Elo points
             if (eloText != null) eloText.text = $"{roundedEloPoints}";
+
+            // Update the player data with the new ELO
+            userData.Elo = roundedEloPoints;
+            GameDataManager.Instance.SavePlayerData();
         }
         catch (Exception ex)
         {

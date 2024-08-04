@@ -135,7 +135,9 @@ public class UIPTxtInfo : MonoBehaviour
                 SetText(playerData.Description);
                 break;
             case PlayerProperty.CurrentElo:
-                SetText(playerData.Elo.ToString());
+                // Round down the Elo points
+                int roundedEloPoints = (int)Math.Floor(playerData.Elo);
+                SetText(roundedEloPoints.ToString());
                 break;
             case PlayerProperty.CurrentLeague:
                 LeagueSO currentLeague = LeagueManager.Instance.GetCurrentLeague(playerData.Elo);
