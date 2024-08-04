@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Cosmicrafts.Data
 {
-    // PlayerData class to hold player-related information
     [Serializable]
     public class PlayerData
     {
@@ -21,7 +20,6 @@ namespace Cosmicrafts.Data
         public string LastMapSelected = "0";
     }
 
-    // Config class for player configuration data
     [Serializable]
     public class Config
     {
@@ -30,6 +28,5 @@ namespace Cosmicrafts.Data
         public int ModeSelected = 9;
     }
 
-    // Enum for match types
     public enum TypeMatch { bots, multi }
 }

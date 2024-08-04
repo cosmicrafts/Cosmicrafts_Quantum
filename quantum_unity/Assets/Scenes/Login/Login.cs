@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Numerics;
 using System;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class Login : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class Login : MonoBehaviour
     [SerializeField] private GameObject dashboardCanvas;
 
     private bool isMintingDeck = false;
-    private PlayerData playerData;
 
     private async void Awake()
     {
@@ -51,8 +51,15 @@ public class Login : MonoBehaviour
 
     private async void Start()
     {
-        playerData = await AsyncDataManager.LoadPlayerDataAsync(); // Load user data asynchronously
-        Debug.Log("[Login] Player data loaded.");
+        if (GameDataManager.Instance != null)
+        {
+            GameDataManager.Instance.LoadPlayerData(); // Load player data using GameDataManager
+            Debug.Log("[Login] Player data loaded.");
+        }
+        else
+        {
+            Debug.LogError("[Login] GameDataManager instance is null in Start.");
+        }
     }
 
     private void OnDestroy()
@@ -105,8 +112,15 @@ public class Login : MonoBehaviour
         Debug.Log($"[Login] UpdateWindow called with state: {state.state}, IsAnon: {state.asAnon}, Principal: {state.principal}, AccountId: {state.accountIdentifier}");
         bool isLoading = state.state == CandidApiManager.DataState.Loading;
 
-        playerData.PrincipalId = state.principal;
-        Debug.Log($"[Login] Player data updated with principal: {state.principal}");
+        if (GameDataManager.Instance != null)
+        {
+            GameDataManager.Instance.playerData.PrincipalId = state.principal;
+            Debug.Log($"[Login] Player data updated with principal: {state.principal}");
+        }
+        else
+        {
+            Debug.LogError("[Login] GameDataManager instance is null in UpdateWindow.");
+        }
 
         UserLoginSuccessful();
     }
@@ -140,29 +154,32 @@ public class Login : MonoBehaviour
     {
         try
         {
-            // Update playerData with player details immediately
-            playerData.Level = (int)player.Level;
-            playerData.Username = player.Username;
-            playerData.PrincipalId = player.Id.ToString();
+            if (GameDataManager.Instance != null)
+            {
+                // Update playerData with player details immediately
+                var playerData = GameDataManager.Instance.playerData;
+                playerData.Level = (int)player.Level;
+                playerData.Username = player.Username;
+                playerData.PrincipalId = player.Id.ToString();
 
-            // Save player data to AsyncLocalStorage
-            await AsyncLocalStorage.SaveDataAsync("PrincipalId", playerData.PrincipalId);
-            await AsyncLocalStorage.SaveDataAsync("Username", playerData.Username);
-            await AsyncLocalStorage.SaveDataAsync("Level", playerData.Level.ToString());
+                // Save player data using GameDataManager
+                GameDataManager.Instance.SavePlayerData();
+                Debug.Log($"[Login] PlayerData updated and saved with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
 
-            Debug.Log($"[Login] PlayerData updated and saved with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
-
-            Debug.Log("[Login] Transitioning to the dashboard...");
-            loginCanvas.SetActive(false);
-            //Game.CurrentScene.FinishScene();
-            dashboardCanvas.SetActive(true);
+                Debug.Log("[Login] Transitioning to the dashboard...");
+                loginCanvas.SetActive(false);
+                dashboardCanvas.SetActive(true);
+            }
+            else
+            {
+                Debug.LogError("[Login] GameDataManager instance is null in UpdatePlayerDataAndTransition.");
+            }
         }
         catch (Exception ex)
         {
             Debug.LogError($"[Login] Error occurred during login process: {ex.Message}");
         }
     }
-
 
     public async void SetPlayerName()
     {

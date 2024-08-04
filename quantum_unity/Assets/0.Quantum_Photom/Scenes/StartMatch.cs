@@ -11,6 +11,7 @@ using System.IO;
 using Photon.Deterministic;
 using TowerRush;
 using Cosmicrafts.Data;
+using Cosmicrafts.Managers;
 
 public class StartMatch : MonoBehaviour
 {
@@ -26,19 +27,26 @@ public class StartMatch : MonoBehaviour
     [Range(0, 1000)] public float HpPercent = 100;
     [Range(0, 1000)] public float DmgPercent = 100;
 
-    private async void Awake()
+    private void Awake()
     {
-        playerData = await AsyncDataManager.LoadPlayerDataAsync();
-
-        if (playerData != null)
+        if (GameDataManager.Instance != null)
         {
-            savedKeys.listSavedKeys = playerData.DeckNFTsKeyIds;
+            playerData = GameDataManager.Instance.playerData;
+
+            if (playerData != null)
+            {
+                savedKeys.listSavedKeys = playerData.DeckNFTsKeyIds;
+            }
+
+            var mapNames = new List<string>(m_Maps.Length);
+            for (int idx = 0, count = m_Maps.Length; idx < count; idx++)
+            {
+                mapNames.Add(m_Maps[idx].name);
+            }
         }
-
-        var mapNames = new List<string>(m_Maps.Length);
-        for (int idx = 0, count = m_Maps.Length; idx < count; idx++)
+        else
         {
-            mapNames.Add(m_Maps[idx].name);
+            Debug.LogError("[StartMatch] GameDataManager instance is null in Awake.");
         }
     }
 
