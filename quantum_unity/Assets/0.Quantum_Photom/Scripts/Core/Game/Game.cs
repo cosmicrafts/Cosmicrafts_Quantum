@@ -13,7 +13,6 @@ namespace TowerRush
 	{
 		// CONSTANTS
 		
-		private const   string START_SCENE_NAME   = "LoginScene";
 		private const   string INTRO_SCENE_NAME   = "IntroScene";
 		private const   string MAIN_SCENE_NAME    = "Menu_Cosmic";
 		private const   string MenuCosmic_SCENE_NAME    = "Menu_Cosmic";
@@ -251,7 +250,7 @@ namespace TowerRush
 			if (IsRestarting == true)
 			{
 				IsRestarting = false;
-				StartCoroutine(LoadScene_Coroutine(START_SCENE_NAME));
+				StartCoroutine(LoadScene_Coroutine(MAIN_SCENE_NAME));
 				return;
 			}
 
