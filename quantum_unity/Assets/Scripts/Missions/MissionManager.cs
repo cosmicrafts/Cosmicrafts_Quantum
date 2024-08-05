@@ -7,6 +7,7 @@ using Cosmicrafts.Managers;
 using Candid;
 using System;
 using Cosmicrafts.Data;
+using System.Threading;
 
 public class MissionManager : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class MissionManager : MonoBehaviour
     public List<MissionData> userMissions;
     public List<MissionData> generalMissions;
     public List<MissionData> achievements;
+
+    private Task<List<MissionData>> fetchUserMissionsTask;
+    private Task<List<MissionData>> fetchGeneralMissionsTask;
+    private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
     private void Awake()
     {
@@ -40,7 +45,7 @@ public class MissionManager : MonoBehaviour
     private async Task WaitForCandidApiManagerInitialization()
     {
         int retryCount = 0;
-        int maxRetries = 10;
+        int maxRetries = 2;
         while ((CandidApiManager.Instance == null || CandidApiManager.Instance.CanisterLogin == null) && retryCount < maxRetries)
         {
             Debug.LogWarning("[MissionManager] Waiting for CandidApiManager.Instance and CanisterLogin...");
@@ -65,8 +70,8 @@ public class MissionManager : MonoBehaviour
             Debug.Log("[MissionManager] Fetching all missions...");
 
             // Start fetching both user and general missions simultaneously
-            var fetchUserMissionsTask = FetchUserMissions();
-            var fetchGeneralMissionsTask = FetchGeneralMissions();
+            var fetchUserMissionsTask = GetOrCreateFetchUserMissionsTask();
+            var fetchGeneralMissionsTask = GetOrCreateFetchGeneralMissionsTask();
 
             // Wait for both tasks to complete
             await Task.WhenAll(fetchUserMissionsTask, fetchGeneralMissionsTask);
@@ -81,6 +86,46 @@ public class MissionManager : MonoBehaviour
         {
             Debug.LogError($"[MissionManager] Error fetching missions: {ex.Message}");
         }
+    }
+
+    private async Task<List<MissionData>> GetOrCreateFetchUserMissionsTask()
+    {
+        if (fetchUserMissionsTask == null)
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                if (fetchUserMissionsTask == null) // Double-checked locking
+                {
+                    fetchUserMissionsTask = FetchUserMissions();
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+        return await fetchUserMissionsTask;
+    }
+
+    private async Task<List<MissionData>> GetOrCreateFetchGeneralMissionsTask()
+    {
+        if (fetchGeneralMissionsTask == null)
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                if (fetchGeneralMissionsTask == null) // Double-checked locking
+                {
+                    fetchGeneralMissionsTask = FetchGeneralMissions();
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+        return await fetchGeneralMissionsTask;
     }
 
     private async Task<List<MissionData>> FetchUserMissions()

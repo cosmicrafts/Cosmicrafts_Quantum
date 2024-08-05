@@ -3,14 +3,20 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    public GameObject prefab;
-    private Queue<GameObject> pool = new Queue<GameObject>();
+    public static ObjectPool Instance { get; private set; }
 
-    public GameObject GetObject()
+    private Queue<GameObject> poolQueue = new Queue<GameObject>();
+
+    private void Awake()
     {
-        if (pool.Count > 0)
+        Instance = this;
+    }
+
+    public GameObject GetObject(GameObject prefab)
+    {
+        if (poolQueue.Count > 0)
         {
-            var obj = pool.Dequeue();
+            GameObject obj = poolQueue.Dequeue();
             obj.SetActive(true);
             return obj;
         }
@@ -20,6 +26,6 @@ public class ObjectPool : MonoBehaviour
     public void ReturnObject(GameObject obj)
     {
         obj.SetActive(false);
-        pool.Enqueue(obj);
+        poolQueue.Enqueue(obj);
     }
 }

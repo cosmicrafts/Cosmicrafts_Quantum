@@ -19,8 +19,6 @@ public class Login : MonoBehaviour
 
     private bool isMintingDeck = false;
     private bool isRegisteringPlayer = false;
-    private bool areMissionsFetched = false;
-    private bool isFetchingMissions = false;
 
     private async void Awake()
     {
@@ -71,14 +69,6 @@ public class Login : MonoBehaviour
 
     private async Task InitializeLogin()
     {
-        Debug.Log("[Login] Initializing login...");
-
-        // Fetch missions if not already fetched
-        if (!areMissionsFetched && !isFetchingMissions)
-        {
-            await FetchMissions();
-        }
-
         var playerInfo = await CandidApiManager.Instance.CanisterLogin.GetPlayer();
         if (playerInfo.HasValue)
         {
@@ -91,40 +81,6 @@ public class Login : MonoBehaviour
             Debug.LogWarning("[Login] No player information available. Prompting user for username.");
             chooseUsername.SetActive(true);
             _ = MintDeckAsync();  // Start minting in the background
-        }
-    }
-
-    private async Task FetchMissions()
-    {
-        if (isFetchingMissions) return;
-
-        Debug.Log("[Login] Fetching user-specific and general missions...");
-        isFetchingMissions = true;
-
-        var user = GameDataManager.Instance.playerData;
-        var principal = Principal.FromText(user.PrincipalId);
-
-        var createMissionTask = CandidApiManager.Instance.CanisterLogin.CreateUserMission(principal);
-        var fetchGeneralMissionsTask = CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
-
-        try
-        {
-            await Task.WhenAll(createMissionTask, fetchGeneralMissionsTask);
-
-            if (createMissionTask.IsCompletedSuccessfully && fetchGeneralMissionsTask.IsCompletedSuccessfully)
-            {
-                var generalMissions = fetchGeneralMissionsTask.Result;
-                Debug.Log($"[Login] Fetched {generalMissions.Count} general missions.");
-                areMissionsFetched = true;
-            }
-            else
-            {
-                Debug.LogError("[Login] One or both tasks failed.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[Login] Error fetching missions: {ex.Message}");
         }
     }
 
