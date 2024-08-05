@@ -8,15 +8,15 @@ public class MissionData : ScriptableObject
     public ulong expiration;
     public ulong finishDate;
     public bool finished;
-    public UnboundedUInt idMission;
+    public int idMission;
     public MissionType missionType;
-    public UnboundedUInt progress;
-    public UnboundedUInt rewardAmount;
+    public int progress;
+    public int rewardAmount;
     public MissionRewardType rewardType;
     public ulong startDate;
-    public UnboundedUInt total;
+    public int total;
 
-    public void UpdateProgress(UnboundedUInt newProgress)
+    public void UpdateProgress(int newProgress)
     {
         progress = newProgress;
         if (progress >= total)
