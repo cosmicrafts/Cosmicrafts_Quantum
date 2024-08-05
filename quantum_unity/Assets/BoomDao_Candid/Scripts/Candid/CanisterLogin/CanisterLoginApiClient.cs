@@ -3,11 +3,12 @@ using EdjCase.ICP.Candid.Models;
 using EdjCase.ICP.Candid;
 using System.Threading.Tasks;
 using CanisterPK.CanisterLogin;
-using System.Collections.Generic;
 using EdjCase.ICP.Agent.Responses;
+using System.Collections.Generic;
 using EdjCase.ICP.Candid.Mapping;
 using Username = System.String;
 using TokenID = EdjCase.ICP.Candid.Models.UnboundedUInt;
+using Time = EdjCase.ICP.Candid.Models.UnboundedInt;
 using PlayerId = EdjCase.ICP.Candid.Models.Principal;
 using MatchID = EdjCase.ICP.Candid.Models.UnboundedUInt;
 using Level = EdjCase.ICP.Candid.Models.UnboundedUInt;
@@ -38,11 +39,50 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<OptionalValue<Models.RefAccount>> Account()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "account", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<OptionalValue<Models.RefAccount>>(this.Converter);
+		}
+
+		public async Task<Dictionary<string, Principal>> AccountAll()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "account_all", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<Dictionary<string, Principal>>(this.Converter);
+		}
+
+		public async Task<OptionalValue<Models.RefAccount>> AccountBy(Principal arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "account_by", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<OptionalValue<Models.RefAccount>>(this.Converter);
+		}
+
+		public async Task<OptionalValue<Models.RefAccView>> AccountView(Principal arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "account_view", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<OptionalValue<Models.RefAccView>>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1)> AdminManagement(Models.AdminFunction arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "adminManagement", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<bool> AdminUpdateMatch(UnboundedUInt arg0, UnboundedUInt arg1, UnboundedUInt arg2, string arg3)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter), CandidTypedValue.FromObject(arg3, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "adminUpdateMatch", arg);
+			return reply.ToObjects<bool>(this.Converter);
 		}
 
 		public async Task AssignAchievementsToUser(PlayerId arg0)
@@ -86,6 +126,27 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<(bool ReturnArg0, string ReturnArg1)> ClaimTier(Principal arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "claim_tier", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> ClaimTop(Principal arg0, UnboundedUInt arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "claim_top", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<OptionalValue<Models.RMatch>> CompleteMatch(string arg0, Principal arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "completeMatch", arg);
+			return reply.ToObjects<OptionalValue<Models.RMatch>>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1, UnboundedUInt ReturnArg2)> CreateAchievement(string arg0, List<UnboundedUInt> arg1, UnboundedUInt arg2, UnboundedUInt arg3, List<Models.AchievementReward> arg4)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter), CandidTypedValue.FromObject(arg3, this.Converter), CandidTypedValue.FromObject(arg4, this.Converter));
@@ -107,6 +168,20 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string, UnboundedUInt>(this.Converter);
 		}
 
+		public async Task<Models.RMatch> CreateMatch(Models.RPlayer arg0, double arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "createMatch", arg);
+			return reply.ToObjects<Models.RMatch>(this.Converter);
+		}
+
+		public async Task<UnboundedUInt> CreateTournament(string arg0, Time arg1, string arg2, Time arg3)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter), CandidTypedValue.FromObject(arg3, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "createTournament", arg);
+			return reply.ToObjects<UnboundedUInt>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1, UnboundedUInt ReturnArg2)> CreateUserMission(PlayerId arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
@@ -121,11 +196,54 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<bool> DeleteAllTournaments()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "deleteAllTournaments", arg);
+			return reply.ToObjects<bool>(this.Converter);
+		}
+
+		public async Task<bool> DisputeMatch(UnboundedUInt arg0, UnboundedUInt arg1, string arg2)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "disputeMatch", arg);
+			return reply.ToObjects<bool>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> Enroll(OptionalValue<string> arg0, string arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "enroll", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<(bool ReturnArg0, string ReturnArg1)> EnrollBy(OptionalValue<string> arg0, Principal arg1, string arg2)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "enroll_by", arg);
+			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<OptionalValue<Models.RMatch>> FindMatchById(string arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "findMatchById", arg);
+			return reply.ToObjects<OptionalValue<Models.RMatch>>(this.Converter);
+		}
+
 		public async Task<List<(Models.AchievementCategory, List<Models.Achievement>, List<Models.IndividualAchievementProgress>)>> GetAchievements()
 		{
 			CandidArg arg = CandidArg.FromCandid();
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getAchievements", arg);
 			return reply.ToObjects<List<(Models.AchievementCategory, List<Models.Achievement>, List<Models.IndividualAchievementProgress>)>>(this.Converter);
+		}
+
+		public async Task<List<Models.Tournament>> GetActiveTournaments()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getActiveTournaments", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.Tournament>>(this.Converter);
 		}
 
 		public async Task<List<Models.Player>> GetAllPlayers()
@@ -142,6 +260,14 @@ namespace CanisterPK.CanisterLogin
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getAllSearching", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<List<Models.MatchData>>(this.Converter);
+		}
+
+		public async Task<List<Models.Tournament>> GetAllTournaments()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getAllTournaments", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.Tournament>>(this.Converter);
 		}
 
 		public async Task<CanisterLoginApiClient.GetBlockedUsersReturnArg0> GetBlockedUsers()
@@ -197,6 +323,14 @@ namespace CanisterPK.CanisterLogin
 			CandidArg arg = CandidArg.FromCandid();
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getGeneralMissions", arg);
 			return reply.ToObjects<List<Models.MissionsUser>>(this.Converter);
+		}
+
+		public async Task<List<Models.Tournament>> GetInactiveTournaments()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getInactiveTournaments", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.Tournament>>(this.Converter);
 		}
 
 		public async Task<OptionalValue<(Models.MatchData, Dictionary<Models.Player, Models.PlayerGamesStats>)>> GetMatchDetails(MatchID arg0)
@@ -326,6 +460,22 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<OptionalValue<Models.Player>>(this.Converter);
 		}
 
+		public async Task<List<Principal>> GetRegisteredUsers(UnboundedUInt arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getRegisteredUsers", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Principal>>(this.Converter);
+		}
+
+		public async Task<CanisterLoginApiClient.GetTournamentBracketReturnArg0> GetTournamentBracket(UnboundedUInt arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getTournamentBracket", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<CanisterLoginApiClient.GetTournamentBracketReturnArg0>(this.Converter);
+		}
+
 		public async Task<List<Models.LogEntry>> GetTransactionLogs(Principal arg0, Models.ItemType arg1)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
@@ -349,12 +499,40 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<List<Models.MissionsUser>>(this.Converter);
 		}
 
+		public async Task<OptionalValue<Principal>> GrantPrize(Models.RMatch arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "grantPrize", arg);
+			return reply.ToObjects<OptionalValue<Principal>>(this.Converter);
+		}
+
+		public async Task<Principal> IdGen()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "id_gen", arg);
+			return reply.ToObjects<Principal>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1)> IsGameMatched()
 		{
 			CandidArg arg = CandidArg.FromCandid();
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "isGameMatched", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<OptionalValue<Models.RMatch>> JoinMatch(Models.RPlayer arg0, string arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "joinMatch", arg);
+			return reply.ToObjects<OptionalValue<Models.RMatch>>(this.Converter);
+		}
+
+		public async Task<bool> JoinTournament(UnboundedUInt arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "joinTournament", arg);
+			return reply.ToObjects<bool>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> MintDeck(Principal arg0)
@@ -383,6 +561,14 @@ namespace CanisterPK.CanisterLogin
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "saveFinishedGame", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<List<(Models.AchievementCategory, List<Models.Achievement>, List<Models.IndividualAchievementProgress>)>> SearchActiveAchievements(PlayerId arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "searchActiveAchievements", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<(Models.AchievementCategory, List<Models.Achievement>, List<Models.IndividualAchievementProgress>)>>(this.Converter);
 		}
 
 		public async Task<List<Models.MissionsUser>> SearchActiveGeneralMissions(Principal arg0)
@@ -430,12 +616,34 @@ namespace CanisterPK.CanisterLogin
 			return reply.ToObjects<bool, string>(this.Converter);
 		}
 
+		public async Task<bool> SubmitFeedback(UnboundedUInt arg0, string arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "submitFeedback", arg);
+			return reply.ToObjects<bool>(this.Converter);
+		}
+
+		public async Task<bool> SubmitMatchResult(UnboundedUInt arg0, UnboundedUInt arg1, string arg2)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "submitMatchResult", arg);
+			return reply.ToObjects<bool>(this.Converter);
+		}
+
 		public async Task<CanisterLoginApiClient.TestReturnArg0> Test(PlayerId arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "test", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<CanisterLoginApiClient.TestReturnArg0>(this.Converter);
+		}
+
+		public async Task<List<Models.Tier>> TierAll()
+		{
+			CandidArg arg = CandidArg.FromCandid();
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "tier_all", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<List<Models.Tier>>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> UnblockUser(PlayerId arg0)
@@ -457,6 +665,19 @@ namespace CanisterPK.CanisterLogin
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateAvatar", arg);
 			return reply.ToObjects<bool, PlayerId, string>(this.Converter);
+		}
+
+		public async Task<bool> UpdateBracket(UnboundedUInt arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateBracket", arg);
+			return reply.ToObjects<bool>(this.Converter);
+		}
+
+		public async Task UpdateBracketAfterMatchUpdate(UnboundedUInt arg0, UnboundedUInt arg1, Principal arg2)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter), CandidTypedValue.FromObject(arg2, this.Converter));
+			await this.Agent.CallAndWaitAsync(this.CanisterId, "updateBracketAfterMatchUpdate", arg);
 		}
 
 		public async Task<(bool ReturnArg0, string ReturnArg1)> UpdateCategoryProgress(PlayerId arg0, UnboundedUInt arg1)
@@ -635,6 +856,21 @@ namespace CanisterPK.CanisterLogin
 					{
 					}
 				}
+			}
+		}
+
+		public class GetTournamentBracketReturnArg0
+		{
+			[CandidName("matches")]
+			public List<Models.Match> Matches { get; set; }
+
+			public GetTournamentBracketReturnArg0(List<Models.Match> matches)
+			{
+				this.Matches = matches;
+			}
+
+			public GetTournamentBracketReturnArg0()
+			{
 			}
 		}
 

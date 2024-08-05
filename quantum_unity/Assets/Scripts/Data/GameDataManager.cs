@@ -1,9 +1,6 @@
 using UnityEngine;
 using Cosmicrafts.Data;
-using Candid;
-using System.Threading.Tasks;
-using EdjCase.ICP.Candid.Models;
-using System.Numerics;
+using System.Collections.Generic;
 
 namespace Cosmicrafts.Managers
 {
@@ -12,6 +9,7 @@ namespace Cosmicrafts.Managers
         public static GameDataManager Instance { get; private set; }
 
         public PlayerData playerData;
+        public List<MissionData> playerMissions;
 
         private void Awake()
         {
@@ -29,6 +27,7 @@ namespace Cosmicrafts.Managers
 
         public void SavePlayerData()
         {
+            // Implement saving logic
             PlayerPrefs.Save();
             Debug.Log("[GameDataManager] Player data saved.");
         }
@@ -36,10 +35,11 @@ namespace Cosmicrafts.Managers
         public void LoadPlayerData()
         {
             playerData = new PlayerData();
+            playerMissions = new List<MissionData>();
 
             if (PlayerPrefs.HasKey("PrincipalId"))
             {
-
+                // Implement loading logic
                 Debug.Log("[GameDataManager] Player data loaded.");
             }
             else
