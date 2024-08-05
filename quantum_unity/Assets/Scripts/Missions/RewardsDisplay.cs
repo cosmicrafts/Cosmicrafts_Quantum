@@ -128,7 +128,7 @@ public class RewardsDisplay : MonoBehaviour
         }
 
         string formattedTime = $"{(int)timeRemaining.TotalDays}d {(int)timeRemaining.Hours}h {(int)timeRemaining.Minutes}m";
-        return $"Time remaining: {formattedTime}";
+        return $"{formattedTime}";
     }
 
     private Sprite GetPrizeSprite(MissionRewardType prizeType, int prizeAmount)
