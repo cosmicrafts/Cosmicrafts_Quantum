@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Candid;
 using Cosmicrafts.Managers;
 
@@ -37,15 +38,7 @@ public class Logout : MonoBehaviour
             Debug.LogError("GameDataManager or PlayerData instance not found!");
         }
 
-        // Disable the dashboard and enable the login object
-        if (dashboard != null && login != null)
-        {
-            dashboard.SetActive(false);
-            login.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("Dashboard or Login object is not assigned!");
-        }
+        // Reload the current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
