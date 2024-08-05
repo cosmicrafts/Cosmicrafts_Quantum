@@ -23,6 +23,16 @@ public class RewardsManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        MissionEvents.OnMissionsFetched += PopulateRewardsUI;
+    }
+
+    private void OnDisable()
+    {
+        MissionEvents.OnMissionsFetched -= PopulateRewardsUI;
+    }
+
     private void Start()
     {
         rewardPrefab.SetActive(false);
@@ -50,12 +60,15 @@ public class RewardsManager : MonoBehaviour
 
         foreach (var mission in allMissions)
         {
+            Debug.Log($"Processing mission ID: {mission.idMission} at index: {currentChildIndex}");
+
             if (currentChildIndex < rewardsContainer.childCount)
             {
                 var child = rewardsContainer.GetChild(currentChildIndex);
                 var display = child.GetComponent<RewardsDisplay>();
                 if (display != null)
                 {
+                    Debug.Log($"Updating existing reward display for mission ID: {mission.idMission}");
                     display.SetRewardData(mission);
                     child.gameObject.SetActive(true);
                 }
@@ -80,38 +93,36 @@ public class RewardsManager : MonoBehaviour
         rewardsCountText.text = allMissions.Count.ToString();
     }
 
-private void InstantiateRewardPrefab(MissionData mission)
-{
-    if (rewardPrefab == null)
+    private void InstantiateRewardPrefab(MissionData mission)
     {
-        Debug.LogError("Reward Prefab is not assigned!");
-        return;
+        if (rewardPrefab == null)
+        {
+            Debug.LogError("Reward Prefab is not assigned!");
+            return;
+        }
+
+        Debug.Log($"Instantiating prefab for mission ID: {mission.idMission}");
+
+        var instance = Instantiate(rewardPrefab, rewardsContainer);
+        if (instance == null)
+        {
+            Debug.LogError("Failed to instantiate prefab.");
+            return;
+        }
+
+        instance.SetActive(true);
+
+        var display = instance.GetComponent<RewardsDisplay>();
+        if (display != null)
+        {
+            Debug.Log($"Setting reward data for mission ID: {mission.idMission}");
+            display.SetRewardData(mission);
+        }
+        else
+        {
+            Debug.LogError("RewardsDisplay component is missing from the prefab!");
+        }
     }
-
-    Debug.Log($"Instantiating prefab for mission ID: {mission.idMission}");
-
-    var instance = ObjectPool.Instance.GetObject(rewardPrefab, rewardsContainer);
-    if (instance == null)
-    {
-        Debug.LogError("Failed to instantiate prefab from ObjectPool.");
-        return;
-    }
-
-    Debug.Log($"Prefab instantiated successfully for mission ID: {mission.idMission}");
-
-    instance.SetActive(true);
-
-    var display = instance.GetComponent<RewardsDisplay>();
-    if (display != null)
-    {
-        display.SetRewardData(mission);
-        Debug.Log($"Reward data set for mission ID: {mission.idMission}");
-    }
-    else
-    {
-        Debug.LogError("RewardsDisplay component is missing from the prefab!");
-    }
-}
 
     public void RefreshMissions()
     {

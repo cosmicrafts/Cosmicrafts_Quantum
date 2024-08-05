@@ -16,22 +16,4 @@ public class MissionData : ScriptableObject
     public ulong startDate;
     public int total;
 
-    public void UpdateProgress(int newProgress)
-    {
-        progress = newProgress;
-        if (progress >= total)
-        {
-            CompleteMission();
-        }
-        else
-        {
-            MissionEvents.OnMissionUpdated?.Invoke(this);
-        }
-    }
-
-    public void CompleteMission()
-    {
-        finished = true;
-        MissionEvents.OnMissionCompleted?.Invoke(this);
-    }
 }

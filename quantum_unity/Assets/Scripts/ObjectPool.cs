@@ -32,6 +32,7 @@ public class ObjectPool : MonoBehaviour
         if (poolQueue.Count > 0)
         {
             obj = poolQueue.Dequeue();
+            obj.transform.SetParent(parent);
             obj.SetActive(true);
             Debug.Log("Dequeued object from pool.");
         }
@@ -48,7 +49,6 @@ public class ObjectPool : MonoBehaviour
 
         return obj;
     }
-
 
     public void ReturnObject(GameObject obj)
     {

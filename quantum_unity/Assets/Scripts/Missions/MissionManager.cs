@@ -17,8 +17,6 @@ public class MissionManager : MonoBehaviour
     public List<MissionData> generalMissions;
     public List<MissionData> achievements;
 
-    private Task<List<MissionData>> fetchUserMissionsTask;
-    private Task<List<MissionData>> fetchGeneralMissionsTask;
     private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
     private void Awake()
@@ -40,6 +38,7 @@ public class MissionManager : MonoBehaviour
     {
         await WaitForCandidApiManagerInitialization();
         await FetchAllMissions();
+        MissionEvents.RaiseMissionsFetched();
     }
 
     private async Task WaitForCandidApiManagerInitialization()
@@ -69,9 +68,8 @@ public class MissionManager : MonoBehaviour
         {
             Debug.Log("[MissionManager] Fetching all missions...");
 
-            // Start fetching both user and general missions simultaneously
-            var fetchUserMissionsTask = GetOrCreateFetchUserMissionsTask();
-            var fetchGeneralMissionsTask = GetOrCreateFetchGeneralMissionsTask();
+            var fetchUserMissionsTask = FetchUserMissions();
+            var fetchGeneralMissionsTask = FetchGeneralMissions();
 
             // Wait for both tasks to complete
             await Task.WhenAll(fetchUserMissionsTask, fetchGeneralMissionsTask);
@@ -86,46 +84,6 @@ public class MissionManager : MonoBehaviour
         {
             Debug.LogError($"[MissionManager] Error fetching missions: {ex.Message}");
         }
-    }
-
-    private async Task<List<MissionData>> GetOrCreateFetchUserMissionsTask()
-    {
-        if (fetchUserMissionsTask == null)
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (fetchUserMissionsTask == null) // Double-checked locking
-                {
-                    fetchUserMissionsTask = FetchUserMissions();
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        }
-        return await fetchUserMissionsTask;
-    }
-
-    private async Task<List<MissionData>> GetOrCreateFetchGeneralMissionsTask()
-    {
-        if (fetchGeneralMissionsTask == null)
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (fetchGeneralMissionsTask == null) // Double-checked locking
-                {
-                    fetchGeneralMissionsTask = FetchGeneralMissions();
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        }
-        return await fetchGeneralMissionsTask;
     }
 
     private async Task<List<MissionData>> FetchUserMissions()
@@ -199,59 +157,57 @@ public class MissionManager : MonoBehaviour
         return generalMissions;
     }
 
-public async Task<bool> ClaimUserReward(int rewardID)
-{
-    try
+    public async Task<bool> ClaimUserReward(int rewardID)
     {
-        var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
-        var result = await CandidApiManager.Instance.CanisterLogin.ClaimUserReward(rewardIDUnbounded);
-        if (result.ReturnArg0)
+        try
         {
-            Debug.Log("[MissionManager] User reward claimed successfully.");
-            var mission = userMissions.Find(m => m.idMission == rewardID);
-            if (mission != null)
+            var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
+            var result = await CandidApiManager.Instance.CanisterLogin.ClaimUserReward(rewardIDUnbounded);
+            if (result.ReturnArg0)
             {
-                userMissions.Remove(mission);
-                // Handle additional logic if necessary
+                Debug.Log("[MissionManager] User reward claimed successfully.");
+                var mission = userMissions.Find(m => m.idMission == rewardID);
+                if (mission != null)
+                {
+                    userMissions.Remove(mission);
+                    MissionEvents.RaiseMissionsFetched(); // Trigger the event after updating the missions
+                }
+                return true;
             }
-            return true;
+            Debug.LogWarning("[MissionManager] Failed to claim user reward.");
+            return false;
         }
-        Debug.LogWarning("[MissionManager] Failed to claim user reward.");
-        return false;
-    }
-    catch (Exception ex)
-    {
-        Debug.LogError($"[MissionManager] Error claiming user reward: {ex.Message}");
-        return false;
-    }
-}
-
-public async Task<bool> ClaimGeneralReward(int rewardID)
-{
-    try
-    {
-        var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
-        var result = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardIDUnbounded);
-        if (result.ReturnArg0)
+        catch (Exception ex)
         {
-            Debug.Log("[MissionManager] General reward claimed successfully.");
-            var mission = generalMissions.Find(m => m.idMission == rewardID);
-            if (mission != null)
-            {
-                generalMissions.Remove(mission);
-                // Handle additional logic if necessary
-            }
-            return true;
+            Debug.LogError($"[MissionManager] Error claiming user reward: {ex.Message}");
+            return false;
         }
-        Debug.LogWarning("[MissionManager] Failed to claim general reward.");
-        return false;
     }
-    catch (Exception ex)
+
+    public async Task<bool> ClaimGeneralReward(int rewardID)
     {
-        Debug.LogError($"[MissionManager] Error claiming general reward: {ex.Message}");
-        return false;
+        try
+        {
+            var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
+            var result = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardIDUnbounded);
+            if (result.ReturnArg0)
+            {
+                Debug.Log("[MissionManager] General reward claimed successfully.");
+                var mission = generalMissions.Find(m => m.idMission == rewardID);
+                if (mission != null)
+                {
+                    generalMissions.Remove(mission);
+                    MissionEvents.RaiseMissionsFetched(); // Trigger the event after updating the missions
+                }
+                return true;
+            }
+            Debug.LogWarning("[MissionManager] Failed to claim general reward.");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[MissionManager] Error claiming general reward: {ex.Message}");
+            return false;
+        }
     }
-}
-
-
 }

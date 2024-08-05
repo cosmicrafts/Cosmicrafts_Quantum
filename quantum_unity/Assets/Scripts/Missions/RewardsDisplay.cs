@@ -7,7 +7,6 @@ using CanisterPK.CanisterLogin.Models;
 using EdjCase.ICP.Candid.Models;
 using Candid;
 using System.Threading.Tasks;
-using System;
 
 public class RewardsDisplay : MonoBehaviour
 {
@@ -47,26 +46,45 @@ public class RewardsDisplay : MonoBehaviour
 
     public void SetRewardData(MissionData reward)
     {
+        if (reward == null)
+        {
+            Debug.LogError("SetRewardData: reward is null");
+            return;
+        }
+
         rewardData = reward;
+        Debug.Log($"SetRewardData: Setting reward data for mission ID: {reward.idMission}");
+        UpdateUI();
+    }
 
-        idText.text = $"ID: {reward.idMission}";
-        rewardTypeText.text = GetMissionTypeText(reward.missionType, reward.total);
-        prizeAmountText.text = $"{reward.rewardAmount}";
-        progressText.text = $"{reward.progress}/{reward.total}";
+    private void UpdateUI()
+    {
+        if (rewardData == null)
+        {
+            Debug.LogError("UpdateUI: rewardData is null");
+            return;
+        }
 
-        expirationText.text = CalculateTimeRemaining(reward.expiration);
+        Debug.Log($"UpdateUI: Updating UI for mission ID: {rewardData.idMission}");
 
-        finishedText.text = $"Completed: {(reward.finished ? "Yes" : "No")}";
-        prizeTypeText.text = $"Reward: {(reward.rewardType == MissionRewardType.Shards ? "Shards" : reward.rewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
+        idText.text = $"ID: {rewardData.idMission}";
+        rewardTypeText.text = GetMissionTypeText(rewardData.missionType, rewardData.total);
+        prizeAmountText.text = $"{rewardData.rewardAmount}";
+        progressText.text = $"{rewardData.progress}/{rewardData.total}";
 
-        prizeImage.sprite = GetPrizeSprite(reward.rewardType, reward.rewardAmount);
-        panelToChangeColor.GetComponent<Image>().color = GetMissionTypeColor(reward.missionType);
+        expirationText.text = CalculateTimeRemaining(rewardData.expiration);
 
-        bool isClaimable = reward.finished || reward.total == 0;
+        finishedText.text = $"Completed: {(rewardData.finished ? "Yes" : "No")}";
+        prizeTypeText.text = $"Reward: {(rewardData.rewardType == MissionRewardType.Shards ? "Shards" : rewardData.rewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
+
+        prizeImage.sprite = GetPrizeSprite(rewardData.rewardType, rewardData.rewardAmount);
+        panelToChangeColor.GetComponent<Image>().color = GetMissionTypeColor(rewardData.missionType);
+
+        bool isClaimable = rewardData.finished || rewardData.total == 0;
         claimButtonImage.enabled = isClaimable;
         claimButton.interactable = isClaimable;
 
-        float progressRatio = reward.total == 0 ? 1f : (float)reward.progress / reward.total;
+        float progressRatio = rewardData.total == 0 ? 1f : (float)rewardData.progress / rewardData.total;
         progressBar.fillAmount = progressRatio;
     }
 
