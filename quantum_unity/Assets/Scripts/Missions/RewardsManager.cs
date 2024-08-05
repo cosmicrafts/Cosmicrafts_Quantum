@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Cosmicrafts.Managers;
 
 public class RewardsManager : MonoBehaviour
 {

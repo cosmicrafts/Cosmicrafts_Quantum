@@ -50,6 +50,7 @@ namespace Candid
         public BoomTokenApiClient boomToken { get; private set; }
         public TournamentsApiClient tournaments { get; private set; }
         public string PrincipalId { get; private set; }
+        public event Action OnCandidApiInitialized;
 
         // Login Data
         public enum DataState { None, Loading, Ready }
@@ -406,6 +407,7 @@ private void AbortLogin()
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
             Debug.Log("[CandidApiManager] Candid APIs initialized successfully.");
+            OnCandidApiInitialized?.Invoke();
         }
 
 

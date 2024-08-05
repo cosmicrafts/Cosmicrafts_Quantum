@@ -1,11 +1,8 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Cosmicrafts.Managers;
 using System;
 using CanisterPK.CanisterLogin.Models;
-using EdjCase.ICP.Candid.Models;
-using Candid;
 using System.Threading.Tasks;
 
 public class RewardsDisplay : MonoBehaviour

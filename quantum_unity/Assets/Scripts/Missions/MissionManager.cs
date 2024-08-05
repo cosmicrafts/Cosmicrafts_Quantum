@@ -5,7 +5,6 @@ using System.Threading;
 using EdjCase.ICP.Candid.Models;
 using CanisterPK.CanisterLogin.Models;
 using Candid;
-using Cosmicrafts.Data;
 using System;
 using Cosmicrafts.Managers;
 
@@ -30,38 +29,31 @@ public class MissionManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Fetch missions when the script awakens
-        InitializeAndFetchMissions();
+        // Subscribe to the CandidApiManager initialization event
+        if (CandidApiManager.Instance != null)
+        {
+            CandidApiManager.Instance.OnCandidApiInitialized += InitializeAndFetchMissions;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (CandidApiManager.Instance != null)
+        {
+            CandidApiManager.Instance.OnCandidApiInitialized -= InitializeAndFetchMissions;
+        }
     }
 
     private async void InitializeAndFetchMissions()
     {
-        await WaitForCandidApiManagerInitialization();
+        // Unsubscribe from the event after it is triggered to prevent multiple initializations
+        CandidApiManager.Instance.OnCandidApiInitialized -= InitializeAndFetchMissions;
+
+        // Proceed with initialization and fetching missions
         _ = FetchUserMissions();
         _ = FetchGeneralMissions();
         _ = GetUserMissionsFromServer();
         _ = GetGeneralMissionsFromServer();
-    }
-
-    private async Task WaitForCandidApiManagerInitialization()
-    {
-        int retryCount = 0;
-        int maxRetries = 2;
-        while ((CandidApiManager.Instance == null || CandidApiManager.Instance.CanisterLogin == null) && retryCount < maxRetries)
-        {
-            Debug.LogWarning("[MissionManager] Waiting for CandidApiManager.Instance and CanisterLogin...");
-            await Task.Delay(100); // Wait for 100 milliseconds before retrying
-            retryCount++;
-        }
-
-        if (CandidApiManager.Instance == null)
-        {
-            Debug.LogError("[MissionManager] CandidApiManager.Instance is still null after retries.");
-        }
-        else if (CandidApiManager.Instance.CanisterLogin == null)
-        {
-            Debug.LogError("[MissionManager] CandidApiManager.Instance.CanisterLogin is still null after retries.");
-        }
     }
 
     private async Task FetchUserMissions()
