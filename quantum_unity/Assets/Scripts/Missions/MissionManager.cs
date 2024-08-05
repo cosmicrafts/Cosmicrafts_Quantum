@@ -13,9 +13,9 @@ public class MissionManager : MonoBehaviour
 {
     public static MissionManager Instance { get; private set; }
 
-    public List<MissionData> userMissions;
-    public List<MissionData> generalMissions;
-    public List<MissionData> achievements;
+    public List<MissionData> userMissions = new List<MissionData>();
+    public List<MissionData> generalMissions = new List<MissionData>();
+    public List<MissionData> achievements = new List<MissionData>();
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
@@ -37,8 +37,10 @@ public class MissionManager : MonoBehaviour
     private async void InitializeAndFetchMissions()
     {
         await WaitForCandidApiManagerInitialization();
-        await FetchAllMissions();
-        MissionEvents.RaiseMissionsFetched();
+        _ = FetchUserMissions();
+        _ = FetchGeneralMissions();
+        _ = GetUserMissionsFromServer();
+        _ = GetGeneralMissionsFromServer();
     }
 
     private async Task WaitForCandidApiManagerInitialization()
@@ -62,31 +64,7 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    private async Task FetchAllMissions()
-    {
-        try
-        {
-            Debug.Log("[MissionManager] Fetching all missions...");
-
-            var fetchUserMissionsTask = FetchUserMissions();
-            var fetchGeneralMissionsTask = FetchGeneralMissions();
-
-            // Wait for both tasks to complete
-            await Task.WhenAll(fetchUserMissionsTask, fetchGeneralMissionsTask);
-
-            // Assign the results
-            userMissions = fetchUserMissionsTask.Result;
-            generalMissions = fetchGeneralMissionsTask.Result;
-
-            Debug.Log($"[MissionManager] Fetched {userMissions.Count} user missions and {generalMissions.Count} general missions.");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[MissionManager] Error fetching missions: {ex.Message}");
-        }
-    }
-
-    private async Task<List<MissionData>> FetchUserMissions()
+    private async Task FetchUserMissions()
     {
         try
         {
@@ -96,16 +74,16 @@ public class MissionManager : MonoBehaviour
             var principal = Principal.FromText(user.PrincipalId);
             var missions = await CandidApiManager.Instance.CanisterLogin.SearchActiveUserMissions(principal);
             Debug.Log($"[MissionManager] Found {missions.Count} user missions.");
-            return ConvertToMissionDataList(missions);
+            AddMissionsToList(missions, userMissions);
+            MissionEvents.RaiseMissionsFetched();
         }
         catch (Exception ex)
         {
             Debug.LogError($"[MissionManager] Error fetching user missions: {ex.Message}");
-            return new List<MissionData>();
         }
     }
 
-    private async Task<List<MissionData>> FetchGeneralMissions()
+    private async Task FetchGeneralMissions()
     {
         try
         {
@@ -115,36 +93,71 @@ public class MissionManager : MonoBehaviour
             var principal = Principal.FromText(user.PrincipalId);
             var missions = await CandidApiManager.Instance.CanisterLogin.SearchActiveGeneralMissions(principal);
             Debug.Log($"[MissionManager] Found {missions.Count} general missions.");
-            return ConvertToMissionDataList(missions);
+            AddMissionsToList(missions, generalMissions);
+            MissionEvents.RaiseMissionsFetched();
         }
         catch (Exception ex)
         {
             Debug.LogError($"[MissionManager] Error fetching general missions: {ex.Message}");
-            return new List<MissionData>();
         }
     }
 
-    private List<MissionData> ConvertToMissionDataList(List<MissionsUser> missions)
+    private async Task GetUserMissionsFromServer()
     {
-        List<MissionData> missionDataList = new List<MissionData>();
+        try
+        {
+            Debug.Log("[MissionManager] Fetching user missions from server...");
+
+            var missions = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+            Debug.Log($"[MissionManager] Found {missions.Count} user missions from server.");
+            AddMissionsToList(missions, userMissions);
+            MissionEvents.RaiseMissionsFetched();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[MissionManager] Error fetching user missions from server: {ex.Message}");
+        }
+    }
+
+    private async Task GetGeneralMissionsFromServer()
+    {
+        try
+        {
+            Debug.Log("[MissionManager] Fetching general missions from server...");
+
+            var missions = await CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+            Debug.Log($"[MissionManager] Found {missions.Count} general missions from server.");
+            AddMissionsToList(missions, generalMissions);
+            MissionEvents.RaiseMissionsFetched();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[MissionManager] Error fetching general missions from server: {ex.Message}");
+        }
+    }
+
+    private void AddMissionsToList(List<MissionsUser> missions, List<MissionData> missionList)
+    {
         foreach (var mission in missions)
         {
+            int missionId = int.Parse(mission.IdMission.ToString());
+            if (missionList.Exists(m => m.idMission == missionId)) continue;
+
             MissionData missionData = ScriptableObject.CreateInstance<MissionData>();
             missionData.expiration = mission.Expiration;
             missionData.finishDate = mission.FinishDate;
             missionData.finished = mission.Finished;
-            missionData.idMission = (int)mission.IdMission;
+            missionData.idMission = missionId;
             missionData.missionType = mission.MissionType;
             missionData.progress = (int)mission.Progress;
             missionData.rewardAmount = (int)mission.RewardAmount;
             missionData.rewardType = mission.RewardType;
             missionData.startDate = mission.StartDate;
             missionData.total = (int)mission.Total;
-            missionDataList.Add(missionData);
+            missionList.Add(missionData);
 
-            Debug.Log($"[MissionManager] Converted mission: {mission.IdMission}, Reward Amount: {mission.RewardAmount}");
+            Debug.Log($"[MissionManager] Added mission: {missionId}, Reward Amount: {mission.RewardAmount}");
         }
-        return missionDataList;
     }
 
     public List<MissionData> GetUserMissions()
@@ -170,6 +183,7 @@ public class MissionManager : MonoBehaviour
                 if (mission != null)
                 {
                     userMissions.Remove(mission);
+                    await GetUserMissionsFromServer();
                     MissionEvents.RaiseMissionsFetched(); // Trigger the event after updating the missions
                 }
                 return true;
@@ -197,6 +211,7 @@ public class MissionManager : MonoBehaviour
                 if (mission != null)
                 {
                     generalMissions.Remove(mission);
+                    await GetGeneralMissionsFromServer();
                     MissionEvents.RaiseMissionsFetched(); // Trigger the event after updating the missions
                 }
                 return true;
