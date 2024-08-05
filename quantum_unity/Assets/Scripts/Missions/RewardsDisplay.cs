@@ -1,10 +1,13 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
+using Cosmicrafts.Managers;
 using System;
 using CanisterPK.CanisterLogin.Models;
 using EdjCase.ICP.Candid.Models;
 using Candid;
+using System.Threading.Tasks;
+using System;
 
 public class RewardsDisplay : MonoBehaviour
 {
@@ -19,7 +22,7 @@ public class RewardsDisplay : MonoBehaviour
     public Button claimButton;
     public NotificationManager notificationManager;
 
-    public MissionsUser rewardData { get; private set; }
+    public MissionData rewardData { get; private set; }
 
     public Sprite fluxSprite;
     public Sprite shardsSprite;
@@ -31,7 +34,7 @@ public class RewardsDisplay : MonoBehaviour
     public Sprite chest6Sprite;
     public Sprite chest7Sprite;
     public Sprite chest8Sprite;
-    
+
     public GameObject panelToChangeColor;
     public Color gamesPlayedColor;
     public Color gamesWonColor;
@@ -42,82 +45,62 @@ public class RewardsDisplay : MonoBehaviour
     public Image claimButtonImage;
     public Image progressBar;
 
-public void SetRewardData(MissionsUser reward)
-{
-    rewardData = reward;
-
-    Debug.Log($"ID: {reward.IdMission}");
-    Debug.Log($"Reward Type: {reward.RewardType}");
-    Debug.Log($"Prize Amount: {reward.RewardAmount}");
-    Debug.Log($"Progress: {reward.Progress}/{reward.Total}");
-    Debug.Log($"Expiration: {CalculateTimeRemaining(reward.Expiration)}");
-    Debug.Log($"Completed: {(reward.Finished ? "Yes" : "No")}");
-
-    string missionText = reward.Total == 0 ? "Free Chest" : reward.MissionType switch
+    public void SetRewardData(MissionData reward)
     {
-        MissionType.GamesCompleted => $"Play {reward.Total} {(reward.Total == 1 ? "Game" : "Games")}",
-        MissionType.GamesWon => $"Win {reward.Total} {(reward.Total == 1 ? "Game" : "Games")}",
-        MissionType.DamageDealt => $"Deal {reward.Total} Damage",
-        MissionType.DamageTaken => $"Take {reward.Total} Damage",
-        MissionType.EnergyUsed => $"Use {reward.Total} Energy",
-        MissionType.FactionPlayed => $"Play as {reward.Total} Different Factions",
-        MissionType.GameModePlayed => $"Play {reward.Total} Different Game Modes",
-        MissionType.Kills => $"Achieve {reward.Total} Kills",
-        MissionType.UnitsDeployed => $"Deploy {reward.Total} Units",
-        MissionType.XPEarned => $"Earn {reward.Total} XP",
-        _ => "Unknown Mission"
-    };
-    rewardTypeText.text = missionText;
+        rewardData = reward;
 
-    idText.text = $"ID: {reward.IdMission}";
-    prizeAmountText.text = $"{reward.RewardAmount}";
-    progressText.text = $"{reward.Progress}/{reward.Total}";
+        idText.text = $"ID: {reward.idMission}";
+        rewardTypeText.text = GetMissionTypeText(reward.missionType, reward.total);
+        prizeAmountText.text = $"{reward.rewardAmount}";
+        progressText.text = $"{reward.progress}/{reward.total}";
 
-    expirationText.text = CalculateTimeRemaining(reward.Expiration);
+        expirationText.text = CalculateTimeRemaining(reward.expiration);
 
-    finishedText.text = $"Completed: {(reward.Finished ? "Yes" : "No")}";
-    prizeTypeText.text = $"Reward: {(reward.RewardType == MissionRewardType.Shards ? "Shards" : reward.RewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
+        finishedText.text = $"Completed: {(reward.finished ? "Yes" : "No")}";
+        prizeTypeText.text = $"Reward: {(reward.rewardType == MissionRewardType.Shards ? "Shards" : reward.rewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
 
-    Sprite selectedSprite = GetPrizeSprite(reward.RewardType, reward.RewardAmount);
-    prizeImage.sprite = selectedSprite;
-    prizeImage.enabled = selectedSprite != null;
+        prizeImage.sprite = GetPrizeSprite(reward.rewardType, reward.rewardAmount);
+        panelToChangeColor.GetComponent<Image>().color = GetMissionTypeColor(reward.missionType);
 
-    panelToChangeColor.GetComponent<Image>().color = reward.MissionType switch
+        bool isClaimable = reward.finished || reward.total == 0;
+        claimButtonImage.enabled = isClaimable;
+        claimButton.interactable = isClaimable;
+
+        float progressRatio = reward.total == 0 ? 1f : (float)reward.progress / reward.total;
+        progressBar.fillAmount = progressRatio;
+    }
+
+    private string GetMissionTypeText(MissionType missionType, int total)
     {
-        MissionType.GamesCompleted => gamesPlayedColor,
-        MissionType.GamesWon => gamesWonColor,
-        MissionType.DamageDealt => gamesPlayedColor,
-        MissionType.DamageTaken => gamesWonColor,
-        MissionType.EnergyUsed => gamesPlayedColor,
-        MissionType.FactionPlayed => gamesWonColor,
-        MissionType.GameModePlayed => gamesPlayedColor,
-        MissionType.Kills => gamesWonColor,
-        MissionType.UnitsDeployed => gamesPlayedColor,
-        MissionType.XPEarned => gamesWonColor,
-        _ => gamesPlayedColor
-    };
+        return missionType switch
+        {
+            MissionType.GamesCompleted => $"Play {total} {(total == 1 ? "Game" : "Games")}",
+            MissionType.GamesWon => $"Win {total} {(total == 1 ? "Game" : "Games")}",
+            MissionType.DamageDealt => $"Deal {total} Damage",
+            MissionType.DamageTaken => $"Take {total} Damage",
+            MissionType.EnergyUsed => $"Use {total} Energy",
+            MissionType.FactionPlayed => $"Play as {total} Different Factions",
+            MissionType.GameModePlayed => $"Play {total} Different Game Modes",
+            MissionType.Kills => $"Achieve {total} Kills",
+            MissionType.UnitsDeployed => $"Deploy {total} Units",
+            MissionType.XPEarned => $"Earn {total} XP",
+            _ => "Unknown Mission"
+        };
+    }
 
-    bool isClaimable = reward.Finished || reward.Total == 0; // Added condition for reward.Total == 0
-    claimButtonImage.enabled = isClaimable;
-    claimButton.interactable = isClaimable;
-
-    float progressRatio = reward.Total == 0 ? 1f : (float)(ulong)reward.Progress / (float)(ulong)reward.Total; // Set progress to 100% if Total is 0
-    progressBar.fillAmount = progressRatio;
-}
     private DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
     {
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds((double)unixTimeStamp / 1000000000);
+        dateTime = dateTime.AddSeconds(unixTimeStamp / 1000000000);
         return dateTime.ToLocalTime();
     }
 
     private string CalculateTimeRemaining(ulong unixTimeStamp)
     {
-        // Blockchain time is in UTC, so we need to convert it to local time
         DateTime blockchainTimeUtc = UnixTimeStampToDateTime(unixTimeStamp);
         DateTime localTime = blockchainTimeUtc.ToLocalTime();
-        
-        DateTime now = DateTime.Now; // Local machine time
+
+        DateTime now = DateTime.Now;
 
         TimeSpan timeRemaining = localTime - now;
 
@@ -130,7 +113,7 @@ public void SetRewardData(MissionsUser reward)
         return $"Time remaining: {formattedTime}";
     }
 
-    private Sprite GetPrizeSprite(MissionRewardType prizeType, UnboundedUInt prizeAmount)
+    private Sprite GetPrizeSprite(MissionRewardType prizeType, int prizeAmount)
     {
         return prizeType switch
         {
@@ -141,11 +124,9 @@ public void SetRewardData(MissionsUser reward)
         };
     }
 
-    private Sprite SelectChestSprite(UnboundedUInt prizeAmount)
+    private Sprite SelectChestSprite(int prizeAmount)
     {
-        int amount = (int)prizeAmount;
-
-        return amount switch
+        return prizeAmount switch
         {
             1 => chest1Sprite,
             2 => chest2Sprite,
@@ -158,22 +139,62 @@ public void SetRewardData(MissionsUser reward)
             _ => null
         };
     }
-public async void OnClaimButtonClicked()
-{
-    if (rewardData != null && rewardData.Finished)
+
+    private Color GetMissionTypeColor(MissionType missionType)
     {
-        LoadingPanel.Instance.ActiveLoadingPanel();
+        return missionType switch
+        {
+            MissionType.GamesCompleted => gamesPlayedColor,
+            MissionType.GamesWon => gamesWonColor,
+            MissionType.DamageDealt => gamesPlayedColor,
+            MissionType.DamageTaken => gamesWonColor,
+            MissionType.EnergyUsed => gamesPlayedColor,
+            MissionType.FactionPlayed => gamesWonColor,
+            MissionType.GameModePlayed => gamesPlayedColor,
+            MissionType.Kills => gamesWonColor,
+            MissionType.UnitsDeployed => gamesPlayedColor,
+            MissionType.XPEarned => gamesWonColor,
+            _ => gamesPlayedColor
+        };
+    }
+
+    public async void OnClaimButtonClicked()
+    {
+        if (rewardData != null && rewardData.finished)
+        {
+            LoadingPanel.Instance.ActiveLoadingPanel();
+            bool success = await ClaimReward();
+
+            if (success)
+            {
+                Debug.Log("Reward claimed successfully!");
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+                ShowRewardNotification(rewardData);
+                RefreshUI();
+            }
+            else
+            {
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+                Debug.LogError("Failed to claim reward.");
+            }
+        }
+        else
+        {
+            Debug.LogError("No reward data available to claim.");
+        }
+    }
+
+    private async Task<bool> ClaimReward()
+    {
         bool success;
 
-        if (RewardsManager.Instance.UserMissions.Contains(rewardData))
+        if (MissionManager.Instance.userMissions.Contains(rewardData))
         {
-            success = await RewardsManager.Instance.ClaimUserReward(rewardData.IdMission);
-            await RewardsManager.Instance.RefreshUserMissions(); // Refresh the missions after claiming the reward
+            success = await MissionManager.Instance.ClaimUserReward(rewardData.idMission);
         }
-        else if (RewardsManager.Instance.GeneralMissions.Contains(rewardData))
+        else if (MissionManager.Instance.generalMissions.Contains(rewardData))
         {
-            success = await RewardsManager.Instance.ClaimGeneralReward(rewardData.IdMission);
-            await RewardsManager.Instance.RefreshGeneralMissions(); // Refresh the missions after claiming the reward
+            success = await MissionManager.Instance.ClaimGeneralReward(rewardData.idMission);
         }
         else
         {
@@ -181,32 +202,16 @@ public async void OnClaimButtonClicked()
             success = false;
         }
 
-        if (success)
-        {
-            Debug.Log("Reward claimed successfully!");
-            LoadingPanel.Instance.DesactiveLoadingPanel();
-            Destroy(gameObject);
-            ShowRewardNotification(rewardData);
-        }
-        else
-        {
-            LoadingPanel.Instance.DesactiveLoadingPanel();
-            Debug.LogError("Failed to claim reward.");
-        }
+        return success;
     }
-    else
-    {
-        Debug.LogError("No reward data available to claim.");
-    }
-}
 
-    private void ShowRewardNotification(MissionsUser reward)
+    private void ShowRewardNotification(MissionData reward)
     {
-        string notificationMessage = reward.RewardType switch
+        string notificationMessage = reward.rewardType switch
         {
-            MissionRewardType.Flux => $"You received {reward.RewardAmount} Flux!",
-            MissionRewardType.Shards => $"You received {reward.RewardAmount} Shards!",
-            MissionRewardType.Chest => $"You received a {GetChestRarity(reward.RewardAmount)} Metacube!",
+            MissionRewardType.Flux => $"You received {reward.rewardAmount} Flux!",
+            MissionRewardType.Shards => $"You received {reward.rewardAmount} Shards!",
+            MissionRewardType.Chest => $"You received a {GetChestRarity(reward.rewardAmount)} Metacube!",
             _ => string.Empty
         };
 
@@ -216,10 +221,9 @@ public async void OnClaimButtonClicked()
         }
     }
 
-    private string GetChestRarity(UnboundedUInt prizeAmount)
+    private string GetChestRarity(int prizeAmount)
     {
-        int amount = (int)prizeAmount;
-        return amount switch
+        return prizeAmount switch
         {
             >= 7 => "Mythical",
             6 => "Legendary",
@@ -229,5 +233,10 @@ public async void OnClaimButtonClicked()
             2 => "Common",
             _ => "Basic"
         };
+    }
+
+    private void RefreshUI()
+    {
+        RewardsManager.Instance.RefreshMissions();
     }
 }

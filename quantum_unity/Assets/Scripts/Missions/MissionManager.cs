@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.Threading.Tasks;
+using UnityEngine;
+using System.Threading;
 using EdjCase.ICP.Candid.Models;
 using CanisterPK.CanisterLogin.Models;
-using Cosmicrafts.Managers;
 using Candid;
-using System;
 using Cosmicrafts.Data;
-using System.Threading;
+using System;
+using Cosmicrafts.Managers;
 
 public class MissionManager : MonoBehaviour
 {
@@ -134,7 +134,9 @@ public class MissionManager : MonoBehaviour
         {
             Debug.Log("[MissionManager] Fetching user missions...");
 
-            var missions = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+            var user = GameDataManager.Instance.playerData;
+            var principal = Principal.FromText(user.PrincipalId);
+            var missions = await CandidApiManager.Instance.CanisterLogin.SearchActiveUserMissions(principal);
             Debug.Log($"[MissionManager] Found {missions.Count} user missions.");
             return ConvertToMissionDataList(missions);
         }
@@ -151,7 +153,9 @@ public class MissionManager : MonoBehaviour
         {
             Debug.Log("[MissionManager] Fetching general missions...");
 
-            var missions = await CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+            var user = GameDataManager.Instance.playerData;
+            var principal = Principal.FromText(user.PrincipalId);
+            var missions = await CandidApiManager.Instance.CanisterLogin.SearchActiveGeneralMissions(principal);
             Debug.Log($"[MissionManager] Found {missions.Count} general missions.");
             return ConvertToMissionDataList(missions);
         }
@@ -184,4 +188,70 @@ public class MissionManager : MonoBehaviour
         }
         return missionDataList;
     }
+
+    public List<MissionData> GetUserMissions()
+    {
+        return userMissions;
+    }
+
+    public List<MissionData> GetGeneralMissions()
+    {
+        return generalMissions;
+    }
+
+public async Task<bool> ClaimUserReward(int rewardID)
+{
+    try
+    {
+        var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
+        var result = await CandidApiManager.Instance.CanisterLogin.ClaimUserReward(rewardIDUnbounded);
+        if (result.ReturnArg0)
+        {
+            Debug.Log("[MissionManager] User reward claimed successfully.");
+            var mission = userMissions.Find(m => m.idMission == rewardID);
+            if (mission != null)
+            {
+                userMissions.Remove(mission);
+                // Handle additional logic if necessary
+            }
+            return true;
+        }
+        Debug.LogWarning("[MissionManager] Failed to claim user reward.");
+        return false;
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[MissionManager] Error claiming user reward: {ex.Message}");
+        return false;
+    }
+}
+
+public async Task<bool> ClaimGeneralReward(int rewardID)
+{
+    try
+    {
+        var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
+        var result = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardIDUnbounded);
+        if (result.ReturnArg0)
+        {
+            Debug.Log("[MissionManager] General reward claimed successfully.");
+            var mission = generalMissions.Find(m => m.idMission == rewardID);
+            if (mission != null)
+            {
+                generalMissions.Remove(mission);
+                // Handle additional logic if necessary
+            }
+            return true;
+        }
+        Debug.LogWarning("[MissionManager] Failed to claim general reward.");
+        return false;
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[MissionManager] Error claiming general reward: {ex.Message}");
+        return false;
+    }
+}
+
+
 }

@@ -9,19 +9,46 @@ public class ObjectPool : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+
+        if (ObjectPool.Instance == null)
+        {
+            Debug.LogError("ObjectPool instance is not initialized.");
+        }
     }
 
-    public GameObject GetObject(GameObject prefab)
+    public GameObject GetObject(GameObject prefab, Transform parent)
     {
+        Debug.Log($"Attempting to get object from pool for prefab: {prefab.name}");
+
+        GameObject obj;
         if (poolQueue.Count > 0)
         {
-            GameObject obj = poolQueue.Dequeue();
+            obj = poolQueue.Dequeue();
             obj.SetActive(true);
-            return obj;
+            Debug.Log("Dequeued object from pool.");
         }
-        return Instantiate(prefab);
+        else
+        {
+            obj = Instantiate(prefab, parent);
+            Debug.Log("Instantiated new object.");
+        }
+
+        if (obj == null)
+        {
+            Debug.LogError("Failed to instantiate or dequeue object.");
+        }
+
+        return obj;
     }
+
 
     public void ReturnObject(GameObject obj)
     {

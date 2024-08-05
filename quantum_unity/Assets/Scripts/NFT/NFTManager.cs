@@ -78,7 +78,7 @@ namespace Cosmicrafts.Data
             var metadataResult = await CandidApiManager.Instance.testnft.Icrc7Metadata(tokenId);
             if (metadataResult.Tag == MetadataResultTag.Ok && metadataResult.Value is Dictionary<string, Metadata> metadataDictionary)
             {
-                Debug.Log($"Successfully fetched metadata for Token ID: {tokenId}");
+                //Debug.Log($"Successfully fetched metadata for Token ID: {tokenId}");
                 NFTData nftData = NFTMetadataParser.Parse(metadataDictionary);
                 nftData.TokenId = tokenId.ToString();
 
