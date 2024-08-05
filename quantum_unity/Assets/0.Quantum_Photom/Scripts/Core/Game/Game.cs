@@ -50,6 +50,36 @@ namespace TowerRush
 		private         string           m_CheatManagerJson;
 		#endif
 
+
+		public void StartFinishAndRestartCoroutine()
+		{
+		StartCoroutine(FinishAndRestart());
+		}
+
+		private IEnumerator FinishAndRestart()
+		{
+		// Show the loading scene
+		yield return ShowLoadingScene_Coroutine();
+
+		// Call FinishScene on the current scene
+		if (CurrentScene != null)
+		{
+			CurrentScene.FinishScene();
+			// Wait until the scene is finished
+			while (!CurrentScene.Finished)
+			{
+				yield return null;
+			}
+		}
+
+		// Restart the game
+		Restart();
+
+		// Hide the loading scene after restarting
+		yield return HideLoadingScene_Coroutine();
+		}
+
+
 		// PUBLIC METHODS
 
 		public void Restart()
@@ -365,7 +395,7 @@ namespace TowerRush
 			}
 		}
 
-		private IEnumerator HideLoadingScene_Coroutine()
+		public IEnumerator HideLoadingScene_Coroutine()
 		{
 			if (m_LoadingScene == null)
 				yield break;
