@@ -54,7 +54,7 @@ public class ChestManager : MonoBehaviour
         chestDictionary = new Dictionary<int, ChestSO>();
         ChestSO[] chests = Resources.LoadAll<ChestSO>("Chests");
 
-        Debug.Log("[Chest Manager] Initializing chest dictionary...");
+       // Debug.Log("[Chest Manager] Initializing chest dictionary...");
 
         if (chests.Length == 0)
         {
@@ -65,11 +65,11 @@ public class ChestManager : MonoBehaviour
         {
             if (chest != null)
             {
-                Debug.Log($"[Chest Manager] Loaded ChestSO: {chest.name}, Rarity: {chest.rarity}, Contents: {JsonUtility.ToJson(chest)}");
+               // Debug.Log($"[Chest Manager] Loaded ChestSO: {chest.name}, Rarity: {chest.rarity}, Contents: {JsonUtility.ToJson(chest)}");
                 if (!chestDictionary.ContainsKey(chest.rarity))
                 {
                     chestDictionary[chest.rarity] = chest;
-                    Debug.Log($"[Chest Manager] Added ChestSO with rarity {chest.rarity} to dictionary.");
+                   // Debug.Log($"[Chest Manager] Added ChestSO with rarity {chest.rarity} to dictionary.");
                 }
                 else
                 {
@@ -139,9 +139,9 @@ public class ChestManager : MonoBehaviour
             if (metadataDictionary != null && metadataDictionary.TryGetValue("rarity", out Metadata metadata))
             {
                 string rawMetadata = JsonUtility.ToJson(metadata);
-                Debug.Log($"[Chest Manager] Raw metadata: {rawMetadata}");
+              //  Debug.Log($"[Chest Manager] Raw metadata: {rawMetadata}");
                 int rarity = ConvertUnboundedUIntToInt(metadata.AsNat());
-                Debug.Log($"[Chest Manager] Converted rarity: {rarity}");
+              //  Debug.Log($"[Chest Manager] Converted rarity: {rarity}");
 
                 if (chestDictionary.TryGetValue(rarity, out ChestSO chestSO))
                 {
@@ -169,7 +169,7 @@ public class ChestManager : MonoBehaviour
         try
         {
             int intValue = (int)unboundedUInt;
-            Debug.Log($"[Chest Manager] Converted UnboundedUInt {unboundedUInt} to int {intValue}");
+          //  Debug.Log($"[Chest Manager] Converted UnboundedUInt {unboundedUInt} to int {intValue}");
             return intValue;
         }
         catch (OverflowException)
