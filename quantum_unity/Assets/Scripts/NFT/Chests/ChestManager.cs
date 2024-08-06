@@ -2,19 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Candid;
 using CanisterPK.chests.Models;
 using EdjCase.ICP.Candid.Models;
-using System.Numerics;
 using Cosmicrafts.Data;
 using Cosmicrafts.Managers;
 
 public class ChestManager : MonoBehaviour
 {
-    [SerializeField] private ChestSO[] chestSOsByRarity;
+    private Dictionary<int, ChestSO> chestDictionary;
+
     public static ChestManager Instance { get; private set; }
     public TMP_Text ownedChestsText;
     public GameObject chestPrefab;
@@ -37,6 +37,7 @@ public class ChestManager : MonoBehaviour
 
     async void Start()
     {
+        InitializeChestDictionary();
         chestPrefab.SetActive(false);
         await FetchOwnedChests();
         if (updateChestsToggle != null)
@@ -46,6 +47,41 @@ public class ChestManager : MonoBehaviour
                 if (value) UpdateOwnedChests();
             });
         }
+    }
+
+    private void InitializeChestDictionary()
+    {
+        chestDictionary = new Dictionary<int, ChestSO>();
+        ChestSO[] chests = Resources.LoadAll<ChestSO>("Chests");
+
+        Debug.Log("[Chest Manager] Initializing chest dictionary...");
+
+        if (chests.Length == 0)
+        {
+            Debug.LogError("[Chest Manager] No ChestSO files found in Resources/Chests folder.");
+        }
+
+        foreach (var chest in chests)
+        {
+            if (chest != null)
+            {
+                Debug.Log($"[Chest Manager] Loaded ChestSO: {chest.name}, Rarity: {chest.rarity}, Contents: {JsonUtility.ToJson(chest)}");
+                if (!chestDictionary.ContainsKey(chest.rarity))
+                {
+                    chestDictionary[chest.rarity] = chest;
+                    Debug.Log($"[Chest Manager] Added ChestSO with rarity {chest.rarity} to dictionary.");
+                }
+                else
+                {
+                    Debug.LogError($"[Chest Manager] Duplicate ChestSO entry found for rarity {chest.rarity}. Check for duplicate entries.");
+                }
+            }
+            else
+            {
+                Debug.LogError("[Chest Manager] Found a null ChestSO entry during initialization. Ensure all chest SOs are valid.");
+            }
+        }
+        Debug.Log($"[Chest Manager] Total ChestSOs loaded into dictionary: {chestDictionary.Count}");
     }
 
     public void RemoveChestAndRefreshCount(UnboundedUInt tokenId)
@@ -69,14 +105,14 @@ public class ChestManager : MonoBehaviour
     {
         if (GameDataManager.Instance == null)
         {
-            Debug.LogError("[ChestManager] GameDataManager instance is null.");
+            Debug.LogError("[Chest Manager] GameDataManager instance is null.");
             return;
         }
 
         var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
-            Debug.LogError("Failed to load player data.");
+            Debug.LogError("[Chest Manager] Failed to load player data.");
             return;
         }
 
@@ -102,17 +138,44 @@ public class ChestManager : MonoBehaviour
             var metadataDictionary = metadataResult.Value as Dictionary<string, Metadata>;
             if (metadataDictionary != null && metadataDictionary.TryGetValue("rarity", out Metadata metadata))
             {
-                int rarity = (int)metadata.AsNat();
-                if (rarity >= 1 && rarity <= chestSOsByRarity.Length)
+                string rawMetadata = JsonUtility.ToJson(metadata);
+                Debug.Log($"[Chest Manager] Raw metadata: {rawMetadata}");
+                int rarity = ConvertUnboundedUIntToInt(metadata.AsNat());
+                Debug.Log($"[Chest Manager] Converted rarity: {rarity}");
+
+                if (chestDictionary.TryGetValue(rarity, out ChestSO chestSO))
                 {
-                    ChestSO chestSO = chestSOsByRarity[rarity - 1];
+                    Debug.Log($"[Chest Manager] Found ChestSO for rarity {rarity}. Instantiating chest prefab.");
                     InstantiateChestPrefab(tokenId, chestSO);
                 }
                 else
                 {
-                    Debug.LogError($"No ChestSO found for rarity {rarity}.");
+                    Debug.LogError($"[Chest Manager] No ChestSO found for rarity {rarity}. Ensure ChestSOs are correctly set up in Resources/Chests.");
                 }
             }
+            else
+            {
+                Debug.LogError("[Chest Manager] Metadata does not contain 'rarity' key or casting failed.");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[Chest Manager] Failed to fetch metadata for token ID {tokenId}. Metadata result tag: {metadataResult.Tag}");
+        }
+    }
+
+    private int ConvertUnboundedUIntToInt(UnboundedUInt unboundedUInt)
+    {
+        try
+        {
+            int intValue = (int)unboundedUInt;
+            Debug.Log($"[Chest Manager] Converted UnboundedUInt {unboundedUInt} to int {intValue}");
+            return intValue;
+        }
+        catch (OverflowException)
+        {
+            Debug.LogError("[Chest Manager] Rarity value exceeds int.MaxValue. Conversion failed.");
+            return -1;
         }
     }
 
@@ -123,6 +186,7 @@ public class ChestManager : MonoBehaviour
         if (chestInstance != null)
         {
             chestInstance.Setup(chestSO, tokenId);
+            Debug.Log($"[Chest Manager] Instantiated chest prefab for token ID {tokenId} with ChestSO {chestSO.name}");
         }
         instance.SetActive(true);
     }
@@ -130,21 +194,31 @@ public class ChestManager : MonoBehaviour
     private async Task<List<UnboundedUInt>> GetOwnedChestTokens(Account account)
     {
         var tokenListResult = await CandidApiManager.Instance.chests.Icrc7TokensOf(account);
-        return tokenListResult.Tag == TokensOfResultTag.Ok ? tokenListResult.AsOk() : new List<UnboundedUInt>();
+        if (tokenListResult.Tag == TokensOfResultTag.Ok)
+        {
+            var tokens = tokenListResult.AsOk();
+            Debug.Log($"[Chest Manager] Owned chest tokens: {string.Join(", ", tokens.Select(t => t.ToString()))}");
+            return tokens;
+        }
+        else
+        {
+            Debug.LogError("[Chest Manager] Failed to fetch owned chest tokens.");
+            return new List<UnboundedUInt>();
+        }
     }
 
     public async void UpdateOwnedChests()
     {
         if (GameDataManager.Instance == null)
         {
-            Debug.LogError("[ChestManager] GameDataManager instance is null.");
+            Debug.LogError("[Chest Manager] GameDataManager instance is null.");
             return;
         }
 
         var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
-            Debug.LogError("Failed to load player data.");
+            Debug.LogError("[Chest Manager] Failed to load player data.");
             return;
         }
 
@@ -163,7 +237,7 @@ public class ChestManager : MonoBehaviour
 
             currentTokenIds.AddRange(newTokenIds.Except(currentTokenIds));
 
-            string notificationText = $"Received {newChestCount} new chest{(newChestCount > 1 ? "s" : "")}!";
+            string notificationText = $"[Chest Manager] Received {newChestCount} new chest{(newChestCount > 1 ? "s" : "")}!";
             notificationManager.ShowNotification(notificationText);
         }
     }
@@ -172,18 +246,18 @@ public class ChestManager : MonoBehaviour
     {
         if (GameDataManager.Instance == null)
         {
-            Debug.LogError("[ChestManager] GameDataManager instance is null.");
+            Debug.LogError("[Chest Manager] GameDataManager instance is null.");
             return;
         }
 
         var userData = GameDataManager.Instance.playerData;
         if (userData == null)
         {
-            Debug.LogError("Failed to load player data.");
+            Debug.LogError("[Chest Manager] Failed to load player data.");
             return;
         }
 
-        Debug.Log($"Attempting to transfer chest: {chestSO.chestName} with Token ID: {tokenId} to {recipientPrincipalText}");
+        Debug.Log($"[Chest Manager] Attempting to transfer chest: {chestSO.chestName} with Token ID: {tokenId} to {recipientPrincipalText}");
         var recipientPrincipal = Principal.FromText(recipientPrincipalText);
 
         var transferArgs = new CanisterPK.chests.Models.TransferArgs
@@ -197,13 +271,14 @@ public class ChestManager : MonoBehaviour
 
         if (transferReceipt.Tag == TransferReceiptTag.Ok)
         {
-            Debug.Log("Chest transferred successfully.");
+            Debug.Log("[Chest Manager] Chest transferred successfully.");
             RemoveChestAndRefreshCount(tokenId);
         }
         else if (transferReceipt.Tag == TransferReceiptTag.Err)
         {
             TransferError errorInfo = transferReceipt.AsErr();
-            Debug.LogError($"Failed to transfer chest: {errorInfo.Tag}");
+            Debug.LogError($"[Chest Manager] Failed to transfer chest: {errorInfo.Tag}");
         }
     }
 }
+

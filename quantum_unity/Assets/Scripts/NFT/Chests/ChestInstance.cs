@@ -15,19 +15,19 @@ public class ChestInstance : MonoBehaviour
 
     public void OnChestSelected()
     {
-        Debug.Log("Chest selected. Determining action...");
+        Debug.Log("[Chest Manager] Chest selected. Determining action...");
 
         // Check if the ChestOpenerUI is active and perform the opening action.
         if (chestOpenerUI != null && chestOpenerUI.gameObject.activeSelf)
         {
-            Debug.Log("Opening chest.");
+            Debug.Log("[Chest Manager] Opening chest.");
             chestOpenerUI.SelectChestForOpening(chestSO, tokenId);
         }
         
         // Check if the ChestTransferUI is active and perform the transfer action.
         if (chestTransferUI != null && chestTransferUI.gameObject.activeSelf)
         {
-            Debug.Log("Transferring chest.");
+            Debug.Log("[Chest Manager] Transferring chest.");
             chestTransferUI.SetSelectedChest(this);
         }
 
@@ -35,7 +35,7 @@ public class ChestInstance : MonoBehaviour
         if ((chestOpenerUI == null || !chestOpenerUI.gameObject.activeSelf) && 
             (chestTransferUI == null || !chestTransferUI.gameObject.activeSelf))
         {
-            Debug.LogError("No operation UI found or active for the chest.");
+            Debug.LogError("[Chest Manager] No operation UI found or active for the chest.");
         }
     }
 
@@ -48,14 +48,23 @@ public class ChestInstance : MonoBehaviour
         if (chestImage != null)
         {
             chestImage.sprite = chestSO.icon;
+            Debug.Log($"[Chest Manager] Set chest icon: {chestSO.icon.name}");
         }
         else
         {
-            Debug.LogError("Image component not found on ChestInstance. Please assign it in the Inspector.");
+            Debug.LogError("[Chest Manager] Image component not found on ChestInstance. Please assign it in the Inspector.");
         }
 
         // Set the text for name, rarity, and tokenId
-        if (nameText != null) nameText.text = chestSO.chestName;
-        if (tokenIdText != null) tokenIdText.text = "ID: " + tokenId.ToString();
+        if (nameText != null) 
+        {
+            nameText.text = chestSO.chestName;
+            Debug.Log($"[Chest Manager] Set chest name: {chestSO.chestName}");
+        }
+        if (tokenIdText != null) 
+        {
+            tokenIdText.text = "ID: " + tokenId.ToString();
+            Debug.Log($"[Chest Manager] Set token ID text: ID: {tokenId.ToString()}");
+        }
     }
 }
