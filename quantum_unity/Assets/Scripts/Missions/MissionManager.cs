@@ -50,10 +50,11 @@ public class MissionManager : MonoBehaviour
         CandidApiManager.Instance.OnCandidApiInitialized -= InitializeAndFetchMissions;
 
         // Proceed with initialization and fetching missions
-        _ = FetchUserMissions();
-        _ = FetchGeneralMissions();
         _ = GetUserMissionsFromServer();
         _ = GetGeneralMissionsFromServer();
+        _ = FetchUserMissions();
+        _ = FetchGeneralMissions();
+
     }
 
     private async Task FetchUserMissions()
@@ -175,10 +176,12 @@ public class MissionManager : MonoBehaviour
                 if (mission != null)
                 {
                     userMissions.Remove(mission);
-                    await GetUserMissionsFromServer();
-                    MissionEvents.RaiseMissionsFetched(); // Trigger the event after updating the missions
+                    
+
                 }
                 return true;
+                await GetUserMissionsFromServer();
+                MissionEvents.RaiseMissionsFetched();
             }
             Debug.LogWarning("[MissionManager] Failed to claim user reward.");
             return false;
@@ -203,8 +206,6 @@ public class MissionManager : MonoBehaviour
                 if (mission != null)
                 {
                     generalMissions.Remove(mission);
-                    await GetGeneralMissionsFromServer();
-                    MissionEvents.RaiseMissionsFetched(); // Trigger the event after updating the missions
                 }
                 return true;
             }

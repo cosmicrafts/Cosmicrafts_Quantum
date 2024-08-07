@@ -612,6 +612,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2619306712306717319}
+        m_TargetAssemblyTypeName: SimpleDeactivate, Assembly-CSharp
+        m_MethodName: StartDeactivation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!95 &8144359453454394117
 Animator:
   serializedVersion: 5
@@ -1180,6 +1192,7 @@ GameObject:
   - component: {fileID: 8144359453791882500}
   - component: {fileID: 8144359453791882507}
   - component: {fileID: 8144359453791882506}
+  - component: {fileID: 2619306712306717319}
   m_Layer: 5
   m_Name: Mission
   m_TagString: Untagged
@@ -1264,6 +1277,20 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &2619306712306717319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8144359453791882501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6b01386ee2cc7e18d180c2fdd484b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customAnimation: {fileID: 8144359453791882506}
+  closeAnimationClip: {fileID: 7400000, guid: e49ec0ffc8c82a109a509469392c531f, type: 2}
 --- !u!1 &8144359453913028207
 GameObject:
   m_ObjectHideFlags: 0

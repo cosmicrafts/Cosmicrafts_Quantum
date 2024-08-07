@@ -25,6 +25,13 @@ namespace TowerRush
         [SerializeField] private GameObject UILoadingResults;
         [SerializeField] private GameObject UIResults;
 
+
+        private Dictionary<string, GameObject> targetCache = new Dictionary<string, GameObject>();
+        private List<EventOnHealthChanged> healthChangeEvents = new List<EventOnHealthChanged>();
+        private const float updateInterval = 0.25f;
+        private float timeSinceLastUpdate = 0f;
+
+
         // PRIVATE MEMBERS
         private bool m_Started;
 
@@ -40,6 +47,7 @@ namespace TowerRush
             QuantumEvent.Subscribe<EventUnitDestroyed>(this, OnUnitDestroyed);
             QuantumEvent.Subscribe<EventOnHealthChanged>(this, OnHealthChanged);
             QuantumEvent.Subscribe<EventCardSpawned>(this, OnSpawnedCard);
+            ObjectPoolManager.Instance.CreatePool(CanvasDamage, 10);
         }
 
         protected override void OnDeinitialize()
@@ -93,7 +101,15 @@ namespace TowerRush
                 m_AlphaLight.SetActive(false);
                 m_BetaLight.SetActive(true);
             }
+
+            timeSinceLastUpdate += Time.deltaTime;
+            if (timeSinceLastUpdate >= updateInterval)
+            {
+                ProcessHealthChanges();
+                timeSinceLastUpdate = 0f;
+            }
         }
+
 
         protected override bool CanUpdateComponents(SceneContext context)
         {
@@ -200,77 +216,52 @@ namespace TowerRush
         }
 
         private void OnHealthChanged(EventOnHealthChanged e)
-{
-    void InstanceCanvasDamage()
-    {
-        GameObject targetGameObject = GameObject.Find(e.Data.Target.ToString());
-        if (targetGameObject != null)
         {
-            if (ObjectPoolManager.Instance != null)
+            healthChangeEvents.Add(e);
+        }
+
+        private void ProcessHealthChanges()
+        {
+            foreach (var e in healthChangeEvents)
             {
-                GameObject canvasDmg = ObjectPoolManager.Instance.GetObject(CanvasDamage, targetGameObject.transform, targetGameObject.transform.position, targetGameObject.transform.rotation);
-                CanvasDamage canvasDamage = canvasDmg.GetComponent<CanvasDamage>();
-                if (canvasDamage != null)
+                GameObject targetGameObject;
+                if (!targetCache.TryGetValue(e.Data.Target.ToString(), out targetGameObject))
                 {
-                    canvasDamage.SetDamage(e.Data.Value.AsFloat, e.Data.AttackMode);
+                    targetGameObject = GameObject.Find(e.Data.Target.ToString());
+                    if (targetGameObject != null)
+                    {
+                        targetCache[e.Data.Target.ToString()] = targetGameObject;
+                    }
+                    else
+                    {
+                        Debug.LogError("Target game object not found.");
+                        continue;
+                    }
+                }
+
+                if (ObjectPoolManager.Instance != null)
+                {
+                    GameObject canvasDmg = ObjectPoolManager.Instance.GetObject(CanvasDamage, targetGameObject.transform, targetGameObject.transform.position, targetGameObject.transform.rotation);
+                    CanvasDamage canvasDamage = canvasDmg.GetComponent<CanvasDamage>();
+                    if (canvasDamage != null)
+                    {
+                        canvasDamage.SetDamage(e.Data.Value.AsFloat, e.Data.AttackMode);
+                    }
+                    else
+                    {
+                        Debug.LogError("CanvasDamage component not found on the instantiated object.");
+                    }
                 }
                 else
                 {
-                    Debug.LogError("CanvasDamage component not found on the instantiated object.");
+                    Debug.LogError("ObjectPoolManager instance is not initialized.");
                 }
             }
-            else
-            {
-                Debug.LogError("ObjectPoolManager instance is not initialized.");
-            }
-        }
-        else
-        {
-            Debug.LogError("Target game object not found.");
-        }
-    }
 
-    if (e.Data.HideToStats)
-    {
-        Debug.Log($"HideToStats: {e.Data.Value} a la entidad {e.Data.Target}");
-        return;
-    }
+            healthChangeEvents.Clear();
+        }
 
-    if (e.Data.TargetOwner == Entities.LocalPlayerRef && e.Data.Action == EHealthAction.Remove)
-    {
-        if (e.Data.Action == EHealthAction.Add)
-        {
-            Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
-        }
-        else if (e.Data.Action == EHealthAction.Remove)
-        {
-            Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
-            InstanceCanvasDamage();
-            gmt.AddDamageReceived(e.Data.Value.AsFloat);
-            if (e.Data.AttackMode == EAttackMode.Evasion)
-            {
-                gmt.AddDamageEvaded(e.Data.ValueRefOriginal.AsFloat);
-            }
-        }
-    }
-    else
-    {
-        if (e.Data.Action == EHealthAction.Add)
-        {
-            Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
-        }
-        else if (e.Data.Action == EHealthAction.Remove)
-        {
-            Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
-            InstanceCanvasDamage();
-            gmt.AddDamage(e.Data.Value.AsFloat);
-            if (e.Data.AttackMode == EAttackMode.Critic)
-            {
-                gmt.AddDamageCritic(e.Data.ValueRefOriginal.AsFloat);
-            }
-        }
-    }
-}
+
 
 
         private void OnSpawnedCard(EventCardSpawned e)

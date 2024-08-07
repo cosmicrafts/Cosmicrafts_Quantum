@@ -10,6 +10,8 @@ public class RewardsManager : MonoBehaviour
     public GameObject rewardPrefab;
     public Transform rewardsContainer;
 
+    private List<RewardsDisplay> rewardDisplays = new List<RewardsDisplay>();
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -55,72 +57,37 @@ public class RewardsManager : MonoBehaviour
             return;
         }
 
-        int currentChildIndex = 0;
-
-        foreach (var mission in allMissions)
+        // Ensure we have enough reward displays
+        while (rewardDisplays.Count < allMissions.Count)
         {
-            Debug.Log($"Processing mission ID: {mission.idMission} at index: {currentChildIndex}");
-
-            if (currentChildIndex < rewardsContainer.childCount)
+            var instance = Instantiate(rewardPrefab, rewardsContainer);
+            instance.SetActive(true);
+            var display = instance.GetComponent<RewardsDisplay>();
+            if (display != null)
             {
-                var child = rewardsContainer.GetChild(currentChildIndex);
-                var display = child.GetComponent<RewardsDisplay>();
-                if (display != null)
-                {
-                    Debug.Log($"Updating existing reward display for mission ID: {mission.idMission}");
-                    display.SetRewardData(mission);
-                    child.gameObject.SetActive(true);
-                }
-                else
-                {
-                    Debug.LogError("RewardsDisplay component is missing from the child prefab!");
-                }
+                rewardDisplays.Add(display);
             }
             else
             {
-                InstantiateRewardPrefab(mission);
+                Debug.LogError("RewardsDisplay component is missing from the prefab!");
+                Destroy(instance);
             }
-
-            currentChildIndex++;
         }
 
-        for (int i = currentChildIndex; i < rewardsContainer.childCount; i++)
+        // Update existing reward displays with new data
+        for (int i = 0; i < allMissions.Count; i++)
         {
-            rewardsContainer.GetChild(i).gameObject.SetActive(false);
+            rewardDisplays[i].SetRewardData(allMissions[i]);
+            rewardDisplays[i].gameObject.SetActive(true);
+        }
+
+        // Deactivate any extra reward displays
+        for (int i = allMissions.Count; i < rewardDisplays.Count; i++)
+        {
+            rewardDisplays[i].gameObject.SetActive(false);
         }
 
         rewardsCountText.text = allMissions.Count.ToString();
-    }
-
-    private void InstantiateRewardPrefab(MissionData mission)
-    {
-        if (rewardPrefab == null)
-        {
-            Debug.LogError("Reward Prefab is not assigned!");
-            return;
-        }
-
-        Debug.Log($"Instantiating prefab for mission ID: {mission.idMission}");
-
-        var instance = Instantiate(rewardPrefab, rewardsContainer);
-        if (instance == null)
-        {
-            Debug.LogError("Failed to instantiate prefab.");
-            return;
-        }
-
-        instance.SetActive(true);
-
-        var display = instance.GetComponent<RewardsDisplay>();
-        if (display != null)
-        {
-            Debug.Log($"Setting reward data for mission ID: {mission.idMission}");
-            display.SetRewardData(mission);
-        }
-        else
-        {
-            Debug.LogError("RewardsDisplay component is missing from the prefab!");
-        }
     }
 
     public void RefreshMissions()
