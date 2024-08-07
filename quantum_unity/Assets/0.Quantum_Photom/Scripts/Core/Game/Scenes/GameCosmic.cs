@@ -200,58 +200,78 @@ namespace TowerRush
         }
 
         private void OnHealthChanged(EventOnHealthChanged e)
+{
+    void InstanceCanvasDamage()
+    {
+        GameObject targetGameObject = GameObject.Find(e.Data.Target.ToString());
+        if (targetGameObject != null)
         {
-            void InstanceCanvasDamage()
+            if (ObjectPoolManager.Instance != null)
             {
-                GameObject targetGameObject = GameObject.Find(e.Data.Target.ToString());
-                if (targetGameObject != null)
+                GameObject canvasDmg = ObjectPoolManager.Instance.GetObject(CanvasDamage, targetGameObject.transform, targetGameObject.transform.position, targetGameObject.transform.rotation);
+                CanvasDamage canvasDamage = canvasDmg.GetComponent<CanvasDamage>();
+                if (canvasDamage != null)
                 {
-                    GameObject canvasDmg = Instantiate(CanvasDamage, targetGameObject.transform.position, targetGameObject.transform.rotation);
-                    canvasDmg.GetComponent<CanvasDamage>().SetDamage(e.Data.Value.AsFloat, e.Data.AttackMode);
+                    canvasDamage.SetDamage(e.Data.Value.AsFloat, e.Data.AttackMode);
                 }
-            }
-
-            if (e.Data.HideToStats)
-            {
-                Debug.Log($"HideToStats: {e.Data.Value} a la entidad {e.Data.Target}");
-                return;
-            }
-
-            if (e.Data.TargetOwner == Entities.LocalPlayerRef && e.Data.Action == EHealthAction.Remove)
-            {
-                if (e.Data.Action == EHealthAction.Add)
+                else
                 {
-                    Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
-                }
-                else if (e.Data.Action == EHealthAction.Remove)
-                {
-                    Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
-                    InstanceCanvasDamage();
-                    gmt.AddDamageReceived(e.Data.Value.AsFloat);
-                    if (e.Data.AttackMode == EAttackMode.Evasion)
-                    {
-                        gmt.AddDamageEvaded(e.Data.ValueRefOriginal.AsFloat);
-                    }
+                    Debug.LogError("CanvasDamage component not found on the instantiated object.");
                 }
             }
             else
             {
-                if (e.Data.Action == EHealthAction.Add)
-                {
-                    Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
-                }
-                else if (e.Data.Action == EHealthAction.Remove)
-                {
-                    Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
-                    InstanceCanvasDamage();
-                    gmt.AddDamage(e.Data.Value.AsFloat);
-                    if (e.Data.AttackMode == EAttackMode.Critic)
-                    {
-                        gmt.AddDamageCritic(e.Data.ValueRefOriginal.AsFloat);
-                    }
-                }
+                Debug.LogError("ObjectPoolManager instance is not initialized.");
             }
         }
+        else
+        {
+            Debug.LogError("Target game object not found.");
+        }
+    }
+
+    if (e.Data.HideToStats)
+    {
+        Debug.Log($"HideToStats: {e.Data.Value} a la entidad {e.Data.Target}");
+        return;
+    }
+
+    if (e.Data.TargetOwner == Entities.LocalPlayerRef && e.Data.Action == EHealthAction.Remove)
+    {
+        if (e.Data.Action == EHealthAction.Add)
+        {
+            Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
+        }
+        else if (e.Data.Action == EHealthAction.Remove)
+        {
+            Debug.Log($"[Mi Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+            InstanceCanvasDamage();
+            gmt.AddDamageReceived(e.Data.Value.AsFloat);
+            if (e.Data.AttackMode == EAttackMode.Evasion)
+            {
+                gmt.AddDamageEvaded(e.Data.ValueRefOriginal.AsFloat);
+            }
+        }
+    }
+    else
+    {
+        if (e.Data.Action == EHealthAction.Add)
+        {
+            Debug.Log($"Salud añadida: {e.Data.Value} a la entidad {e.Data.Target}");
+        }
+        else if (e.Data.Action == EHealthAction.Remove)
+        {
+            Debug.Log($"[Otra Nave] Salud removida: {e.Data.Value} de la entidad {e.Data.Target}");
+            InstanceCanvasDamage();
+            gmt.AddDamage(e.Data.Value.AsFloat);
+            if (e.Data.AttackMode == EAttackMode.Critic)
+            {
+                gmt.AddDamageCritic(e.Data.ValueRefOriginal.AsFloat);
+            }
+        }
+    }
+}
+
 
         private void OnSpawnedCard(EventCardSpawned e)
         {
