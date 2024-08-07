@@ -48,7 +48,7 @@ public class Login : MonoBehaviour
         Debug.Log("[Login] CandidApiManager initialized.");
     }
 
-    private async void Start()
+    private void Start()
     {
         if (GameDataManager.Instance != null)
         {
@@ -149,7 +149,7 @@ public class Login : MonoBehaviour
         }
     }
 
-    private async void UpdatePlayerDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
+    private void UpdatePlayerDataAndTransition(CanisterPK.CanisterLogin.Models.Player player)
     {
         try
         {
@@ -201,9 +201,6 @@ public class Login : MonoBehaviour
                 {
                     Debug.Log("[LoginPostCreate] Player information retrieved.");
                     var player = playerInfo.ValueOrDefault;
-
-                    Debug.Log("[Login] INIT MINT");
-                    _ = MintDeckAsync();
 
                     UpdatePlayerDataAndTransition(player);
                 }

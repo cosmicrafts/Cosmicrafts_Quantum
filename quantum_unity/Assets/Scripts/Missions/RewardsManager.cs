@@ -37,6 +37,7 @@ public class RewardsManager : MonoBehaviour
     private void Start()
     {
         rewardPrefab.SetActive(false);
+        ObjectPoolManager.Instance.CreatePool(rewardPrefab, 25);
         PopulateRewardsUI();
     }
 
@@ -60,8 +61,7 @@ public class RewardsManager : MonoBehaviour
         // Ensure we have enough reward displays
         while (rewardDisplays.Count < allMissions.Count)
         {
-            var instance = Instantiate(rewardPrefab, rewardsContainer);
-            instance.SetActive(true);
+            var instance = ObjectPoolManager.Instance.GetObject(rewardPrefab, rewardsContainer, Vector3.zero, Quaternion.identity);
             var display = instance.GetComponent<RewardsDisplay>();
             if (display != null)
             {
@@ -70,7 +70,7 @@ public class RewardsManager : MonoBehaviour
             else
             {
                 Debug.LogError("RewardsDisplay component is missing from the prefab!");
-                Destroy(instance);
+                ObjectPoolManager.Instance.ReturnObject(instance);
             }
         }
 
@@ -81,10 +81,11 @@ public class RewardsManager : MonoBehaviour
             rewardDisplays[i].gameObject.SetActive(true);
         }
 
-        // Deactivate any extra reward displays
+        // Deactivate and return any extra reward displays to the pool
         for (int i = allMissions.Count; i < rewardDisplays.Count; i++)
         {
             rewardDisplays[i].gameObject.SetActive(false);
+            ObjectPoolManager.Instance.ReturnObject(rewardDisplays[i].gameObject);
         }
 
         rewardsCountText.text = allMissions.Count.ToString();
