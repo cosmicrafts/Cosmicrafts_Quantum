@@ -28,6 +28,7 @@ namespace Cysharp.Threading.Tasks
     [AsyncMethodBuilder(typeof(AsyncUniTaskMethodBuilder))]
     [StructLayout(LayoutKind.Auto)]
     public readonly partial struct UniTask
+
     {
         readonly IUniTaskSource source;
         readonly short token;
