@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Candid;
-using CanisterPK.CanisterLogin.Models;
+using Cosmicrafts.MainCanister.Models;
 using TowerRush;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,7 +62,7 @@ public class UIMatchLoading : MonoBehaviour
 
     public async void GetMatchData()
     {
-        var matchDataRequest = await CandidApiManager.Instance.CanisterLogin.GetMyMatchData();
+        var matchDataRequest = await CandidApiManager.Instance.MainCanister.GetMyMatchData();
         
         if (matchDataRequest.ReturnArg0.HasValue)
         {

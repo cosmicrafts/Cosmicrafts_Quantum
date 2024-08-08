@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Candid;
-using CanisterPK.CanisterLogin.Models;
+using Cosmicrafts.MainCanister.Models;
 using UnityEngine;
 using Cosmicrafts.Managers;
 
@@ -49,7 +49,7 @@ public class UIMatchMaking : MonoBehaviour
 
         Debug.Log(JsonUtility.ToJson(matchPlayerData));
 
-        var matchSearchingInfo = await CandidApiManager.Instance.CanisterLogin.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
+        var matchSearchingInfo = await CandidApiManager.Instance.MainCanister.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
 
         Debug.Log("Status: " + matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
 
@@ -62,7 +62,7 @@ public class UIMatchMaking : MonoBehaviour
             while (!isGameMatched && SearchingScreen.activeSelf)
             {
                 if (this.gameObject == null) { break; }
-                var isGameMatchedRequest = await CandidApiManager.Instance.CanisterLogin.IsGameMatched();
+                var isGameMatchedRequest = await CandidApiManager.Instance.MainCanister.IsGameMatched();
                 Debug.Log("Ya estoy asignado a una sala: " + matchSearchingInfo.ReturnArg1 + " espero ser matched: " + isGameMatchedRequest.ReturnArg1);
                 isGameMatched = isGameMatchedRequest.ReturnArg0;
                 Debug.Log("IsGameMatched: " + isGameMatched);
@@ -85,7 +85,7 @@ public class UIMatchMaking : MonoBehaviour
         while (sendPlayerActive && SearchingScreen.activeSelf)
         {
             if (this.gameObject == null) { break; }
-            var isActive = await CandidApiManager.Instance.CanisterLogin.SetPlayerActive();
+            var isActive = await CandidApiManager.Instance.MainCanister.SetPlayerActive();
             Debug.Log("estoy activo: " + isActive);
 
             if (!isActive)
@@ -102,7 +102,7 @@ public class UIMatchMaking : MonoBehaviour
     {
         sendPlayerActive = false;
 
-        var cancelMatchmaking = await CandidApiManager.Instance.CanisterLogin.CancelMatchmaking();
+        var cancelMatchmaking = await CandidApiManager.Instance.MainCanister.CancelMatchmaking();
         Debug.Log("Quiero Cancelar la busqueda: " + cancelMatchmaking.ReturnArg1);
         if (cancelMatchmaking.ReturnArg0)
         {

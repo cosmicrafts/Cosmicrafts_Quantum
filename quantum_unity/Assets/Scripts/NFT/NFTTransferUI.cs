@@ -3,7 +3,7 @@ using TMPro;
 using EdjCase.ICP.Candid.Models;
 using System.Collections.Generic;
 using System.Numerics;
-using CanisterPK.testnft.Models;
+using Cosmicrafts.MainCanister.Models;
 using UnityEngine.UI;
 namespace Cosmicrafts.Data
 {
@@ -91,10 +91,6 @@ namespace Cosmicrafts.Data
                     deactivationTarget1?.StartDeactivation();
                     deactivationTarget2?.StartDeactivation();
                 }
-                else
-                {
-                    HandleTransferError(receipt.AsErr());
-                }
             }
             catch (System.Exception ex)
             {
@@ -123,9 +119,6 @@ namespace Cosmicrafts.Data
                     break;
                 case TransferErrorTag.TooOld:
                     errorMessage += "Transfer too old.";
-                    break;
-                case TransferErrorTag.Unauthorized:
-                    errorMessage += "Unauthorized.";
                     break;
                 default:
                     errorMessage += "Unknown error.";

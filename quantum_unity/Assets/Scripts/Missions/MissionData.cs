@@ -1,6 +1,5 @@
 using UnityEngine;
-using EdjCase.ICP.Candid.Models;
-using CanisterPK.CanisterLogin.Models;
+using Cosmicrafts.MainCanister.Models;
 
 [CreateAssetMenu(fileName = "MissionData", menuName = "ScriptableObjects/MissionData", order = 1)]
 public class MissionData : ScriptableObject

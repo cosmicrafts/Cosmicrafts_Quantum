@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using CanisterPK.CanisterLogin.Models;
+using Cosmicrafts.MainCanister.Models;
 using EdjCase.ICP.Candid.Models;
 
 namespace Cosmicrafts.Data

@@ -1,0 +1,31 @@
+namespace Cosmicrafts.MainCanister.Models
+{
+	public enum AchievementType
+	{
+		AchievementsUnlocked,
+		ChestsMinted,
+		ChestsOpened,
+		DailyMissionsCompleted,
+		DamageDealt,
+		DamageTaken,
+		EnergyUsed,
+		FluxMinted,
+		FriendsAdded,
+		GameModePlayed,
+		GamesCompleted,
+		GamesPlayed,
+		GamesWithCharacter,
+		GamesWithFaction,
+		GamesWon,
+		Kills,
+		LevelReached,
+		NFTsMinted,
+		RewardsClaimed,
+		ShardsMinted,
+		TimePlayed,
+		UnitsDeployed,
+		UserMissionsCompleted,
+		WeeklyMissionsCompleted,
+		XPEarned
+	}
+}

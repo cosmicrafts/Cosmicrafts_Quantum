@@ -10,19 +10,15 @@ public class NFTData : ScriptableObject
     public List<Skill> Skills { get; set; } = new List<Skill>();
     public List<Skin> Skins { get; set; } = new List<Skin>();
     public string TokenId { get; set; }
-    
-    // Corrected Deep Copy method
+
     public NFTData Clone()
     {
         var clone = ScriptableObject.CreateInstance<NFTData>();
-        clone.BasicStats = this.BasicStats.ConvertAll(stat => new BasicStat { StatName = stat.StatName, StatValue = stat.StatValue });
-        clone.General = this.General.ConvertAll(info => new GeneralInfo { UnitId = info.UnitId, Class = info.Class, Rarity = info.Rarity, Faction = info.Faction, Name = info.Name, Description = info.Description, Icon = info.Icon, SkinsText = info.SkinsText });
-        clone.Skills = this.Skills.ConvertAll(skill => new Skill { SkillName = skill.SkillName, SkillValue = skill.SkillValue });
-        clone.Skins = this.Skins.ConvertAll(skin => new Skin { SkinId = skin.SkinId, SkinName = skin.SkinName, SkinDescription = skin.SkinDescription, SkinIcon = skin.SkinIcon, SkinRarity = skin.SkinRarity });
-
-        clone.TokenId = this.TokenId;
-
-      //  Debug.Log($"[NFTData]Cloned ScriptableObject (SO) for NFTData - Token ID: {clone.TokenId}, Basic Stats: {string.Join("; ", clone.BasicStats.Select(bs => $"{bs.StatName}: {bs.StatValue}"))}, General Info: {string.Join("; ", clone.General.Select(gi => $"{gi.Class}, {gi.Rarity}"))}, Skills: {string.Join("; ", clone.Skills.Select(sk => $"{sk.SkillName}: {sk.SkillValue}"))}");
+        clone.BasicStats = BasicStats.Select(stat => stat.Clone()).ToList();
+        clone.General = General.Select(info => info.Clone()).ToList();
+        clone.Skills = Skills.Select(skill => skill.Clone()).ToList();
+        clone.Skins = Skins.Select(skin => skin.Clone()).ToList();
+        clone.TokenId = TokenId;
 
         return clone;
     }
@@ -32,6 +28,7 @@ public class BasicStat
 {
     public string StatName { get; set; }
     public int StatValue { get; set; }
+
     public BasicStat Clone() => new BasicStat { StatName = this.StatName, StatValue = this.StatValue };
 }
 
@@ -45,6 +42,7 @@ public class GeneralInfo
     public string Description { get; set; }
     public int Icon { get; set; }
     public string SkinsText { get; set; }
+
     public GeneralInfo Clone()
     {
         return new GeneralInfo
@@ -65,6 +63,7 @@ public class Skill
 {
     public string SkillName { get; set; }
     public int SkillValue { get; set; }
+
     public Skill Clone()
     {
         return new Skill { SkillName = this.SkillName, SkillValue = this.SkillValue };
@@ -78,6 +77,7 @@ public class Skin
     public string SkinDescription { get; set; }
     public string SkinIcon { get; set; }
     public int SkinRarity { get; set; }
+
     public Skin Clone()
     {
         return new Skin 

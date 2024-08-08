@@ -63,7 +63,7 @@ public class DescriptionManager : MonoBehaviour
 
     private async Task<bool> UpdateDescriptionOnBlockchain(string newDescription)
     {
-        var response = await CandidApiManager.Instance.CanisterLogin.UpdateDescription(newDescription);
+        var response = await CandidApiManager.Instance.MainCanister.UpdateDescription(newDescription);
         if (response.ReturnArg0)
         {
             Debug.Log($"Description updated to: {newDescription} on the blockchain.");

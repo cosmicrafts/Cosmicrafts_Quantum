@@ -4,106 +4,109 @@ using EdjCase.ICP.Candid.Models;
 using UnityEngine.UI;
 using System;
 
-public class ChestTransferUI : MonoBehaviour
+namespace Cosmicrafts
 {
-    public TMP_InputField recipientPrincipalInput;
-    public Button transferButton;
-    public TMP_Text notificationText;
-    public ChestManager chestManager;
-    public TMP_Text chestNameText;
-    public TMP_Text tokenIdText;
-    private UnboundedUInt selectedChestTokenId;
-    public Image chestImage;
-    private ChestInstance selectedChestInstance;
-    public NotificationManager notificationManager;
-
-    private void Start()
+    public class ChestTransferUI : MonoBehaviour
     {
-        transferButton.onClick.AddListener(OnTransferButtonPressed);
-    }
+        public TMP_InputField recipientPrincipalInput;
+        public Button transferButton;
+        public TMP_Text notificationText;
+        public ChestManager chestManager;
+        public TMP_Text chestNameText;
+        public TMP_Text tokenIdText;
+        private UnboundedUInt selectedChestTokenId;
+        public Image chestImage;
+        private ChestInstance selectedChestInstance;
+        public NotificationManager notificationManager;
 
-    public void SetSelectedChest(ChestInstance chestInstance)
-    {
-        if (chestInstance == null)
+        private void Start()
         {
-            Debug.LogError("SetSelectedChest was called with a null chestInstance.");
-            return;
+            transferButton.onClick.AddListener(OnTransferButtonPressed);
         }
 
-        // Log details of chestInstance to ensure they are correct
-        Debug.Log($"Chest selected: {chestInstance.chestSO.chestName}, Token ID: {chestInstance.tokenId}");
+        public void SetSelectedChest(ChestInstance chestInstance)
+        {
+            if (chestInstance == null)
+            {
+                Debug.LogError("SetSelectedChest was called with a null chestInstance.");
+                return;
+            }
 
-        selectedChestInstance = chestInstance;
-        selectedChestTokenId = chestInstance.tokenId;
+            // Log details of chestInstance to ensure they are correct
+            Debug.Log($"Chest selected: {chestInstance.chestSO.chestName}, Token ID: {chestInstance.tokenId}");
 
-        if (chestNameText != null)
-        {
-            chestNameText.text = chestInstance.chestSO.chestName;
-            Debug.Log("Chest name set on UI.");
-        }
-        else
-        {
-            Debug.LogError("chestNameText is not assigned in the inspector.");
-        }
+            selectedChestInstance = chestInstance;
+            selectedChestTokenId = chestInstance.tokenId;
 
-        if (tokenIdText != null)
-        {
-            tokenIdText.text = selectedChestTokenId.ToString(); // Update Token ID text on the UI
-            Debug.Log("Token ID set on UI.");
-        }
-        else
-        {
-            Debug.LogError("tokenIdText is not assigned in the inspector.");
-        }
+            if (chestNameText != null)
+            {
+                chestNameText.text = chestInstance.chestSO.chestName;
+                Debug.Log("Chest name set on UI.");
+            }
+            else
+            {
+                Debug.LogError("chestNameText is not assigned in the inspector.");
+            }
 
-        if (chestImage != null)
-        {
-            chestImage.sprite = chestInstance.chestSO.icon;
-            Debug.Log("Chest image set on UI.");
-        }
-        else
-        {
-            Debug.LogError("chestImage is not assigned in the inspector.");
-        }
-    }
+            if (tokenIdText != null)
+            {
+                tokenIdText.text = selectedChestTokenId.ToString(); // Update Token ID text on the UI
+                Debug.Log("Token ID set on UI.");
+            }
+            else
+            {
+                Debug.LogError("tokenIdText is not assigned in the inspector.");
+            }
 
-
-   private async void OnTransferButtonPressed()
-    {
-        
-        Debug.Log("Transfer button pressed.");
-        if (selectedChestInstance == null || selectedChestTokenId == null)
-        {
-            notificationText.text = "No chest selected.";
-            Debug.LogError("No chest selected or chest token ID is null.");
-            return;
+            if (chestImage != null)
+            {
+                chestImage.sprite = chestInstance.chestSO.icon;
+                Debug.Log("Chest image set on UI.");
+            }
+            else
+            {
+                Debug.LogError("chestImage is not assigned in the inspector.");
+            }
         }
 
-        string recipientPrincipalText = recipientPrincipalInput.text.Trim();
-        if (string.IsNullOrEmpty(recipientPrincipalText))
-        {
-            notificationText.text = "Recipient Principal is empty.";
-            return;
-        }
 
-        try
+        private async void OnTransferButtonPressed()
         {
-            LoadingPanel.Instance.ActiveLoadingPanel();
-            Debug.Log($"Initiating transfer for {selectedChestTokenId} to {recipientPrincipalText}");
-            await chestManager.TransferChest(selectedChestInstance.chestSO, selectedChestTokenId, recipientPrincipalText);
-            notificationText.text = "Chest transfer initiated. Please wait...";
-            LoadingPanel.Instance.DesactiveLoadingPanel();
 
-            // Show the notification when the transfer is successful
-            string notificationMessage = $"{selectedChestInstance.chestSO.chestName} with ID {selectedChestTokenId} has been transferred.";
-            notificationManager.ShowNotification(notificationMessage);
+            Debug.Log("Transfer button pressed.");
+            if (selectedChestInstance == null || selectedChestTokenId == null)
+            {
+                notificationText.text = "No chest selected.";
+                Debug.LogError("No chest selected or chest token ID is null.");
+                return;
+            }
 
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Exception during chest transfer: {ex}");
-            notificationText.text = $"Exception during chest transfer: {ex.Message}";
-            LoadingPanel.Instance.DesactiveLoadingPanel();
+            string recipientPrincipalText = recipientPrincipalInput.text.Trim();
+            if (string.IsNullOrEmpty(recipientPrincipalText))
+            {
+                notificationText.text = "Recipient Principal is empty.";
+                return;
+            }
+
+            try
+            {
+                LoadingPanel.Instance.ActiveLoadingPanel();
+                Debug.Log($"Initiating transfer for {selectedChestTokenId} to {recipientPrincipalText}");
+                await chestManager.TransferChest(selectedChestInstance.chestSO, selectedChestTokenId, recipientPrincipalText);
+                notificationText.text = "Chest transfer initiated. Please wait...";
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+
+                // Show the notification when the transfer is successful
+                string notificationMessage = $"{selectedChestInstance.chestSO.chestName} with ID {selectedChestTokenId} has been transferred.";
+                notificationManager.ShowNotification(notificationMessage);
+
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Exception during chest transfer: {ex}");
+                notificationText.text = $"Exception during chest transfer: {ex.Message}";
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+            }
         }
     }
 }

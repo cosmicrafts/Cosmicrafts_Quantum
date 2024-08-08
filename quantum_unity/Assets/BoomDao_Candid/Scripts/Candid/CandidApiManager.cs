@@ -7,21 +7,11 @@ namespace Candid
     using Cysharp.Threading.Tasks;
     using EdjCase.ICP.Candid.Models;
     //using WebSocketSharp;
-    using CanisterPK.CanisterLogin;
-    using CanisterPK.testnft;
-    using CanisterPK.testicrc1;
-    using CanisterPK.flux;
-    using CanisterPK.chests;
-    using CanisterPK.tournaments;
-    using Candid.IcpLedger;
-    using CanisterPK.BoomToken;
-
+    using Cosmicrafts.MainCanister;
     using Org.BouncyCastle.Crypto.Digests;
     using Org.BouncyCastle.Crypto.Parameters;
-
     using EdjCase.ICP.Agent.Agents;
     using EdjCase.ICP.Agent.Identities;
-
     using Newtonsoft.Json;
     using UnityEngine;
     using System.Collections.Concurrent;
@@ -41,14 +31,8 @@ namespace Candid
         public static CandidApiManager Instance { get; private set; }
 
         // Canister APIs
-        public CanisterLoginApiClient CanisterLogin { get; private set; }
-        public TestnftApiClient testnft { get; private set; }
-        public Testicrc1ApiClient testicrc1 { get; private set; }
-        public FluxApiClient flux { get; private set; }
-        public ChestsApiClient chests { get; private set; }
-        public IcpLedgerApiClient icptoken { get; private set; }
-        public BoomTokenApiClient boomToken { get; private set; }
-        public TournamentsApiClient tournaments { get; private set; }
+        public MainCanisterApiClient MainCanister { get; private set; }
+
         public string PrincipalId { get; private set; }
         public event Action OnCandidApiInitialized;
 
@@ -379,14 +363,8 @@ private void AbortLogin()
             if (asAnon)
             {
                 // Build Interfaces
-                CanisterLogin = new CanisterLoginApiClient(agent, Principal.FromText("fdaor-cqaaa-aaaao-ai7nq-cai"));
-                testnft = new TestnftApiClient(agent, Principal.FromText("etqmj-zyaaa-aaaap-aakaq-cai"));
-                testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
-                flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));
-                chests = new ChestsApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
-                tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
-                icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
-                boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
+                MainCanister = new MainCanisterApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
+
                 
                 // Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
@@ -394,15 +372,8 @@ private void AbortLogin()
             else
             {
                 // Build Interfaces
-                CanisterLogin = new CanisterLoginApiClient(agent, Principal.FromText("fdaor-cqaaa-aaaao-ai7nq-cai"));
-                testnft = new TestnftApiClient(agent, Principal.FromText("etqmj-zyaaa-aaaap-aakaq-cai"));
-                testicrc1 = new Testicrc1ApiClient(agent, Principal.FromText("svcoe-6iaaa-aaaam-ab4rq-cai"));
-                flux = new FluxApiClient(agent, Principal.FromText("plahz-wyaaa-aaaam-accta-cai"));
-                chests = new ChestsApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
-                tournaments = new TournamentsApiClient(agent, Principal.FromText("lqaq5-paaaa-aaaap-qhndq-cai"));
-                icptoken = new IcpLedgerApiClient(agent, Principal.FromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
-                boomToken = new BoomTokenApiClient(agent, Principal.FromText("vtrom-gqaaa-aaaaq-aabia-cai"));
-                
+                MainCanister = new MainCanisterApiClient(agent, Principal.FromText("opcce-byaaa-aaaak-qcgda-cai"));
+
                 // Set Login Data
                 loginData = new LoginData(agent, userPrincipal, null, asAnon, DataState.Ready);
             }
@@ -415,14 +386,7 @@ private void AbortLogin()
         {
             Debug.Log("[CandidApiManager] Deinitializing Candid APIs and resetting login data.");
 
-            CanisterLogin = null;
-            testnft = null;
-            testicrc1 = null;
-            flux = null;
-            chests = null;
-            icptoken = null;
-            boomToken = null;
-            tournaments = null;
+            MainCanister = null;
 
             //Set Login Data
             loginData = new LoginData(null, null, null, false, DataState.None);

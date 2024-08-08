@@ -2,8 +2,8 @@
 using System.Numerics;
 using UnityEngine;
 using EdjCase.ICP.Candid.Models;
-using CanisterPK.CanisterLogin.Models;
-using CanisterPK.CanisterLogin;
+using Cosmicrafts.MainCanister.Models;
+using Cosmicrafts.MainCanister;
 using Candid;
 using Quantum;
 using TowerRush.Core;
@@ -313,7 +313,7 @@ public async void SendStats()
     };
 
     // Prepare save finished game argument
-    CanisterLoginApiClient.SaveFinishedGameArg1 saveFinishedGameArg1 = new CanisterLoginApiClient.SaveFinishedGameArg1
+    MainCanisterApiClient.SaveFinishedGameArg1 saveFinishedGameArg1 = new MainCanisterApiClient.SaveFinishedGameArg1
     {
         BotDifficulty = playerStats.BotDifficulty,
         BotMode = playerStats.BotMode,
@@ -338,7 +338,7 @@ public async void SendStats()
     // Display loading panel and call API
     LoadingPanel.Instance.ActiveLoadingPanel();
 
-    var statsSend = await CandidApiManager.Instance.CanisterLogin.SaveFinishedGame(GameDataManager.Instance.playerData.actualNumberRoom, saveFinishedGameArg1);
+    var statsSend = await CandidApiManager.Instance.MainCanister.SaveFinishedGame(GameDataManager.Instance.playerData.actualNumberRoom, saveFinishedGameArg1);
     Debug.Log("StatSend: " + statsSend.ReturnArg0);
     Debug.Log("Res: " + statsSend.ReturnArg1);
 

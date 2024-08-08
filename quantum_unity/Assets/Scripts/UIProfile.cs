@@ -37,7 +37,7 @@ public class UIProfile : MonoBehaviour
     public async Task GetInfoToProfile()
     {
         Debug.Log("Fetching profile info");
-        var playerGameStats = await CandidApiManager.Instance.CanisterLogin.GetMyStats();
+        var playerGameStats = await CandidApiManager.Instance.MainCanister.GetMyStats();
         
         if (playerGameStats.HasValue)
         {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Threading;
 using EdjCase.ICP.Candid.Models;
-using CanisterPK.CanisterLogin.Models;
+using Cosmicrafts.MainCanister.Models;
 using Candid;
 using System;
 using Cosmicrafts.Managers;
@@ -65,7 +65,7 @@ public class MissionManager : MonoBehaviour
 
             var user = GameDataManager.Instance.playerData;
             var principal = Principal.FromText(user.PrincipalId);
-            var missions = await CandidApiManager.Instance.CanisterLogin.SearchActiveUserMissions(principal);
+            var missions = await CandidApiManager.Instance.MainCanister.SearchActiveUserMissions(principal);
             Debug.Log($"[MissionManager] Found {missions.Count} user missions.");
             AddMissionsToList(missions, userMissions);
             MissionEvents.RaiseMissionsFetched();
@@ -84,7 +84,7 @@ public class MissionManager : MonoBehaviour
 
             var user = GameDataManager.Instance.playerData;
             var principal = Principal.FromText(user.PrincipalId);
-            var missions = await CandidApiManager.Instance.CanisterLogin.SearchActiveGeneralMissions(principal);
+            var missions = await CandidApiManager.Instance.MainCanister.SearchActiveGeneralMissions(principal);
             Debug.Log($"[MissionManager] Found {missions.Count} general missions.");
             AddMissionsToList(missions, generalMissions);
             MissionEvents.RaiseMissionsFetched();
@@ -101,7 +101,7 @@ public class MissionManager : MonoBehaviour
         {
             Debug.Log("[MissionManager] Fetching user missions from server...");
 
-            var missions = await CandidApiManager.Instance.CanisterLogin.GetUserMissions();
+            var missions = await CandidApiManager.Instance.MainCanister.GetUserMissions();
             Debug.Log($"[MissionManager] Found {missions.Count} user missions from server.");
             AddMissionsToList(missions, userMissions);
             MissionEvents.RaiseMissionsFetched();
@@ -118,7 +118,7 @@ public class MissionManager : MonoBehaviour
         {
             Debug.Log("[MissionManager] Fetching general missions from server...");
 
-            var missions = await CandidApiManager.Instance.CanisterLogin.GetGeneralMissions();
+            var missions = await CandidApiManager.Instance.MainCanister.GetGeneralMissions();
             Debug.Log($"[MissionManager] Found {missions.Count} general missions from server.");
             AddMissionsToList(missions, generalMissions);
             MissionEvents.RaiseMissionsFetched();
@@ -168,7 +168,7 @@ public class MissionManager : MonoBehaviour
         try
         {
             var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
-            var result = await CandidApiManager.Instance.CanisterLogin.ClaimUserReward(rewardIDUnbounded);
+            var result = await CandidApiManager.Instance.MainCanister.ClaimUserReward(rewardIDUnbounded);
             if (result.ReturnArg0)
             {
                 Debug.Log("[MissionManager] User reward claimed successfully.");
@@ -198,7 +198,7 @@ public class MissionManager : MonoBehaviour
         try
         {
             var rewardIDUnbounded = UnboundedUInt.FromUInt64((ulong)rewardID);
-            var result = await CandidApiManager.Instance.CanisterLogin.ClaimGeneralReward(rewardIDUnbounded);
+            var result = await CandidApiManager.Instance.MainCanister.ClaimGeneralReward(rewardIDUnbounded);
             if (result.ReturnArg0)
             {
                 Debug.Log("[MissionManager] General reward claimed successfully.");

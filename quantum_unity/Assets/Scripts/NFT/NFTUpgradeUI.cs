@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using EdjCase.ICP.Candid.Models;
 using System.Numerics;
-using CanisterPK.CanisterLogin;
+using Cosmicrafts.MainCanister.Models;
 using Candid;
 using System.Linq;
 using System;
@@ -101,11 +101,10 @@ namespace Cosmicrafts.Data
                 int upgradeCost = CalculateCost(currentLevel) + 1;  // Add 1 token fee
 
                 // Send the upgrade request to the blockchain
-                var apiClient = CandidApiManager.Instance.CanisterLogin;
+                var apiClient = CandidApiManager.Instance.MainCanister;
 
                 if (apiClient == null)
                 {
-                    Debug.LogError("CanisterLoginApiClient is not initialized.");
                     notificationText.text = "Error: API client not initialized.";
                     isUpgradeInProgress = false;
                     LoadingPanel.Instance.DesactiveLoadingPanel();

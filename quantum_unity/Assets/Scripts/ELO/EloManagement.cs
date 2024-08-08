@@ -51,7 +51,7 @@ public class EloManagement : MonoBehaviour
 
         try
         {
-            double eloPoints = await CandidApiManager.Instance.CanisterLogin.GetPlayerElo(playerPrincipal);
+            double eloPoints = await CandidApiManager.Instance.MainCanister.GetPlayerElo(playerPrincipal);
             // Round down the Elo points
             int roundedEloPoints = (int)Math.Floor(eloPoints);
             CurrentEloPoints = roundedEloPoints;

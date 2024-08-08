@@ -81,7 +81,7 @@ public class AvatarSelection : MonoBehaviour
 
         try
         {
-            var response = await CandidApiManager.Instance.CanisterLogin.UpdateAvatar(UnboundedUInt.FromBigInteger(new BigInteger(newAvatarId)));
+            var response = await CandidApiManager.Instance.MainCanister.UpdateAvatar(UnboundedUInt.FromBigInteger(new BigInteger(newAvatarId)));
             if (response.ReturnArg0)
             {
                 GameDataManager.Instance.playerData.AvatarID = newAvatarId;

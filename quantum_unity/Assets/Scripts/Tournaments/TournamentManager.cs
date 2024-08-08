@@ -21,7 +21,7 @@ public class TournamentManager : MonoBehaviour
         Debug.Log("[TournamentManager] Querying active tournaments...");
         try
         {
-            List<CanisterPK.tournaments.Models.Tournament> activeTournaments = await CandidApiManager.Instance.tournaments.GetActiveTournaments();
+            List<Cosmicrafts.MainCanister.Models.Tournament> activeTournaments = await CandidApiManager.Instance.MainCanister.GetActiveTournaments();
             UpdateTournamentDropdown(activeTournaments);
         }
         catch (System.Exception e)
@@ -30,7 +30,7 @@ public class TournamentManager : MonoBehaviour
         }
     }
 
-    private void UpdateTournamentDropdown(List<CanisterPK.tournaments.Models.Tournament> tournaments)
+    private void UpdateTournamentDropdown(List<Cosmicrafts.MainCanister.Models.Tournament> tournaments)
     {
         // Clear existing options
         tournamentDropdown.ClearOptions();
@@ -60,7 +60,7 @@ public class TournamentManager : MonoBehaviour
                 Debug.Log($"[TournamentManager] Attempting to join tournament ID: {tournamentId}");
                 try
                 {
-                    bool success = await CandidApiManager.Instance.tournaments.JoinTournament(tournamentId);
+                    bool success = await CandidApiManager.Instance.MainCanister.JoinTournament(tournamentId);
                     Debug.Log($"[TournamentManager] Join tournament response: {success}");
                     if (success)
                     {
