@@ -108,21 +108,7 @@ namespace Cosmicrafts.Data
         {
             var category = nftData.Category.TagName;
 
-            // Add logic to categorize based on the category field.
-            // Example:
-            switch (category)
-            {
-                case "Character":
-                    GameDataManager.Instance.playerData.CharacterNFTId = nftData.TokenId;
-                    break;
-                case "Avatar":
-                    GameDataManager.Instance.playerData.AvatarID = int.Parse(nftData.TokenId);
-                    break;
-                // Add cases for other categories like Chest, Trophy, Unit, etc.
-                default:
-                    GameDataManager.Instance.playerData.DeckNFTsKeyIds.Add(nftData.TokenId);
-                    break;
-            }
+            // implementation pending
 
             OnMetadataUpdated?.Invoke(nftData.TokenId);
         }

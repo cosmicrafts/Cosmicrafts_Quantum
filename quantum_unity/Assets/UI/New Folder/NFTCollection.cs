@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Cosmicrafts.Managers;
 
 namespace Cosmicrafts.Data
 {
@@ -92,54 +93,57 @@ namespace Cosmicrafts.Data
         }
 
         // Updates the UI collection with the current data and filters
-        public void RefreshCollection()
+public void RefreshCollection()
+{
+    if (AllNFTDatas == null || AllNFTDatas.Count == 0)
+    {
+        Debug.LogWarning("No NFTs available for collection.");
+        return;
+    }
+
+    // Initialize the deck with the first 6 NFTs
+    var initialDeckNFTs = AllNFTDatas.Take(6).ToList();
+    
+    // Clear the existing keys in player data
+    GameDataManager.Instance.playerData.DeckNFTsKeyIds.Clear();
+
+    // Save the first 6 NFTs to player data
+    foreach (var nftData in initialDeckNFTs)
+    {
+        GameDataManager.Instance.playerData.DeckNFTsKeyIds.Add(nftData.TokenId);
+    }
+
+    // Save the updated player data
+    GameDataManager.Instance.SavePlayerData();
+
+    // Load the deck with the selected NFTs
+    for (int i = 0; i < Deck.Length; i++)
+    {
+        if (i < initialDeckNFTs.Count)
         {
-
-            // Filter the collection to include only NFTs with the "Unit" category.
-            var unitNFTs = AllNFTDatas.Where(nft => nft.Category.TagName == "Unit").ToList();
-
-            if (unitNFTs.Count == 0)
-            {
-                Debug.Log("No Unit NFTs available for collection.");
-                return;
-            }
-
-            // Clean up existing UI elements.
-            foreach (Transform child in NftCardPrefab.transform.parent)
-            {
-                if (child.gameObject != NftCardPrefab.gameObject)
-                {
-                    Destroy(child.gameObject);
-                }
-            }
-
-            // Repopulate the deck with the first available NFTs from AllNFTDatas.
-            var deckNFTs = AllNFTDatas.Take(6).ToList();
-            for (int i = 0; i < deckNFTs.Count; i++)
-            {
-                Deck[i].SetNFTData(deckNFTs[i]);
-                Deck[i].gameObject.SetActive(true);
-            }
-
-            // Hide unused deck slots if any.
-            for (int i = deckNFTs.Count; i < Deck.Length; i++)
-            {
-                Deck[i].gameObject.SetActive(false);
-            }
-
-            // Display the rest of the collection, excluding those in the deck.
-            foreach (NFTData nftData in AllNFTDatas.Skip(6))
-            {
-                NFTCard card = Instantiate(NftCardPrefab.gameObject, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
-                card.SetNFTData(nftData);
-                card.gameObject.SetActive(true);
-            }
-
-            NftCardPrefab.gameObject.SetActive(false); // Hide the prefab template.
-
-            // Update PlayerData with the new deck configuration.
-            playerData.SetKeyList("savedKeys", deckNFTs.Select(nft => nft.TokenId).ToList());
+            Deck[i].SetNFTData(initialDeckNFTs[i]);
+            Deck[i].gameObject.SetActive(true);
         }
+        else
+        {
+            Deck[i].gameObject.SetActive(false);
+        }
+    }
+
+    // Populate the collection with the rest of the NFTs
+    foreach (var nft in AllNFTDatas)
+    {
+        if (!GameDataManager.Instance.playerData.DeckNFTsKeyIds.Contains(nft.TokenId))
+        {
+            NFTCard card = Instantiate(NftCardPrefab, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
+            card.SetNFTData(nft);
+            card.gameObject.SetActive(true);
+        }
+    }
+
+    NftCardPrefab.gameObject.SetActive(false); // Hide the prefab template
+}
+
 
         // Selects a card
         public void SelectCard(NFTCard card)
@@ -175,33 +179,47 @@ namespace Cosmicrafts.Data
         }
 
         // Drops a card
-        public void DropCard()
+// Drops a card
+public void DropCard()
+{
+    if (EnterCard != null && DragingCard != null)
+    {
+        NFTData todeck = DragingCard.nftData;
+        NFTData tocol = EnterCard.nftData;
+
+        EnterCard.SetNFTData(todeck);
+        EnterCard.animator.Play("Highlighted", -1, 0f);
+
+        DragingCard.SetNFTData(tocol);
+        DragingCard.animator.Play("Highlighted", -1, 0f);
+
+        // Update the deck keys in PlayerData using GameDataManager
+        UpdateDeckKeys();
+    }
+
+    DragingCard.iconImage.enabled = true;
+    DragingCard = null;
+    DragIcon.gameObject.SetActive(false);
+}
+
+private void UpdateDeckKeys()
+{
+    // Clear the existing keys in player data
+    GameDataManager.Instance.playerData.DeckNFTsKeyIds.Clear();
+
+    // Iterate over the deck and update the keys in player data
+    for (int i = 0; i < Deck.Length; i++)
+    {
+        if (Deck[i] != null && Deck[i].nftData != null)
         {
-            if (EnterCard != null && DragingCard != null)
-            {
-                NFTData todeck = DragingCard.nftData;
-                NFTData tocol = EnterCard.nftData;
-
-                EnterCard.SetNFTData(todeck);
-                EnterCard.animator.Play("DeckChange", -1, 0f);
-
-                DragingCard.SetNFTData(tocol);
-                DragingCard.animator.Play("DeckChange", -1, 0f);
-            }
-
-            DragingCard.iconImage.enabled = true;
-            DragingCard = null;
-            DragIcon.gameObject.SetActive(false);
-
-            SavedKeys savedKeys = new SavedKeys();
-
-            for (int i = 0; i < Deck.Length; i++)
-            {
-                savedKeys.listSavedKeys.Add(Deck[i].nftData.TokenId);
-            }
-
-            playerData.SetKeyList("savedKeys", savedKeys.listSavedKeys);
+            GameDataManager.Instance.playerData.DeckNFTsKeyIds.Add(Deck[i].nftData.TokenId);
         }
+    }
+
+    // Save the updated player data
+    GameDataManager.Instance.SavePlayerData();
+}
+
 
         // Mouse over enter to deck
         public void DeckEnterDrop(NFTCard card)

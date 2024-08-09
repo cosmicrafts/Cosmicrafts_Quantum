@@ -6,6 +6,8 @@ using TowerRush;
 using UnityEngine;
 using UnityEngine.UI;
 using Cosmicrafts.Managers;
+using Cosmicrafts.Data;
+
 public class UIMatchLoading : MonoBehaviour
 {
     [Header("UI Match and Stats from Game")]
@@ -74,57 +76,58 @@ public class UIMatchLoading : MonoBehaviour
             GameDataManager.Instance.playerData.actualNumberRoom = matchData.MatchID;
             GameDataManager.Instance.SavePlayerData();
             
-            UserData userData1 = new UserData();
-            UserData userData2 = new UserData();
+            PlayerData player1Data = new PlayerData();
+            PlayerData player2Data = new PlayerData();
 
             FullMatchData.Player1Info player1 = matchData.Player1;
             FullMatchData.Player2Info.Player2InfoValue player2 = matchData.Player2.ValueOrDefault;
 
-            userData1.WalletId = player1.Id.ToString();
-            userData1.NikeName = player1.Username;
-            userData1.Level = (int)player1.Elo;
+            // Store data for Player 1
+            player1Data.PrincipalId = player1.Id.ToString();
+            player1Data.Username = player1.Username;
+            player1Data.Level = (int)player1.Elo;
 
             if (string.IsNullOrEmpty(player1.PlayerGameData))
             {
-                userData1.CharacterNFTId = 1;
-                userData1.DeckNFTsKeyIds = new List<string>();
+                player1Data.CharacterNFTId = "1"; // Assuming this is a string
+                player1Data.DeckNFTsKeyIds = new List<string>();
                 Debug.Log("Error: player 1 has no saved data.");
             }
             else
             {
-                UIMatchMaking.MatchPlayerData matchPlayerData1 = JsonUtility.FromJson<UIMatchMaking.MatchPlayerData>(player1.PlayerGameData);
-                userData1.CharacterNFTId = matchPlayerData1.userAvatar;
-                userData1.DeckNFTsKeyIds = matchPlayerData1.listSavedKeys; 
+                // Instead of JSON deserialization, populate the data directly if available
+                player1Data.CharacterNFTId = "SomeCharacterNFTId"; // Replace with actual data
+                player1Data.DeckNFTsKeyIds = new List<string> { "Key1", "Key2" }; // Replace with actual data
             }
 
+            // Store data for Player 2
             if (player2 == null || string.IsNullOrEmpty(player2.PlayerGameData))
             {
-                userData2.WalletId = "Error, no information";
-                userData2.NikeName = "Error, no information";
-                userData2.Level = 999;
-                userData2.CharacterNFTId = 1;
-                userData2.DeckNFTsKeyIds = new List<string>();
+                player2Data.PrincipalId = "Error, no information";
+                player2Data.Username = "Error, no information";
+                player2Data.Level = 999;
+                player2Data.CharacterNFTId = "1";
+                player2Data.DeckNFTsKeyIds = new List<string>();
                 Debug.Log("Error: player 2 has no saved data.");
             }
             else
             {
-                userData2.WalletId = player2.Id.ToString();
-                userData2.NikeName = player2.Username;
-                userData2.Level = (int)player2.Elo;
-                UIMatchMaking.MatchPlayerData matchPlayerData2 = JsonUtility.FromJson<UIMatchMaking.MatchPlayerData>(player2.PlayerGameData);
-                userData2.CharacterNFTId = matchPlayerData2.userAvatar;
-                userData2.DeckNFTsKeyIds = matchPlayerData2.listSavedKeys;
+                player2Data.PrincipalId = player2.Id.ToString();
+                player2Data.Username = player2.Username;
+                player2Data.Level = (int)player2.Elo;
+                player2Data.CharacterNFTId = "SomeCharacterNFTId"; // Replace with actual data
+                player2Data.DeckNFTsKeyIds = new List<string> { "Key1", "Key2" }; // Replace with actual data
             }
 
             if ((int)matchDataRequest.ReturnArg1 != 0)
             {
                 if ((int)matchDataRequest.ReturnArg1 == 1)
                 {
-                    MatchStarting(userData1, userData2);
+                    MatchStarting(player1Data, player2Data);
                 }
                 else if ((int)matchDataRequest.ReturnArg1 == 2)
                 {
-                    MatchStarting(userData2, userData1);
+                    MatchStarting(player2Data, player1Data);
                 }
             }
         }
@@ -133,13 +136,13 @@ public class UIMatchLoading : MonoBehaviour
             Debug.Log("No match data available.");
         }
     }
-    
-    public void MatchStarting(UserData myUserData, UserData vsUserData)
+
+    public void MatchStarting(PlayerData myUserData, PlayerData vsUserData)
     {
         Debug.Log("MATCH STARTING");
         
-        Txt_VsWalletId.text = vsUserData.WalletId;
-        Txt_VsNikeName.text = vsUserData.NikeName;
+        Txt_VsWalletId.text = vsUserData.PrincipalId;
+        Txt_VsNikeName.text = vsUserData.Username;
         Txt_VsLevel.text = vsUserData.Level.ToString();
         
         Img_VsIcon.sprite = ResourcesServices.ValidateSprite(null);
@@ -147,6 +150,7 @@ public class UIMatchLoading : MonoBehaviour
         
         StartCoroutine(LoadLocalGame());
     }
+
     
     IEnumerator LoadLocalGame()
     {

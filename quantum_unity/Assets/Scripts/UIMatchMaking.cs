@@ -6,115 +6,119 @@ using Cosmicrafts.MainCanister.Models;
 using UnityEngine;
 using Cosmicrafts.Managers;
 
-public class UIMatchMaking : MonoBehaviour
+namespace Cosmicrafts.Data
 {
-    [Header("UI Search")]
-    public GameObject SearchingScreen;
-    public UIMatchLoading UIMatchLoading;
 
-    private bool sendPlayerActive = false;
-    private bool isSearching = false;
-
-    [Serializable]
-    public class MatchPlayerData
+    public class UIMatchMaking : MonoBehaviour
     {
-        public int userAvatar;
-        public List<string> listSavedKeys;
-    }
+        [Header("UI Search")]
+        public GameObject SearchingScreen;
+        public UIMatchLoading UIMatchLoading;
 
-    public async void StartSearch()
-    {
-        if (GameDataManager.Instance == null)
+        private bool sendPlayerActive = false;
+        private bool isSearching = false;
+
+        [Serializable]
+        public class MatchPlayerData
         {
-            Debug.LogError("[UIMatchMaking] GameDataManager instance is null.");
-            return;
+            public int userAvatar;
+            public List<string> listSavedKeys;
         }
 
-        if (isSearching)
+        public async void StartSearch()
         {
-            Debug.LogWarning("[UIMatchMaking] Already searching for a match.");
-            return;
-        }
-
-        isSearching = true;
-        SearchingScreen.SetActive(true);
-
-        var playerData = GameDataManager.Instance.playerData;
-
-        MatchPlayerData matchPlayerData = new MatchPlayerData
-        {
-            userAvatar = playerData.AvatarID,
-            listSavedKeys = playerData.DeckNFTsKeyIds
-        };
-
-        Debug.Log(JsonUtility.ToJson(matchPlayerData));
-
-        var matchSearchingInfo = await CandidApiManager.Instance.MainCanister.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
-
-        Debug.Log("Status: " + matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
-
-        if (matchSearchingInfo.ReturnArg0 == MMSearchStatus.Assigned)
-        {
-            bool isGameMatched = false;
-            sendPlayerActive = true;
-            SendPlayerActive();
-
-            while (!isGameMatched && SearchingScreen.activeSelf)
+            if (GameDataManager.Instance == null)
             {
-                if (this.gameObject == null) { break; }
-                var isGameMatchedRequest = await CandidApiManager.Instance.MainCanister.IsGameMatched();
-                Debug.Log("Ya estoy asignado a una sala: " + matchSearchingInfo.ReturnArg1 + " espero ser matched: " + isGameMatchedRequest.ReturnArg1);
-                isGameMatched = isGameMatchedRequest.ReturnArg0;
-                Debug.Log("IsGameMatched: " + isGameMatched);
+                Debug.LogError("[UIMatchMaking] GameDataManager instance is null.");
+                return;
+            }
 
-                await Task.Delay(250);
+            if (isSearching)
+            {
+                Debug.LogWarning("[UIMatchMaking] Already searching for a match.");
+                return;
+            }
 
-                if (isGameMatched)
+            isSearching = true;
+            SearchingScreen.SetActive(true);
+
+            var playerData = GameDataManager.Instance.playerData;
+
+            MatchPlayerData matchPlayerData = new MatchPlayerData
+            {
+                userAvatar = playerData.AvatarID,
+                listSavedKeys = playerData.DeckNFTsKeyIds
+            };
+
+            Debug.Log(JsonUtility.ToJson(matchPlayerData));
+
+            var matchSearchingInfo = await CandidApiManager.Instance.MainCanister.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
+
+            Debug.Log("Status: " + matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
+
+            if (matchSearchingInfo.ReturnArg0 == MMSearchStatus.Assigned)
+            {
+                bool isGameMatched = false;
+                sendPlayerActive = true;
+                SendPlayerActive();
+
+                while (!isGameMatched && SearchingScreen.activeSelf)
                 {
-                    sendPlayerActive = false;
-                    MatchFound();
+                    if (this.gameObject == null) { break; }
+                    var isGameMatchedRequest = await CandidApiManager.Instance.MainCanister.IsGameMatched();
+                    Debug.Log("Ya estoy asignado a una sala: " + matchSearchingInfo.ReturnArg1 + " espero ser matched: " + isGameMatchedRequest.ReturnArg1);
+                    isGameMatched = isGameMatchedRequest.ReturnArg0;
+                    Debug.Log("IsGameMatched: " + isGameMatched);
+
+                    await Task.Delay(250);
+
+                    if (isGameMatched)
+                    {
+                        sendPlayerActive = false;
+                        MatchFound();
+                    }
                 }
             }
+
+            isSearching = false;
         }
 
-        isSearching = false;
-    }
-
-    private async void SendPlayerActive()
-    {
-        while (sendPlayerActive && SearchingScreen.activeSelf)
+        private async void SendPlayerActive()
         {
-            if (this.gameObject == null) { break; }
-            var isActive = await CandidApiManager.Instance.MainCanister.SetPlayerActive();
-            Debug.Log("estoy activo: " + isActive);
-
-            if (!isActive)
+            while (sendPlayerActive && SearchingScreen.activeSelf)
             {
-                CancelSearch();
-                break;
+                if (this.gameObject == null) { break; }
+                var isActive = await CandidApiManager.Instance.MainCanister.SetPlayerActive();
+                Debug.Log("estoy activo: " + isActive);
+
+                if (!isActive)
+                {
+                    CancelSearch();
+                    break;
+                }
+
+                await Task.Delay(5000);
+            }
+        }
+
+        public async void CancelSearch()
+        {
+            sendPlayerActive = false;
+
+            var cancelMatchmaking = await CandidApiManager.Instance.MainCanister.CancelMatchmaking();
+            Debug.Log("Quiero Cancelar la busqueda: " + cancelMatchmaking.ReturnArg1);
+            if (cancelMatchmaking.ReturnArg0)
+            {
+                SearchingScreen.SetActive(false);
             }
 
-            await Task.Delay(5000);
+            isSearching = false;
         }
-    }
 
-    public async void CancelSearch()
-    {
-        sendPlayerActive = false;
-
-        var cancelMatchmaking = await CandidApiManager.Instance.MainCanister.CancelMatchmaking();
-        Debug.Log("Quiero Cancelar la busqueda: " + cancelMatchmaking.ReturnArg1);
-        if (cancelMatchmaking.ReturnArg0)
+        public void MatchFound()
         {
             SearchingScreen.SetActive(false);
+            UIMatchLoading.MatchPreStarting();
         }
-
-        isSearching = false;
-    }
-
-    public void MatchFound()
-    {
-        SearchingScreen.SetActive(false);
-        UIMatchLoading.MatchPreStarting();
     }
 }

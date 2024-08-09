@@ -90,10 +90,5 @@ public class BoomLogin : MonoBehaviour
         {
            // await SaveData.LoadGameUserAsync();
         }
-
-        var user = GlobalGameData.Instance.GetUserData();
-        user.NikeName = username;
-        user.WalletId = principalId;
-        //await SaveData.SaveGameUserAsync();
     }
 }

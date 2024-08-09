@@ -61,12 +61,6 @@ public class GlobalGameData : MonoBehaviour
         userData = _userData;
     }
 
-    public void SetUserAvatar(int AvatarID)
-    {
-        GetUserData().AvatarID = AvatarID;
-        SetAvatarId(AvatarID);
-        SaveData.SaveGameUser();
-    }
 
     public void SetCurrentMatch(TypeMatch typeMatch)
     {
@@ -74,13 +68,4 @@ public class GlobalGameData : MonoBehaviour
         SaveData.SaveGameUser();
     }
 
-    public void SetAvatarId(int id)
-    {
-        if (avatarId != id)
-        {
-            avatarId = id;
-            Debug.Log($"GlobalGameData: Setting avatar ID to {id}");
-            OnAvatarIdChanged?.Invoke(id);
-        }
-    }
 }

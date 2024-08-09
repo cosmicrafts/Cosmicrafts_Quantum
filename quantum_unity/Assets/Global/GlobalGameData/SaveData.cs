@@ -19,13 +19,6 @@ public enum TypeMatch { bots, multi }
     public Config config = new Config();
     
     public int Id { get; set; }
-    public string WalletId = "pid";
-    public string NikeName = "Anon";
-    public int Level { get; set; }
-    public int AvatarID = 1;
-    public int CharacterNFTId = 0;
-    public List<int> DeckNFTsId;
-    public List<string> DeckNFTsKeyIds;
     public string Token { get; set; }
     public string Email { get; set; }
     public int Rol { get; set; }
