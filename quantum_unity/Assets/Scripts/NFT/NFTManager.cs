@@ -234,5 +234,15 @@ namespace Cosmicrafts.Data
 
             return await CandidApiManager.Instance.MainCanister.Icrc7Transfer(transferArgs);
         }
+
+        public async Task UpdateNFTMetadata(string tokenId)
+        {
+            Debug.Log($"Starting metadata update for Token ID: {tokenId}");
+            UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenId));
+            //await FetchAndSetNFTMetadata(tokenID); // Ensure metadata is fetched and UI event is triggered
+            OnMetadataUpdated?.Invoke(tokenId);
+            Debug.Log($"Finished metadata update for Token ID: {tokenId}");
+        }
+
     }
 }

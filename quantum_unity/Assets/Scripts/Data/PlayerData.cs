@@ -47,6 +47,39 @@ namespace Cosmicrafts.Data
         public List<NFTData> Units { get; set; } = new List<NFTData>();
 
         public event Action<int> OnAvatarIdChanged;
+
+        // In-memory storage for saved keys
+        private Dictionary<string, List<string>> savedKeys = new Dictionary<string, List<string>>();
+
+
+        // Method to check if a key exists
+        public bool HasKey(string key)
+        {
+            return savedKeys.ContainsKey(key);
+        }
+
+        // Method to get the value associated with a key
+        public List<string> GetKeyList(string key)
+        {
+            if (savedKeys.TryGetValue(key, out var list))
+            {
+                return list;
+            }
+            return new List<string>();
+        }
+
+        // Method to set the value for a key
+        public void SetKeyList(string key, List<string> value)
+        {
+            if (savedKeys.ContainsKey(key))
+            {
+                savedKeys[key] = value;
+            }
+            else
+            {
+                savedKeys.Add(key, value);
+            }
+        }
     }
 
         [Serializable]
