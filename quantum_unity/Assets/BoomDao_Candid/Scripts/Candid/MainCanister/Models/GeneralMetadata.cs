@@ -7,9 +7,6 @@ namespace Cosmicrafts.MainCanister.Models
 {
 	public class GeneralMetadata
 	{
-		[CandidName("category")]
-		public OptionalValue<Category> Category { get; set; }
-
 		[CandidName("description")]
 		public string Description { get; set; }
 
@@ -28,9 +25,8 @@ namespace Cosmicrafts.MainCanister.Models
 		[CandidName("rarity")]
 		public OptionalValue<UnboundedUInt> Rarity { get; set; }
 
-		public GeneralMetadata(OptionalValue<Category> category, string description, OptionalValue<Faction> faction, UnboundedUInt id, string image, string name, OptionalValue<UnboundedUInt> rarity)
+		public GeneralMetadata(string description, OptionalValue<Faction> faction, UnboundedUInt id, string image, string name, OptionalValue<UnboundedUInt> rarity)
 		{
-			this.Category = category;
 			this.Description = description;
 			this.Faction = faction;
 			this.Id = id;

@@ -41,61 +41,71 @@ namespace Cosmicrafts.Data
             await FetchOwnedNFTs();
         }
 
-async Task FetchOwnedNFTs()
-{
-    if (GameDataManager.Instance == null)
-    {
-        Debug.LogError("[NFTManager] GameDataManager instance is null.");
-        return;
-    }
-
-    var userData = GameDataManager.Instance.playerData;
-    if (userData == null)
-    {
-        Debug.LogError("Failed to load player data.");
-        return;
-    }
-
-    var principal = Principal.FromText(userData.PrincipalId);
-    var nftsResponse = await CandidApiManager.Instance.MainCanister.GetNFTs(principal);
-
-    if (nftsResponse != null && nftsResponse.Count > 0)
-    {
-        foreach (var nftElement in nftsResponse)
+        async Task FetchOwnedNFTs()
         {
-            ProcessAndCategorizeNFT(nftElement.F1); // F1 contains the TokenMetadata
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTManager] GameDataManager instance is null.");
+                return;
+            }
+
+            var userData = GameDataManager.Instance.playerData;
+            if (userData == null)
+            {
+                Debug.LogError("Failed to load player data.");
+                return;
+            }
+
+            var principal = Principal.FromText(userData.PrincipalId);
+            var nftsResponse = await CandidApiManager.Instance.MainCanister.GetNFTs(principal);
+
+            if (nftsResponse != null && nftsResponse.Count > 0)
+            {
+                foreach (var nftElement in nftsResponse)
+                {
+                    ProcessAndCategorizeNFT(nftElement.F1); // F1 contains the TokenMetadata
+                }
+
+                nftCollection.AllNFTDatas = AllNFTDatas;
+                nftCollection.RefreshCollection();
+            }
         }
 
-        nftCollection.AllNFTDatas = AllNFTDatas;
-        nftCollection.RefreshCollection();
-    }
-}
+        private void ProcessAndCategorizeNFT(TokenMetadata tokenMetadata)
+        {
+            Metadata metadata = tokenMetadata.Metadata;
 
+            // Assign category correctly
+            SerializedCategory category;
+            if (metadata.Category.Tag == CategoryTag.Unit)
+            {
+                var unit = metadata.Category.AsUnit();
+                category = new SerializedCategory(metadata.Category.Tag.ToString(), unit.Tag.ToString());
+            }
+            else
+            {
+                category = new SerializedCategory(metadata.Category.Tag.ToString());
+            }
 
+            NFTData nftData = new NFTData
+            {
+                BasicStats = metadata.Basic.HasValue ? ConvertBasicMetadata(metadata.Basic.GetValueOrDefault()) : new List<BasicStat>(),
+                General = new List<GeneralInfo> { ConvertGeneralMetadata(metadata.General, metadata.Category) },
+                Skills = metadata.Skills.HasValue ? ConvertSkillsMetadata(metadata.Skills.GetValueOrDefault()) : new List<Skill>(),
+                Skins = metadata.Skins.HasValue ? ConvertSkinMetadata(metadata.Skins.GetValueOrDefault()) : new List<Skin>(),
+                TokenId = metadata.General.Id.ToString(),
+                Category = category // Assign the parsed category
+            };
 
-private void ProcessAndCategorizeNFT(TokenMetadata tokenMetadata)
-{
-    Metadata metadata = tokenMetadata.Metadata;
-    
-    NFTData nftData = new NFTData
-    {
-        BasicStats = metadata.Basic.HasValue ? ConvertBasicMetadata(metadata.Basic.GetValueOrDefault()) : new List<BasicStat>(),
-        General = new List<GeneralInfo> { ConvertGeneralMetadata(metadata.General) },
-        Skills = metadata.Skills.HasValue ? ConvertSkillsMetadata(metadata.Skills.GetValueOrDefault()) : new List<Skill>(),
-        Skins = metadata.Skins.HasValue ? ConvertSkinMetadata(metadata.Skins.GetValueOrDefault()) : new List<Skin>(),
-        TokenId = metadata.General.Id.ToString()
-    };
+            AllNFTDatas.Add(nftData.Clone());
 
-    AllNFTDatas.Add(nftData.Clone());
-
-    // Categorize and store in player data based on NFT type
-    CategorizeNFTInPlayerData(nftData);
-}
-
+            // Categorize and store in player data based on NFT type
+            CategorizeNFTInPlayerData(nftData);
+        }
 
         private void CategorizeNFTInPlayerData(NFTData nftData)
         {
-            var category = nftData.General.First().SkinsText;
+            var category = nftData.Category.TagName;
 
             // Add logic to categorize based on the category field.
             // Example:
@@ -126,7 +136,7 @@ private void ProcessAndCategorizeNFT(TokenMetadata tokenMetadata)
             };
         }
 
-        private GeneralInfo ConvertGeneralMetadata(GeneralMetadata general)
+        private GeneralInfo ConvertGeneralMetadata(GeneralMetadata general, Category category)
         {
             int iconValue;
             if (!int.TryParse(general.Image, out iconValue))
@@ -143,11 +153,9 @@ private void ProcessAndCategorizeNFT(TokenMetadata tokenMetadata)
                 Faction = general.Faction.HasValue ? general.Faction.GetValueOrDefault().ToString() : null,
                 Name = general.Name,
                 Description = general.Description,
-                Icon = iconValue,  // Use the parsed or default value
-                SkinsText = general.Category.HasValue ? general.Category.GetValueOrDefault().ToString() : null
+                Icon = iconValue,
             };
         }
-
 
         private List<Skill> ConvertSkillsMetadata(SkillMetadata skills)
         {
@@ -196,37 +204,35 @@ private void ProcessAndCategorizeNFT(TokenMetadata tokenMetadata)
         }
 
         public async Task<TransferReceipt> TransferNFT(List<UnboundedUInt> tokenIds, Principal recipientPrincipal)
-    {
-        if (GameDataManager.Instance == null)
         {
-            Debug.LogError("[NFTManager] GameDataManager instance is null.");
-            return null;
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTManager] GameDataManager instance is null.");
+                return null;
+            }
+
+            var userData = GameDataManager.Instance.playerData;
+            if (userData == null)
+            {
+                Debug.LogError("Failed to load player data.");
+                return null;
+            }
+
+            var senderAccount = new Account(Principal.FromText(userData.PrincipalId), new OptionalValue<List<byte>>());
+            var recipientAccount = new Account(recipientPrincipal, new OptionalValue<List<byte>>());
+
+            var transferArgs = new TransferArgs
+            {
+                CreatedAtTime = new OptionalValue<ulong>(),
+                From = new OptionalValue<Account>(senderAccount),
+                IsAtomic = new OptionalValue<bool>(true),
+                Memo = new OptionalValue<List<byte>>(System.Text.Encoding.UTF8.GetBytes("Transfer Memo").ToList()),
+                SpenderSubaccount = new OptionalValue<List<byte>>(),
+                To = recipientAccount,
+                TokenIds = tokenIds
+            };
+
+            return await CandidApiManager.Instance.MainCanister.Icrc7Transfer(transferArgs);
         }
-
-        var userData = GameDataManager.Instance.playerData;
-        if (userData == null)
-        {
-            Debug.LogError("Failed to load player data.");
-            return null;
-        }
-
-        var senderAccount = new Account(Principal.FromText(userData.PrincipalId), new OptionalValue<List<byte>>());
-        var recipientAccount = new Account(recipientPrincipal, new OptionalValue<List<byte>>());
-
-        var transferArgs = new TransferArgs
-        {
-            CreatedAtTime = new OptionalValue<ulong>(),
-            From = new OptionalValue<Account>(senderAccount),
-            IsAtomic = new OptionalValue<bool>(true),
-            Memo = new OptionalValue<List<byte>>(System.Text.Encoding.UTF8.GetBytes("Transfer Memo").ToList()),
-            SpenderSubaccount = new OptionalValue<List<byte>>(),
-            To = recipientAccount,
-            TokenIds = tokenIds
-        };
-
-        return await CandidApiManager.Instance.MainCanister.Icrc7Transfer(transferArgs);
     }
-
-    }
-    
 }

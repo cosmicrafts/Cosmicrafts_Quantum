@@ -7,8 +7,8 @@ using Cosmicrafts.MainCanister.Models;
 public class NFTData : ScriptableObject
 {
     [SerializeField]
-    private Category category;
-    public Category Category 
+    private SerializedCategory category;
+    public SerializedCategory Category 
     { 
         get => category;
         set => category = value;
@@ -67,10 +67,20 @@ public class NFTData : ScriptableObject
     {
         this.TokenId = tokenMetadata.TokenId.ToString();
         this.Owner = tokenMetadata.Owner.Owner.ToString();
-        
-        this.Category = tokenMetadata.Metadata.General.Category.HasValue
-            ? tokenMetadata.Metadata.General.Category.GetValueOrDefault()
-            : null; // Assuming null is acceptable for missing category
+
+        // Handle Category Parsing from the root Metadata
+        var category = tokenMetadata.Metadata.Category;
+        if (category.Tag == CategoryTag.Unit)
+        {
+            // Handle Unit Category
+            var unit = category.AsUnit();
+            this.Category = new SerializedCategory(category.Tag.ToString(), unit.Tag.ToString());
+        }
+        else
+        {
+            // Handle other categories
+            this.Category = new SerializedCategory(category.Tag.ToString());
+        }
 
         this.BasicStats = tokenMetadata.Metadata.Basic.HasValue 
             ? tokenMetadata.Metadata.Basic.GetValueOrDefault().ConvertToBasicStats() 
@@ -78,7 +88,7 @@ public class NFTData : ScriptableObject
 
         this.General = new List<GeneralInfo> 
         {
-            tokenMetadata.Metadata.General.ConvertToGeneralInfo()
+            tokenMetadata.Metadata.General.ConvertToGeneralInfo(category)
         };
 
         this.Skills = tokenMetadata.Metadata.Skills.HasValue 
@@ -102,6 +112,32 @@ public class NFTData : ScriptableObject
         clone.Owner = Owner;
 
         return clone;
+    }
+}
+
+[System.Serializable]
+public class SerializedCategory
+{
+    [SerializeField]
+    private string tagName;
+    public string TagName => tagName;
+
+    [SerializeField]
+    private string value;
+    public string Value => value;
+
+    // Constructor for non-Unit categories
+    public SerializedCategory(string tagName)
+    {
+        this.tagName = tagName;
+        this.value = "None";
+    }
+
+    // Constructor for Unit categories
+    public SerializedCategory(string tagName, string unitType)
+    {
+        this.tagName = tagName;
+        this.value = unitType;
     }
 }
 
@@ -186,14 +222,6 @@ public class GeneralInfo
         set => icon = value; 
     }
 
-    [SerializeField]
-    private string skinsText;
-    public string SkinsText 
-    { 
-        get => skinsText; 
-        set => skinsText = value; 
-    }
-
     public GeneralInfo Clone()
     {
         return new GeneralInfo
@@ -205,10 +233,10 @@ public class GeneralInfo
             Name = this.Name,
             Description = this.Description,
             Icon = this.Icon,
-            SkinsText = this.SkinsText
         };
     }
 }
+
 
 [System.Serializable]
 public class Skill

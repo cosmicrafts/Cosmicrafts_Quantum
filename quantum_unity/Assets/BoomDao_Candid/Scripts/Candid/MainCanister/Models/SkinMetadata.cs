@@ -1,6 +1,5 @@
 using EdjCase.ICP.Candid.Mapping;
 using Cosmicrafts.MainCanister.Models;
-using EdjCase.ICP.Candid.Models;
 
 namespace Cosmicrafts.MainCanister.Models
 {
@@ -9,13 +8,9 @@ namespace Cosmicrafts.MainCanister.Models
 		[CandidName("general")]
 		public GeneralMetadata General { get; set; }
 
-		[CandidName("soul")]
-		public OptionalValue<SoulMetadata> Soul { get; set; }
-
-		public SkinMetadata(GeneralMetadata general, OptionalValue<SoulMetadata> soul)
+		public SkinMetadata(GeneralMetadata general)
 		{
 			this.General = general;
-			this.Soul = soul;
 		}
 
 		public SkinMetadata()

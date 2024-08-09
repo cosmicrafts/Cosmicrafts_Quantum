@@ -68,7 +68,6 @@ namespace Cosmicrafts.Data
                 SetFactionIcon(general.Faction);
                 unitClassText.text = general.Class;
                 rarityText.text = general.Rarity.ToString();
-                skinsText.text = general.SkinsText;
                 iconImage.sprite = GetIconSpriteById(general.Icon);
                 costText.text = GetEnergyCostById(general.UnitId).ToString();
 

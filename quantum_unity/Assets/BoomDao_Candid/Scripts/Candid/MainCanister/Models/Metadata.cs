@@ -9,6 +9,9 @@ namespace Cosmicrafts.MainCanister.Models
 		[CandidName("basic")]
 		public OptionalValue<BasicMetadata> Basic { get; set; }
 
+		[CandidName("category")]
+		public Category Category { get; set; }
+
 		[CandidName("general")]
 		public GeneralMetadata General { get; set; }
 
@@ -21,9 +24,10 @@ namespace Cosmicrafts.MainCanister.Models
 		[CandidName("soul")]
 		public OptionalValue<SoulMetadata> Soul { get; set; }
 
-		public Metadata(OptionalValue<BasicMetadata> basic, GeneralMetadata general, OptionalValue<SkillMetadata> skills, OptionalValue<SkinMetadata> skins, OptionalValue<SoulMetadata> soul)
+		public Metadata(OptionalValue<BasicMetadata> basic, Category category, GeneralMetadata general, OptionalValue<SkillMetadata> skills, OptionalValue<SkinMetadata> skins, OptionalValue<SoulMetadata> soul)
 		{
 			this.Basic = basic;
+			this.Category = category;
 			this.General = general;
 			this.Skills = skills;
 			this.Skins = skins;

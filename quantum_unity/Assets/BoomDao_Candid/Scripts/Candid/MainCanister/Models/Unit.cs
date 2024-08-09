@@ -8,7 +8,7 @@ namespace Cosmicrafts.MainCanister.Models
 	[Variant]
 	public class Unit
 	{
-		[VariantTagProperty]
+	[VariantTagProperty]
 		public UnitTag Tag { get; set; }
 
 		[VariantValueProperty]
