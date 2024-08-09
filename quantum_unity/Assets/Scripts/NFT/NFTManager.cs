@@ -89,11 +89,11 @@ namespace Cosmicrafts.Data
 
             NFTData nftData = new NFTData
             {
+                TokenId = tokenMetadata.TokenId.ToString(),
                 BasicStats = metadata.Basic.HasValue ? ConvertBasicMetadata(metadata.Basic.GetValueOrDefault()) : new List<BasicStat>(),
-                General = new List<GeneralInfo> { ConvertGeneralMetadata(metadata.General, metadata.Category) },
+                General = new List<GeneralInfo> { ConvertGeneralMetadata(metadata.General, metadata.Category) }, 
                 Skills = metadata.Skills.HasValue ? ConvertSkillsMetadata(metadata.Skills.GetValueOrDefault()) : new List<Skill>(),
                 Skins = metadata.Skins.HasValue ? ConvertSkinMetadata(metadata.Skins.GetValueOrDefault()) : new List<Skin>(),
-                TokenId = metadata.General.Id.ToString(),
                 Category = category // Assign the parsed category
             };
 
@@ -102,6 +102,7 @@ namespace Cosmicrafts.Data
             // Categorize and store in player data based on NFT type
             CategorizeNFTInPlayerData(nftData);
         }
+
 
         private void CategorizeNFTInPlayerData(NFTData nftData)
         {
@@ -243,6 +244,5 @@ namespace Cosmicrafts.Data
             OnMetadataUpdated?.Invoke(tokenId);
             Debug.Log($"Finished metadata update for Token ID: {tokenId}");
         }
-
     }
 }
