@@ -1,19 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Candid;
+using Cosmicrafts.Managers;
 using Cosmicrafts.MainCanister.Models;
 using EdjCase.ICP.Candid.Models;
 using Cosmicrafts.Data;
-using Cosmicrafts.Managers;
+using System.Threading.Tasks;
+using System.Numerics;
+using Candid;
+using System.Collections;
 
 namespace Cosmicrafts
 {
-
     public class ChestManager : MonoBehaviour
     {
         private Dictionary<int, ChestSO> chestDictionary;
@@ -24,25 +24,13 @@ namespace Cosmicrafts
         public Transform chestDisplayContainer;
         public Toggle updateChestsToggle;
         public NotificationManager notificationManager;
-        private List<UnboundedUInt> currentTokenIds = new List<UnboundedUInt>();
+        private List<string> currentTokenIds = new List<string>();
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                Instance = this;
-            }
-        }
-
-        async void Start()
+        void Start()
         {
             InitializeChestDictionary();
             chestPrefab.SetActive(false);
-            await FetchOwnedChests();
+            StartCoroutine(DelayedFetch());
             if (updateChestsToggle != null)
             {
                 updateChestsToggle.onValueChanged.AddListener((value) =>
@@ -50,6 +38,12 @@ namespace Cosmicrafts
                     if (value) UpdateOwnedChests();
                 });
             }
+        }
+
+        private IEnumerator DelayedFetch()
+        {
+            yield return new WaitForSeconds(0.5f); // Adjust the delay as necessary
+            FetchOwnedChests();
         }
 
         private void InitializeChestDictionary()
@@ -82,138 +76,70 @@ namespace Cosmicrafts
             }
         }
 
-        public void RemoveChestAndRefreshCount(UnboundedUInt tokenId)
+        private void FetchOwnedChests()
         {
-            ChestInstance[] chestInstances = chestDisplayContainer.GetComponentsInChildren<ChestInstance>();
-            foreach (ChestInstance chestInstance in chestInstances)
-            {
-                if (chestInstance.tokenId == tokenId)
-                {
-                    Destroy(chestInstance.gameObject);
-                    if (currentTokenIds.Remove(tokenId))
-                    {
-                        ownedChestsText.text = $"{currentTokenIds.Count}";
-                    }
-                    break;
-                }
-            }
-        }
+            // Get the list of Chest NFTs from the NFTManager
+            var chestNFTs = NFTManager.Instance.AllNFTDatas.Where(nft => nft.Category.TagName == "Chest").ToList();
 
-        private async Task FetchOwnedChests()
-        {
-            if (GameDataManager.Instance == null)
+            if (chestNFTs.Count == 0)
             {
-                Debug.LogError("[Chest Manager] GameDataManager instance is null.");
+                Debug.LogWarning("[Chest Manager] No chests found for the player.");
+                ownedChestsText.text = "0";
                 return;
             }
 
-            var userData = GameDataManager.Instance.playerData;
-            if (userData == null)
-            {
-                Debug.LogError("[Chest Manager] Failed to load player data.");
-                return;
-            }
+            ownedChestsText.text = $"{chestNFTs.Count}";
 
-            var account = new Account(Principal.FromText(userData.PrincipalId), null);
-            var tokenIds = await GetOwnedChestTokens(account);
-
-            if (tokenIds != null && tokenIds.Count > 0)
+            foreach (var nft in chestNFTs)
             {
-                ownedChestsText.text = $"{tokenIds.Count}";
-                foreach (var tokenId in tokenIds)
+                int rarity = nft.General.First().Rarity;
+                if (chestDictionary.TryGetValue(rarity, out ChestSO chestSO))
                 {
-                    await FetchAndSetChestData(tokenId);
-                }
-            }
-            currentTokenIds = tokenIds;
-        }
-
-        private async Task FetchAndSetChestData(UnboundedUInt tokenId)
-        {
-            var metadataResult = await CandidApiManager.Instance.MainCanister.Icrc7Metadata(tokenId);
-            if (metadataResult.Tag == MetadataResultTag.Ok)
-            {
-                if (metadataResult.Value is Dictionary<string, Metadata> metadataDictionary &&
-                    metadataDictionary.TryGetValue("general", out Metadata generalMetadata))
-                {
-                    GeneralMetadata general = generalMetadata.General; // Directly access the General property
-
-                    int rarity = general.Rarity.HasValue ? (int)general.Rarity.GetValueOrDefault() : 0;
-                    if (chestDictionary.TryGetValue(rarity, out ChestSO chestSO))
-                    {
-                        InstantiateChestPrefab(tokenId, chestSO);
-                    }
-                    else
-                    {
-                        Debug.LogError($"[Chest Manager] No ChestSO found for rarity {rarity}. Ensure ChestSOs are correctly set up in Resources/Chests.");
-                    }
+                    InstantiateChestPrefab(nft, chestSO);
+                    currentTokenIds.Add(nft.TokenId);
                 }
                 else
                 {
-                    Debug.LogError("[Chest Manager] Metadata does not contain 'general' key or casting failed.");
+                    Debug.LogError($"[Chest Manager] No ChestSO found for rarity {rarity}. Ensure ChestSOs are correctly set up in Resources/Chests.");
                 }
-            }
-            else
-            {
-                Debug.LogError($"[Chest Manager] Failed to fetch metadata for token ID {tokenId}. Metadata result tag: {metadataResult.Tag}");
             }
         }
 
-
-        private void InstantiateChestPrefab(UnboundedUInt tokenId, ChestSO chestSO)
+        private void InstantiateChestPrefab(NFTData nftData, ChestSO chestSO)
         {
             GameObject instance = Instantiate(chestPrefab, chestDisplayContainer);
             ChestInstance chestInstance = instance.GetComponent<ChestInstance>();
             if (chestInstance != null)
             {
-                chestInstance.Setup(chestSO, tokenId);
+                // Convert the TokenId to UnboundedUInt using the correct constructor or method
+                var tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(nftData.TokenId));
+                chestInstance.Setup(chestSO, tokenId); // Pass the tokenId instead of the entire NFTData
             }
             instance.SetActive(true);
         }
 
-        private async Task<List<UnboundedUInt>> GetOwnedChestTokens(Account account)
+        public void UpdateOwnedChests()
         {
-            var tokenListResult = await CandidApiManager.Instance.MainCanister.Icrc7TokensOf(account);
-            if (tokenListResult.Tag == TokensOfResultTag.Ok)
-            {
-                return tokenListResult.AsOk();
-            }
-            else
-            {
-                Debug.LogError("[Chest Manager] Failed to fetch owned chest tokens.");
-                return new List<UnboundedUInt>();
-            }
-        }
+            // Get the latest list of Chest NFTs from the NFTManager
+            var newChestNFTs = NFTManager.Instance.AllNFTDatas.Where(nft => nft.Category.TagName == "Chest").ToList();
 
-        public async void UpdateOwnedChests()
-        {
-            if (GameDataManager.Instance == null)
-            {
-                Debug.LogError("[Chest Manager] GameDataManager instance is null.");
-                return;
-            }
-
-            var userData = GameDataManager.Instance.playerData;
-            if (userData == null)
-            {
-                Debug.LogError("[Chest Manager] Failed to load player data.");
-                return;
-            }
-
-            var account = new Account(Principal.FromText(userData.PrincipalId), null);
-            var newTokenIds = await GetOwnedChestTokens(account);
-
-            int newChestCount = newTokenIds.Except(currentTokenIds).Count();
+            int newChestCount = newChestNFTs.Select(nft => nft.TokenId).Except(currentTokenIds).Count();
 
             if (newChestCount > 0)
             {
-                ownedChestsText.text = $"{newTokenIds.Count}";
-                foreach (var tokenId in newTokenIds.Except(currentTokenIds))
+                ownedChestsText.text = $"{newChestNFTs.Count}";
+                foreach (var nft in newChestNFTs)
                 {
-                    await FetchAndSetChestData(tokenId);
+                    if (!currentTokenIds.Contains(nft.TokenId))
+                    {
+                        int rarity = nft.General.First().Rarity;
+                        if (chestDictionary.TryGetValue(rarity, out ChestSO chestSO))
+                        {
+                            InstantiateChestPrefab(nft, chestSO);
+                        }
+                        currentTokenIds.Add(nft.TokenId);
+                    }
                 }
-
-                currentTokenIds.AddRange(newTokenIds.Except(currentTokenIds));
 
                 string notificationText = $"[Chest Manager] Received {newChestCount} new chest{(newChestCount > 1 ? "s" : "")}!";
                 notificationManager.ShowNotification(notificationText);
@@ -238,7 +164,7 @@ namespace Cosmicrafts
             Debug.Log($"[Chest Manager] Attempting to transfer chest: {chestSO.chestName} with Token ID: {tokenId} to {recipientPrincipalText}");
             var recipientPrincipal = Principal.FromText(recipientPrincipalText);
 
-            var transferArgs = new Cosmicrafts.MainCanister.Models.TransferArgs
+            var transferArgs = new TransferArgs
             {
                 From = new OptionalValue<Account>(new Account(Principal.FromText(userData.PrincipalId), null)),
                 To = new Account(recipientPrincipal, null),
@@ -260,5 +186,21 @@ namespace Cosmicrafts
             }
         }
 
+        public void RemoveChestAndRefreshCount(UnboundedUInt tokenId)
+        {
+            ChestInstance[] chestInstances = chestDisplayContainer.GetComponentsInChildren<ChestInstance>();
+            foreach (ChestInstance chestInstance in chestInstances)
+            {
+                if (chestInstance.tokenId == tokenId)
+                {
+                    Destroy(chestInstance.gameObject);
+                    if (currentTokenIds.Remove(tokenId.ToString()))
+                    {
+                        ownedChestsText.text = $"{currentTokenIds.Count}";
+                    }
+                    break;
+                }
+            }
+        }
     }
 }
