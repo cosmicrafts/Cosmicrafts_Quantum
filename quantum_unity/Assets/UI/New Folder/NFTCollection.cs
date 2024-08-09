@@ -102,6 +102,7 @@ namespace Cosmicrafts.Data
         }
 
         //Updates the UI collection with the current data and filters
+// Updates the UI collection with the current data and filters
         public void RefreshCollection()
         {
             if (GameDataManager.Instance == null)
@@ -118,6 +119,15 @@ namespace Cosmicrafts.Data
                 return;
             }
 
+            // Filter the collection to include only NFTs with the "Unit" category.
+            var unitNFTs = AllNFTDatas.Where(nft => nft.Category.TagName == "Unit").ToList();
+
+            if (unitNFTs.Count == 0)
+            {
+                Debug.Log("No Unit NFTs available for collection.");
+                return;
+            }
+
             // Clean up existing UI elements.
             foreach (Transform child in NftCardPrefab.transform.parent)
             {
@@ -127,8 +137,8 @@ namespace Cosmicrafts.Data
                 }
             }
 
-            // Repopulate the deck with the first available NFTs from AllNFTDatas.
-            var deckNFTs = AllNFTDatas.Take(6).ToList();
+            // Repopulate the deck with the first available Unit NFTs from the filtered collection.
+            var deckNFTs = unitNFTs.Take(6).ToList();
             for (int i = 0; i < deckNFTs.Count; i++)
             {
                 Deck[i].SetNFTData(deckNFTs[i]);
@@ -141,8 +151,8 @@ namespace Cosmicrafts.Data
                 Deck[i].gameObject.SetActive(false);
             }
 
-            // Display the rest of the collection, excluding those in the deck.
-            foreach (NFTData nftData in AllNFTDatas.Skip(6))
+            // Display the rest of the Unit NFT collection, excluding those in the deck.
+            foreach (NFTData nftData in unitNFTs.Skip(6))
             {
                 NFTCard card = Instantiate(NftCardPrefab.gameObject, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
                 card.SetNFTData(nftData);

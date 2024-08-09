@@ -40,6 +40,13 @@ namespace Cosmicrafts.Data
                 return;
             }
 
+            // Filter to only allow Unit NFTs
+            if (nftData.Category.TagName != "Unit")
+            {
+                Debug.LogWarning("NFT is not a Unit. Skipping...");
+                return;
+            }
+
             var general = nftData.General.FirstOrDefault();
 
             if (general != null)
