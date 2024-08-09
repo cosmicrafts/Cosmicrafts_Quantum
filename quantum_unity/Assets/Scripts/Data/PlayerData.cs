@@ -11,7 +11,19 @@ namespace Cosmicrafts.Data
         public string PrincipalId = "pid";
         public string Username = "Anon";
         public int Level { get; set; }
-        public int AvatarID { get; set; }
+                public int AvatarID
+        {
+            get => avatarID;
+            set
+            {
+                if (avatarID != value)
+                {
+                    avatarID = value;
+                    OnAvatarIdChanged?.Invoke(value);
+                }
+            }
+        }
+        private int avatarID = 1;
         public string CharacterNFTId { get; set; }
         public List<string> DeckNFTsKeyIds = new List<string>();
         public string Email { get; set; }
