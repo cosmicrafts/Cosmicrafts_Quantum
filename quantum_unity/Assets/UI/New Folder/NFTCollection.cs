@@ -149,10 +149,11 @@ public void RefreshCollection()
         public void SelectCard(NFTCard card)
         {
             Debug.Log("Select");
-            if (card.DeckSlot == -1 && EnterCard != null)
-            {
-                return;
-            }
+            if (card.DeckSlot == -1 && EnterCard != null && EnterCard.DeckSlot != -1)
+        {
+            // Only block if EnterCard is actually from the deck
+            return;
+        }
 
             if (CurrentSelected != null)
             {
