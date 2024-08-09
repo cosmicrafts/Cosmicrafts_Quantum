@@ -94,9 +94,13 @@ namespace Cosmicrafts.Data
         // Updates the UI collection with the current data and filters
         public void RefreshCollection()
         {
-            if (AllNFTDatas == null || AllNFTDatas.Count == 0)
+
+            // Filter the collection to include only NFTs with the "Unit" category.
+            var unitNFTs = AllNFTDatas.Where(nft => nft.Category.TagName == "Unit").ToList();
+
+            if (unitNFTs.Count == 0)
             {
-                Debug.Log("No NFT Data available for collection.");
+                Debug.Log("No Unit NFTs available for collection.");
                 return;
             }
 
