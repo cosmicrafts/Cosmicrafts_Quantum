@@ -43,7 +43,7 @@ public class UIMatchMaking : MonoBehaviour
 
         MatchPlayerData matchPlayerData = new MatchPlayerData
         {
-            userAvatar = playerData.CharacterNFTId,
+            userAvatar = playerData.AvatarID,
             listSavedKeys = playerData.DeckNFTsKeyIds
         };
 

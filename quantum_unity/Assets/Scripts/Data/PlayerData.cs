@@ -11,21 +11,8 @@ namespace Cosmicrafts.Data
         public string PrincipalId = "pid";
         public string Username = "Anon";
         public int Level { get; set; }
-        public int AvatarID
-        {
-            get => avatarID;
-            set
-            {
-                if (avatarID != value)
-                {
-                    avatarID = value;
-                    OnAvatarIdChanged?.Invoke(value);
-                }
-            }
-        }
-        private int avatarID = 1;
-        public int CharacterNFTId = 0;
-        public List<int> DeckNFTsId = new List<int>();
+        public int AvatarID { get; set; }
+        public string CharacterNFTId { get; set; }
         public List<string> DeckNFTsKeyIds = new List<string>();
         public string Email { get; set; }
         public DateTime LastConnection { get; set; }
@@ -35,15 +22,22 @@ namespace Cosmicrafts.Data
         public UnboundedUInt actualNumberRoom = 0;
         public bool IsLoggedIn { get; set; } = false;
 
-        // Newly added properties to match the Player class
         public string Description { get; set; }
         public double Elo { get; set; }
         public List<FriendDetails> Friends { get; set; }
         public long RegistrationDate { get; set; }
+
+        // New properties for storing categorized NFTs
+        public List<NFTData> Characters { get; set; } = new List<NFTData>();
+        public List<NFTData> Avatars { get; set; } = new List<NFTData>();
+        public List<NFTData> Chests { get; set; } = new List<NFTData>();
+        public List<NFTData> Trophies { get; set; } = new List<NFTData>();
+        public List<NFTData> Units { get; set; } = new List<NFTData>();
+
         public event Action<int> OnAvatarIdChanged;
     }
 
-    [Serializable]
+        [Serializable]
     public class Config
     {
         public int Language = 0;
