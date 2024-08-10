@@ -36,7 +36,6 @@ namespace Cosmicrafts
             Instance = this;
         }
 
-
         void Start()
         {
             InitializeChestDictionary();
@@ -137,33 +136,40 @@ namespace Cosmicrafts
         }
 
 
-        public void UpdateOwnedChests()
+        public async void UpdateOwnedChests()
         {
-            // Get the latest list of Chest NFTs from the NFTManager
-            var newChestNFTs = NFTManager.Instance.AllNFTDatas.Where(nft => nft.Category.TagName == "Chest").ToList();
+            Debug.Log("[ChestManager] Updating owned chests...");
 
-            int newChestCount = newChestNFTs.Select(nft => nft.TokenId).Except(currentTokenIds).Count();
+            var newChestNFTs = await NFTManager.Instance.GetChestsAsync();
+            if (newChestNFTs == null) return;
 
-            if (newChestCount > 0)
+            foreach (var newChest in newChestNFTs)
             {
-                ownedChestsText.text = $"{newChestNFTs.Count}";
-                foreach (var nft in newChestNFTs)
+                if (currentTokenIds.Contains(newChest.TokenId))
                 {
-                    if (!currentTokenIds.Contains(nft.TokenId))
-                    {
-                        int rarity = nft.General.First().Rarity;
-                        if (chestDictionary.TryGetValue(rarity, out ChestSO chestSO))
-                        {
-                            InstantiateChestPrefab(nft, chestSO);
-                        }
-                        currentTokenIds.Add(nft.TokenId);
-                    }
+                    // Update existing chest metadata if necessary
+                    var existingChest = chestInstanceDictionary[newChest.TokenId];
+                    //existingChest.UpdateMetadata(newChest);
                 }
-
-                string notificationText = $"[Chest Manager] Received {newChestCount} new chest{(newChestCount > 1 ? "s" : "")}!";
-                notificationManager.ShowNotification(notificationText);
+                else
+                {
+                    // Add new chest
+                    InstantiateChestPrefab(newChest, chestDictionary[newChest.General.First().Rarity]);
+                    currentTokenIds.Add(newChest.TokenId);
+                }
             }
+
+            // Optionally remove chests no longer owned
+            var removedTokenIds = currentTokenIds.Except(newChestNFTs.Select(nft => nft.TokenId)).ToList();
+            foreach (var tokenId in removedTokenIds)
+            {
+                RemoveChestAndRefreshCount(UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenId)));
+            }
+
+            Debug.Log("[ChestManager] Finished updating owned chests.");
         }
+
+
 
         public async Task TransferChest(ChestSO chestSO, UnboundedUInt tokenId, string recipientPrincipalText)
         {

@@ -341,5 +341,53 @@ namespace Cosmicrafts.Data
             });
         }
 
+        public async Task<List<NFTData>> GetChestsAsync()
+{
+    if (GameDataManager.Instance == null)
+    {
+        Debug.LogError("[NFTManager] GameDataManager instance is null.");
+        return null;
+    }
+
+    var userData = GameDataManager.Instance.playerData;
+    if (userData == null)
+    {
+        Debug.LogError("[NFTManager] Failed to load player data.");
+        return null;
+    }
+
+    var principal = Principal.FromText(userData.PrincipalId);
+
+    try
+    {
+        var chestsResponse = await CandidApiManager.Instance.MainCanister.GetChests(principal);
+
+        if (chestsResponse == null || chestsResponse.Count == 0)
+        {
+            Debug.LogWarning("[NFTManager] No chests found for the player.");
+            return new List<NFTData>();
+        }
+
+        var nftDataList = new List<NFTData>();
+
+        foreach (var chestElement in chestsResponse)
+        {
+            var nftData = ScriptableObject.CreateInstance<NFTData>(); // Correct usage of CreateInstance
+            nftData.PopulateFromMetadata(chestElement.F1); // Use PopulateFromMetadata method
+
+            nftDataList.Add(nftData);
+        }
+
+        return nftDataList;
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[NFTManager] Error retrieving chests: {ex.Message}");
+        return null;
+    }
+}
+
+
+
     }
 }

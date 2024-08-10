@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using EdjCase.ICP.Candid.Models;
 using TMPro;
+using Cosmicrafts.Data;
 
 namespace Cosmicrafts
 {
@@ -41,6 +42,7 @@ namespace Cosmicrafts
                 Debug.LogError("[Chest Manager] No operation UI found or active for the chest.");
             }
         }
+
 
         public void Setup(ChestSO so, UnboundedUInt id)
         {
