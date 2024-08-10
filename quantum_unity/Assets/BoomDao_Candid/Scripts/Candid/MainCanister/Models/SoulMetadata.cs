@@ -9,6 +9,9 @@ namespace Cosmicrafts.MainCanister.Models
 		[CandidName("birth")]
 		public Time Birth { get; set; }
 
+		[CandidName("combatExperience")]
+		public UnboundedUInt CombatExperience { get; set; }
+
 		[CandidName("gamesPlayed")]
 		public OptionalValue<UnboundedUInt> GamesPlayed { get; set; }
 
@@ -18,9 +21,10 @@ namespace Cosmicrafts.MainCanister.Models
 		[CandidName("totalKills")]
 		public OptionalValue<UnboundedUInt> TotalKills { get; set; }
 
-		public SoulMetadata(Time birth, OptionalValue<UnboundedUInt> gamesPlayed, OptionalValue<UnboundedUInt> totalDamageDealt, OptionalValue<UnboundedUInt> totalKills)
+		public SoulMetadata(Time birth, UnboundedUInt combatExperience, OptionalValue<UnboundedUInt> gamesPlayed, OptionalValue<UnboundedUInt> totalDamageDealt, OptionalValue<UnboundedUInt> totalKills)
 		{
 			this.Birth = birth;
+			this.CombatExperience = combatExperience;
 			this.GamesPlayed = gamesPlayed;
 			this.TotalDamageDealt = totalDamageDealt;
 			this.TotalKills = totalKills;

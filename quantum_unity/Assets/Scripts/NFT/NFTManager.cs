@@ -71,37 +71,39 @@ namespace Cosmicrafts.Data
             }
         }
 
-        private void ProcessAndCategorizeNFT(TokenMetadata tokenMetadata)
+    private void ProcessAndCategorizeNFT(TokenMetadata tokenMetadata)
+    {
+        Metadata metadata = tokenMetadata.Metadata;
+
+        // Assign category correctly
+        SerializedCategory category;
+        if (metadata.Category.Tag == CategoryTag.Unit)
         {
-            Metadata metadata = tokenMetadata.Metadata;
-
-            // Assign category correctly
-            SerializedCategory category;
-            if (metadata.Category.Tag == CategoryTag.Unit)
-            {
-                var unit = metadata.Category.AsUnit();
-                category = new SerializedCategory(metadata.Category.Tag.ToString(), unit.Tag.ToString());
-            }
-            else
-            {
-                category = new SerializedCategory(metadata.Category.Tag.ToString());
-            }
-
-            NFTData nftData = new NFTData
-            {
-                TokenId = tokenMetadata.TokenId.ToString(),
-                BasicStats = metadata.Basic.HasValue ? ConvertBasicMetadata(metadata.Basic.GetValueOrDefault()) : new List<BasicStat>(),
-                General = new List<GeneralInfo> { ConvertGeneralMetadata(metadata.General, metadata.Category) }, 
-                Skills = metadata.Skills.HasValue ? ConvertSkillsMetadata(metadata.Skills.GetValueOrDefault()) : new List<Skill>(),
-                Skins = metadata.Skins.HasValue ? ConvertSkinMetadata(metadata.Skins.GetValueOrDefault()) : new List<Skin>(),
-                Category = category // Assign the parsed category
-            };
-
-            AllNFTDatas.Add(nftData.Clone());
-
-            // Categorize and store in player data based on NFT type
-            CategorizeNFTInPlayerData(nftData);
+            // Assuming Unit is an enum and not a class with a Tag property
+            Unit unit = metadata.Category.AsUnit();
+            category = new SerializedCategory(metadata.Category.Tag.ToString(), unit.ToString());
         }
+        else
+        {
+            category = new SerializedCategory(metadata.Category.Tag.ToString());
+        }
+
+        NFTData nftData = new NFTData
+        {
+            TokenId = tokenMetadata.TokenId.ToString(),
+            BasicStats = metadata.Basic.HasValue ? metadata.Basic.GetValueOrDefault().ConvertToBasicStats() : new List<BasicStat>(),
+            General = new List<GeneralInfo> { metadata.General.ConvertToGeneralInfo(metadata.Category) },
+            Skills = metadata.Skills.HasValue ? metadata.Skills.GetValueOrDefault().ConvertToSkills() : new List<Skill>(),
+            Skins = metadata.Skins.HasValue ? metadata.Skins.GetValueOrDefault().ConvertToSkin() : new List<Skin>(),
+            Category = category // Assign the parsed category
+        };
+
+        AllNFTDatas.Add(nftData.Clone());
+
+        // Categorize and store in player data based on NFT type
+        CategorizeNFTInPlayerData(nftData);
+    }
+
 
 
         private void CategorizeNFTInPlayerData(NFTData nftData)
@@ -148,36 +150,25 @@ namespace Cosmicrafts.Data
         {
             var skillList = new List<Skill>();
 
-            switch (skills.Tag)
-            {
-                case SkillMetadataTag.CriticalStrike:
-                    skillList.Add(new Skill { SkillName = "Critical Strike", SkillValue = 0 });
-                    break;
-                case SkillMetadataTag.Evasion:
-                    skillList.Add(new Skill { SkillName = "Evasion", SkillValue = 0 });
-                    break;
-                case SkillMetadataTag.Shield:
-                    skillList.Add(new Skill { SkillName = "Shield", SkillValue = 0 });
-                    break;
-            }
-
             return skillList;
         }
 
         private List<Skin> ConvertSkinMetadata(SkinMetadata skin)
         {
+            // Assuming you now need to derive or use default values for Skin properties
             return new List<Skin>
             {
                 new Skin
                 {
-                    SkinId = (int)skin.General.Id,
-                    SkinName = skin.General.Name,
-                    SkinDescription = skin.General.Description,
-                    SkinIcon = skin.General.Image,
-                    SkinRarity = skin.General.Rarity.HasValue ? (int)skin.General.Rarity.GetValueOrDefault() : 0
+                    SkinId = (int)skin, // Using the enum value as the SkinId
+                    SkinName = "Default Skin Name", // Placeholder name, replace as needed
+                    SkinDescription = "Default Skin Description", // Placeholder description, replace as needed
+                    SkinIcon = "default_icon.png", // Placeholder icon, replace as needed
+                    SkinRarity = 0 // Default rarity, adjust as necessary
                 }
             };
         }
+
 
         public NFTData GetNFTDataById(string tokenId)
         {

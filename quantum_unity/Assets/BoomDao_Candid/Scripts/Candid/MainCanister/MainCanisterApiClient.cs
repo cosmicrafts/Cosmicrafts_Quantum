@@ -333,7 +333,7 @@ namespace Cosmicrafts.MainCanister
 			return reply.ToObjects<OptionalValue<(Principal, OptionalValue<Principal>)>>(this.Converter);
 		}
 
-		public async Task<(Models.MMSearchStatus ReturnArg0, UnboundedUInt ReturnArg1, string ReturnArg2)> GetMatchSearching(string arg0)
+		public async Task<(Models.MMSearchStatus ReturnArg0, UnboundedUInt ReturnArg1, string ReturnArg2)> GetMatchSearching(Models.Playergamedata1 arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getMatchSearching", arg);
@@ -410,6 +410,14 @@ namespace Cosmicrafts.MainCanister
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getPlayerAverageStats", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<OptionalValue<Models.AverageStats>>(this.Converter);
+		}
+
+		public async Task<MainCanisterApiClient.GetPlayerDeckReturnArg0> GetPlayerDeck(Principal arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "getPlayerDeck", arg);
+			CandidArg reply = response.ThrowOrGetReply();
+			return reply.ToObjects<MainCanisterApiClient.GetPlayerDeckReturnArg0>(this.Converter);
 		}
 
 		public async Task<double> GetPlayerElo(Principal arg0)
@@ -512,6 +520,13 @@ namespace Cosmicrafts.MainCanister
 			QueryResponse response = await this.Agent.QueryAsync(this.CanisterId, "get_transactions", arg);
 			CandidArg reply = response.ThrowOrGetReply();
 			return reply.ToObjects<Models.GetTransactionsResponse>(this.Converter);
+		}
+
+		public async Task<MainCanisterApiClient.HandleCombatXPReturnArg0> HandleCombatXP(MainCanisterApiClient.HandleCombatXPArg0 arg0, UnboundedUInt arg1)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "handleCombatXP", arg);
+			return reply.ToObjects<MainCanisterApiClient.HandleCombatXPReturnArg0>(this.Converter);
 		}
 
 		public async Task<Balance1> Icrc1BalanceOf(Models.Account2 arg0)
@@ -896,6 +911,13 @@ namespace Cosmicrafts.MainCanister
 			return reply.ToObjects<List<Models.Player>>(this.Converter);
 		}
 
+		public async Task<MainCanisterApiClient.SelectRandomUnitsReturnArg0> SelectRandomUnits(MainCanisterApiClient.SelectRandomUnitsArg0 arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "selectRandomUnits", arg);
+			return reply.ToObjects<MainCanisterApiClient.SelectRandomUnitsReturnArg0>(this.Converter);
+		}
+
 		public async Task<(bool ReturnArg0, string ReturnArg1)> SendFriendRequest(PlayerId arg0)
 		{
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
@@ -915,6 +937,13 @@ namespace Cosmicrafts.MainCanister
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "setPrivacySetting", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<bool> StoreCurrentDeck(MainCanisterApiClient.StoreCurrentDeckArg0 arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "storeCurrentDeck", arg);
+			return reply.ToObjects<bool>(this.Converter);
 		}
 
 		public async Task<bool> SubmitFeedback(UnboundedUInt arg0, string arg1)
@@ -999,6 +1028,13 @@ namespace Cosmicrafts.MainCanister
 			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter), CandidTypedValue.FromObject(arg1, this.Converter));
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateIndividualAchievementProgress", arg);
 			return reply.ToObjects<bool, string>(this.Converter);
+		}
+
+		public async Task<MainCanisterApiClient.UpdateSoulNFTPlayedReturnArg0> UpdateSoulNFTPlayed(MainCanisterApiClient.UpdateSoulNFTPlayedArg0 arg0)
+		{
+			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "updateSoulNFTPlayed", arg);
+			return reply.ToObjects<MainCanisterApiClient.UpdateSoulNFTPlayedReturnArg0>(this.Converter);
 		}
 
 		public async Task<(bool ReturnArg0, PlayerId ReturnArg1, string ReturnArg2)> UpdateUsername(Username arg0)
@@ -1252,6 +1288,24 @@ namespace Cosmicrafts.MainCanister
 			}
 		}
 
+		public class GetPlayerDeckReturnArg0 : OptionalValue<MainCanisterApiClient.GetPlayerDeckReturnArg0.GetPlayerDeckReturnArg0Value>
+		{
+			public GetPlayerDeckReturnArg0()
+			{
+			}
+
+			public GetPlayerDeckReturnArg0(MainCanisterApiClient.GetPlayerDeckReturnArg0.GetPlayerDeckReturnArg0Value value) : base(value)
+			{
+			}
+
+			public class GetPlayerDeckReturnArg0Value : List<TokenId>
+			{
+				public GetPlayerDeckReturnArg0Value()
+				{
+				}
+			}
+		}
+
 		public class GetTournamentBracketReturnArg0
 		{
 			[CandidName("matches")]
@@ -1316,6 +1370,20 @@ namespace Cosmicrafts.MainCanister
 				public GetUnitsReturnArg0Element()
 				{
 				}
+			}
+		}
+
+		public class HandleCombatXPArg0 : List<TokenId>
+		{
+			public HandleCombatXPArg0()
+			{
+			}
+		}
+
+		public class HandleCombatXPReturnArg0 : List<TokenId>
+		{
+			public HandleCombatXPReturnArg0()
+			{
 			}
 		}
 
@@ -1416,6 +1484,27 @@ namespace Cosmicrafts.MainCanister
 			}
 		}
 
+		public class SelectRandomUnitsArg0 : List<TokenId>
+		{
+			public SelectRandomUnitsArg0()
+			{
+			}
+		}
+
+		public class SelectRandomUnitsReturnArg0 : List<TokenId>
+		{
+			public SelectRandomUnitsReturnArg0()
+			{
+			}
+		}
+
+		public class StoreCurrentDeckArg0 : List<TokenId>
+		{
+			public StoreCurrentDeckArg0()
+			{
+			}
+		}
+
 		public class TestReturnArg0 : OptionalValue<MainCanisterApiClient.TestReturnArg0.TestReturnArg0Value>
 		{
 			public TestReturnArg0()
@@ -1459,6 +1548,20 @@ namespace Cosmicrafts.MainCanister
 				public TestReturnArg0Value()
 				{
 				}
+			}
+		}
+
+		public class UpdateSoulNFTPlayedArg0 : List<TokenId>
+		{
+			public UpdateSoulNFTPlayedArg0()
+			{
+			}
+		}
+
+		public class UpdateSoulNFTPlayedReturnArg0 : List<TokenId>
+		{
+			public UpdateSoulNFTPlayedReturnArg0()
+			{
 			}
 		}
 	}

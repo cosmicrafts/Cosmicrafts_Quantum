@@ -74,7 +74,7 @@ public class NFTData : ScriptableObject
         {
             // Handle Unit Category
             var unit = category.AsUnit();
-            this.Category = new SerializedCategory(category.Tag.ToString(), unit.Tag.ToString());
+            this.Category = new SerializedCategory(category.Tag.ToString(), unit.ToString());
         }
         else
         {
@@ -99,6 +99,7 @@ public class NFTData : ScriptableObject
             ? tokenMetadata.Metadata.Skins.GetValueOrDefault().ConvertToSkin()
             : new List<Skin>();
     }
+
 
     public NFTData Clone()
     {

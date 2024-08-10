@@ -74,98 +74,95 @@ public class NFTUpgradeUI : MonoBehaviour
         damageInfoText.text = $"Damage: {currentDamage} + {damageDiff}";
     }
 
-    public async void OnUpgradeButtonPressed()
+public async void OnUpgradeButtonPressed()
+{
+    if (isUpgradeInProgress) return;  // Prevent multiple simultaneous calls
+    isUpgradeInProgress = true;
+
+    try
     {
-        if (isUpgradeInProgress) return;  // Prevent multiple simultaneous calls
-        isUpgradeInProgress = true;
-
-        try
+        string tokenIdToUpgrade = nftCard.TokenId;
+        if (string.IsNullOrEmpty(tokenIdToUpgrade))
         {
-            string tokenIdToUpgrade = nftCard.TokenId;
-            if (string.IsNullOrEmpty(tokenIdToUpgrade))
-            {
-                Debug.LogError("Token ID is empty.");
-                notificationText.text = "Token ID is empty.";
-                isUpgradeInProgress = false;
-                return;
-            }
-
-            LoadingPanel.Instance.ActiveLoadingPanel();
-
-            int currentLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
-            int currentHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
-            int currentDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
-            int upgradeCost = CalculateCost(currentLevel) + 1;  // Add 1 token fee
-
-            // Send the upgrade request to the blockchain
-            var apiClient = CandidApiManager.Instance.MainCanister;
-
-            if (apiClient == null)
-            {
-                Debug.LogError("CanisterLoginApiClient is not initialized.");
-                notificationText.text = "Error: API client not initialized.";
-                isUpgradeInProgress = false;
-                LoadingPanel.Instance.DesactiveLoadingPanel();
-                return;
-            }
-
-            UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
-            Debug.Log($"Triggering NFT upgrade for Token ID: {tokenIdToUpgrade}");
-
-            (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
-
-            if (success)
-            {
-                Debug.Log("NFT upgrade successful!");
-                notificationText.text = "Upgrade successful: " + message;
-
-                // Calculate new values locally
-                int newLevel = currentLevel + 1;
-                int newHP = currentHP + (currentHP / 10);
-                int newDamage = currentDamage + (currentDamage / 10);
-
-                // Update local NFT data
-                nftCard.UpdateStats(newLevel, newHP, newDamage);
-                UpdateDisplayedNFTInfo();
-
-                // Also update the detailed view
-                if (nftCardDetail != null && nftCardDetail.TokenId == tokenIdToUpgrade)
-                {
-                    nftCardDetail.UpdateUI(nftCard.nftData);
-                    nftCardDetail.UpdateStatsUI(); // Explicitly call to update the stats UI
-                }
-
-                // Display new values immediately
-                DisplayUpgradeInfo(currentLevel, newLevel, currentHP, newHP - currentHP, currentDamage, newDamage - currentDamage);
-
-                // Trigger UI update for upgrade screen
-                upgradeScreenUI.ActivateUpgradeScreen(currentLevel, newLevel, currentHP, newHP - currentHP, currentDamage, newDamage - currentDamage);
-                upgradeScreenUI.gameObject.SetActive(true);
-
-                // Update the shard balance locally
-                shardsScript.UpdateBalanceLocally(upgradeCost);
-
-                // Refresh the upgrade cost and button state
-                FetchAndCheckShardsBalance();
-            }
-            else
-            {
-                Debug.LogError("NFT upgrade failed: " + message);
-                notificationText.text = "Upgrade failed: " + message;
-            }
+            Debug.LogError("Token ID is empty.");
+            notificationText.text = "Token ID is empty.";
+            isUpgradeInProgress = false;
+            return;
         }
-        catch (System.Exception ex)
+
+        LoadingPanel.Instance.ActiveLoadingPanel();
+
+        int currentLevel = ExtractNumber(nftCard.GetValueFromStats("Level"));
+        int currentHP = ExtractNumber(nftCard.GetValueFromStats("Health"));
+        int currentDamage = ExtractNumber(nftCard.GetValueFromStats("Damage"));
+        int upgradeCost = CalculateCost(currentLevel) + 1;  // Add 1 token fee
+
+        var apiClient = CandidApiManager.Instance.MainCanister;
+
+        if (apiClient == null)
         {
-            Debug.LogError($"Exception during NFT upgrade: {ex.Message}");
-            notificationText.text = $"Exception during upgrade: {ex.Message}";
-        }
-        finally
-        {
+            Debug.LogError("CanisterLoginApiClient is not initialized.");
+            notificationText.text = "Error: API client not initialized.";
             isUpgradeInProgress = false;
             LoadingPanel.Instance.DesactiveLoadingPanel();
+            return;
+        }
+
+        UnboundedUInt tokenID = UnboundedUInt.FromBigInteger(BigInteger.Parse(tokenIdToUpgrade));
+        Debug.Log($"Triggering NFT upgrade for Token ID: {tokenIdToUpgrade}");
+
+        (bool success, string message) = await apiClient.UpgradeNFT(tokenID);
+
+        if (success)
+        {
+            Debug.Log("NFT upgrade successful!");
+            notificationText.text = "Upgrade successful: " + message;
+
+            // Calculate new values locally
+            int newLevel = currentLevel + 1;
+            int newHP = currentHP + (currentHP / 10);
+            int newDamage = currentDamage + (currentDamage / 10);
+
+            // Update local NFT data
+            nftCard.UpdateStats(newLevel, newHP, newDamage);
+            UpdateDisplayedNFTInfo();
+
+            // Ensure that the detailed view also reflects the updated information
+            if (nftCardDetail != null && nftCardDetail.TokenId == tokenIdToUpgrade)
+            {
+                nftCardDetail.UpdateUI(nftCard.nftData); // Directly update the UI in the detail view
+            }
+
+            // Display new values immediately
+            DisplayUpgradeInfo(currentLevel, newLevel, currentHP, newHP - currentHP, currentDamage, newDamage - currentDamage);
+
+            // Trigger UI update for upgrade screen
+            upgradeScreenUI.ActivateUpgradeScreen(currentLevel, newLevel, currentHP, newHP - currentHP, currentDamage, newDamage - currentDamage);
+            upgradeScreenUI.gameObject.SetActive(true);
+
+            // Update the shard balance locally
+            shardsScript.UpdateBalanceLocally(upgradeCost);
+
+            // Refresh the upgrade cost and button state
+            FetchAndCheckShardsBalance();
+        }
+        else
+        {
+            Debug.LogError("NFT upgrade failed: " + message);
+            notificationText.text = "Upgrade failed: " + message;
         }
     }
-
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"Exception during NFT upgrade: {ex.Message}");
+        notificationText.text = $"Exception during upgrade: {ex.Message}";
+    }
+    finally
+    {
+        isUpgradeInProgress = false;
+        LoadingPanel.Instance.DesactiveLoadingPanel();
+    }
+}
     private int ExtractNumber(string input, bool allowNotAvailable = false)
     {
         var match = System.Text.RegularExpressions.Regex.Match(input, @"\d+");

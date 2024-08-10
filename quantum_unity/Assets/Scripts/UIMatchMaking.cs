@@ -5,6 +5,10 @@ using Candid;
 using Cosmicrafts.MainCanister.Models;
 using UnityEngine;
 using Cosmicrafts.Managers;
+using System.Linq;
+using EdjCase.ICP.Candid.Models;
+using System.Numerics;
+
 
 namespace Cosmicrafts.Data
 {
@@ -25,64 +29,64 @@ namespace Cosmicrafts.Data
             public List<string> listSavedKeys;
         }
 
-        public async void StartSearch()
+public async void StartSearch()
+{
+    if (GameDataManager.Instance == null)
+    {
+        Debug.LogError("[UIMatchMaking] GameDataManager instance is null.");
+        return;
+    }
+
+    if (isSearching)
+    {
+        Debug.LogWarning("[UIMatchMaking] Already searching for a match.");
+        return;
+    }
+
+    isSearching = true;
+    SearchingScreen.SetActive(true);
+
+    var playerData = GameDataManager.Instance.playerData;
+
+    // Create a DeckInfo object from the list of saved keys
+    Playergamedata1.DeckInfo deckInfo = new Playergamedata1.DeckInfo();
+    deckInfo.AddRange(playerData.DeckNFTsKeyIds.Select(key => UnboundedUInt.FromBigInteger(BigInteger.Parse(key))));
+
+    // Create the Playergamedata1 object with the DeckInfo
+    Playergamedata1 playerGameData = new Playergamedata1(deckInfo);
+
+    Debug.Log(JsonUtility.ToJson(playerGameData)); // Optional: Debug the data being sent
+
+    var matchSearchingInfo = await CandidApiManager.Instance.MainCanister.GetMatchSearching(playerGameData);
+
+    Debug.Log("Status: " + matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
+
+    if (matchSearchingInfo.ReturnArg0 == MMSearchStatus.Assigned)
+    {
+        bool isGameMatched = false;
+        sendPlayerActive = true;
+        SendPlayerActive();
+
+        while (!isGameMatched && SearchingScreen.activeSelf)
         {
-            if (GameDataManager.Instance == null)
+            if (this.gameObject == null) { break; }
+            var isGameMatchedRequest = await CandidApiManager.Instance.MainCanister.IsGameMatched();
+            Debug.Log("Ya estoy asignado a una sala: " + matchSearchingInfo.ReturnArg1 + " espero ser matched: " + isGameMatchedRequest.ReturnArg1);
+            isGameMatched = isGameMatchedRequest.ReturnArg0;
+            Debug.Log("IsGameMatched: " + isGameMatched);
+
+            await Task.Delay(250);
+
+            if (isGameMatched)
             {
-                Debug.LogError("[UIMatchMaking] GameDataManager instance is null.");
-                return;
+                sendPlayerActive = false;
+                MatchFound();
             }
-
-            if (isSearching)
-            {
-                Debug.LogWarning("[UIMatchMaking] Already searching for a match.");
-                return;
-            }
-
-            isSearching = true;
-            SearchingScreen.SetActive(true);
-
-            var playerData = GameDataManager.Instance.playerData;
-
-            MatchPlayerData matchPlayerData = new MatchPlayerData
-            {
-                userAvatar = playerData.AvatarID,
-                listSavedKeys = playerData.DeckNFTsKeyIds
-            };
-
-            Debug.Log(JsonUtility.ToJson(matchPlayerData));
-
-            var matchSearchingInfo = await CandidApiManager.Instance.MainCanister.GetMatchSearching(JsonUtility.ToJson(matchPlayerData));
-
-            Debug.Log("Status: " + matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
-
-            if (matchSearchingInfo.ReturnArg0 == MMSearchStatus.Assigned)
-            {
-                bool isGameMatched = false;
-                sendPlayerActive = true;
-                SendPlayerActive();
-
-                while (!isGameMatched && SearchingScreen.activeSelf)
-                {
-                    if (this.gameObject == null) { break; }
-                    var isGameMatchedRequest = await CandidApiManager.Instance.MainCanister.IsGameMatched();
-                    Debug.Log("Ya estoy asignado a una sala: " + matchSearchingInfo.ReturnArg1 + " espero ser matched: " + isGameMatchedRequest.ReturnArg1);
-                    isGameMatched = isGameMatchedRequest.ReturnArg0;
-                    Debug.Log("IsGameMatched: " + isGameMatched);
-
-                    await Task.Delay(250);
-
-                    if (isGameMatched)
-                    {
-                        sendPlayerActive = false;
-                        MatchFound();
-                    }
-                }
-            }
-
-            isSearching = false;
         }
+    }
 
+    isSearching = false;
+}
         private async void SendPlayerActive()
         {
             while (sendPlayerActive && SearchingScreen.activeSelf)

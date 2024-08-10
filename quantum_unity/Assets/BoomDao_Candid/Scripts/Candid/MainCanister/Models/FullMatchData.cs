@@ -56,12 +56,12 @@ namespace Cosmicrafts.MainCanister.Models
 			public bool MatchAccepted { get; set; }
 
 			[CandidName("playerGameData")]
-			public string PlayerGameData { get; set; }
+			public PlayerGameData PlayerGameData { get; set; }
 
 			[CandidName("username")]
 			public Username1 Username { get; set; }
 
-			public Player1Info(Avatarid1 avatar, double elo, Playerid2 id, Level1 level, bool matchAccepted, string playerGameData, Username1 username)
+			public Player1Info(Avatarid1 avatar, double elo, Playerid2 id, Level1 level, bool matchAccepted, PlayerGameData playerGameData, Username1 username)
 			{
 				this.Avatar = avatar;
 				this.Elo = elo;
@@ -105,12 +105,12 @@ namespace Cosmicrafts.MainCanister.Models
 				public bool MatchAccepted { get; set; }
 
 				[CandidName("playerGameData")]
-				public string PlayerGameData { get; set; }
+				public PlayerGameData PlayerGameData { get; set; }
 
 				[CandidName("username")]
 				public Username1 Username { get; set; }
 
-				public Player2InfoValue(Avatarid1 avatar, double elo, Playerid2 id, Level1 level, bool matchAccepted, string playerGameData, Username1 username)
+				public Player2InfoValue(Avatarid1 avatar, double elo, Playerid2 id, Level1 level, bool matchAccepted, PlayerGameData playerGameData, Username1 username)
 				{
 					this.Avatar = avatar;
 					this.Elo = elo;

@@ -62,81 +62,89 @@ public class UIMatchLoading : MonoBehaviour
         GetMatchData();
     }
 
-    public async void GetMatchData()
+public async void GetMatchData()
+{
+    var matchDataRequest = await CandidApiManager.Instance.MainCanister.GetMyMatchData();
+    
+    if (matchDataRequest.ReturnArg0.HasValue)
     {
-        var matchDataRequest = await CandidApiManager.Instance.MainCanister.GetMyMatchData();
+        FullMatchData matchData = matchDataRequest.ReturnArg0.ValueOrDefault;
+
+        GlobalGameData.Instance.actualRoom = "GameCosmicQuantum: " + matchData.MatchID;
+        GlobalGameData.Instance.actualNumberRoom = matchData.MatchID;
+
+        GameDataManager.Instance.playerData.actualNumberRoom = matchData.MatchID;
+        GameDataManager.Instance.SavePlayerData();
         
-        if (matchDataRequest.ReturnArg0.HasValue)
+        PlayerData player1Data = new PlayerData();
+        PlayerData player2Data = new PlayerData();
+
+        FullMatchData.Player1Info player1 = matchData.Player1;
+        FullMatchData.Player2Info.Player2InfoValue player2 = matchData.Player2.ValueOrDefault;
+
+        // Store data for Player 1
+        player1Data.PrincipalId = player1.Id.ToString();
+        player1Data.Username = player1.Username;
+        player1Data.Level = (int)player1.Elo;
+
+        if (player1.PlayerGameData == null || player1.PlayerGameData.Deck == null || player1.PlayerGameData.Deck.Count == 0)
         {
-            FullMatchData matchData = matchDataRequest.ReturnArg0.ValueOrDefault;
-
-            GlobalGameData.Instance.actualRoom = "GameCosmicQuantum: " + matchData.MatchID;
-            GlobalGameData.Instance.actualNumberRoom = matchData.MatchID;
-
-            GameDataManager.Instance.playerData.actualNumberRoom = matchData.MatchID;
-            GameDataManager.Instance.SavePlayerData();
-            
-            PlayerData player1Data = new PlayerData();
-            PlayerData player2Data = new PlayerData();
-
-            FullMatchData.Player1Info player1 = matchData.Player1;
-            FullMatchData.Player2Info.Player2InfoValue player2 = matchData.Player2.ValueOrDefault;
-
-            // Store data for Player 1
-            player1Data.PrincipalId = player1.Id.ToString();
-            player1Data.Username = player1.Username;
-            player1Data.Level = (int)player1.Elo;
-
-            if (string.IsNullOrEmpty(player1.PlayerGameData))
-            {
-                player1Data.CharacterNFTId = "1"; // Assuming this is a string
-                player1Data.DeckNFTsKeyIds = new List<string>();
-                Debug.Log("Error: player 1 has no saved data.");
-            }
-            else
-            {
-                // Instead of JSON deserialization, populate the data directly if available
-                player1Data.CharacterNFTId = "SomeCharacterNFTId"; // Replace with actual data
-                player1Data.DeckNFTsKeyIds = new List<string> { "Key1", "Key2" }; // Replace with actual data
-            }
-
-            // Store data for Player 2
-            if (player2 == null || string.IsNullOrEmpty(player2.PlayerGameData))
-            {
-                player2Data.PrincipalId = "Error, no information";
-                player2Data.Username = "Error, no information";
-                player2Data.Level = 999;
-                player2Data.CharacterNFTId = "1";
-                player2Data.DeckNFTsKeyIds = new List<string>();
-                Debug.Log("Error: player 2 has no saved data.");
-            }
-            else
-            {
-                player2Data.PrincipalId = player2.Id.ToString();
-                player2Data.Username = player2.Username;
-                player2Data.Level = (int)player2.Elo;
-                player2Data.CharacterNFTId = "SomeCharacterNFTId"; // Replace with actual data
-                player2Data.DeckNFTsKeyIds = new List<string> { "Key1", "Key2" }; // Replace with actual data
-            }
-
-            if ((int)matchDataRequest.ReturnArg1 != 0)
-            {
-                if ((int)matchDataRequest.ReturnArg1 == 1)
-                {
-                    MatchStarting(player1Data, player2Data);
-                }
-                else if ((int)matchDataRequest.ReturnArg1 == 2)
-                {
-                    MatchStarting(player2Data, player1Data);
-                }
-            }
+            player1Data.CharacterNFTId = "1"; // Assuming this is a string
+            player1Data.DeckNFTsKeyIds = new List<string>();
+            Debug.Log("Error: player 1 has no saved data.");
         }
         else
         {
-            Debug.Log("No match data available.");
+            player1Data.CharacterNFTId = "SomeCharacterNFTId"; // Replace with actual data
+            player1Data.DeckNFTsKeyIds = new List<string>();
+
+            foreach (var tokenId in player1.PlayerGameData.Deck)
+            {
+                player1Data.DeckNFTsKeyIds.Add(tokenId.ToString());
+            }
+        }
+
+        // Store data for Player 2
+        if (player2 == null || player2.PlayerGameData == null || player2.PlayerGameData.Deck == null || player2.PlayerGameData.Deck.Count == 0)
+        {
+            player2Data.PrincipalId = "Error, no information";
+            player2Data.Username = "Error, no information";
+            player2Data.Level = 999;
+            player2Data.CharacterNFTId = "1";
+            player2Data.DeckNFTsKeyIds = new List<string>();
+            Debug.Log("Error: player 2 has no saved data.");
+        }
+        else
+        {
+            player2Data.PrincipalId = player2.Id.ToString();
+            player2Data.Username = player2.Username;
+            player2Data.Level = (int)player2.Elo;
+            player2Data.CharacterNFTId = "SomeCharacterNFTId"; // Replace with actual data
+            player2Data.DeckNFTsKeyIds = new List<string>();
+
+            foreach (var tokenId in player2.PlayerGameData.Deck)
+            {
+                player2Data.DeckNFTsKeyIds.Add(tokenId.ToString());
+            }
+        }
+
+        if ((int)matchDataRequest.ReturnArg1 != 0)
+        {
+            if ((int)matchDataRequest.ReturnArg1 == 1)
+            {
+                MatchStarting(player1Data, player2Data);
+            }
+            else if ((int)matchDataRequest.ReturnArg1 == 2)
+            {
+                MatchStarting(player2Data, player1Data);
+            }
         }
     }
-
+    else
+    {
+        Debug.Log("No match data available.");
+    }
+}
     public void MatchStarting(PlayerData myUserData, PlayerData vsUserData)
     {
         Debug.Log("MATCH STARTING");

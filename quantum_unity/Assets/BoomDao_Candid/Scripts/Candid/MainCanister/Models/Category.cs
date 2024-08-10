@@ -23,53 +23,24 @@ namespace Cosmicrafts.MainCanister.Models
 		{
 		}
 
-		public static Category Avatar(AvatarMetadata info)
+		public static Category Avatar()
 		{
-			return new Category(CategoryTag.Avatar, info);
+			return new Category(CategoryTag.Avatar, null);
 		}
 
-		public static Category Character(CharacterMetadata info)
+		public static Category Chest()
 		{
-			return new Category(CategoryTag.Character, info);
+			return new Category(CategoryTag.Chest, null);
 		}
 
-		public static Category Chest(ChestMetadata info)
+		public static Category Trophy()
 		{
-			return new Category(CategoryTag.Chest, info);
-		}
-
-		public static Category Trophy(TrophyMetadata info)
-		{
-			return new Category(CategoryTag.Trophy, info);
+			return new Category(CategoryTag.Trophy, null);
 		}
 
 		public static Category Unit(Unit info)
 		{
 			return new Category(CategoryTag.Unit, info);
-		}
-
-		public AvatarMetadata AsAvatar()
-		{
-			this.ValidateTag(CategoryTag.Avatar);
-			return (AvatarMetadata)this.Value!;
-		}
-
-		public CharacterMetadata AsCharacter()
-		{
-			this.ValidateTag(CategoryTag.Character);
-			return (CharacterMetadata)this.Value!;
-		}
-
-		public ChestMetadata AsChest()
-		{
-			this.ValidateTag(CategoryTag.Chest);
-			return (ChestMetadata)this.Value!;
-		}
-
-		public TrophyMetadata AsTrophy()
-		{
-			this.ValidateTag(CategoryTag.Trophy);
-			return (TrophyMetadata)this.Value!;
 		}
 
 		public Unit AsUnit()
@@ -89,15 +60,9 @@ namespace Cosmicrafts.MainCanister.Models
 
 	public enum CategoryTag
 	{
-		[CandidName("avatar")]
 		Avatar,
-		[CandidName("character")]
-		Character,
-		[CandidName("chest")]
 		Chest,
-		[CandidName("trophy")]
 		Trophy,
-		[CandidName("unit")]
 		Unit
 	}
 }

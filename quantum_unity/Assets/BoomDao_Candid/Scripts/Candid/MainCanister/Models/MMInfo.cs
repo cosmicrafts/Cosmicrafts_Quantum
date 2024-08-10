@@ -1,4 +1,5 @@
 using EdjCase.ICP.Candid.Mapping;
+using Cosmicrafts.MainCanister.Models;
 using Username1 = System.String;
 using Username = System.String;
 using Playerid2 = EdjCase.ICP.Candid.Models.Principal;
@@ -20,12 +21,12 @@ namespace Cosmicrafts.MainCanister.Models
 		public bool MatchAccepted { get; set; }
 
 		[CandidName("playerGameData")]
-		public string PlayerGameData { get; set; }
+		public PlayerGameData PlayerGameData { get; set; }
 
 		[CandidName("username")]
 		public Username1 Username { get; set; }
 
-		public MMInfo(double elo, Playerid2 id, ulong lastPlayerActive, bool matchAccepted, string playerGameData, Username1 username)
+		public MMInfo(double elo, Playerid2 id, ulong lastPlayerActive, bool matchAccepted, PlayerGameData playerGameData, Username1 username)
 		{
 			this.Elo = elo;
 			this.Id = id;
