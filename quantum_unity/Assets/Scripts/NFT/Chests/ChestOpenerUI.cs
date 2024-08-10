@@ -6,7 +6,6 @@ using Cosmicrafts.MainCanister.Models;
 using Candid;
 using System;
 
-
 namespace Cosmicrafts
 {
     public class ChestOpenerUI : MonoBehaviour
@@ -58,16 +57,14 @@ namespace Cosmicrafts
                     Debug.Log("Chest opened successfully.");
                     notificationText.text = "Chest opened: " + message;
 
-                    // Calculate token amounts based on rarity
-                    var (shardsAmount, fluxAmount) = CalculateTokensAmount(selectedChestSO.rarity);
+                    // Calculate the Stardust amount based on rarity
+                    int stardustAmount = CalculateStardustAmount(selectedChestSO.rarity);
 
                     // Display the calculated rewards
-                    rewardScreenUI.DisplayRewards("Shards", shardsAmount);
-                    rewardScreenUI.DisplayRewards("Flux", fluxAmount);
+                    rewardScreenUI.DisplayRewards("Stardust", stardustAmount);
 
                     rewardScreenUI.OnChestOpenedSuccessfully();
                     ChestManager.Instance.RemoveChestAndRefreshCount(selectedTokenId);
-                    // Consider what to do next - perhaps hide this UI or reset for another chest opening
                 }
                 else
                 {
@@ -82,7 +79,7 @@ namespace Cosmicrafts
             }
         }
 
-        private (int shardsAmount, int fluxAmount) CalculateTokensAmount(int rarity)
+        private int CalculateStardustAmount(int rarity)
         {
             int factor = 1;
 
@@ -107,11 +104,8 @@ namespace Cosmicrafts
                 factor = (int)(Math.Pow(2, 5) * Math.Pow(3, 5) * Math.Pow(5, 5) * Math.Pow(11, 5) * Math.Pow(21, rarity - 21));
             }
 
-            int shardsAmount = 12 * factor;
-            int fluxAmount = 4 * factor;
-
-            return (shardsAmount, fluxAmount);
+            int stardustAmount = 12 * factor;
+            return stardustAmount;
         }
-
     }
 }

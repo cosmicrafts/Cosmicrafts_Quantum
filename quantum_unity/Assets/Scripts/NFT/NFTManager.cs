@@ -44,7 +44,7 @@ namespace Cosmicrafts.Data
             await GetPlayerDeckAsync();
         }
 
-        async Task FetchOwnedNFTs()
+        public async Task FetchOwnedNFTs()
         {
             if (GameDataManager.Instance == null)
             {

@@ -15,7 +15,7 @@ using System.Collections.Generic;
 namespace Cosmicrafts
 {
 
-    public class shards : MonoBehaviour
+    public class Stardust : MonoBehaviour
     {
         public TMP_Text balanceText;
         public TMP_InputField principalInputField;
@@ -35,7 +35,7 @@ namespace Cosmicrafts
         void Start()
         {
             sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
-            ShardsPanel = GameObject.Find("ShardsPanel").GetComponent<Animator>();
+            ShardsPanel = GameObject.Find("StardustPanel").GetComponent<Animator>();
             FetchBalance();
         }
 

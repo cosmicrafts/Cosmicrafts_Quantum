@@ -24,7 +24,7 @@ namespace Cosmicrafts
 
         public MissionData rewardData { get; private set; }
 
-        public Sprite shardsSprite;
+        public Sprite stardustSprite;
         public Sprite chest1Sprite;
         public Sprite chest2Sprite;
         public Sprite chest3Sprite;
@@ -38,7 +38,7 @@ namespace Cosmicrafts
         public Color gamesPlayedColor;
         public Color gamesWonColor;
 
-        public shards ShardsScript;
+        public Stardust StardustScript;
         public ChestManager ChestsScript;
         public Image claimButtonImage;
         public Image progressBar;
@@ -134,7 +134,7 @@ namespace Cosmicrafts
         {
             return prizeType switch
             {
-                MissionRewardType.Stardust => shardsSprite,
+                MissionRewardType.Stardust => stardustSprite,
                 MissionRewardType.Chest => SelectChestSprite(prizeAmount),
                 _ => null
             };

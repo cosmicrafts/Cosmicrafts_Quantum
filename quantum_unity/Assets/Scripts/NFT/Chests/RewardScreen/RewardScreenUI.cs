@@ -11,10 +11,9 @@ namespace Cosmicrafts {
         public Button tapTarget;
         public UnityEvent onActivateRewardScreen = new UnityEvent();
         public Transform rewardsContainer;
-        public GameObject shardsRewardPrefab;
-        public GameObject fluxRewardPrefab;
+        public GameObject StardustRewardPrefab;
         public GameObject rewardsPanel;
-        public shards ShardsScript;
+        public Stardust StardustScript;
         public ChestOpenerUI chestOpenerUI;
         private int activeRewardsCount = 0;
         public SimpleDeactivate deactivationAnimScript;
@@ -88,11 +87,8 @@ namespace Cosmicrafts {
 
             switch (tokenType)
             {
-                case "Shards":
-                    rewardPrefab = shardsRewardPrefab;
-                    break;
-                case "Flux":
-                    rewardPrefab = fluxRewardPrefab;
+                case "Stardust":
+                    rewardPrefab = StardustRewardPrefab;
                     break;
                 default:
                     Debug.LogError("Unknown token type: " + tokenType);
@@ -118,9 +114,9 @@ namespace Cosmicrafts {
                 {
                     rewardButton.onClick.AddListener(() => {
 
-                    if (tokenType == "Shards")
+                    if (tokenType == "Stardust")
                         {
-                            ShardsScript.UpdateBalanceLocally(-amount);
+                            StardustScript.UpdateBalanceLocally(-amount);
                         }
 
                         // Play the animation associated with the reward

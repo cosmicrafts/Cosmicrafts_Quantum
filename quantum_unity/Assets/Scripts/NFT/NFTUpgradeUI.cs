@@ -18,7 +18,7 @@ public class NFTUpgradeUI : MonoBehaviour
     public TMP_Text hpInfoText;
     public TMP_Text damageInfoText;
     public NFTUpgradeScreenUI upgradeScreenUI;
-    public shards shardsScript;
+    public Stardust StardustScript;
 
     [Header("NFT Display Info")]
     public TMP_Text nameText;
@@ -54,7 +54,7 @@ public class NFTUpgradeUI : MonoBehaviour
             tokenCostText.text = upgradeCost.ToString();
 
             BigInteger requiredShards = new BigInteger(upgradeCost);
-            bool hasEnoughShards = shardsScript.CurrentBalance >= requiredShards;
+            bool hasEnoughShards = StardustScript.CurrentBalance >= requiredShards;
             upgradeButton.interactable = hasEnoughShards;
             notificationText.text = hasEnoughShards ? "" : $"You need at least {upgradeCost} shards to upgrade.";
 
@@ -141,7 +141,7 @@ public async void OnUpgradeButtonPressed()
             upgradeScreenUI.gameObject.SetActive(true);
 
             // Update the shard balance locally
-            shardsScript.UpdateBalanceLocally(upgradeCost);
+            StardustScript.UpdateBalanceLocally(upgradeCost);
 
             // Refresh the upgrade cost and button state
             FetchAndCheckShardsBalance();

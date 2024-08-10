@@ -26,6 +26,17 @@ namespace Cosmicrafts
         public NotificationManager notificationManager;
         private List<string> currentTokenIds = new List<string>();
 
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            Instance = this;
+        }
+
+
         void Start()
         {
             InitializeChestDictionary();
@@ -76,8 +87,10 @@ namespace Cosmicrafts
             }
         }
 
-        private void FetchOwnedChests()
+        private async void FetchOwnedChests()
         {
+
+            await Task.Delay(500);
             // Get the list of Chest NFTs from the NFTManager
             var chestNFTs = NFTManager.Instance.AllNFTDatas.Where(nft => nft.Category.TagName == "Chest").ToList();
 
@@ -105,18 +118,24 @@ namespace Cosmicrafts
             }
         }
 
+        private Dictionary<string, ChestInstance> chestInstanceDictionary = new Dictionary<string, ChestInstance>();
+
         private void InstantiateChestPrefab(NFTData nftData, ChestSO chestSO)
         {
             GameObject instance = Instantiate(chestPrefab, chestDisplayContainer);
             ChestInstance chestInstance = instance.GetComponent<ChestInstance>();
             if (chestInstance != null)
             {
-                // Convert the TokenId to UnboundedUInt using the correct constructor or method
                 var tokenId = UnboundedUInt.FromBigInteger(BigInteger.Parse(nftData.TokenId));
-                chestInstance.Setup(chestSO, tokenId); // Pass the tokenId instead of the entire NFTData
+                chestInstance.Setup(chestSO, tokenId);
+
+                // Add to dictionary
+                string tokenIdStr = tokenId.ToString();
+                chestInstanceDictionary[tokenIdStr] = chestInstance;
             }
             instance.SetActive(true);
         }
+
 
         public void UpdateOwnedChests()
         {
@@ -188,19 +207,40 @@ namespace Cosmicrafts
 
         public void RemoveChestAndRefreshCount(UnboundedUInt tokenId)
         {
-            ChestInstance[] chestInstances = chestDisplayContainer.GetComponentsInChildren<ChestInstance>();
-            foreach (ChestInstance chestInstance in chestInstances)
+            string tokenIdStr = tokenId.ToString();
+            Debug.Log($"[ChestManager] Trying to remove chest with Token ID: {tokenIdStr}");
+
+            if (chestInstanceDictionary == null)
             {
-                if (chestInstance.tokenId == tokenId)
+                Debug.LogError("[ChestManager] chestInstanceDictionary is null!");
+                return;
+            }
+
+            if (chestInstanceDictionary.TryGetValue(tokenIdStr, out ChestInstance chestInstance))
+            {
+                if (chestInstance == null)
                 {
-                    Destroy(chestInstance.gameObject);
-                    if (currentTokenIds.Remove(tokenId.ToString()))
-                    {
-                        ownedChestsText.text = $"{currentTokenIds.Count}";
-                    }
-                    break;
+                    Debug.LogError($"[ChestManager] chestInstance found but is null for Token ID: {tokenIdStr}");
+                    return;
+                }
+
+                Debug.Log("[ChestManager] Match found, destroying chest instance.");
+                Destroy(chestInstance.gameObject);
+                
+                chestInstanceDictionary.Remove(tokenIdStr);
+                
+                if (currentTokenIds.Remove(tokenIdStr))
+                {
+                    ownedChestsText.text = $"{currentTokenIds.Count}";
                 }
             }
+            else
+            {
+                Debug.LogError($"[ChestManager] No chest instance found with Token ID: {tokenIdStr}");
+            }
         }
+
+
+
     }
 }
