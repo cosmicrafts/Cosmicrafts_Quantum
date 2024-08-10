@@ -93,8 +93,24 @@ namespace Cosmicrafts.Data
         }
 
         // Updates the UI collection with the current data and filters
-public void RefreshCollection()
+public async void RefreshCollection()
 {
+
+    if (NFTManager.Instance == null)
+    {
+        Debug.LogError("NFTManager instance is null.");
+        return;
+    }
+
+    // Wait for the player deck to be fetched from the blockchain
+    bool isDeckRetrieved = await NFTManager.Instance.GetPlayerDeckAsync();
+
+    if (!isDeckRetrieved)
+    {
+        Debug.LogWarning("Failed to retrieve player deck from blockchain.");
+        return;
+    }
+
     if (AllNFTDatas == null || AllNFTDatas.Count == 0)
     {
         Debug.LogWarning("No NFTs available for collection.");
@@ -110,28 +126,41 @@ public void RefreshCollection()
         return;
     }
 
-    // Initialize the deck with the first 6 Unit NFTs
-    var initialDeckNFTs = unitNFTs.Take(6).ToList();
+    var playerData = GameDataManager.Instance.playerData;
 
-    // Clear the existing keys in player data
-    GameDataManager.Instance.playerData.DeckNFTsKeyIds.Clear();
-
-    // Save the first 6 Unit NFTs to player data
-    foreach (var nftData in initialDeckNFTs)
+    // Check if the player's deck is empty
+    if (playerData.DeckNFTsKeyIds == null || playerData.DeckNFTsKeyIds.Count == 0)
     {
-        GameDataManager.Instance.playerData.DeckNFTsKeyIds.Add(nftData.TokenId);
+        // Default the deck to the first 6 Unit NFTs
+        Debug.Log("Player deck is empty. Defaulting to the first 6 Unit NFTs.");
+        var initialDeckNFTs = unitNFTs.Take(6).ToList();
+
+        // Save the first 6 Unit NFTs to player data
+        playerData.DeckNFTsKeyIds.Clear();
+        foreach (var nftData in initialDeckNFTs)
+        {
+            playerData.DeckNFTsKeyIds.Add(nftData.TokenId);
+        }
+
+        // Save the updated player data
+        GameDataManager.Instance.SavePlayerData();
     }
 
-    // Save the updated player data
-    GameDataManager.Instance.SavePlayerData();
-
-    // Load the deck with the selected Unit NFTs
+    // Load the deck with the selected Unit NFTs from playerData.DeckNFTsKeyIds
     for (int i = 0; i < Deck.Length; i++)
     {
-        if (i < initialDeckNFTs.Count)
+        if (i < playerData.DeckNFTsKeyIds.Count)
         {
-            Deck[i].SetNFTData(initialDeckNFTs[i]);
-            Deck[i].gameObject.SetActive(true);
+            var nft = unitNFTs.FirstOrDefault(n => n.TokenId == playerData.DeckNFTsKeyIds[i]);
+            if (nft != null)
+            {
+                Deck[i].SetNFTData(nft);
+                Deck[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                Deck[i].gameObject.SetActive(false);
+            }
         }
         else
         {
@@ -142,7 +171,7 @@ public void RefreshCollection()
     // Populate the collection with the remaining Unit NFTs
     foreach (var nft in unitNFTs)
     {
-        if (!GameDataManager.Instance.playerData.DeckNFTsKeyIds.Contains(nft.TokenId))
+        if (!playerData.DeckNFTsKeyIds.Contains(nft.TokenId))
         {
             NFTCard card = Instantiate(NftCardPrefab, NftCardPrefab.transform.parent).GetComponent<NFTCard>();
             card.SetNFTData(nft);

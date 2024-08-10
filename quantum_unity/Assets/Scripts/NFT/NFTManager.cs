@@ -7,6 +7,8 @@ using Candid;
 using Cosmicrafts.MainCanister.Models;
 using EdjCase.ICP.Candid.Models;
 using Cosmicrafts.Managers;
+using System;
+using Cosmicrafts.MainCanister;
 
 namespace Cosmicrafts.Data
 {
@@ -39,6 +41,7 @@ namespace Cosmicrafts.Data
         async void Start()
         {
             await FetchOwnedNFTs();
+            await GetPlayerDeckAsync();
         }
 
         async Task FetchOwnedNFTs()
@@ -221,5 +224,122 @@ namespace Cosmicrafts.Data
             OnMetadataUpdated?.Invoke(tokenId);
             Debug.Log($"Finished metadata update for Token ID: {tokenId}");
         }
+
+
+
+        public async Task<bool> GetPlayerDeckAsync()
+        {
+            if (GameDataManager.Instance == null)
+            {
+                Debug.LogError("[NFTManager] GameDataManager instance is null.");
+                return false;
+            }
+
+            var userData = GameDataManager.Instance.playerData;
+            if (userData == null)
+            {
+                Debug.LogError("Failed to load player data.");
+                return false;
+            }
+
+            var principal = Principal.FromText(userData.PrincipalId);
+
+            try
+            {
+                var deckResponse = await CandidApiManager.Instance.MainCanister.GetPlayerDeck(principal);
+
+                // Check if the response has a value (which is a list of TokenId)
+                if (deckResponse.HasValue)
+                {
+                    var deckList = deckResponse.GetValueOrDefault();
+
+                    if (deckList.Count == 0)
+                    {
+                        Debug.LogWarning("Player deck is empty.");
+                        userData.DeckNFTsKeyIds.Clear();  // Clear any existing deck in player data
+                    }
+                    else
+                    {
+                        Debug.Log("Player deck retrieved successfully.");
+
+                        // Convert the list of TokenIds (UnboundedUInt) to strings and store in playerData.DeckNFTsKeyIds
+                        userData.DeckNFTsKeyIds = deckList
+                            .Select(tokenId => tokenId.ToString())
+                            .ToList();
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Player deck is null.");
+                    userData.DeckNFTsKeyIds.Clear();  // Clear any existing deck in player data
+                }
+
+                // Save the updated player data locally
+                GameDataManager.Instance.SavePlayerData();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error retrieving player deck: {ex.Message}");
+                return false;
+            }
+        }
+
+
+        public async Task<bool> SaveDeckToBlockchain()
+        {
+            var playerData = GameDataManager.Instance.playerData;
+            if (playerData == null)
+            {
+                Debug.LogError("[NFTManager] Player data is null.");
+                return false;
+            }
+
+            try
+            {
+                // Convert the list of string IDs (DeckNFTsKeyIds) to UnboundedUInt
+                var deckTokenIds = playerData.DeckNFTsKeyIds
+                    .Select(key => UnboundedUInt.FromBigInteger(BigInteger.Parse(key)))
+                    .ToList();
+
+                // Create an instance of StoreCurrentDeckArg0 and add the deck data
+                var storeDeckArg = new MainCanisterApiClient.StoreCurrentDeckArg0();
+                storeDeckArg.AddRange(deckTokenIds);
+
+                // Call the API to store the deck on the blockchain
+                var isStored = await CandidApiManager.Instance.MainCanister.StoreCurrentDeck(storeDeckArg);
+
+                if (isStored)
+                {
+                    Debug.Log("Deck saved to blockchain successfully.");
+                }
+                else
+                {
+                    Debug.LogWarning("Failed to save the deck to blockchain.");
+                }
+
+                return isStored;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error storing current deck: {ex.Message}");
+                return false;
+            }
+        }
+
+
+        public void OnSaveDeckButtonClicked()
+        {
+            // Call the async method but don't wait for it to finish
+            SaveDeckToBlockchain().ContinueWith(task => 
+            {
+                if (task.Exception != null)
+                {
+                    Debug.LogError("Error occurred while saving deck to blockchain: " + task.Exception);
+                }
+            });
+        }
+
     }
 }
