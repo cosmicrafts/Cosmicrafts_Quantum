@@ -1,29 +1,21 @@
 using EdjCase.ICP.Candid.Mapping;
-using Cosmicrafts.MainCanister.Models;
 using System.Collections.Generic;
-using TokenId = EdjCase.ICP.Candid.Models.UnboundedUInt;
+using EdjCase.ICP.Candid.Models;
 
 namespace Cosmicrafts.MainCanister.Models
 {
 	public class PlayerGameData
 	{
 		[CandidName("deck")]
-		public PlayerGameData.DeckInfo Deck { get; set; }
+		public List<UnboundedUInt> Deck { get; set; }
 
-		public PlayerGameData(PlayerGameData.DeckInfo deck)
+		public PlayerGameData(List<UnboundedUInt> deck)
 		{
 			this.Deck = deck;
 		}
 
 		public PlayerGameData()
 		{
-		}
-
-		public class DeckInfo : List<TokenId>
-		{
-			public DeckInfo()
-			{
-			}
 		}
 	}
 }

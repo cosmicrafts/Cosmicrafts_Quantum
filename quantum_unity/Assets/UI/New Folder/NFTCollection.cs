@@ -144,6 +144,7 @@ public async void RefreshCollection()
 
         // Save the updated player data
         GameDataManager.Instance.SavePlayerData();
+        
     }
 
     // Load the deck with the selected Unit NFTs from playerData.DeckNFTsKeyIds
@@ -178,7 +179,7 @@ public async void RefreshCollection()
             card.gameObject.SetActive(true);
         }
     }
-
+    await NFTManager.Instance.SaveDeckToBlockchain();
     NftCardPrefab.gameObject.SetActive(false); // Hide the prefab template
 }
 

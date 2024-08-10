@@ -48,16 +48,7 @@ public async void StartSearch()
 
     var playerData = GameDataManager.Instance.playerData;
 
-    // Create a DeckInfo object from the list of saved keys
-    Playergamedata1.DeckInfo deckInfo = new Playergamedata1.DeckInfo();
-    deckInfo.AddRange(playerData.DeckNFTsKeyIds.Select(key => UnboundedUInt.FromBigInteger(BigInteger.Parse(key))));
-
-    // Create the Playergamedata1 object with the DeckInfo
-    Playergamedata1 playerGameData = new Playergamedata1(deckInfo);
-
-    Debug.Log(JsonUtility.ToJson(playerGameData)); // Optional: Debug the data being sent
-
-    var matchSearchingInfo = await CandidApiManager.Instance.MainCanister.GetMatchSearching(playerGameData);
+    var matchSearchingInfo = await CandidApiManager.Instance.MainCanister.GetMatchSearching();
 
     Debug.Log("Status: " + matchSearchingInfo.ReturnArg0 + " Int: " + matchSearchingInfo.ReturnArg1 + " text: " + matchSearchingInfo.ReturnArg2);
 

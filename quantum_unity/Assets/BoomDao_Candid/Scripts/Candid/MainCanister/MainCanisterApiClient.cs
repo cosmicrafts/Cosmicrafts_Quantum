@@ -333,9 +333,9 @@ namespace Cosmicrafts.MainCanister
 			return reply.ToObjects<OptionalValue<(Principal, OptionalValue<Principal>)>>(this.Converter);
 		}
 
-		public async Task<(Models.MMSearchStatus ReturnArg0, UnboundedUInt ReturnArg1, string ReturnArg2)> GetMatchSearching(Models.Playergamedata1 arg0)
+		public async Task<(Models.MMSearchStatus ReturnArg0, UnboundedUInt ReturnArg1, string ReturnArg2)> GetMatchSearching()
 		{
-			CandidArg arg = CandidArg.FromCandid(CandidTypedValue.FromObject(arg0, this.Converter));
+			CandidArg arg = CandidArg.FromCandid();
 			CandidArg reply = await this.Agent.CallAndWaitAsync(this.CanisterId, "getMatchSearching", arg);
 			return reply.ToObjects<Models.MMSearchStatus, UnboundedUInt, string>(this.Converter);
 		}
