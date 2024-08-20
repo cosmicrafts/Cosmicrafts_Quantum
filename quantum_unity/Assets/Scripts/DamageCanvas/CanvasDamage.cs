@@ -17,6 +17,8 @@ public class CanvasDamage : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+        //damageText.text = damageValue.ToString();
+        Destroy(gameObject, .5f);
     }
 
     public void SetDamage(float newDamage, EAttackMode attackMode)

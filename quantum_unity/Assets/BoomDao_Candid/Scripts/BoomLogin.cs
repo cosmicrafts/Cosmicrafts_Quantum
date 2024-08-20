@@ -86,9 +86,9 @@ public class BoomLogin : MonoBehaviour
 
     private async UniTask UpdateGlobalGameData(string username, string principalId)
     {
-        if (!GlobalGameData.Instance.userDataLoaded)
+       /* if (!GlobalGameData.Instance.userDataLoaded)
         {
            // await SaveData.LoadGameUserAsync();
-        }
+        }*/
     }
 }
