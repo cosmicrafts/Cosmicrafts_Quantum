@@ -15487,7 +15487,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &374054369
@@ -48156,7 +48156,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1299196291
@@ -53783,6 +53783,75 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365497966}
   m_CullTransparentMesh: 0
+--- !u!1001 &1377254841
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 697417429954438962}
+    m_Modifications:
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 614409388736174090, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+        type: 3}
+      propertyPath: m_Name
+      value: BOT_7_3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8, type: 3}
 --- !u!1 &1383324321
 GameObject:
   m_ObjectHideFlags: 0
@@ -65792,6 +65861,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1846697751}
   m_CullTransparentMesh: 0
+--- !u!4 &1859645140 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 614409388736174088, guid: f13e8ffc8cdcb4d42ba321b6154e4fd8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1377254841}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1859874197
 GameObject:
   m_ObjectHideFlags: 0
@@ -82990,7 +83065,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2042457342
@@ -97150,7 +97225,7 @@ MonoBehaviour:
   Winner: 0
   GridColl: {fileID: 697417431163022882}
   Testing: 1
-  TestingDeck: 0
+  TestingDeck: 1
 --- !u!4 &697417429954438962
 Transform:
   m_ObjectHideFlags: 0
@@ -97170,6 +97245,7 @@ Transform:
   - {fileID: 3577802465411675848}
   - {fileID: 201565989}
   - {fileID: 1177459438}
+  - {fileID: 1859645140}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
