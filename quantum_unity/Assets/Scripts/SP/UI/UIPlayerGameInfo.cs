@@ -18,11 +18,11 @@ public class UIPlayerGameInfo : MonoBehaviour
     //Update the UI banner with the player data
     public void InitInfo(User user, UserProgress progress, NFTsCharacter character)
     {
-        WalletId.text = Utils.GetWalletIDShort(user.WalletId);
-        PlayerName.text = user.NikeName;
-        Level.text = $"{Lang.GetText("mn_lvl")} {progress.GetLevel()}";
-        XpBar.fillAmount = (float)progress.GetXp() / (float)progress.GetNextXpGoal();
-        Avatar.sprite = ResourcesServices.LoadAvatarUser(user.Avatar);
+       // WalletId.text = Utils.GetWalletIDShort(user.WalletId);
+       // PlayerName.text = user.NikeName;
+       // Level.text = $"{Lang.GetText("mn_lvl")} {progress.GetLevel()}";
+       // XpBar.fillAmount = (float)progress.GetXp() / (float)progress.GetNextXpGoal();
+       // Avatar.sprite = ResourcesServices.LoadAvatarUser(user.Avatar);
     }
 
     //Update the UI banner with a resume of some player data (for multiplayer)

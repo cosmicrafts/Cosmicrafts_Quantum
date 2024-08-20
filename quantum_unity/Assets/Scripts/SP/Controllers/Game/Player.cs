@@ -74,6 +74,15 @@ public class Player : MonoBehaviour
                 MyTeam = Team.Red;
             }
         }*/
+
+        if (GlobalManager.GMD.DebugMode)
+        {
+            PlayerDeck = new List<NFTsCard>();
+            foreach (var card in GlobalManager.GMD.GetUserCollection().Cards)
+            {
+                PlayerDeck.Add(card);
+            }
+        }
         //Game manager can now spawn the base stations
         GameMng.GM.InitBaseStations();
         Debug.Log("--PLAYER END AWAKE--");

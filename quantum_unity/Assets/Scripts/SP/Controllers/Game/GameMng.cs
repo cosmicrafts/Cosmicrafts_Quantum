@@ -1,4 +1,4 @@
-﻿//using IngameDebugConsole;
+﻿using IngameDebugConsole;
 
 namespace CosmicraftsSP {
 using System;

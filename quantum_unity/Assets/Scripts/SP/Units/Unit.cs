@@ -1,5 +1,5 @@
 ﻿namespace CosmicraftsSP {
-//using EPOOutline;
+using EPOOutline;
 using System.Linq;
 using UnityEngine;
 using System.Collections;
@@ -104,7 +104,7 @@ public class Unit : MonoBehaviour
     //The unit UI reference code
     public UIUnit UI;
     //The outline shader effect reference
-   // protected Outlinable //MyOutline;
+    protected Outlinable MyOutline;
     //The Animator controller reference
     [SerializeField]
     protected Animator MyAnim;
@@ -133,14 +133,14 @@ public class Unit : MonoBehaviour
         MaxShield = Shield;
         MaxHp = HitPoints;
         MyRb = GetComponent<Rigidbody>();
-        //MyOutline = Mesh.GetComponent<Outlinable>();
+        MyOutline = Mesh.GetComponent<Outlinable>();
         TrigerBase = GetComponent<SphereCollider>();
         SolidBase = Mesh.GetComponent<SphereCollider>();
         //Initialize UI
         UI.Init(MaxHp - 1, MaxShield - 1);
         UI.SetColorBars(!IsMyTeam(GameMng.P.MyTeam));
         //Set the outline color
-        //MyOutline.OutlineParameters.Color = GameMng.GM.GetColorUnit(MyTeam, PlayerId);
+        MyOutline.OutlineParameters.Color = GameMng.GM.GetColorUnit(MyTeam, PlayerId);
         //Initialize more variables
         TrigerBase.radius = SolidBase.radius;
         transform.localScale = new Vector3(Size, Size, Size);
