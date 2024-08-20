@@ -9523,7 +9523,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4495777382389447028}
-  - component: {fileID: -1678953180862074516}
   - component: {fileID: 49977308736601857}
   m_Layer: 0
   m_Name: PRJ_Bluebolt
@@ -9548,20 +9547,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-1678953180862074516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4495777382389081428}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ee751637bfacf14284a6e0050b96e91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleSystemsRenderers: []
-  color: {r: 0.5330188, g: 0.89587456, b: 1, a: 0.40392157}
 --- !u!135 &49977308736601857
 SphereCollider:
   m_ObjectHideFlags: 0

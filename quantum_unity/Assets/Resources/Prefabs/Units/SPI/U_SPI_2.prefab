@@ -84,7 +84,7 @@ SphereCollider:
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &4998824768398995776
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -101,7 +101,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1242440231839299696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,21 +115,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexMaskingMode: 0
   drawingMode: 1
   outlineLayer: 0
   outlineTargets:
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 7447518623627918394}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
@@ -1535,9 +1531,6 @@ MonoBehaviour:
   RotateToEnemy: 1
   StopToAttack: 1
   Bullet: {fileID: 4495777382389081428, guid: c41b4016a3c385c43b02eaaebc81b6a8, type: 3}
-  colorBullet: {r: 0.5518868, g: 0.912388, b: 1, a: 0.6313726}
-  colorImpact: {r: 0.5271004, g: 0.89453197, b: 0.9716981, a: 0.5176471}
-  colorShield: {r: 0.54147387, g: 0.90044147, b: 0.9811321, a: 0.49019608}
   Cannons:
   - {fileID: 8064014558917808171}
 --- !u!135 &2198226034328220042
@@ -2420,7 +2413,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8785894351144027204}
   - component: {fileID: 7447518623627918394}
-  - component: {fileID: 3803545593056409524}
   m_Layer: 0
   m_Name: Crab_Geo
   m_TagString: Untagged
@@ -2540,18 +2532,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.11925757, y: 0.19006157, z: 0.00000023841858}
     m_Extent: {x: 3.8335433, y: 2.7565484, z: 4.894478}
   m_DirtyAABB: 0
---- !u!114 &3803545593056409524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6597327898376546443}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6835272971454469964
 GameObject:
   m_ObjectHideFlags: 0

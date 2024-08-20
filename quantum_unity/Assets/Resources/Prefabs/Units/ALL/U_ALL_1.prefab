@@ -1033,9 +1033,6 @@ MonoBehaviour:
   RotateToEnemy: 1
   StopToAttack: 1
   Bullet: {fileID: 4495777382389081428, guid: 0ca2374ab7d2a43aaaf36466e072e874, type: 3}
-  colorBullet: {r: 0.5424528, g: 0.8368582, b: 1, a: 0.5254902}
-  colorImpact: {r: 0.495283, g: 0.79728574, b: 1, a: 0.5176471}
-  colorShield: {r: 0.504717, g: 0.9203663, b: 1, a: 0.4627451}
   Cannons:
   - {fileID: 1478323959484795093}
 --- !u!135 &2198226034328220042
@@ -1093,7 +1090,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4660700982073995952}
   - component: {fileID: 3888598582820128934}
-  - component: {fileID: 3855747571725582434}
   m_Layer: 0
   m_Name: Barracuda_Geo
   m_TagString: Untagged
@@ -1189,18 +1185,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.7420743, y: 0.1211499, z: -0.00000011920929}
     m_Extent: {x: 2.5938013, y: 0.65565, z: 1.8158008}
   m_DirtyAABB: 0
---- !u!114 &3855747571725582434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2561188323852576934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2724204647583783770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1728,7 +1712,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6364282005187429036
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1745,7 +1729,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &410243200799843250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1758,21 +1743,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexMaskingMode: 0
   drawingMode: 1
   outlineLayer: 0
   outlineTargets:
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 3888598582820128934}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 

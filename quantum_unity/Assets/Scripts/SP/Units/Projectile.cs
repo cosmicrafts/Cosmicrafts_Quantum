@@ -14,7 +14,7 @@ public class Projectile : MonoBehaviour
 
     public GameObject canvasDamageRef;
     public GameObject impact;
-    public GameObject Shieldimpact;
+   // public GameObject Shieldimpact;
     Vector3 LastTargetPosition;
     bool IsFake;
 

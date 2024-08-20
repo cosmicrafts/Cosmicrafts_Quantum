@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6775531846631143671}
   - component: {fileID: 5880909021625681201}
-  - component: {fileID: 9121128450817902758}
   m_Layer: 0
   m_Name: ScifiDestroyerCargoModule_Circle.046
   m_TagString: Untagged
@@ -87,18 +86,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00008233078, y: 0.017352564, z: 0.0016045393}
     m_Extent: {x: 0.012598934, y: 0.011103407, z: 0.00908413}
   m_DirtyAABB: 0
---- !u!114 &9121128450817902758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 96814148635825419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &534261952912703612
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,7 +128,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1402029835125385769}
   - component: {fileID: 9021443659125870685}
-  - component: {fileID: 6710673363568567492}
   m_Layer: 0
   m_Name: ScifiDestroyerMissileLauncherLarge_Circle.002
   m_TagString: Untagged
@@ -218,18 +204,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.015999176, y: 0.016942695, z: -0.010279397}
     m_Extent: {x: 0.0064318553, y: 0.0076463204, z: 0.018552732}
   m_DirtyAABB: 0
---- !u!114 &6710673363568567492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1185895126382880223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1419733342399124647
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +214,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8073444641784445918}
   - component: {fileID: 6109602664907388908}
-  - component: {fileID: 1130345429604818506}
   m_Layer: 0
   m_Name: ScifiDestroyerGunBatteryLarge_Circle.002
   m_TagString: Untagged
@@ -318,18 +291,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0015401468, y: 0.0011512851, z: 0.008223774}
     m_Extent: {x: 0.011756625, y: 0.005310119, z: 0.0032349916}
   m_DirtyAABB: 0
---- !u!114 &1130345429604818506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1419733342399124647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1952561303038414434
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +301,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1213698898556341456}
   - component: {fileID: 1743030015271176032}
-  - component: {fileID: 7466067204009736359}
   m_Layer: 0
   m_Name: ScifiDestroyerMissileLauncherLarge_Circle.001
   m_TagString: Untagged
@@ -417,18 +377,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.016806634, y: 0.016942699, z: -0.010279393}
     m_Extent: {x: 0.006431848, y: 0.007646319, z: 0.018552732}
   m_DirtyAABB: 0
---- !u!114 &7466067204009736359
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1952561303038414434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2198226032447877258
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,9 +1315,6 @@ MonoBehaviour:
   RotateToEnemy: 1
   StopToAttack: 1
   Bullet: {fileID: 4495777382389081428, guid: a6ea5e7b5eba35c40b6bf0e740c51d4e, type: 3}
-  colorBullet: {r: 0.24056602, g: 0.866664, b: 1, a: 0.79607844}
-  colorImpact: {r: 0.30411178, g: 0.6959888, b: 0.9622642, a: 0.79607844}
-  colorShield: {r: 0.87013066, g: 0.30081883, b: 0.9811321, a: 0.7882353}
   Cannons:
   - {fileID: 3313147426661825907}
 --- !u!135 &2198226034328220042
@@ -1623,7 +1568,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7165717318760176155}
   - component: {fileID: 3948430905298851772}
-  - component: {fileID: 3839465100286856157}
   m_Layer: 0
   m_Name: ScifiDestroyerHangarBayWithStartRamps_Circle.001
   m_TagString: Untagged
@@ -1700,18 +1644,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0021694675, y: 0.0006161779, z: -0.015910685}
     m_Extent: {x: 0.037119538, y: 0.01101564, z: 0.021702528}
   m_DirtyAABB: 0
---- !u!114 &3839465100286856157
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5978724471391743907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7642287264184303634
 GameObject:
   m_ObjectHideFlags: 0
@@ -1751,7 +1683,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &3187687698139908234
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1768,7 +1700,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &7007706614040698093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1793,101 +1726,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexMaskingMode: 0
   drawingMode: 1
   outlineLayer: 0
   outlineTargets:
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 5880909021625681201}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
     DilateRenderingMode: 0
     cutoutTextureIndex: 0
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 6109602664907388908}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
     DilateRenderingMode: 0
     cutoutTextureIndex: 0
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 3948430905298851772}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
     DilateRenderingMode: 0
     cutoutTextureIndex: 0
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 1743030015271176032}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
     DilateRenderingMode: 0
     cutoutTextureIndex: 0
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 9021443659125870685}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
     DilateRenderingMode: 0
     cutoutTextureIndex: 0
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 6231760618635949155}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
@@ -1941,7 +1849,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8916712335965595656}
   - component: {fileID: 6231760618635949155}
-  - component: {fileID: 1645928215035962368}
   m_Layer: 0
   m_Name: ScifiDestroyerTurretMKVIIIBody_Circle.001
   m_TagString: Untagged
@@ -2018,18 +1925,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00044843554, y: 0.024613919, z: -0.018158048}
     m_Extent: {x: 0.010647827, y: 0.020262288, z: 0.016498875}
   m_DirtyAABB: 0
---- !u!114 &1645928215035962368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8313141994437009478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1442269284672048685
 PrefabInstance:
   m_ObjectHideFlags: 0

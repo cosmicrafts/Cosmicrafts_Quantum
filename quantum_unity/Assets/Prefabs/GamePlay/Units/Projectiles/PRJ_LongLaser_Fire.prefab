@@ -4750,12 +4750,7 @@ MonoBehaviour:
   Dmg: 0
   canvasDamageRef: {fileID: 7751084914488314239, guid: 48826ce7a53e443408841cb8be937705,
     type: 3}
-  Inpact: {fileID: 416251089823111746, guid: 240c830bfe588ad4f9925288b65d7a18, type: 3}
-  colorImpact: {r: 1, g: 1, b: 1, a: 1}
-  ShieldInpact: {fileID: 8994491411004452053, guid: a6a405c512eefab4cb21693a2ff0f2d4,
-    type: 3}
-  colorShield: {r: 1, g: 1, b: 1, a: 1}
-  DestroyTime: 1.25
+  impact: {fileID: 3883958283698794323}
 --- !u!1 &8579389111253437394
 GameObject:
   m_ObjectHideFlags: 0
@@ -9676,6 +9671,12 @@ PrefabInstance:
 --- !u!4 &3883958283698668603 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 474680, guid: bfe5f1ce81800594b8e9c688ed34fc96,
+    type: 3}
+  m_PrefabInstance: {fileID: 3883958283698747907}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3883958283698794323 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 120144, guid: bfe5f1ce81800594b8e9c688ed34fc96,
     type: 3}
   m_PrefabInstance: {fileID: 3883958283698747907}
   m_PrefabAsset: {fileID: 0}

@@ -1268,9 +1268,6 @@ MonoBehaviour:
   RotateToEnemy: 1
   StopToAttack: 1
   Bullet: {fileID: 4495777382389081428, guid: 10b9ed6b2dbdca342884a06ca3095f80, type: 3}
-  colorBullet: {r: 0.54509807, g: 0.86802596, b: 1, a: 0.46666667}
-  colorImpact: {r: 0.54509807, g: 0.87058824, b: 1, a: 0.5372549}
-  colorShield: {r: 0.54509807, g: 0.87058824, b: 1, a: 0.5}
   Cannons:
   - {fileID: 9168711834048432242}
   - {fileID: 5668229410986332504}
@@ -1584,7 +1581,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3024229466807409596}
   - component: {fileID: 3895795689049622824}
-  - component: {fileID: 2867128978365865336}
   m_Layer: 0
   m_Name: Conquest_Geo
   m_TagString: Untagged
@@ -1690,18 +1686,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 1.46, y: 0.84218013, z: 1.6949009}
   m_DirtyAABB: 0
---- !u!114 &2867128978365865336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4637557610804623380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4780936545131209428
 GameObject:
   m_ObjectHideFlags: 0
@@ -1852,7 +1836,7 @@ SphereCollider:
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &2089202080433865243
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1869,7 +1853,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &4586837425219273973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,21 +1867,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexMaskingMode: 0
   drawingMode: 1
   outlineLayer: 0
   outlineTargets:
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 3895795689049622824}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 

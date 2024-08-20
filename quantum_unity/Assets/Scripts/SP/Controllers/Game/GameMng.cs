@@ -33,7 +33,6 @@ public class GameMng : MonoBehaviour
     public GameTutorial GT;
     [HideInInspector]
     public BotEnemy BOT;
-    [HideInInspector]
     public GameObject BotPrefab;
     //Code of the base stations
     [HideInInspector]

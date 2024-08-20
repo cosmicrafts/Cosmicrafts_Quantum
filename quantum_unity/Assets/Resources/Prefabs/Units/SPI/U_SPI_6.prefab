@@ -1265,9 +1265,6 @@ MonoBehaviour:
   RotateToEnemy: 1
   StopToAttack: 1
   Bullet: {fileID: 4495777382389081428, guid: 7f2a1f6222bd94228a4ef84e40f6f788, type: 3}
-  colorBullet: {r: 0.5518868, g: 0.912388, b: 1, a: 0.6313726}
-  colorImpact: {r: 0.5271004, g: 0.89453197, b: 0.9716981, a: 0.5176471}
-  colorShield: {r: 0.54147387, g: 0.90044147, b: 0.9811321, a: 0.49019608}
   Cannons:
   - {fileID: 1978344082146793488}
   - {fileID: 1429190023509971445}
@@ -1667,7 +1664,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1873162719293377955}
   - component: {fileID: 4957650238225155077}
-  - component: {fileID: 2292765582634594769}
   m_Layer: 0
   m_Name: Hammer_Geo
   m_TagString: Untagged
@@ -1775,18 +1771,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.92196035, y: 0.2861334, z: 0}
     m_Extent: {x: 4.36723, y: 2.6295505, z: 3.8080873}
   m_DirtyAABB: 0
---- !u!114 &2292765582634594769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5715934834824325512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5956344578442542642
 GameObject:
   m_ObjectHideFlags: 0
@@ -1913,21 +1897,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexMaskingMode: 0
   drawingMode: 1
   outlineLayer: 0
   outlineTargets:
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 4957650238225155077}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
@@ -1960,7 +1939,7 @@ MonoBehaviour:
       serializedProperties: []
 --- !u!95 &5750810247639929230
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1977,7 +1956,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &5915352323544376488
 MonoBehaviour:
   m_ObjectHideFlags: 0
