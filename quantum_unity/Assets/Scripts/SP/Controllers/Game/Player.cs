@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
         DragingCard = -1;
         SelectedCard = -1;
         //Check if the current game is a multiplayer match
-        if (GlobalManager.GMD.CurrentMatch == Match.multi)
+       /* if (GlobalManager.GMD.CurrentMatch == Match.multi)
         {
             //If im not the master, im the client, so my id and team change...
             if (!GlobalManager.GMD.ImMaster)
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour
                 ID = 2;
                 MyTeam = Team.Red;
             }
-        }
+        }*/
         //Game manager can now spawn the base stations
         GameMng.GM.InitBaseStations();
         Debug.Log("--PLAYER END AWAKE--");
