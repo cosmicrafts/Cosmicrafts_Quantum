@@ -35,6 +35,13 @@ namespace CosmicraftsSP
         [SerializeField]
         private int bulletDamageOverride = -1;
 
+        //----Level Override-----------------------------------------------------------
+        [Tooltip("Override for unit Level, -1 means no override")]
+        [Header("Level Override")]
+        [Range(1, 99)]
+        [SerializeField]
+        private int levelOverride = -1;
+
         #endregion
 
         #region Skills
@@ -55,6 +62,8 @@ namespace CosmicraftsSP
         public int ShieldOverride => shieldOverride;
 
         public int BulletDamageOverride => bulletDamageOverride;
+
+        public int LevelOverride => levelOverride;
 
         public List<CharacterSkill> Skills => skills;
 
@@ -84,6 +93,10 @@ namespace CosmicraftsSP
                     {
                         shooterComponent.BulletDamage = bulletDamageOverride;
                     }
+                }
+                if (levelOverride >= 0)
+                {
+                    unitComponent.Level = levelOverride;
                 }
             }
             else

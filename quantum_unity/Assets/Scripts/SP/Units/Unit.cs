@@ -40,12 +40,12 @@ public class Unit : MonoBehaviour
     public Team MyTeam;
 
     //Health Points
-    [Range(1, 9999)]
+    [Range(1, 999999)]
     public int HitPoints = 10;
     //Max Health Points
     int MaxHp = 10;
     //Shield points
-    [Range(1, 9999)]
+    [Range(1, 999999)]
     public int Shield = 0;
     //Max Shield points
     int MaxShield = 0;
@@ -61,6 +61,9 @@ public class Unit : MonoBehaviour
     //Chances to dodge an attack 
     [Range(0, 1)]
     public float DodgeChance = 0f; // 0% chance
+    // Level of the unit
+    [Range(1, 999)]
+    public int Level = 1;
 
     //Returns if this unit is the base station
     [HideInInspector]
@@ -132,6 +135,7 @@ public class Unit : MonoBehaviour
         LastImpact = Vector3.zero;
         MaxShield = Shield;
         MaxHp = HitPoints;
+        Level = Mathf.Clamp(Level, 1, 999);
         MyRb = GetComponent<Rigidbody>();
         MyOutline = Mesh.GetComponent<Outlinable>();
         TrigerBase = GetComponent<SphereCollider>();
@@ -567,6 +571,16 @@ public class Unit : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         ShieldGameObject.SetActive(false);
+    }
+
+     public int GetLevel()
+    {
+        return Level;
+    }
+
+    public void SetLevel(int newLevel)
+    {
+        Level = Mathf.Clamp(newLevel, 1, 99); // Ensure the new level is within range
     }
 }
 }
