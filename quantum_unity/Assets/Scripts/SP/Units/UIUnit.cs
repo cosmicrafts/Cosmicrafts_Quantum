@@ -22,8 +22,6 @@
         public Image GShield;
 
         public float DifDmgSpeed = 10f;
-        public Color DifHpColor = Color.yellow;
-        public Color DifShieldColor = Color.gray;
 
         // Reference to the TMP text to display the level
         public TextMeshProUGUI LevelText;
@@ -38,12 +36,26 @@
         float GhostHp;
         float GhostSH;
 
-        // Variable to store previous HP state for comparison
+        // Variables to store previous HP state for comparison
         private float previousHp;
         private float previousShield;
 
         // Boolean to track if the animation has already been triggered
         private bool animationTriggered = false;
+
+        // Player 1 Colors
+        [Header("Player 1 Colors")]
+        public Color Player1HpColor = Color.red;
+        public Color Player1ShieldColor = Color.magenta;
+        public Color Player1DifHpColor = Color.yellow;
+        public Color Player1DifShieldColor = Color.cyan;
+
+        // Player 2 Colors
+        [Header("Player 2 Colors")]
+        public Color Player2HpColor = Color.blue;
+        public Color Player2ShieldColor = Color.cyan;
+        public Color Player2DifHpColor = Color.green;
+        public Color Player2DifShieldColor = Color.white;
 
         void Start()
         {
@@ -52,19 +64,36 @@
 
             // Get the Unit component
             Unit unit = GetComponentInParent<Unit>();
-            
-            // Check if the unit belongs to the Blue team and flip the UI
-            if (unit != null && unit.MyTeam == Team.Blue)
-            {
-                // Flip the UI horizontally by inverting the X scale
-                RectTransform rectTransform = GetComponent<RectTransform>();
-                rectTransform.localScale = new Vector3(-Mathf.Abs(rectTransform.localScale.x), rectTransform.localScale.y, rectTransform.localScale.z);
-            }
 
-            // Set the level text
-            if (unit != null && LevelText != null)
+            // Set team-specific colors
+            if (unit != null)
             {
-                LevelText.text = unit.GetLevel().ToString();
+                if (unit.MyTeam == Team.Blue)
+                {
+                    // Set Player 2 (Blue team) colors
+                    Hp.color = Player2HpColor;
+                    Shield.color = Player2ShieldColor;
+                    GHp.color = Player2DifHpColor;
+                    GShield.color = Player2DifShieldColor;
+
+                    // Flip the UI horizontally if it's the Blue team
+                    RectTransform rectTransform = GetComponent<RectTransform>();
+                    rectTransform.localScale = new Vector3(-Mathf.Abs(rectTransform.localScale.x), rectTransform.localScale.y, rectTransform.localScale.z);
+                }
+                else if (unit.MyTeam == Team.Red)
+                {
+                    // Set Player 1 (Red team) colors
+                    Hp.color = Player1HpColor;
+                    Shield.color = Player1ShieldColor;
+                    GHp.color = Player1DifHpColor;
+                    GShield.color = Player1DifShieldColor;
+                }
+
+                // Set the level text
+                if (LevelText != null)
+                {
+                    LevelText.text = unit.GetLevel().ToString();
+                }
             }
 
             // Initialize previousHp and previousShield with current values
@@ -100,8 +129,6 @@
         {
             GhostHp = maxhp;
             GhostSH = maxshield;
-            GHp.color = DifHpColor;
-            GShield.color = DifShieldColor;
         }
 
         public void SetHPBar(float percent)
