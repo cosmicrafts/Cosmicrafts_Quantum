@@ -1,5 +1,5 @@
 ﻿namespace CosmicraftsSP {
-    using UnityEngine;
+using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
@@ -14,7 +14,7 @@ public class Projectile : MonoBehaviour
 
     public GameObject canvasDamageRef;
     public GameObject impact;
-   // public GameObject Shieldimpact;
+    //public GameObject Shieldimpact;
     Vector3 LastTargetPosition;
     bool IsFake;
 
@@ -96,12 +96,12 @@ public class Projectile : MonoBehaviour
             {
                 InstantiateImpactEffect();
             }
-
+            /*
             if (canvasDamageRef)
             {
                 CreateDamageCanvas();
             }
-
+            */
             target.AddDmg(Dmg);
             target.SetImpactPosition(transform.position);
         }
@@ -115,12 +115,12 @@ public class Projectile : MonoBehaviour
         Destroy(impactPrefab, 0.25f);
     }
 
-    void CreateDamageCanvas()
+    /*void CreateDamageCanvas()
     {
         GameObject cloneDamageCanvas = Instantiate(canvasDamageRef, transform.position, Quaternion.Euler(Vector3.zero));
         CanvasDamage tempDamage = cloneDamageCanvas.GetComponent<CanvasDamage>();
-        //tempDamage.SetDamage(Dmg);
-    }
+        tempDamage.SetDamage(Dmg);
+    }*/
 
     void RotateTowards(Vector3 target)
     {
@@ -154,4 +154,5 @@ public class Projectile : MonoBehaviour
             sc.enabled = !isFake;
     }
 }
+
 }
