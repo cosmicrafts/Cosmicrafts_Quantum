@@ -155,7 +155,6 @@
         // Method to trigger the animation when the unit takes damage
         public void OnDamageTaken()
         {
-            Debug.Log("Damage taken - triggering animation");
             if (Animation != null && Animation["ShowBars"] != null)
             {
                 Animation.Play("ShowBars");
