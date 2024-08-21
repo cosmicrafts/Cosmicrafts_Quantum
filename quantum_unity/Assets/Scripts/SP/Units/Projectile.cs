@@ -1,5 +1,6 @@
 ﻿namespace CosmicraftsSP {
 using UnityEngine;
+using System.Collections;
 
 public class Projectile : MonoBehaviour
 {
@@ -14,43 +15,54 @@ public class Projectile : MonoBehaviour
 
     public GameObject canvasDamageRef;
     public GameObject impact;
-    //public GameObject Shieldimpact;
     Vector3 LastTargetPosition;
     bool IsFake;
 
-    private void Update()
-    {
-        MoveProjectile();
-        CheckTargetStatus();
-    }
-
-    private void MoveProjectile()
+    private void Start()
     {
         if (IsFake)
         {
-            transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, Time.deltaTime * Speed);
+            LastTargetPosition = Target != null ? Target.transform.position : LastTargetPosition;
+            StartCoroutine(MoveFakeProjectile());
         }
         else
         {
-            transform.position += transform.forward * Time.deltaTime * Speed;
+            StartCoroutine(MoveProjectile());
         }
     }
 
-    private void CheckTargetStatus()
+    private IEnumerator MoveProjectile()
     {
-        if (Target != null)
+        while (true)
         {
-            LastTargetPosition = Target.transform.position;
-            RotateTowards(Target.transform.position);
-        }
-        else
-        {
-            RotateTowards(LastTargetPosition);
-            if (Vector3.Distance(transform.position, LastTargetPosition) < 0.25f)
+            if (Target != null)
             {
-                HandleImpact(null);
+                LastTargetPosition = Target.transform.position;
+                RotateTowards(LastTargetPosition);
             }
+            else
+            {
+                RotateTowards(LastTargetPosition);
+                if (Vector3.Distance(transform.position, LastTargetPosition) < 0.25f)
+                {
+                    HandleImpact(null);
+                    yield break;
+                }
+            }
+
+            transform.position += transform.forward * Speed * Time.deltaTime;
+            yield return null;  // Wait for the next frame
         }
+    }
+
+    private IEnumerator MoveFakeProjectile()
+    {
+        while (Vector3.Distance(transform.position, LastTargetPosition) > 0.25f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, Speed * Time.deltaTime);
+            yield return null;  // Wait for the next frame
+        }
+        HandleImpact(null);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -96,12 +108,7 @@ public class Projectile : MonoBehaviour
             {
                 InstantiateImpactEffect();
             }
-            /*
-            if (canvasDamageRef)
-            {
-                CreateDamageCanvas();
-            }
-            */
+
             target.AddDmg(Dmg);
             target.SetImpactPosition(transform.position);
         }
@@ -115,17 +122,13 @@ public class Projectile : MonoBehaviour
         Destroy(impactPrefab, 0.25f);
     }
 
-    /*void CreateDamageCanvas()
-    {
-        GameObject cloneDamageCanvas = Instantiate(canvasDamageRef, transform.position, Quaternion.Euler(Vector3.zero));
-        CanvasDamage tempDamage = cloneDamageCanvas.GetComponent<CanvasDamage>();
-        tempDamage.SetDamage(Dmg);
-    }*/
-
     void RotateTowards(Vector3 target)
     {
-        Quaternion lookRotation = Quaternion.LookRotation((target - transform.position).normalized);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * Speed);
+        Vector3 direction = (target - transform.position).normalized;
+        if (direction != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(direction);
+        }
     }
 
     public void SetLastPosition(Vector3 lastPosition)
@@ -154,5 +157,4 @@ public class Projectile : MonoBehaviour
             sc.enabled = !isFake;
     }
 }
-
 }
