@@ -1,39 +1,36 @@
-﻿namespace CosmicraftsSP {
-using UnityEngine;
-using System.Collections;
-
-public class Projectile : MonoBehaviour
+﻿namespace CosmicraftsSP
 {
-    [HideInInspector]
-    public Team MyTeam;
+    using UnityEngine;
 
-    GameObject Target;
-    [HideInInspector]
-    public float Speed;
-    [HideInInspector]
-    public int Dmg;
-
-    public GameObject canvasDamageRef;
-    public GameObject impact;
-    Vector3 LastTargetPosition;
-    bool IsFake;
-
-    private void Start()
+    public class Projectile : MonoBehaviour
     {
-        if (IsFake)
-        {
-            LastTargetPosition = Target != null ? Target.transform.position : LastTargetPosition;
-            StartCoroutine(MoveFakeProjectile());
-        }
-        else
-        {
-            StartCoroutine(MoveProjectile());
-        }
-    }
+        [HideInInspector]
+        public Team MyTeam;
 
-    private IEnumerator MoveProjectile()
-    {
-        while (true)
+        GameObject Target;
+        [HideInInspector]
+        public float Speed;
+        [HideInInspector]
+        public int Dmg;
+
+        public GameObject canvasDamageRef;
+        public GameObject impact;
+        Vector3 LastTargetPosition;
+        bool IsFake;
+
+        private void FixedUpdate()
+        {
+            if (IsFake)
+            {
+                MoveFakeProjectile();
+            }
+            else
+            {
+                MoveProjectile();
+            }
+        }
+
+        private void MoveProjectile()
         {
             if (Target != null)
             {
@@ -46,115 +43,115 @@ public class Projectile : MonoBehaviour
                 if (Vector3.Distance(transform.position, LastTargetPosition) < 0.25f)
                 {
                     HandleImpact(null);
-                    yield break;
+                    return;
                 }
             }
 
-            transform.position += transform.forward * Speed * Time.deltaTime;
-            yield return null;  // Wait for the next frame
+            transform.position += transform.forward * Speed * Time.fixedDeltaTime;
         }
-    }
 
-    private IEnumerator MoveFakeProjectile()
-    {
-        while (Vector3.Distance(transform.position, LastTargetPosition) > 0.25f)
+        private void MoveFakeProjectile()
         {
-            transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, Speed * Time.deltaTime);
-            yield return null;  // Wait for the next frame
-        }
-        HandleImpact(null);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (IsFake) return;
-
-        if (other.gameObject == Target)
-        {
-            HandleImpact(Target.GetComponent<Unit>());
-        }
-        else if (other.CompareTag("Unit"))
-        {
-            Unit target = other.gameObject.GetComponent<Unit>();
-            if (!target.IsMyTeam(MyTeam))
+            if (Vector3.Distance(transform.position, LastTargetPosition) <= 0.25f)
             {
-                HandleImpact(target);
-            }
-        }
-        else if (other.CompareTag("Out"))
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    void HandleImpact(Unit target)
-    {
-        if (target == null || target.IsDeath)
-        {
-            InstantiateImpactEffect();
-        }
-        else
-        {
-            if (Random.value < target.DodgeChance)
-            {
-                Dmg = 0;
-            }
-
-            if (target.Shield > 0 && !target.flagShield)
-            {
-                target.OnImpactShield(Dmg);
+                HandleImpact(null);
             }
             else
             {
+                transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, Speed * Time.fixedDeltaTime);
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (IsFake) return;
+
+            if (other.gameObject == Target)
+            {
+                HandleImpact(Target.GetComponent<Unit>());
+            }
+            else if (other.CompareTag("Unit"))
+            {
+                Unit target = other.gameObject.GetComponent<Unit>();
+                if (!target.IsMyTeam(MyTeam))
+                {
+                    HandleImpact(target);
+                }
+            }
+            else if (other.CompareTag("Out"))
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        void HandleImpact(Unit target)
+        {
+            if (target == null || target.IsDeath)
+            {
                 InstantiateImpactEffect();
             }
+            else
+            {
+                if (Random.value < target.DodgeChance)
+                {
+                    Dmg = 0;
+                }
 
-            target.AddDmg(Dmg);
-            target.SetImpactPosition(transform.position);
-        }
+                if (target.Shield > 0 && !target.flagShield)
+                {
+                    target.OnImpactShield(Dmg);
+                }
+                else
+                {
+                    InstantiateImpactEffect();
+                }
 
-        Destroy(gameObject);
-    }
+                target.AddDmg(Dmg);
+                target.SetImpactPosition(transform.position);
+            }
 
-    void InstantiateImpactEffect()
-    {
-        GameObject impactPrefab = Instantiate(impact, transform.position, Quaternion.identity);
-        Destroy(impactPrefab, 0.25f);
-    }
-
-    void RotateTowards(Vector3 target)
-    {
-        Vector3 direction = (target - transform.position).normalized;
-        if (direction != Vector3.zero)
-        {
-            transform.rotation = Quaternion.LookRotation(direction);
-        }
-    }
-
-    public void SetLastPosition(Vector3 lastPosition)
-    {
-        LastTargetPosition = lastPosition;
-    }
-
-    public void SetTarget(GameObject target)
-    {
-        Target = target;
-        if (target == null)
-        {
             Destroy(gameObject);
         }
-        else
+
+        void InstantiateImpactEffect()
         {
-            LastTargetPosition = target.transform.position;
+            GameObject impactPrefab = Instantiate(impact, transform.position, Quaternion.identity);
+            Destroy(impactPrefab, 0.25f);
+        }
+
+        void RotateTowards(Vector3 target)
+        {
+            Vector3 direction = (target - transform.position).normalized;
+            if (direction != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(direction);
+            }
+        }
+
+        public void SetLastPosition(Vector3 lastPosition)
+        {
+            LastTargetPosition = lastPosition;
+        }
+
+        public void SetTarget(GameObject target)
+        {
+            Target = target;
+            if (target == null)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                LastTargetPosition = target.transform.position;
+            }
+        }
+
+        public void SetFake(bool isFake)
+        {
+            IsFake = isFake;
+            SphereCollider sc = GetComponent<SphereCollider>();
+            if (sc != null)
+                sc.enabled = !isFake;
         }
     }
-
-    public void SetFake(bool isFake)
-    {
-        IsFake = isFake;
-        SphereCollider sc = GetComponent<SphereCollider>();
-        if (sc != null)
-            sc.enabled = !isFake;
-    }
-}
 }
