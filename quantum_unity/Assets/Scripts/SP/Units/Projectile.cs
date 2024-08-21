@@ -1,6 +1,7 @@
 ﻿namespace CosmicraftsSP
 {
     using UnityEngine;
+    using System.Collections.Generic;
 
     public class Projectile : MonoBehaviour
     {
@@ -17,6 +18,10 @@
         public GameObject impact;
         Vector3 LastTargetPosition;
         bool IsFake;
+
+        // New Fields
+        public bool IsAoE = false;  // Checkmark in Inspector
+        public float AoERadius = 5f;  // Radius of AoE damage
 
         private void FixedUpdate()
         {
@@ -92,25 +97,52 @@
             }
             else
             {
-                if (Random.value < target.DodgeChance)
+                if (IsAoE)
                 {
-                    Dmg = 0;
-                }
-
-                if (target.Shield > 0 && !target.flagShield)
-                {
-                    target.OnImpactShield(Dmg);
+                    ApplyAoEDamage();
                 }
                 else
                 {
-                    InstantiateImpactEffect();
+                    ApplyDirectDamage(target);
                 }
 
-                target.AddDmg(Dmg);
                 target.SetImpactPosition(transform.position);
             }
 
             Destroy(gameObject);
+        }
+
+        void ApplyDirectDamage(Unit target)
+        {
+            if (Random.value < target.DodgeChance)
+            {
+                Dmg = 0;
+            }
+
+            if (target.Shield > 0 && !target.flagShield)
+            {
+                target.OnImpactShield(Dmg);
+            }
+            else
+            {
+                InstantiateImpactEffect();
+            }
+
+            target.AddDmg(Dmg);
+        }
+
+        void ApplyAoEDamage()
+        {
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, AoERadius);
+            foreach (Collider hitCollider in hitColliders)
+            {
+                Unit unit = hitCollider.GetComponent<Unit>();
+                if (unit != null && !unit.IsMyTeam(MyTeam))
+                {
+                    ApplyDirectDamage(unit);
+                }
+            }
+            InstantiateImpactEffect();
         }
 
         void InstantiateImpactEffect()
