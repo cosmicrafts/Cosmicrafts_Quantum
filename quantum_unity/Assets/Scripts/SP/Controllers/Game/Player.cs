@@ -23,7 +23,13 @@ public class Player : MonoBehaviour
     DragUnitCtrl UnitDrag;
     //Stores the deck units prefabs
     [HideInInspector]
-    public Dictionary<string,GameObject> DeckUnits;
+    public Dictionary<string, GameObject> DeckUnits;
+
+    // Character to be assigned in the inspector
+    [SerializeField] private GameObject characterPrefab;
+
+    // Base station prefab to be assigned in the inspector
+    [SerializeField] private GameObject baseStationPrefab;
 
     //Deck
     List<NFTsCard> PlayerDeck;
@@ -64,27 +70,17 @@ public class Player : MonoBehaviour
         //Init defaults
         DragingCard = -1;
         SelectedCard = -1;
-        //Check if the current game is a multiplayer match
-       /* if (GlobalManager.GMD.CurrentMatch == Match.multi)
-        {
-            //If im not the master, im the client, so my id and team change...
-            if (!GlobalManager.GMD.ImMaster)
-            {
-                ID = 2;
-                MyTeam = Team.Red;
-            }
-        }*/
 
-        if (GlobalManager.GMD.DebugMode)
+        // Assign the character and base station
+        if (characterPrefab != null)
         {
-            PlayerDeck = new List<NFTsCard>();
-            foreach (var card in GlobalManager.GMD.GetUserCollection().Cards)
-            {
-                PlayerDeck.Add(card);
-            }
+            MyCharacter = Instantiate(characterPrefab, transform).GetComponent<GameCharacter>();
         }
-        //Game manager can now spawn the base stations
-        GameMng.GM.InitBaseStations();
+
+        // Initialize base stations using the assigned base station prefab
+        GameMng.GM.InitBaseStations(baseStationPrefab);
+
+        // Rest of your initialization code...
         Debug.Log("--PLAYER END AWAKE--");
     }
 
@@ -100,17 +96,6 @@ public class Player : MonoBehaviour
         //Enable the gameplay and the energy generation
         InControl = CanGenEnergy = true;
 
-        //Check if the current match is not the tutorial
-        if (GlobalManager.GMD.CurrentMatch != Match.tutorial)
-        {
-            //Get the player´s character and spawn it
-            GameObject Character = ResourcesServices.LoadCharacterPrefab(GameMng.PlayerCharacter.KeyId);
-            if (Character != null)
-            {
-                MyCharacter = Instantiate(Character, transform).GetComponent<GameCharacter>();
-            }
-        }
-
         //Load Deck from context
         if (GlobalManager.GMD.CurrentMatch == Match.tutorial)
         {
@@ -122,7 +107,8 @@ public class Player : MonoBehaviour
                 {
                     PlayerDeck.Add(card.ToNFTCard());
                 }
-            } else
+            }
+            else
             {
                 PlayerDeck = GameMng.PlayerCollection.Deck;
             }
@@ -135,7 +121,8 @@ public class Player : MonoBehaviour
             {
                 PlayerDeck.Add(card.ToNFTCard());
             }
-        } else
+        }
+        else
         {
             //Get the player´s collection deck
             PlayerDeck = GameMng.PlayerCollection.Deck;
@@ -180,6 +167,7 @@ public class Player : MonoBehaviour
         GameMng.UI.InitGameCards(PlayerDeck.ToArray());
         Debug.Log("--PLAYER END START--");
     }
+    
 
     private void Update()
     {

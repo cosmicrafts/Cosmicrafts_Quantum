@@ -396,35 +396,44 @@ public class GameMng : MonoBehaviour
     }
     
     //Create base stations (from player´s script)
-    public void InitBaseStations()
+    public void InitBaseStations(GameObject baseStationPrefab)
     {
-        //PLAYER STATION
-        int PIn = P.MyTeam == Team.Blue ? 1 : 0; //Player base station index
-        int VsIn = P.MyTeam == Team.Red ? 1 : 0; //Enemy base station index
-        //Create the player´s base station
-        Targets[PIn] = Instantiate(ResourcesServices.LoadBaseStationPrefab(PlayerCharacter.KeyId),
-            BS_Positions[PIn], Quaternion.identity).GetComponent<Unit>();
+        // PLAYER STATION
+        int PIn = P.MyTeam == Team.Blue ? 1 : 0; // Player base station index
+        int VsIn = P.MyTeam == Team.Red ? 1 : 0; // Enemy base station index
+        
+        // Create the player's base station using the provided prefab
+        if (baseStationPrefab != null)
+        {
+            Targets[PIn] = Instantiate(baseStationPrefab, BS_Positions[PIn], Quaternion.identity).GetComponent<Unit>();
+        }
+        else
+        {
+            Debug.LogError("Base station prefab is not assigned!");
+            return;
+        }
 
-
-        //Create the enemy´s base station
+        // Create the enemy's base station
         GameObject VsStation = GlobalManager.GMD.CurrentMatch == Match.multi ?
-            ResourcesServices.LoadBaseStationPrefab(GameNetwork.GetVSnftCharacter().KeyId ):
+            ResourcesServices.LoadBaseStationPrefab(GameNetwork.GetVSnftCharacter().KeyId) :
             BotPrefab.GetComponent<BotEnemy>().prefabBaseStation;
             
         Targets[VsIn] = Instantiate(VsStation, BS_Positions[VsIn], Quaternion.identity).GetComponent<Unit>();
 
-
-        //Set variables for enemy´s base station
+        // Set variables for enemy's base station
         Targets[0].PlayerId = 2;
         Targets[0].MyTeam = Team.Red;
-        //Set the IDs of the base stations
+
+        // Set the IDs of the base stations
         for (int i = 0; i < Targets.Length; i++)
         {
-            Targets[i].setId(GenerateUnitId());
+            Targets[i].setId(GM.GenerateUnitId());
         }
-        //Game is ready to start
+
+        // Game is ready to start
         InitRedy = true;
     }
+
     
     //Deply a unit using a prefab game object
     public Unit CreateUnit(GameObject obj, Vector3 position, Team team, string nftKey = "none", int playerId = -1)

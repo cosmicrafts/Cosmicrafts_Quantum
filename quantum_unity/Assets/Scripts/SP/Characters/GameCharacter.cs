@@ -1,25 +1,63 @@
-﻿namespace CosmicraftsSP {
+﻿using UnityEngine;
 
-using UnityEngine;
-/* 
- * This is the parent class for characters controllers 
- */
-public class GameCharacter : MonoBehaviour
+namespace CosmicraftsSP
 {
-    //Key NFT ID
-    public string IdKey;
-    //Character Icon
-    public Sprite Icon;
+    public class GameCharacter : MonoBehaviour
+    {
+        public CharacterBaseSO characterBaseSO;
 
-    //Do something when player deploy units
-    public virtual void DeployUnit(Unit unit)
-    {
-        //Stay empty, write code in child class
+        // Initialize the character using the SO
+        public void InitializeCharacter(CharacterBaseSO characterSO)
+        {
+            characterBaseSO = characterSO;
+
+            // Apply gameplay modifiers as soon as the character is initialized
+            ApplyGameplayModifiers();
+        }
+
+        // Method to deploy units and apply relevant skills
+        public void DeployUnit(Unit unit)
+        {
+            if (characterBaseSO != null)
+            {
+                foreach (var skill in characterBaseSO.Skills)
+                {
+                    if (skill.ApplicationType == SkillApplicationType.OnDeployUnit)
+                    {
+                        skill.ApplySkill(unit); // Apply the skill to the unit
+                    }
+                }
+            }
+        }
+
+        // Method to deploy spells and apply relevant skills
+        public void DeploySpell(Spell spell)
+        {
+            if (characterBaseSO != null)
+            {
+                foreach (var skill in characterBaseSO.Skills)
+                {
+                    if (skill.ApplicationType == SkillApplicationType.OnDeployUnit)
+                    {
+                        skill.ApplySkill(spell); // Apply the skill to the spell (if applicable)
+                    }
+                }
+            }
+        }
+
+        // Apply broader gameplay modifiers at the start or when relevant
+        public void ApplyGameplayModifiers()
+        {
+            if (characterBaseSO != null)
+            {
+                foreach (var skill in characterBaseSO.Skills)
+                {
+                    if (skill.ApplicationType == SkillApplicationType.GameplayModifier)
+                    {
+                        skill.ApplyGameplayModifier(); // Apply the gameplay modifier
+                    }
+                }
+            }
+        }
     }
-    //Do something when player casts spells
-    public virtual void DeploySpell(Spell spell)
-    {
-        //Stay empty, write code in child class
-    }
-}
 }
