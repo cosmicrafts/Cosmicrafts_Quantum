@@ -12,19 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a5fcb66d9ad3045ba725af3153fa65, type: 3}
   m_Name: NewCharacterBase
   m_EditorClassIdentifier: 
-  basePrefab: {fileID: 2198226034328220048, guid: 4cf9cb42354314f16bbd51e77a7a62c2,
+  basePrefab: {fileID: 2198226034328220048, guid: 6e8f3deaee9ce455da030eed4a731ec8,
     type: 3}
-  hpOverride: 1000
-  shieldOverride: 1000
-  damageOverride: 100
-  Skills:
-  - skillName: 0
-    Type: 0
-    Target: 2
-    Multiplier: 1
-    ApplicationType: 0
+  hpOverride: 1528
+  shieldOverride: 9999
+  bulletDamageOverride: 1804
+  skills:
   - skillName: 2
     Type: 1
-    Target: 2
-    Multiplier: 100
+    Target: 3
+    Multiplier: 10
     ApplicationType: 0

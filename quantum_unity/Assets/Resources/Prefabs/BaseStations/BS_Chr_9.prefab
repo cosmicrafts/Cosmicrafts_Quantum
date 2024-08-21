@@ -4941,7 +4941,6 @@ GameObject:
   - component: {fileID: 2198226033516823799}
   - component: {fileID: 2198226033516823792}
   - component: {fileID: 2198226033516823793}
-  - component: {fileID: 2738669134308170058}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -5045,21 +5044,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexMaskingMode: 0
   drawingMode: 1
   outlineLayer: 0
   outlineTargets:
-  - IsVisible: 1
-    CutoutMask: 8
-    edgeDilateAmount: 5
+  - edgeDilateAmount: 5
     frontEdgeDilateAmount: 5
     backEdgeDilateAmount: 5
-    renderer: {fileID: 2198226033516823797}
+    Renderer: {fileID: 0}
     SubmeshIndex: 0
-    BoundsMode: 0
-    Bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    ForceRecalculateBounds: 0
+    CutoutDescriptionType: 0
     CutoutThreshold: 0.5
     CullMode: 2
     cutoutTextureName: 
@@ -5092,7 +5086,7 @@ MonoBehaviour:
       serializedProperties: []
 --- !u!95 &2198226033516823792
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5109,7 +5103,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &2198226033516823793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5120,18 +5115,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf03c66472a8a13448b4a024e936fc6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2738669134308170058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2198226033516823794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2198226034328220048
@@ -5261,9 +5244,6 @@ MonoBehaviour:
   RotateToEnemy: 1
   StopToAttack: 1
   Bullet: {fileID: 4495777382389081428, guid: 02db42a7fea65444e9b8059d2435ea4f, type: 3}
-  colorBullet: {r: 0.965895, g: 1, b: 0.54509807, a: 0.59607846}
-  colorImpact: {r: 0.9085845, g: 1, b: 0, a: 0.5803922}
-  colorShield: {r: 0.9811321, g: 0.18974723, b: 0.9334879, a: 0.5}
   Cannons:
   - {fileID: 2198226033293860269}
 --- !u!135 &2198226034328220042

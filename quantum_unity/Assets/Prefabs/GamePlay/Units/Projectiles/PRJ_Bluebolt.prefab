@@ -9524,6 +9524,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4495777382389447028}
   - component: {fileID: 49977308736601857}
+  - component: {fileID: 860512745024935031}
   m_Layer: 0
   m_Name: PRJ_Bluebolt
   m_TagString: Untagged
@@ -9560,3 +9561,21 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &860512745024935031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4495777382389081428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62b06b03c5f5c7e4b83468477b37182e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyTeam: 0
+  Speed: 42
+  Dmg: 80
+  canvasDamageRef: {fileID: 7751084914488314239, guid: 48826ce7a53e443408841cb8be937705,
+    type: 3}
+  impact: {fileID: 3092762304846988254}

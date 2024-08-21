@@ -396,43 +396,50 @@ public class GameMng : MonoBehaviour
     }
     
     //Create base stations (from player´s script)
-    public void InitBaseStations(GameObject baseStationPrefab)
+   public Unit InitBaseStations(GameObject baseStationPrefab)
+{
+    // PLAYER STATION
+    int PIn = P.MyTeam == Team.Blue ? 1 : 0; // Player base station index
+    int VsIn = P.MyTeam == Team.Red ? 1 : 0; // Enemy base station index
+    
+    Unit playerBaseStation = null;
+    
+    // Create the player's base station using the provided prefab
+    if (baseStationPrefab != null)
     {
-        // PLAYER STATION
-        int PIn = P.MyTeam == Team.Blue ? 1 : 0; // Player base station index
-        int VsIn = P.MyTeam == Team.Red ? 1 : 0; // Enemy base station index
-        
-        // Create the player's base station using the provided prefab
-        if (baseStationPrefab != null)
-        {
-            Targets[PIn] = Instantiate(baseStationPrefab, BS_Positions[PIn], Quaternion.identity).GetComponent<Unit>();
-        }
-        else
-        {
-            Debug.LogError("Base station prefab is not assigned!");
-            return;
-        }
-
-        // Create the enemy's base station
-        GameObject VsStation = GlobalManager.GMD.CurrentMatch == Match.multi ?
-            ResourcesServices.LoadBaseStationPrefab(GameNetwork.GetVSnftCharacter().KeyId) :
-            BotPrefab.GetComponent<BotEnemy>().prefabBaseStation;
-            
-        Targets[VsIn] = Instantiate(VsStation, BS_Positions[VsIn], Quaternion.identity).GetComponent<Unit>();
-
-        // Set variables for enemy's base station
-        Targets[0].PlayerId = 2;
-        Targets[0].MyTeam = Team.Red;
-
-        // Set the IDs of the base stations
-        for (int i = 0; i < Targets.Length; i++)
-        {
-            Targets[i].setId(GM.GenerateUnitId());
-        }
-
-        // Game is ready to start
-        InitRedy = true;
+        playerBaseStation = Instantiate(baseStationPrefab, BS_Positions[PIn], Quaternion.identity).GetComponent<Unit>();
+        Targets[PIn] = playerBaseStation;
     }
+    else
+    {
+        Debug.LogError("Base station prefab is not assigned!");
+        return null;
+    }
+
+    // Create the enemy's base station
+    GameObject VsStation = GlobalManager.GMD.CurrentMatch == Match.multi ?
+        ResourcesServices.LoadBaseStationPrefab(GameNetwork.GetVSnftCharacter().KeyId) :
+        BotPrefab.GetComponent<BotEnemy>().prefabBaseStation;
+        
+    Targets[VsIn] = Instantiate(VsStation, BS_Positions[VsIn], Quaternion.identity).GetComponent<Unit>();
+
+    // Set variables for enemy's base station
+    Targets[0].PlayerId = 2;
+    Targets[0].MyTeam = Team.Red;
+
+    // Set the IDs of the base stations
+    for (int i = 0; i < Targets.Length; i++)
+    {
+        Targets[i].setId(GM.GenerateUnitId());
+    }
+
+    // Game is ready to start
+    InitRedy = true;
+
+    // Return the player's base station
+    return playerBaseStation;
+}
+
 
     
     //Deply a unit using a prefab game object
