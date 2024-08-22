@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections;
 using EPOOutline;
+using System;
 
 namespace CosmicraftsSP
 {
@@ -23,6 +24,7 @@ namespace CosmicraftsSP
 
     public class Unit : MonoBehaviour
     {
+        public event Action<Unit> OnDeath;
         protected int Id;
         protected NFTsUnit NFTs;
         protected bool IsFake;
@@ -220,6 +222,12 @@ namespace CosmicraftsSP
                 Die();
             }
 
+            if (HitPoints <= 0 && !IsInmortal)
+            {
+                HitPoints = 0;
+                Die();
+            }
+
             UI.SetHPBar((float)HitPoints / (float)MaxHp);
         }
 
@@ -235,6 +243,10 @@ namespace CosmicraftsSP
 
             HitPoints = 0;
             IsDeath = true;
+
+            // Broadcast the death event
+            OnDeath?.Invoke(this);
+
             UI.HideUI();
             SA.SetActive(false);
             MyAnim.SetTrigger("Die");

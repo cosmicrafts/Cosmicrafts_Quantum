@@ -79,7 +79,7 @@ MonoBehaviour:
   Dmg: 0
   canvasDamageRef: {fileID: 7751084914488314239, guid: 48826ce7a53e443408841cb8be937705,
     type: 3}
-  impact: {fileID: 3883958283698855137}
+  impact: {fileID: 183812, guid: 410e2c5d5d9e3874ca3f4b56b680a13e, type: 3}
   IsAoE: 1
   AoERadius: 4
 --- !u!1001 &3883958283698747907
@@ -336,12 +336,6 @@ PrefabInstance:
 --- !u!4 &3883958283698584217 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 426138, guid: 1d3d483cae853944c9b94aacf7ea6288,
-    type: 3}
-  m_PrefabInstance: {fileID: 3883958283698747907}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3883958283698855137 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 190178, guid: 1d3d483cae853944c9b94aacf7ea6288,
     type: 3}
   m_PrefabInstance: {fileID: 3883958283698747907}
   m_PrefabAsset: {fileID: 0}

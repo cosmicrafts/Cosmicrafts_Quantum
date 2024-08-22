@@ -79,12 +79,17 @@ MonoBehaviour:
   Dmg: 0
   canvasDamageRef: {fileID: 7751084914488314239, guid: 48826ce7a53e443408841cb8be937705,
     type: 3}
-  Inpact: {fileID: 416251089823111746, guid: 240c830bfe588ad4f9925288b65d7a18, type: 3}
-  colorImpact: {r: 1, g: 1, b: 1, a: 1}
-  ShieldInpact: {fileID: 8994491411004452053, guid: a6a405c512eefab4cb21693a2ff0f2d4,
-    type: 3}
-  colorShield: {r: 1, g: 1, b: 1, a: 1}
-  DestroyTime: 1.45
+  impact: {fileID: 6228291275812593098}
+  trajectoryType: 0
+  WaveringAmplitude: 0.5
+  WaveringFrequency: 2
+  ZigzagAmplitude: 0.5
+  ZigzagFrequency: 2
+  CircularRadius: 1
+  CircularSpeed: 2
+  IsAoE: 0
+  AoERadius: 5
+  maxLifespan: 1
 --- !u!1001 &6228291275812744314
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -111,7 +116,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 192944, guid: 0044b1179ba347646bb84b9aa4ba4cb6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 431490, guid: 0044b1179ba347646bb84b9aa4ba4cb6, type: 3}
       propertyPath: m_RootOrder
@@ -388,6 +393,12 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: -3013446091138852896, guid: 0044b1179ba347646bb84b9aa4ba4cb6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0044b1179ba347646bb84b9aa4ba4cb6, type: 3}
+--- !u!1 &6228291275812593098 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 192944, guid: 0044b1179ba347646bb84b9aa4ba4cb6,
+    type: 3}
+  m_PrefabInstance: {fileID: 6228291275812744314}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6228291275812846072 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 431490, guid: 0044b1179ba347646bb84b9aa4ba4cb6,

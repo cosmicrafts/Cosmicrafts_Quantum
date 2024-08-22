@@ -160,10 +160,10 @@ namespace CosmicraftsSP
                 GameObject bulletPrefab = Instantiate(Bullet, cannon.position, cannon.rotation);
                 Projectile bullet = bulletPrefab.GetComponent<Projectile>();
                 bullet.MyTeam = MyUnit.MyTeam;
-                bullet.SetLastPosition(FakeTarget.transform.position);
+               // bullet.SetLastPosition(FakeTarget.transform.position);
                 bullet.Speed = BulletSpeed;
                 bullet.Dmg = 0;
-                bullet.SetFake(true);
+              //  bullet.SetFake(true);
 
                 if (MuzzleFlash[i] != null)
                 {

@@ -1149,7 +1149,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 8.62
+  m_Radius: 8
   m_Center: {x: 0, y: -1.35, z: 0}
 --- !u!114 &2198226033516823799
 MonoBehaviour:
@@ -1353,9 +1353,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyDetector: {fileID: 2198226032576818155}
   CanAttack: 1
-  RangeDetector: 36
-  CoolDown: 2
-  BulletSpeed: 48
+  RangeDetector: 24
+  CoolDown: 1.5
+  BulletSpeed: 26
   BulletDamage: 99
   criticalStrikeChance: 1
   criticalStrikeMultiplier: 2
@@ -1375,7 +1375,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 7.8
+  m_Radius: 6.55
   m_Center: {x: 0, y: 2.66, z: 0}
 --- !u!114 &2198226034328220043
 MonoBehaviour:
@@ -8206,7 +8206,22 @@ PrefabInstance:
     - target: {fileID: 653037704619718272, guid: 0f933251899050c4dadc659948e75471,
         type: 3}
       propertyPath: m_Radius
-      value: 0.76
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 653037704619718275, guid: 0f933251899050c4dadc659948e75471,
+        type: 3}
+      propertyPath: m_Drag
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 653037704619718275, guid: 0f933251899050c4dadc659948e75471,
+        type: 3}
+      propertyPath: m_Mass
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 653037704619718275, guid: 0f933251899050c4dadc659948e75471,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1052354846185911372, guid: 0f933251899050c4dadc659948e75471,
         type: 3}
