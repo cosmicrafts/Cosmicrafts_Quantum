@@ -992,7 +992,7 @@ GameObject:
   - component: {fileID: 2198226034328220054}
   - component: {fileID: 2198226034328220042}
   - component: {fileID: 2198226034328220043}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: U_WEB_1
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -1072,6 +1072,7 @@ MonoBehaviour:
   Size: 1
   SpawnAreaSize: 0
   DodgeChance: 0
+  Level: 1
   IsBaseStation: 0
   IsInmortal: 0
   flagShield: 0
@@ -1127,9 +1128,6 @@ MonoBehaviour:
   RotateToEnemy: 1
   StopToAttack: 1
   Bullet: {fileID: 4495777382389081428, guid: d4d6095c68ec207429ecb8709a20bc3f, type: 3}
-  colorBullet: {r: 0.24056602, g: 0.866664, b: 1, a: 0.79607844}
-  colorImpact: {r: 0.30411178, g: 0.6959888, b: 0.9622642, a: 0.79607844}
-  colorShield: {r: 0.87013066, g: 0.30081883, b: 0.9811321, a: 0.7882353}
   Cannons:
   - {fileID: 8295648789489504125}
 --- !u!135 &2198226034328220042
@@ -1271,8 +1269,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3975718314198590062}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -0.71, z: 0.01872}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6880521576073695431}
@@ -1294,7 +1292,7 @@ SphereCollider:
   m_Center: {x: 0, y: -0.509, z: 0}
 --- !u!95 &4254649818248002262
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1311,7 +1309,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &161784422769425727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1336,7 +1335,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexMaskingMode: 0
   drawingMode: 1
   outlineLayer: 0
   outlineTargets: []

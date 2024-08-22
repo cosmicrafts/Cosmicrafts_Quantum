@@ -479,5 +479,18 @@ namespace CosmicraftsSP
         {
             Level = Mathf.Clamp(newLevel, 1, 99);
         }
+
+        public virtual void MoveTo(Vector3 position)
+        {
+            Ship ship = GetComponent<Ship>();
+            if (ship != null)
+            {
+                ship.SetDestination(position, ship.StoppingDistance);
+            }
+            else
+            {
+                Debug.LogWarning($"MoveTo called on {name}, but no Ship component was found.");
+            }
+        }
     }
 }

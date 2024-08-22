@@ -37893,7 +37893,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &909340754
 Transform:
   m_ObjectHideFlags: 0
@@ -37921,8 +37921,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a3915efcb8595c4ca77311582796222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionEffectPrefab: {fileID: 151440, guid: 476c443b061cda848a1ea9df3014cd04,
+  selectionEffectPrefab: {fileID: 183160, guid: a1cb3a9a6f428974b92c517bad51f2af,
     type: 3}
+  selectionBox: {fileID: 697417430412689602}
+  unitLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &910374463
 GameObject:
   m_ObjectHideFlags: 0

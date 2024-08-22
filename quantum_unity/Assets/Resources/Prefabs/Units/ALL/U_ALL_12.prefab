@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IgnoreList: []
-  AvoidanceSensitivity: 1
+  AvoidanceSensitivity: 0.1
   MaxAvoidanceLength: 1
   YAxis: 0
   RotateTowardsTarget: 0
@@ -999,7 +999,7 @@ GameObject:
   - component: {fileID: 2198226034328220054}
   - component: {fileID: 2198226034328220042}
   - component: {fileID: 2198226034328220043}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: U_ALL_12
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -1079,6 +1079,7 @@ MonoBehaviour:
   Size: 1
   SpawnAreaSize: 0
   DodgeChance: 0
+  Level: 1
   IsBaseStation: 0
   IsInmortal: 0
   flagShield: 0
@@ -1125,15 +1126,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyDetector: {fileID: 2198226032576818155}
   CanAttack: 1
-  RangeDetector: 38
-  CoolDown: 1.25
+  RangeDetector: 32
+  CoolDown: 1.5
   BulletSpeed: 99
   BulletDamage: 2
   criticalStrikeChance: 0
   criticalStrikeMultiplier: 2
   RotateToEnemy: 1
   StopToAttack: 1
-  Bullet: {fileID: 4495777382389081428, guid: 10b9ed6b2dbdca342884a06ca3095f80, type: 3}
+  Bullet: {fileID: 4495777382389081428, guid: fe7faab6b8f21fc4b84c055467ce365e, type: 3}
   Cannons:
   - {fileID: 5252086364133158021}
   - {fileID: 7902574330441595919}
@@ -1517,8 +1518,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5943289481955648982}
   m_LocalRotation: {x: 0.000000059604645, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.28, z: 0}
-  m_LocalScale: {x: 55.686512, y: 173.13708, z: 63.761}
+  m_LocalPosition: {x: 0, y: -1.7778, z: -0.0000000075806}
+  m_LocalScale: {x: 82.46059, y: 258.9965, z: 94.41729}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3235975695377214059}
@@ -1607,8 +1608,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6185420871834245018}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: -1.57, z: 0}
-  m_LocalScale: {x: 78.38225, y: 78.38223, z: 54.67789}
+  m_LocalPosition: {x: 0, y: -1.0509, z: 0.089788}
+  m_LocalScale: {x: 83.367355, y: 83.36734, z: 124.82469}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6362883743382392301}
@@ -3409,7 +3410,7 @@ PrefabInstance:
     - target: {fileID: 6971450709809201329, guid: 9462dc2e370c96046bb8c0bf799feb25,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.84
+      value: 2.69
       objectReference: {fileID: 0}
     - target: {fileID: 6971450709809201329, guid: 9462dc2e370c96046bb8c0bf799feb25,
         type: 3}
