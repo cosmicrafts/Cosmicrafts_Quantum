@@ -447,6 +447,7 @@ namespace CosmicraftsSP
             MaxHp = HitPoints;
             Shield = nFTsUnit.Shield;
             MaxShield = Shield;
+            Level = nFTsUnit.Level;
 
             GetComponent<Shooter>()?.InitStatsFromNFT(nFTsUnit);
         }
