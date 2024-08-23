@@ -24,7 +24,6 @@
         public float AvoidanceRange = 3f;
 
         Transform Target;
-        Vector3 FakeDestination;
         public RaySensor[] AvoidanceSensors;
         public GameObject[] Thrusters;
 
@@ -37,19 +36,11 @@
         {
             base.Start();
             Target = GameMng.GM.GetFinalTransformTarget(MyTeam);
-            FakeDestination = transform.position;
-            if (IsFake)
+            MySt.Destination = Target.position;
+            MySt.StoppingDistance = StoppingDistance;
+            foreach (RaySensor sensor in AvoidanceSensors)
             {
-                MySt.enabled = false;
-            }
-            else
-            {
-                MySt.Destination = Target.position;
-                MySt.StoppingDistance = StoppingDistance;
-                foreach (RaySensor sensor in AvoidanceSensors)
-                {
-                    sensor.Length = AvoidanceRange;
-                }
+                sensor.Length = AvoidanceRange;
             }
         }
 
@@ -83,54 +74,46 @@
                 return;
             }
 
-            if (IsFake)
+            if (InControl())
             {
-                transform.position = Vector3.Lerp(transform.position, FakeDestination, Time.deltaTime * MaxSpeed);
-                EnableThrusters(Vector3.Distance(transform.position, FakeDestination) > Speed);
-            }
-            else
-            {
-                if (InControl())
+                if (CanMove)
                 {
-                    if (CanMove)
+                    if (Speed < MaxSpeed)
                     {
-                        if (Speed < MaxSpeed)
-                        {
-                            Speed += Aceleration * Time.deltaTime;
-                        }
-                        else
-                        {
-                            Speed = MaxSpeed;
-                        }
-
-                        MySt.TurnForce = TurnSpeed * 100f;
-                        MySt.StrafeForce = DragSpeed * 100f;
-                        MySt.MoveForce = Speed * 100f;
-                        MySt.StopSpeed = StopSpeed;
+                        Speed += Aceleration * Time.deltaTime;
                     }
                     else
                     {
-                        MySt.TurnForce = 0f;
-                        MySt.MoveForce = 0f;
-                        Speed = 0f;
+                        Speed = MaxSpeed;
                     }
 
-                    if (MySt.hasReachedDestination() && ThrustersAreEnable())
-                    {
-                        EnableThrusters(false);
-                    }
-                    if (!MySt.hasReachedDestination() && !ThrustersAreEnable())
-                    {
-                        EnableThrusters(true);
-                    }
+                    MySt.TurnForce = TurnSpeed * 100f;
+                    MySt.StrafeForce = DragSpeed * 100f;
+                    MySt.MoveForce = Speed * 100f;
+                    MySt.StopSpeed = StopSpeed;
                 }
-                else if (ThrustersAreEnable())
+                else
                 {
-                    EnableThrusters(false);
                     MySt.TurnForce = 0f;
                     MySt.MoveForce = 0f;
                     Speed = 0f;
                 }
+
+                if (MySt.hasReachedDestination() && ThrustersAreEnable())
+                {
+                    EnableThrusters(false);
+                }
+                if (!MySt.hasReachedDestination() && !ThrustersAreEnable())
+                {
+                    EnableThrusters(true);
+                }
+            }
+            else if (ThrustersAreEnable())
+            {
+                EnableThrusters(false);
+                MySt.TurnForce = 0f;
+                MySt.MoveForce = 0f;
+                Speed = 0f;
             }
         }
 
@@ -150,11 +133,6 @@
         {
             MySt.Destination = des;
             MySt.StoppingDistance = stopdistance;
-        }
-
-        public void SetFakeDestination(Vector3 des)
-        {
-            FakeDestination = des;
         }
 
         protected override void CastComplete()

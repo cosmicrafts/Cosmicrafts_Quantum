@@ -166,7 +166,7 @@ public class GameTutorial : MonoBehaviour
         //Set the name of the player in dialogs
         for (int i = 0; i < Dialogs.Length; i++)
         {
-            Dialogs[i] = Dialogs[i].Replace("$PLAYER", GameMng.PlayerData.NikeName);
+          //  Dialogs[i] = Dialogs[i].Replace("$PLAYER", GameMng.PlayerData.NikeName);
         }
     }
 

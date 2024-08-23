@@ -27,7 +27,6 @@ namespace CosmicraftsSP
         public event Action<Unit> OnDeath;
         protected int Id;
         protected NFTsUnit NFTs;
-        protected bool IsFake;
         public bool IsDeath;
         public int PlayerId = 1;
         public Team MyTeam;
@@ -84,8 +83,6 @@ namespace CosmicraftsSP
 
         protected Rigidbody MyRb;
 
-        Quaternion FakeRotation;
-
         private void Awake()
         {
             MyClips = MyAnim.runtimeAnimatorController.animationClips;
@@ -115,11 +112,6 @@ namespace CosmicraftsSP
             SA.SetActive(IsMyTeam(GameMng.P.MyTeam) && SpawnAreaSize > 0f);
             Destroy(Portal, 3f);
             GameMng.GM.AddUnit(this);
-
-            if (IsFake)
-            {
-                InitHasFake();
-            }
         }
 
         protected virtual void Update()
@@ -133,16 +125,11 @@ namespace CosmicraftsSP
                 }
             }
 
-            if (FakeRotation != null && IsFake)
-            {
-                transform.rotation = Quaternion.Lerp(transform.rotation, FakeRotation, Time.time * 0.1f);
-            }
-
             if (ShieldLoad > 0.1f)
             {
                 ShieldLoad -= Time.deltaTime;
             }
-            else if (!IsFake && Shield < MaxShield)
+            else if (Shield < MaxShield)
             {
                 if (ShieldCharge < ShieldSpeed)
                 {
@@ -214,12 +201,6 @@ namespace CosmicraftsSP
             if (!IsMyTeam(GameMng.P.MyTeam))
             {
                 GameMng.MT.AddDamage(DirectDmg);
-            }
-
-            if (HitPoints <= 0 && !IsInmortal)
-            {
-                HitPoints = 0;
-                Die();
             }
 
             if (HitPoints <= 0 && !IsInmortal)
@@ -359,27 +340,6 @@ namespace CosmicraftsSP
             return PlayerId;
         }
 
-        public bool getIsFake()
-        {
-            return IsFake;
-        }
-
-        public void setHasFake()
-        {
-            IsFake = true;
-        }
-
-        void InitHasFake()
-        {
-            TrigerBase.enabled = false;
-            SolidBase.enabled = false;
-        }
-
-        public void SetFakeRotation(Quaternion quaternion)
-        {
-            FakeRotation = quaternion;
-        }
-
         public Animator GetAnimator()
         {
             return MyAnim;
@@ -400,16 +360,6 @@ namespace CosmicraftsSP
             MaxShield = maxshield;
         }
 
-        public void SetFakeShield(int sh, int maxshield)
-        {
-            if (!IsFake)
-                return;
-
-            Shield = sh;
-            MaxShield = maxshield;
-            UI.SetShieldBar((float)sh / (float)maxshield);
-        }
-
         public void SetMaxHitPoints(int maxhp)
         {
             MaxHp = maxhp;
@@ -419,21 +369,6 @@ namespace CosmicraftsSP
         public int GetMaxHitPoints()
         {
             return MaxHp;
-        }
-
-        public void SetFakeHp(int hp, int maxhp)
-        {
-            if (!IsFake)
-                return;
-
-            float diference = Mathf.Abs(hp - HitPoints);
-            if (!IsMyTeam(GameMng.P.MyTeam))
-            {
-                GameMng.MT.AddDamage(diference);
-            }
-            HitPoints = hp;
-            MaxHp = maxhp;
-            UI.SetHPBar((float)hp / (float)maxhp);
         }
 
         public virtual void SetNfts(NFTsUnit nFTsUnit)
@@ -454,7 +389,7 @@ namespace CosmicraftsSP
 
         public bool InControl()
         {
-            return (!Disabled && Casting <= 0f && !IsFake);
+            return (!Disabled && Casting <= 0f);
         }
 
         public void OnImpactShield(int dmg)

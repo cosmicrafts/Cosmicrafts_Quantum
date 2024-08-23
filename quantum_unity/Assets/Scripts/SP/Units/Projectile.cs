@@ -16,7 +16,6 @@
         public GameObject canvasDamageRef;
         public GameObject impact;
         Vector3 LastTargetPosition;
-        bool IsFake;
 
         // Enum for different trajectory types
         public enum TrajectoryType
@@ -179,15 +178,6 @@
             }
         }
 
-        private void MoveFakeProjectile()
-        {
-            transform.position = Vector3.MoveTowards(transform.position, LastTargetPosition, Speed * Time.fixedDeltaTime);
-
-            if (Vector3.Distance(transform.position, LastTargetPosition) <= 0.25f)
-            {
-                HandleImpact(null);
-            }
-        }
 
         private void MoveToLastPositionOrDestroy()
         {
@@ -201,7 +191,6 @@
 
         private void OnTriggerEnter(Collider other)
         {
-            if (IsFake) return;
 
             if (other.gameObject == Target)
             {
@@ -335,12 +324,5 @@
             }
         }
 
-        public void SetFake(bool isFake)
-        {
-            IsFake = isFake;
-            SphereCollider sc = GetComponent<SphereCollider>();
-            if (sc != null)
-                sc.enabled = !isFake;
-        }
     }
 }

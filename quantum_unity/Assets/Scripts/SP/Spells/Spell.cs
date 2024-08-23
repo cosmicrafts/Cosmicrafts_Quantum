@@ -5,8 +5,7 @@ using UnityEngine;
  */
 public class Spell : MonoBehaviour
 {
-    //Defines if this spell is only a mirror of other spell (used for multiplayer)
-    protected bool IsFake = false;
+
     //The NFT data source
     protected NFTsSpell NFTs;
     //The spell's team in the game
@@ -36,12 +35,6 @@ public class Spell : MonoBehaviour
     protected virtual void Update()
     {
         
-    }
-
-    //Sets if this spell is fake
-    public virtual void setHasFake()
-    {
-        IsFake = true;
     }
 
     //Returns the NFT key

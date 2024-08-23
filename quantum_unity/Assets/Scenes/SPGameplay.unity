@@ -64886,6 +64886,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1750906196}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1750906199 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 614409388736174091, guid: c98f1e7a70e1d428a9c9801954b934bd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1750906196}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750906197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e479c5bf7fefc469048b81a423d6e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1751396757
 GameObject:
   m_ObjectHideFlags: 0
@@ -97365,51 +97377,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc5ffa928cbb1b4f8ae665490092a97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GT: {fileID: 0}
-  BOT: {fileID: 0}
+  BOT: {fileID: 1750906199}
   BotPrefab: {fileID: 1750906197}
-  Targets:
-  - {fileID: 0}
-  - {fileID: 0}
   BS_Positions:
   - {x: 0, y: 0, z: -100}
   - {x: 0, y: 0, z: 0}
-  BgGameObjects:
-  - {fileID: 1422566378}
-  - {fileID: 2024818805}
-  - {fileID: 1214103538}
-  - {fileID: 1049524930}
-  - {fileID: 1775637000}
-  - {fileID: 1937420063}
-  - {fileID: 9745404}
-  - {fileID: 128217820}
-  - {fileID: 627275621}
-  - {fileID: 1670517216}
-  - {fileID: 939768375}
-  - {fileID: 572528829}
-  - {fileID: 234694131}
-  - {fileID: 616558257}
-  - {fileID: 42145617}
-  - {fileID: 910374463}
-  - {fileID: 1208761569}
-  - {fileID: 21298131}
-  - {fileID: 1328511861}
-  - {fileID: 1949297237}
-  - {fileID: 1101889584}
-  - {fileID: 1022107849}
-  - {fileID: 909191373}
-  - {fileID: 1859874197}
-  - {fileID: 1654911983}
-  - {fileID: 1985974539}
-  MapWidth: 60
-  MapHeigth: 48
-  ownUnitColor: {r: 0.25497222, g: 1, b: 0, a: 1}
-  alliedUnitColor: {r: 0.015686274, g: 0.8541505, b: 1, a: 1}
-  enemyUnitColor: {r: 0.80887604, g: 0, b: 1, a: 1}
-  Winner: 0
-  GridColl: {fileID: 697417431163022882}
-  Testing: 1
-  TestingDeck: 1
+  Targets:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &697417429954438962
 Transform:
   m_ObjectHideFlags: 0
@@ -102492,19 +102467,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 1
   MyTeam: 0
+  TestingDeck:
+  - {fileID: 11400000, guid: e315f07687430ed4cbccc7d278fb2d01, type: 2}
+  - {fileID: 11400000, guid: 392d1ab0c566b2c4ba0cd1231cdfc687, type: 2}
+  - {fileID: 11400000, guid: cc00ad6e2bb152245ab2019664e7295b, type: 2}
+  - {fileID: 11400000, guid: 6f3bbde685fd6034c9cdddb386b19c18, type: 2}
+  - {fileID: 11400000, guid: 3547a89b66b68874ea45ee63365fdd00, type: 2}
+  - {fileID: 11400000, guid: 7bf91f269f9089c47baf31dc2ffb88af, type: 2}
+  - {fileID: 11400000, guid: 308417930d78c654590e3ea35ce21d9a, type: 2}
+  - {fileID: 11400000, guid: 7e09baf43482768438e2286f33636a87, type: 2}
   characterPrefab: {fileID: 1220039149}
   CurrentEnergy: 30
   MaxEnergy: 30
   SpeedEnergy: 0.5
-  TestingDeck:
-  - {fileID: 11400000, guid: 3547a89b66b68874ea45ee63365fdd00, type: 2}
-  - {fileID: 11400000, guid: 6f3bbde685fd6034c9cdddb386b19c18, type: 2}
-  - {fileID: 11400000, guid: 54ddd721d9e76794f9fc87ea3a478e63, type: 2}
-  - {fileID: 11400000, guid: c1697e288037d7e498e50afc22766f85, type: 2}
-  - {fileID: 11400000, guid: 7bf91f269f9089c47baf31dc2ffb88af, type: 2}
-  - {fileID: 11400000, guid: e315f07687430ed4cbccc7d278fb2d01, type: 2}
-  - {fileID: 11400000, guid: 6f3bbde685fd6034c9cdddb386b19c18, type: 2}
-  - {fileID: 11400000, guid: 3547a89b66b68874ea45ee63365fdd00, type: 2}
 --- !u!4 &697417430648073629
 Transform:
   m_ObjectHideFlags: 0

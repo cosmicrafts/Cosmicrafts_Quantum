@@ -1,4 +1,5 @@
 ﻿//NFT unit class
+using UnityEngine;
 public class NFTsUnit : NFTsCard
 {
     public int HitPoints { get; set; }
@@ -8,4 +9,5 @@ public class NFTsUnit : NFTsCard
     public int Dammage { get; set; }
 
     public float Speed { get; set; }
+    public GameObject Prefab { get; set; }
 }

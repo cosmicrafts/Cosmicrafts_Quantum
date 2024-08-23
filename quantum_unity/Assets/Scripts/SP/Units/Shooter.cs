@@ -53,14 +53,7 @@ namespace CosmicraftsSP
 
         void Update()
         {
-            if (MyUnit.getIsFake())
-            {
-                ShootFakeTarget();
-            }
-            else
-            {
-                ShootTarget();
-            }
+            ShootTarget();
         }
 
         public void ShootTarget()
