@@ -35,7 +35,10 @@ public class Player : MonoBehaviour
     public float MaxEnergy = 10;
     [Range(0, 99)]
     public float SpeedEnergy = 1;
-    public ShipsDataBase[] TestingDeck = new ShipsDataBase[8];
+    
+    // This array is for you to populate directly in the inspector with your ships and spells
+    public ScriptableObject[] TestingDeck = new ScriptableObject[8]; 
+
     KeyCode[] Keys;
 
 private void Awake()
@@ -84,9 +87,16 @@ private void Start()
     InControl = CanGenEnergy = true;
 
     PlayerDeck = new List<NFTsCard>();
-    foreach (ShipsDataBase card in TestingDeck)
+    foreach (ScriptableObject card in TestingDeck)
     {
-        PlayerDeck.Add(card.ToNFTCard());
+        if (card is ShipsDataBase shipCard)
+        {
+            PlayerDeck.Add(shipCard.ToNFTCard());
+        }
+        else if (card is SpellsDataBase spellCard)
+        {
+            PlayerDeck.Add(spellCard.ToNFTCard());
+        }
     }
 
     SpellPreviews = new GameObject[8];
@@ -98,10 +108,9 @@ private void Start()
     {
         for (int i = 0; i < 8; i++)
         {
-            // Ensure the card is of type NFTsUnit before passing it to AddNftCardData
             if (PlayerDeck[i] is NFTsUnit nftsUnit)
             {
-                GameObject prefab = ResourcesServices.LoadCardPrefab(nftsUnit.KeyId, PlayerDeck[i] as NFTsSpell != null);
+                GameObject prefab = ResourcesServices.LoadCardPrefab(nftsUnit.KeyId, PlayerDeck[i] is NFTsSpell);
                 DeckUnits.Add(nftsUnit.KeyId, prefab);
                 GameMng.GM.AddNftCardData(nftsUnit, ID);
                 GameCard card = prefab.GetComponent<GameCard>();
@@ -125,69 +134,45 @@ private void Start()
             }
         }
     }
-        GameMng.UI.InitGameCards(PlayerDeck.ToArray());
-        Debug.Log("--PLAYER END START--");
+
+    GameMng.UI.InitGameCards(PlayerDeck.ToArray());
+    Debug.Log("--PLAYER END START--");
+}
+
+private void Update()
+{
+    if (!InControl)
+    {
+        return;
     }
 
-    private void Update()
+    for (int i = 0; i < 8; i++)
     {
-        if (!InControl)
-        {
-            return;
-        }
-
-        for (int i = 0; i < 8; i++)
-        {
-            if (Input.GetKeyDown(Keys[i]) && UnitDrag.IsValid())
-                DeplyUnit(PlayerDeck[i]);
-        }
-
-        AddEnergy(Time.deltaTime * SpeedEnergy);
+        if (Input.GetKeyDown(Keys[i]) && UnitDrag.IsValid())
+            DeplyUnit(PlayerDeck[i]);
     }
 
-    public void SelectCard(int idu)
-    {
-        if (!InControl)
-        {
-            return;
-        }
+    AddEnergy(Time.deltaTime * SpeedEnergy);
+}
 
-        if (SelectedCard == idu)
-        {
-            SelectedCard = -1;
-            GameMng.UI.DeselectCards();
-            UnitDrag.setMeshActive(false);
-        }
-        else
-        {
-            GameMng.UI.DeselectCards();
-            SelectedCard = idu;
-            GameMng.UI.SelectCard(idu);
-            if ((NFTClass)PlayerDeck[idu].EntType == NFTClass.Skill)
-            {
-                PrepareDeploy(SpellPreviews[idu], PlayerDeck[idu].EnergyCost);
-            }
-            else
-            {
-                PrepareDeploy(ShipPreviews[idu], PlayerDeck[idu].EnergyCost);
-            }
-        }
+public void SelectCard(int idu)
+{
+    if (!InControl)
+    {
+        return;
     }
 
-    public void DragDeckUnit(int idu)
+    if (SelectedCard == idu)
     {
-        if (!InControl)
-        {
-            return;
-        }
-
-        DragingCard = idu;
-        if (SelectedCard != -1 && SelectedCard != DragingCard)
-        {
-            SelectedCard = -1;
-            GameMng.UI.DeselectCards();
-        }
-
+        SelectedCard = -1;
+        GameMng.UI.DeselectCards();
+        UnitDrag.setMeshActive(false);
+    }
+    else
+    {
+        GameMng.UI.DeselectCards();
+        SelectedCard = idu;
+        GameMng.UI.SelectCard(idu);
         if ((NFTClass)PlayerDeck[idu].EntType == NFTClass.Skill)
         {
             PrepareDeploy(SpellPreviews[idu], PlayerDeck[idu].EnergyCost);
@@ -197,84 +182,109 @@ private void Start()
             PrepareDeploy(ShipPreviews[idu], PlayerDeck[idu].EnergyCost);
         }
     }
+}
 
-    public void DropDeckUnit()
+public void DragDeckUnit(int idu)
+{
+    if (!InControl)
     {
-        if (!InControl)
-        {
-            return;
-        }
+        return;
+    }
 
-        if (UnitDrag.IsValid() && (DragingCard != -1 || SelectedCard != -1))
-        {
-            DeplyUnit(DragingCard == -1 ? PlayerDeck[SelectedCard] : PlayerDeck[DragingCard]);
-        }
-        UnitDrag.setMeshActive(false);
-        DragingCard = -1;
+    DragingCard = idu;
+    if (SelectedCard != -1 && SelectedCard != DragingCard)
+    {
         SelectedCard = -1;
         GameMng.UI.DeselectCards();
     }
 
-    public void SetInControl(bool incontrol)
+    if ((NFTClass)PlayerDeck[idu].EntType == NFTClass.Skill)
     {
-        InControl = incontrol;
-        if (!InControl)
-        {
-            UnitDrag.setMeshActive(false);
-            DragingCard = -1;
-        }
+        PrepareDeploy(SpellPreviews[idu], PlayerDeck[idu].EnergyCost);
+    }
+    else
+    {
+        PrepareDeploy(ShipPreviews[idu], PlayerDeck[idu].EnergyCost);
+    }
+}
+
+public void DropDeckUnit()
+{
+    if (!InControl)
+    {
+        return;
     }
 
-    public void SetCanGenEnergy(bool can)
+    if (UnitDrag.IsValid() && (DragingCard != -1 || SelectedCard != -1))
     {
-        CanGenEnergy = can;
+        DeplyUnit(DragingCard == -1 ? PlayerDeck[SelectedCard] : PlayerDeck[DragingCard]);
     }
+    UnitDrag.setMeshActive(false);
+    DragingCard = -1;
+    SelectedCard = -1;
+    GameMng.UI.DeselectCards();
+}
 
-    public void AddEnergy(float value)
-    {
-        if (!CanGenEnergy)
-            return;
-
-        if (CurrentEnergy < MaxEnergy)
-        {
-            CurrentEnergy += value;
-            GameMng.MT.AddEnergyGenerated(value);
-        }
-        else if (CurrentEnergy >= MaxEnergy)
-        {
-            CurrentEnergy = MaxEnergy;
-            GameMng.MT.AddEnergyWasted(value);
-        }
-        GameMng.UI.UpdateEnergy(CurrentEnergy, MaxEnergy);
-    }
-
-    public void RestEnergy(float value)
-    {
-        CurrentEnergy -= value;
-        GameMng.MT.AddEnergyUsed(value);
-        GameMng.UI.UpdateEnergy(CurrentEnergy, MaxEnergy);
-    }
-
-    public bool IsPreparingDeploy()
-    {
-        return DragingCard != -1 || SelectedCard != -1;
-    }
-
-    public void PrepareDeploy(Mesh mesh, Material mat, float cost)
-    {
-        UnitDrag.setMeshActive(true);
-        UnitDrag.SetMeshAndTexture(mesh, mat);
-        UnitDrag.transform.position = CMath.GetMouseWorldPos();
-        UnitDrag.TargetCost = cost;
-    }
-
-    public void PrepareDeploy(GameObject preview, float cost)
+public void SetInControl(bool incontrol)
+{
+    InControl = incontrol;
+    if (!InControl)
     {
         UnitDrag.setMeshActive(false);
-        UnitDrag.CreatePreviewObj(preview);
-        UnitDrag.transform.position = CMath.GetMouseWorldPos();
-        UnitDrag.TargetCost = cost;
+        DragingCard = -1;
     }
+}
+
+public void SetCanGenEnergy(bool can)
+{
+    CanGenEnergy = can;
+}
+
+public void AddEnergy(float value)
+{
+    if (!CanGenEnergy)
+        return;
+
+    if (CurrentEnergy < MaxEnergy)
+    {
+        CurrentEnergy += value;
+        GameMng.MT.AddEnergyGenerated(value);
+    }
+    else if (CurrentEnergy >= MaxEnergy)
+    {
+        CurrentEnergy = MaxEnergy;
+        GameMng.MT.AddEnergyWasted(value);
+    }
+    GameMng.UI.UpdateEnergy(CurrentEnergy, MaxEnergy);
+}
+
+public void RestEnergy(float value)
+{
+    CurrentEnergy -= value;
+    GameMng.MT.AddEnergyUsed(value);
+    GameMng.UI.UpdateEnergy(CurrentEnergy, MaxEnergy);
+}
+
+public bool IsPreparingDeploy()
+{
+    return DragingCard != -1 || SelectedCard != -1;
+}
+
+public void PrepareDeploy(Mesh mesh, Material mat, float cost)
+{
+    UnitDrag.setMeshActive(true);
+    UnitDrag.SetMeshAndTexture(mesh, mat);
+    UnitDrag.transform.position = CMath.GetMouseWorldPos();
+    UnitDrag.TargetCost = cost;
+}
+
+public void PrepareDeploy(GameObject preview, float cost)
+{
+    UnitDrag.setMeshActive(false);
+    UnitDrag.CreatePreviewObj(preview);
+    UnitDrag.transform.position = CMath.GetMouseWorldPos();
+    UnitDrag.TargetCost = cost;
+}
 
 public void DeplyUnit(NFTsCard nftcard)
 {
@@ -302,20 +312,19 @@ public void DeplyUnit(NFTsCard nftcard)
     }
 }
 
+public int GetVsTeamInt()
+{
+    return MyTeam == Team.Red ? 0 : 1;
+}
 
-    public int GetVsTeamInt()
-    {
-        return MyTeam == Team.Red ? 0 : 1;
-    }
+public Team GetVsTeam()
+{
+    return MyTeam == Team.Red ? Team.Blue : Team.Red;
+}
 
-    public Team GetVsTeam()
-    {
-        return MyTeam == Team.Red ? Team.Blue : Team.Red;
-    }
-
-    public int GetVsId()
-    {
-        return ID == 1 ? 2 : 1;
-    }
+public int GetVsId()
+{
+    return ID == 1 ? 2 : 1;
+}
 }
 }

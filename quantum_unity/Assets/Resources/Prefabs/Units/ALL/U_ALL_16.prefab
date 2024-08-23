@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8449816080087110714}
-  - component: {fileID: 8449816080087110709}
+  - component: {fileID: 5442437384119870387}
   - component: {fileID: 8449816080087110708}
   - component: {fileID: 8310945625525268892}
   m_Layer: 0
@@ -37,7 +37,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 50, z: 0}
---- !u!114 &8449816080087110709
+--- !u!114 &5442437384119870387
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,11 +46,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8449816080087110711}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc0d4f85aecc20844b667c9b929814da, type: 3}
+  m_Script: {fileID: 11500000, guid: 50d6e62f8e07b3f4c913a97ee6f3a33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Alias: Spellzzz
-  PreviewEffect: {fileID: 108584, guid: 9b0245240330cec41893d8611880df8d, type: 3}
+  Alias: ae
+  UnitMesh: {fileID: 108584, guid: 9b0245240330cec41893d8611880df8d, type: 3}
 --- !u!114 &8449816080087110708
 MonoBehaviour:
   m_ObjectHideFlags: 0

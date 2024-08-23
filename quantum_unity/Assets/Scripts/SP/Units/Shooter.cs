@@ -31,7 +31,6 @@ namespace CosmicraftsSP
         private Unit MyUnit;
         private List<Unit> InRange;
         private Unit Target;
-        private Unit FakeTarget;
 
         void Start()
         {
@@ -94,27 +93,6 @@ namespace CosmicraftsSP
             }
         }
 
-        public void ShootFakeTarget()
-        {
-            if (MyUnit.GetIsDeath() || MyUnit.GetIsDisabled() && MyUnit.GetIsCasting())
-                return;
-
-            if (FakeTarget != null)
-            {
-                if (DelayShoot <= 0f)
-                {
-                    FireFakeProjectiles();
-
-                    DelayShoot = CoolDown;
-                    MyUnit.GetAnimator().SetTrigger("Attack");
-                }
-                else
-                {
-                    DelayShoot -= Time.deltaTime;
-                }
-            }
-        }
-
         private void FireProjectiles()
         {
             for (int i = 0; i < Cannons.Length; i++)
@@ -144,28 +122,6 @@ namespace CosmicraftsSP
             }
         }
 
-        private void FireFakeProjectiles()
-        {
-            for (int i = 0; i < Cannons.Length; i++)
-            {
-                Transform cannon = Cannons[i];
-
-                GameObject bulletPrefab = Instantiate(Bullet, cannon.position, cannon.rotation);
-                Projectile bullet = bulletPrefab.GetComponent<Projectile>();
-                bullet.MyTeam = MyUnit.MyTeam;
-               // bullet.SetLastPosition(FakeTarget.transform.position);
-                bullet.Speed = BulletSpeed;
-                bullet.Dmg = 0;
-              //  bullet.SetFake(true);
-
-                if (MuzzleFlash[i] != null)
-                {
-                    MuzzleFlash[i].Clear();
-                    MuzzleFlash[i].Play();
-                }
-            }
-        }
-
         public void SetTarget(Unit target)
         {
             Target = target;
@@ -181,11 +137,6 @@ namespace CosmicraftsSP
             {
                 MyShip.SetDestination(Target.transform.position, RangeDetector);
             }
-        }
-
-        public void SetFakeTarget(Unit target)
-        {
-            FakeTarget = target;
         }
 
         public void AddEnemy(Unit enemy)
