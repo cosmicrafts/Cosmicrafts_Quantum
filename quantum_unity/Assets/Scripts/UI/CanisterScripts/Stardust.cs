@@ -32,12 +32,22 @@ namespace Cosmicrafts
         private const int DECIMAL_PLACES = 6;
         private Coroutine balanceAnimationCoroutine;
 
+
         void Start()
         {
+            StartCoroutine(DelayedStart());
             FetchBalance();
             sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
             ShardsPanel = GameObject.Find("StardustPanel").GetComponent<Animator>();
         }
+
+        // Coroutine to handle the delay
+        private IEnumerator DelayedStart()
+        {
+            yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds
+            FetchBalance(); // Call FetchBalance after the delay
+        }
+
 
         private void OnEnable()
         {
