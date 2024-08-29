@@ -254,7 +254,7 @@ private void UpdateUI()
         {
             string notificationMessage = reward.rewardType switch
             {
-                MissionRewardType.Stardust => $"You received {reward.rewardAmount} Shards!",
+                MissionRewardType.Stardust => $"You received {reward.rewardAmount} Stardust!",
                 MissionRewardType.Chest => $"You received a {GetChestRarity(reward.rewardAmount)} Box!",
                 _ => string.Empty
             };
