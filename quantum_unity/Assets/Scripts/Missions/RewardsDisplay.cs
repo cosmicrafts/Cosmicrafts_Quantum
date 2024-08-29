@@ -214,6 +214,7 @@ private void UpdateUI()
                 }
 
                 RefreshUI();
+                StardustScript.FetchBalance();
             }
             else
             {

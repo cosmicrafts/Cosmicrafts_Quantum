@@ -44,7 +44,7 @@ namespace Cosmicrafts
         // Coroutine to handle the delay
         private IEnumerator DelayedStart()
         {
-            yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds
+            yield return new WaitForSeconds(1.5f); // Wait for 0.5 seconds
             FetchBalance(); // Call FetchBalance after the delay
         }
 
