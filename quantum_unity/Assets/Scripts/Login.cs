@@ -62,11 +62,19 @@ using Cosmicrafts.Managers;
             }
         }
 
-        private void OnDestroy()
-        {
-            Debug.Log("[Login] Component OnDestroy() - Cleaning up before destruction.");
-            if (LoginManager.Instance != null) LoginManager.Instance.CancelLogin();
-        }
+private void OnDestroy()
+{
+    Debug.Log("[Login] Component OnDestroy() - Cleaning up before destruction.");
+    if (LoginManager.Instance != null) 
+    {
+        LoginManager.Instance.CancelLogin();
+    }
+    else
+    {
+        Debug.LogWarning("[Login] LoginManager.Instance is null in OnDestroy.");
+    }
+}
+
 
         private async Task InitializeLogin()
         {
@@ -85,27 +93,37 @@ using Cosmicrafts.Managers;
             }
         }
 
-        private async Task MintDeckAsync()
+private async Task MintDeckAsync()
+{
+    if (isMintingDeck)
+    {
+        Debug.LogWarning("[Login] Deck minting already in progress, skipping duplicate request.");
+        return;
+    }
+
+    isMintingDeck = true;
+    Debug.Log("[Login] Initiating deck minting...");
+
+    if (CandidApiManager.Instance != null && CandidApiManager.Instance.MainCanister != null)
+    {
+        var mintInfo = await CandidApiManager.Instance.MainCanister.MintDeck();
+        if (mintInfo.ReturnArg0)
         {
-            if (isMintingDeck)
-            {
-                Debug.LogWarning("[Login] Deck minting already in progress, skipping duplicate request.");
-                return;
-            }
-
-            isMintingDeck = true;
-            Debug.Log("[Login] Initiating deck minting...");
-
-            var mintInfo = await CandidApiManager.Instance.MainCanister.MintDeck();
-            if (mintInfo.ReturnArg0)
-            {
-                Debug.Log("[Login] MINT SUCCESS");
-            }
-            else
-            {
-                Debug.LogError("[Login] ERROR MINT NFTs");
-            }
+            Debug.Log("[Login] MINT SUCCESS");
         }
+        else
+        {
+            Debug.LogError("[Login] ERROR MINT NFTs");
+        }
+    }
+    else
+    {
+        Debug.LogWarning("[Login] CandidApiManager.Instance or MainCanister is null in MintDeckAsync.");
+    }
+
+    isMintingDeck = false;
+}
+
 
         public void UpdateWindow(CandidApiManager.LoginData state)
         {
@@ -150,38 +168,54 @@ using Cosmicrafts.Managers;
             }
         }
 
-        private void UpdatePlayerDataAndTransition(Cosmicrafts.MainCanister.Models.Player player)
+private void UpdatePlayerDataAndTransition(Cosmicrafts.MainCanister.Models.Player player)
+{
+    try
+    {
+        if (GameDataManager.Instance != null)
         {
-            try
+            var playerData = GameDataManager.Instance.playerData;
+            playerData.Level = (int)player.Level;
+            playerData.Username = player.Username;
+            playerData.AvatarID = (int)player.Avatar;
+            playerData.Description = player.Description;
+            playerData.Elo = player.Elo;
+            playerData.Friends = player.Friends;
+            playerData.RegistrationDate = (long)player.RegistrationDate.ToBigInteger();
+            playerData.IsLoggedIn = true;
+
+            GameDataManager.Instance.SavePlayerData();
+            Debug.Log($"[Login] PlayerData updated and saved with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
+
+            // Null checks before setting active
+            if (loginCanvas != null)
             {
-                if (GameDataManager.Instance != null)
-                {
-                    var playerData = GameDataManager.Instance.playerData;
-                    playerData.Level = (int)player.Level;
-                    playerData.Username = player.Username;
-                    playerData.AvatarID = (int)player.Avatar;
-                    playerData.Description = player.Description;
-                    playerData.Elo = player.Elo;
-                    playerData.Friends = player.Friends;
-                    playerData.RegistrationDate = (long)player.RegistrationDate.ToBigInteger();
-                    playerData.IsLoggedIn = true;
-
-                    GameDataManager.Instance.SavePlayerData();
-                    Debug.Log($"[Login] PlayerData updated and saved with Player Info - ID: {player.Id}, Level: {player.Level}, Username: {player.Username}");
-
-                    loginCanvas.SetActive(false);
-                    dashboardCanvas.SetActive(true);
-                }
-                else
-                {
-                    Debug.LogError("[Login] GameDataManager instance is null in UpdatePlayerDataAndTransition.");
-                }
+                loginCanvas.SetActive(false);
             }
-            catch (Exception ex)
+            else
             {
-                Debug.LogError($"[Login] Error occurred during login process: {ex.Message}");
+                Debug.LogWarning("[Login] loginCanvas is null.");
+            }
+
+            if (dashboardCanvas != null)
+            {
+                dashboardCanvas.SetActive(true);
+            }
+            else
+            {
+                Debug.LogWarning("[Login] dashboardCanvas is null.");
             }
         }
+        else
+        {
+            Debug.LogError("[Login] GameDataManager instance is null in UpdatePlayerDataAndTransition.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[Login] Error occurred during login process: {ex.Message}");
+    }
+}
 
         public async void SetPlayerName()
         {

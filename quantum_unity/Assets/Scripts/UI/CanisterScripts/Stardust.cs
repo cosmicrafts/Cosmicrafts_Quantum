@@ -34,9 +34,9 @@ namespace Cosmicrafts
 
         void Start()
         {
+            FetchBalance();
             sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
             ShardsPanel = GameObject.Find("StardustPanel").GetComponent<Animator>();
-            FetchBalance();
         }
 
         private void OnEnable()
