@@ -36,9 +36,15 @@ namespace Cosmicrafts
             MissionEvents.OnMissionsFetched -= PopulateRewardsUI;
         }
 
-        private void Start()
+        private async void Start()
         {
             rewardPrefab.SetActive(false);
+            
+            // Fetch fresh data
+            await MissionManager.Instance.FetchUserMissions();
+            await MissionManager.Instance.FetchGeneralMissions();
+            
+            // Populate UI with the newly fetched data
             PopulateRewardsUI();
         }
 
