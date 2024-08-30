@@ -81,64 +81,57 @@ namespace Cosmicrafts {
             tapTarget.gameObject.SetActive(false);
         }
 
-        public void DisplayRewards(string tokenType, int amount)
+public void DisplayRewards(string tokenType, int amount)
+{
+    GameObject rewardPrefab = null;
+
+    switch (tokenType)
+    {
+        case "Stardust":
+            rewardPrefab = StardustRewardPrefab;
+            break;
+        default:
+            Debug.LogError("Unknown token type: " + tokenType);
+            return;
+    }
+
+    GameObject rewardInstance = Instantiate(rewardPrefab, rewardsContainer);
+    rewardInstance.SetActive(true);
+    activeRewardsCount++;
+
+    RewardPrefabScript rewardScript = rewardInstance.GetComponent<RewardPrefabScript>();
+    if (rewardScript != null)
+    {
+        rewardScript.SetAmount(amount); // Pass the correct amount to the reward script
+
+        Button rewardButton = rewardInstance.GetComponentInChildren<Button>();
+        if (rewardButton != null)
         {
-            GameObject rewardPrefab = null;
+            rewardButton.onClick.AddListener(() => {
 
-            switch (tokenType)
-            {
-                case "Stardust":
-                    rewardPrefab = StardustRewardPrefab;
-                    break;
-                default:
-                    Debug.LogError("Unknown token type: " + tokenType);
-                    return;
-            }
-
-            // Instantiate the prefab
-            GameObject rewardInstance = Instantiate(rewardPrefab, rewardsContainer);
-            // Ensure the instantiated prefab is active in case the original prefab was inactive.
-            rewardInstance.SetActive(true);
-            // Increment the active rewards count
-            activeRewardsCount++;
-
-            RewardPrefabScript rewardScript = rewardInstance.GetComponent<RewardPrefabScript>();
-            if (rewardScript != null)
-            {
-                // Set the amount to display on the prefab
-                rewardScript.SetAmount(amount);
-
-                // Setup the onClick event for the prefab
-                Button rewardButton = rewardInstance.GetComponentInChildren<Button>();
-                if (rewardButton != null)
+                if (tokenType == "Stardust")
                 {
-                    rewardButton.onClick.AddListener(() => {
-
-                    if (tokenType == "Stardust")
-                        {
-                            StardustScript.UpdateBalanceLocally(-amount);
-                        }
-
-                        // Play the animation associated with the reward
-                        Animator animator = rewardInstance.GetComponent<Animator>();
-                        if (animator != null)
-                        {
-                            animator.Play("notnew");
-                        }
-
-                        // Optionally, wait for the animation to finish before destroying the instance
-                        float animationDuration = animator.GetCurrentAnimatorStateInfo(0).length;
-                        StartCoroutine(DestroyAfterAnimation(rewardInstance, animationDuration));
-
-                        activeRewardsCount--;
-                        if (activeRewardsCount <= 0)
-                        {
-                            StartCoroutine(StartDeactivationWithDelay(0.5f));
-                        }
-                    });
+                    StardustScript.FetchBalance(); // Fetch updated balance
                 }
-            }
+
+                Animator animator = rewardInstance.GetComponent<Animator>();
+                if (animator != null)
+                {
+                    animator.Play("notnew");
+                }
+
+                float animationDuration = animator.GetCurrentAnimatorStateInfo(0).length;
+                StartCoroutine(DestroyAfterAnimation(rewardInstance, animationDuration));
+
+                activeRewardsCount--;
+                if (activeRewardsCount <= 0)
+                {
+                    StartCoroutine(StartDeactivationWithDelay(0.5f));
+                }
+            });
         }
+    }
+}
 
         IEnumerator StartDeactivationWithDelay(float delay)
         {
@@ -160,30 +153,33 @@ namespace Cosmicrafts {
         }
 
         public void HandleRewardMessage(string message)
-        {
-            // Remove the leading part of the message up to the first actual reward data
-            string rewardsInfo = message.Substring(message.IndexOf('{'));
+{
+    // Assuming the message comes in the format (true, "{\"token\":\"Stardust\", \"transaction_id\": 0, \"amount\": 101}")
+    int jsonStartIndex = message.IndexOf('{');
+    if (jsonStartIndex < 0)
+    {
+        Debug.LogError("Invalid message format: JSON part not found.");
+        return;
+    }
 
-            var segments = System.Text.RegularExpressions.Regex.Split(rewardsInfo, @"(?<=})(?={)")
-                                .Where(s => !string.IsNullOrEmpty(s))
-                                .ToArray();
+    string jsonResponse = message.Substring(jsonStartIndex);
+    Debug.Log("Parsed JSON response: " + jsonResponse);
 
-            foreach (var segment in segments)
-            {
-                string tokenType = ExtractValue(segment, "\"token\":\"", "\"");
-                string amountString = ExtractValue(segment, "\"amount\":", "}");
-                int amount = 0;
+    // Extract token type and amount from the JSON response
+    string tokenType = ExtractValue(jsonResponse, "\"token\":\"", "\"");
+    string amountString = ExtractValue(jsonResponse, "\"amount\":", "}");
 
-                // Parse the amount if possible
-                if (!int.TryParse(amountString, out amount))
-                {
-                    Debug.LogError("Failed to parse amount from segment: " + segment);
-                    continue;
-                }
+    int amount = 0;
+    if (!int.TryParse(amountString, out amount))
+    {
+        Debug.LogError("Failed to parse amount from JSON response: " + jsonResponse);
+        return;
+    }
 
-                DisplayRewards(tokenType, amount);
-            }
-        }
+    // Display the rewards
+    DisplayRewards(tokenType, amount);
+}
+
 
         // Extracts a value from a segment given start and end delimiters
         private string ExtractValue(string segment, string startDelimiter, string endDelimiter)

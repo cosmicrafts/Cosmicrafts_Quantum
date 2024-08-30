@@ -29,83 +29,78 @@ namespace Cosmicrafts
             rewardScreenUI.SetImage(chestSO.icon);
         }
 
-        public async void OnOpenButtonPressed()
+public async void OnOpenButtonPressed()
+{
+    if (selectedChestSO == null || selectedTokenId == null)
+    {
+        Debug.LogError("No chest selected or chest data missing.");
+        notificationText.text = "Error: No chest selected.";
+        return;
+    }
+    Debug.Log($"Button pressed. Attempting to open chest: {selectedChestSO.chestName}");
+    rewardScreenUI.ActivateRewardScreen();
+
+    try
+    {
+        var apiClient = CandidApiManager.Instance.MainCanister;
+        if (apiClient == null)
         {
-            if (selectedChestSO == null || selectedTokenId == null)
-            {
-                Debug.LogError("No chest selected or chest data missing.");
-                notificationText.text = "Error: No chest selected.";
-                return;
-            }
-            Debug.Log($"Button pressed. Attempting to open chest: {selectedChestSO.chestName}");
-            rewardScreenUI.ActivateRewardScreen();
-
-            try
-            {
-                var apiClient = CandidApiManager.Instance.MainCanister;
-                if (apiClient == null)
-                {
-                    notificationText.text = "Error: API client not initialized.";
-                    return;
-                }
-
-                Debug.Log($"Triggering chest opening for Token ID: {selectedTokenId}");
-                (bool success, string message) = await apiClient.OpenChest(selectedTokenId);
-
-                if (success)
-                {
-                    Debug.Log("Chest opened successfully.");
-                    notificationText.text = "Chest opened: " + message;
-
-                    // Calculate the Stardust amount based on rarity
-                    int stardustAmount = CalculateStardustAmount(selectedChestSO.rarity);
-
-                    // Display the calculated rewards
-                    rewardScreenUI.DisplayRewards("Stardust", stardustAmount);
-
-                    rewardScreenUI.OnChestOpenedSuccessfully();
-                    ChestManager.Instance.RemoveChestAndRefreshCount(selectedTokenId);
-                }
-                else
-                {
-                    Debug.LogError($"Failed to open chest: {message}");
-                    notificationText.text = $"Failed to open chest: {message}";
-                }
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"Exception during chest opening: {ex.Message}");
-                notificationText.text = $"Exception during chest opening: {ex.Message}";
-            }
+            notificationText.text = "Error: API client not initialized.";
+            return;
         }
 
-        private int CalculateStardustAmount(int rarity)
+        Debug.Log($"Triggering chest opening for Token ID: {selectedTokenId}");
+        (bool success, string message) = await apiClient.OpenChest(selectedTokenId);
+
+        if (success)
         {
-            int factor = 1;
+            Debug.Log("Chest opened successfully.");
+            notificationText.text = "Chest opened: " + message;
 
-            if (rarity <= 5)
-            {
-                factor = (int)Math.Pow(2, rarity - 1);
-            }
-            else if (rarity <= 10)
-            {
-                factor = (int)(Math.Pow(2, 5) * Math.Pow(3, rarity - 6));
-            }
-            else if (rarity <= 15)
-            {
-                factor = (int)(Math.Pow(2, 5) * Math.Pow(3, 5) * Math.Pow(5, rarity - 11));
-            }
-            else if (rarity <= 20)
-            {
-                factor = (int)(Math.Pow(2, 5) * Math.Pow(3, 5) * Math.Pow(5, 5) * Math.Pow(11, rarity - 16));
-            }
-            else
-            {
-                factor = (int)(Math.Pow(2, 5) * Math.Pow(3, 5) * Math.Pow(5, 5) * Math.Pow(11, 5) * Math.Pow(21, rarity - 21));
-            }
+            // Parse the amount from the response message
+            int stardustAmount = ParseAmountFromMessage(message);
 
-            int stardustAmount = 12 * factor;
-            return stardustAmount;
+            // Display the rewards using the parsed amount
+            rewardScreenUI.DisplayRewards("Stardust", stardustAmount);
+
+            rewardScreenUI.OnChestOpenedSuccessfully();
+            ChestManager.Instance.RemoveChestAndRefreshCount(selectedTokenId);
         }
+        else
+        {
+            Debug.LogError($"Failed to open chest: {message}");
+            notificationText.text = $"Failed to open chest: {message}";
+        }
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"Exception during chest opening: {ex.Message}");
+        notificationText.text = $"Exception during chest opening: {ex.Message}";
+    }
+}
+
+private int ParseAmountFromMessage(string message)
+{
+    // Assuming the message format is "{\"token\":\"Stardust\", \"transaction_id\": 0, \"amount\": 101}"
+    string amountString = ExtractValue(message, "\"amount\":", "}");
+    int amount = 0;
+
+    if (!int.TryParse(amountString, out amount))
+    {
+        Debug.LogError("Failed to parse amount from chest opening message: " + message);
+    }
+
+    return amount;
+}
+
+// Reuse the ExtractValue method from RewardScreenUI or implement a similar one in ChestOpenerUI
+private string ExtractValue(string segment, string startDelimiter, string endDelimiter)
+{
+    int startIndex = segment.IndexOf(startDelimiter) + startDelimiter.Length;
+    int endIndex = segment.IndexOf(endDelimiter, startIndex);
+    if (endIndex == -1) endIndex = segment.Length; // Adjust if endDelimiter is not found.
+    string value = segment.Substring(startIndex, endIndex - startIndex).Trim(new char[] { '\"', ' ', '}' });
+    return value;
+}
     }
 }

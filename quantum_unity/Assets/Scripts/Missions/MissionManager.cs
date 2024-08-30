@@ -57,43 +57,50 @@ public class MissionManager : MonoBehaviour
 
     }
 
-    private async Task FetchUserMissions()
+public async Task FetchUserMissions()
+{
+    try
     {
-        try
-        {
-            Debug.Log("[MissionManager] Fetching user missions...");
+        var user = GameDataManager.Instance.playerData;
+        var principal = Principal.FromText(user.PrincipalId);
+        
+        // Fetch the latest user missions from the server
+        var missions = await CandidApiManager.Instance.MainCanister.SearchActiveUserMissions(principal);
+        //Debug.Log($"[MissionManager] Found {missions.Count} user missions.");
 
-            var user = GameDataManager.Instance.playerData;
-            var principal = Principal.FromText(user.PrincipalId);
-            var missions = await CandidApiManager.Instance.MainCanister.SearchActiveUserMissions(principal);
-            Debug.Log($"[MissionManager] Found {missions.Count} user missions.");
-            AddMissionsToList(missions, userMissions);
-            MissionEvents.RaiseMissionsFetched();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[MissionManager] Error fetching user missions: {ex.Message}");
-        }
+        // Clear existing missions and add the new ones
+        userMissions.Clear();
+        AddMissionsToList(missions, userMissions);
+        MissionEvents.RaiseMissionsFetched();
     }
-
-    private async Task FetchGeneralMissions()
+    catch (Exception ex)
     {
-        try
-        {
-            Debug.Log("[MissionManager] Fetching general missions...");
-
-            var user = GameDataManager.Instance.playerData;
-            var principal = Principal.FromText(user.PrincipalId);
-            var missions = await CandidApiManager.Instance.MainCanister.SearchActiveGeneralMissions(principal);
-            Debug.Log($"[MissionManager] Found {missions.Count} general missions.");
-            AddMissionsToList(missions, generalMissions);
-            MissionEvents.RaiseMissionsFetched();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[MissionManager] Error fetching general missions: {ex.Message}");
-        }
+        Debug.LogError($"[MissionManager] Error fetching user missions: {ex.Message}");
     }
+}
+
+public async Task FetchGeneralMissions()
+{
+    try
+    {
+        var user = GameDataManager.Instance.playerData;
+        var principal = Principal.FromText(user.PrincipalId);
+        
+        // Fetch the latest general missions from the server
+        var missions = await CandidApiManager.Instance.MainCanister.SearchActiveGeneralMissions(principal);
+        //Debug.Log($"[MissionManager] Found {missions.Count} general missions.");
+
+        // Clear existing missions and add the new ones
+        generalMissions.Clear();
+        AddMissionsToList(missions, generalMissions);
+        MissionEvents.RaiseMissionsFetched();
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[MissionManager] Error fetching general missions: {ex.Message}");
+    }
+}
+
 
     private async Task GetUserMissionsFromServer()
     {

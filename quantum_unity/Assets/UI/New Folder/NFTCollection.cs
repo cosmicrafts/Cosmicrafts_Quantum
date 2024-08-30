@@ -179,7 +179,7 @@ public async void RefreshCollection()
             card.gameObject.SetActive(true);
         }
     }
-    await NFTManager.Instance.SaveDeckToBlockchain();
+    //await NFTManager.Instance.SaveDeckToBlockchain();
     NftCardPrefab.gameObject.SetActive(false); // Hide the prefab template
 }
 

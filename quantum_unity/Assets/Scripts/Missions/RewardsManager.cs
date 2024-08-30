@@ -4,7 +4,6 @@ using TMPro;
 
 namespace Cosmicrafts
 {
-
     public class RewardsManager : MonoBehaviour
     {
         public static RewardsManager Instance { get; private set; }
@@ -37,10 +36,15 @@ namespace Cosmicrafts
             MissionEvents.OnMissionsFetched -= PopulateRewardsUI;
         }
 
-        private void Start()
+        private async void Start()
         {
             rewardPrefab.SetActive(false);
-            ObjectPoolManager.Instance.CreatePool(rewardPrefab, 25);
+            
+            // Fetch fresh data
+            await MissionManager.Instance.FetchUserMissions();
+            await MissionManager.Instance.FetchGeneralMissions();
+            
+            // Populate UI with the newly fetched data
             PopulateRewardsUI();
         }
 
@@ -61,34 +65,29 @@ namespace Cosmicrafts
                 return;
             }
 
-            // Ensure we have enough reward displays
-            while (rewardDisplays.Count < allMissions.Count)
+            // Clear previous reward displays
+            foreach (var display in rewardDisplays)
             {
-                var instance = ObjectPoolManager.Instance.GetObject(rewardPrefab, rewardsContainer, Vector3.zero, Quaternion.identity);
+                Destroy(display.gameObject);
+            }
+            rewardDisplays.Clear();
+
+            // Create new reward displays
+            foreach (var mission in allMissions)
+            {
+                var instance = Instantiate(rewardPrefab, rewardsContainer);
                 var display = instance.GetComponent<RewardsDisplay>();
                 if (display != null)
                 {
+                    display.SetRewardData(mission);
+                    display.gameObject.SetActive(true);
                     rewardDisplays.Add(display);
                 }
                 else
                 {
                     Debug.LogError("RewardsDisplay component is missing from the prefab!");
-                    ObjectPoolManager.Instance.ReturnObject(instance);
+                    Destroy(instance);
                 }
-            }
-
-            // Update existing reward displays with new data
-            for (int i = 0; i < allMissions.Count; i++)
-            {
-                rewardDisplays[i].SetRewardData(allMissions[i]);
-                rewardDisplays[i].gameObject.SetActive(true);
-            }
-
-            // Deactivate and return any extra reward displays to the pool
-            for (int i = allMissions.Count; i < rewardDisplays.Count; i++)
-            {
-                rewardDisplays[i].gameObject.SetActive(false);
-                ObjectPoolManager.Instance.ReturnObject(rewardDisplays[i].gameObject);
             }
 
             rewardsCountText.text = allMissions.Count.ToString();

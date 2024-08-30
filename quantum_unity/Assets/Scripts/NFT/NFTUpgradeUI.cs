@@ -38,12 +38,12 @@ public class NFTUpgradeUI : MonoBehaviour
 
     private void OnEnable()
     {
-        FetchAndCheckShardsBalance();
+        FetchAndCheckStardustBalance();
         upgradeButton.onClick.AddListener(OnUpgradeButtonPressed);
         UpdateDisplayedNFTInfo();
     }
 
-    private void FetchAndCheckShardsBalance()
+    private void FetchAndCheckStardustBalance()
     {
         if (nftCard != null)
         {
@@ -53,17 +53,17 @@ public class NFTUpgradeUI : MonoBehaviour
 
             tokenCostText.text = upgradeCost.ToString();
 
-            BigInteger requiredShards = new BigInteger(upgradeCost);
-            bool hasEnoughShards = StardustScript.CurrentBalance >= requiredShards;
-            upgradeButton.interactable = hasEnoughShards;
-            notificationText.text = hasEnoughShards ? "" : $"You need at least {upgradeCost} shards to upgrade.";
+            BigInteger requiredStardust = new BigInteger(upgradeCost);
+            bool hasEnoughStardust = StardustScript.CurrentBalance >= requiredStardust;
+            upgradeButton.interactable = hasEnoughStardust;
+            notificationText.text = hasEnoughStardust ? "" : $"You need at least {upgradeCost} Stardust to upgrade.";
 
             // Set the color of the button and cost text based on the button state
             Color disabledColor = new Color32(0x9D, 0x9D, 0x9D, 0xFF); // #9D9D9D
             Color enabledColor = Color.white;
 
-            tokenCostText.color = hasEnoughShards ? enabledColor : disabledColor;
-            upgradeButton.GetComponentInChildren<TMP_Text>().color = hasEnoughShards ? enabledColor : disabledColor;
+            tokenCostText.color = hasEnoughStardust ? enabledColor : disabledColor;
+            upgradeButton.GetComponentInChildren<TMP_Text>().color = hasEnoughStardust ? enabledColor : disabledColor;
         }
     }
 
@@ -140,11 +140,11 @@ public async void OnUpgradeButtonPressed()
             upgradeScreenUI.ActivateUpgradeScreen(currentLevel, newLevel, currentHP, newHP - currentHP, currentDamage, newDamage - currentDamage);
             upgradeScreenUI.gameObject.SetActive(true);
 
-            // Update the shard balance locally
+            // Update the Stardust balance locally
             StardustScript.UpdateBalanceLocally(upgradeCost);
 
             // Refresh the upgrade cost and button state
-            FetchAndCheckShardsBalance();
+            FetchAndCheckStardustBalance();
         }
         else
         {
@@ -212,7 +212,7 @@ public async void OnUpgradeButtonPressed()
             }
 
             // Refresh the upgrade cost and button state
-            FetchAndCheckShardsBalance();
+            FetchAndCheckStardustBalance();
         }
     }
 

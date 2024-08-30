@@ -56,36 +56,56 @@ namespace Cosmicrafts
             UpdateUI();
         }
 
-        private void UpdateUI()
-        {
-            if (rewardData == null)
-            {
-                Debug.LogError("UpdateUI: rewardData is null");
-                return;
-            }
+private void UpdateUI()
+{
+    if (rewardData == null)
+    {
+        Debug.LogError("UpdateUI: rewardData is null");
+        return;
+    }
 
-            Debug.Log($"UpdateUI: Updating UI for mission ID: {rewardData.idMission}");
+    Debug.Log($"UpdateUI: Updating UI for mission ID: {rewardData.idMission}");
 
-            idText.text = $"ID: {rewardData.idMission}";
-            rewardTypeText.text = GetMissionTypeText(rewardData.missionType, rewardData.total);
-            prizeAmountText.text = $"{rewardData.rewardAmount}";
-            progressText.text = $"{rewardData.progress}/{rewardData.total}";
+    idText.text = $"ID: {rewardData.idMission}";
 
-            expirationText.text = CalculateTimeRemaining(rewardData.expiration);
+    // Identify and handle free missions (0/0 progress)
+    if (rewardData.progress == 0 && rewardData.total == 0)
+    {
+        rewardTypeText.text = "Free Loot";
+        progressText.text = string.Empty;
+    }
+    else
+    {
+        rewardTypeText.text = GetMissionTypeText(rewardData.missionType, rewardData.total);
+        progressText.text = $"{rewardData.progress}/{rewardData.total}";
+    }
 
-            finishedText.text = $"Completed: {(rewardData.finished ? "Yes" : "No")}";
-            prizeTypeText.text = $"Reward: {(rewardData.rewardType == MissionRewardType.Stardust ? "Stardust" : rewardData.rewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
+    // If the reward type is Chest, leave the prizeAmountText empty
+    if (rewardData.rewardType == MissionRewardType.Chest)
+    {
+        prizeAmountText.text = string.Empty;
+    }
+    else
+    {
+        prizeAmountText.text = $"{rewardData.rewardAmount}";
+    }
 
-            prizeImage.sprite = GetPrizeSprite(rewardData.rewardType, rewardData.rewardAmount);
-            panelToChangeColor.GetComponent<Image>().color = GetMissionTypeColor(rewardData.missionType);
+    expirationText.text = CalculateTimeRemaining(rewardData.expiration);
 
-            bool isClaimable = rewardData.finished || rewardData.total == 0;
-            claimButtonImage.enabled = isClaimable;
-            claimButton.interactable = isClaimable;
+    finishedText.text = $"Completed: {(rewardData.finished ? "Yes" : "No")}";
+    prizeTypeText.text = $"Reward: {(rewardData.rewardType == MissionRewardType.Stardust ? "Stardust" : rewardData.rewardType == MissionRewardType.Chest ? "Chest" : "Flux")}";
 
-            float progressRatio = rewardData.total == 0 ? 1f : (float)rewardData.progress / rewardData.total;
-            progressBar.fillAmount = progressRatio;
-        }
+    prizeImage.sprite = GetPrizeSprite(rewardData.rewardType, rewardData.rewardAmount);
+    panelToChangeColor.GetComponent<Image>().color = GetMissionTypeColor(rewardData.missionType);
+
+    bool isClaimable = rewardData.finished || rewardData.total == 0;
+    claimButtonImage.enabled = isClaimable;
+    claimButton.interactable = isClaimable;
+
+    float progressRatio = rewardData.total == 0 ? 1f : (float)rewardData.progress / rewardData.total;
+    progressBar.fillAmount = progressRatio;
+}
+
 
         private string GetMissionTypeText(MissionType missionType, int total)
         {
@@ -174,31 +194,40 @@ namespace Cosmicrafts
             };
         }
 
-        public async void OnClaimButtonClicked()
+    public async void OnClaimButtonClicked()
+    {
+        if (rewardData != null && rewardData.finished)
         {
-            if (rewardData != null && rewardData.finished)
-            {
-                LoadingPanel.Instance.ActiveLoadingPanel();
-                bool success = await ClaimReward();
+            LoadingPanel.Instance.ActiveLoadingPanel();
+            bool success = await ClaimReward();
 
-                if (success)
+            if (success)
+            {
+                Debug.Log("Reward claimed successfully!");
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+                ShowRewardNotification(rewardData);
+
+                // Update chests if the reward is a chest
+                if (rewardData.rewardType == MissionRewardType.Chest)
                 {
-                    Debug.Log("Reward claimed successfully!");
-                    LoadingPanel.Instance.DesactiveLoadingPanel();
-                    ShowRewardNotification(rewardData);
-                    RefreshUI();
+                    ChestManager.Instance.UpdateOwnedChests();
                 }
-                else
-                {
-                    LoadingPanel.Instance.DesactiveLoadingPanel();
-                    Debug.LogError("Failed to claim reward.");
-                }
+
+                RefreshUI();
+                StardustScript.FetchBalance();
             }
             else
             {
-                Debug.LogError("No reward data available to claim.");
+                LoadingPanel.Instance.DesactiveLoadingPanel();
+                Debug.LogError("Failed to claim reward.");
             }
         }
+        else
+        {
+            Debug.LogError("No reward data available to claim.");
+        }
+    }
+
 
         private async Task<bool> ClaimReward()
         {
@@ -225,8 +254,8 @@ namespace Cosmicrafts
         {
             string notificationMessage = reward.rewardType switch
             {
-                MissionRewardType.Stardust => $"You received {reward.rewardAmount} Shards!",
-                MissionRewardType.Chest => $"You received a {GetChestRarity(reward.rewardAmount)} Metacube!",
+                MissionRewardType.Stardust => $"You received {reward.rewardAmount} Stardust!",
+                MissionRewardType.Chest => $"You received a {GetChestRarity(reward.rewardAmount)} Box!",
                 _ => string.Empty
             };
 
@@ -240,13 +269,14 @@ namespace Cosmicrafts
         {
             return prizeAmount switch
             {
-                >= 7 => "Mythical",
-                6 => "Legendary",
-                5 => "Epic",
-                4 => "Superior",
-                3 => "Rare",
-                2 => "Common",
-                _ => "Basic"
+                >= 8 => "Forgotten",
+                7 => "Ancient",
+                6 => "Mythical",
+                5 => "Legendary",
+                4 => "Epic",
+                3 => "Superior",
+                2 => "Rare",
+                _ => "Common"
             };
         }
 

@@ -22,7 +22,7 @@ namespace Cosmicrafts
         public TMP_InputField tokenAmountInputField;
         public Button sendTokenButton;
         public TMP_Text transferStatusText;
-        public Animator ShardsPanel;
+        public Animator StardustPanel;
         public BigInteger CurrentBalance { get; private set; } = BigInteger.Zero;
         public TMP_Text tokenNameText;
         public Image tokenImage;
@@ -32,12 +32,22 @@ namespace Cosmicrafts
         private const int DECIMAL_PLACES = 6;
         private Coroutine balanceAnimationCoroutine;
 
+
         void Start()
         {
-            sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
-            ShardsPanel = GameObject.Find("StardustPanel").GetComponent<Animator>();
+            StartCoroutine(DelayedStart());
             FetchBalance();
+            sendTokenButton.onClick.AddListener(SendTokenButtonClicked);
+            StardustPanel = GameObject.Find("StardustPanel").GetComponent<Animator>();
         }
+
+        // Coroutine to handle the delay
+        private IEnumerator DelayedStart()
+        {
+            yield return new WaitForSeconds(1.5f); // Wait for 0.5 seconds
+            FetchBalance(); // Call FetchBalance after the delay
+        }
+
 
         private void OnEnable()
         {
@@ -60,14 +70,14 @@ public async void FetchBalance()
 {
     if (GameDataManager.Instance == null)
     {
-        Debug.LogError("[shards] GameDataManager instance is null.");
+        Debug.LogError("[Stardust] GameDataManager instance is null.");
         return;
     }
 
     var playerData = GameDataManager.Instance.playerData;
     if (playerData == null)
     {
-        Debug.LogError("[shards] Failed to load player data.");
+        Debug.LogError("[Stardust] Failed to load player data.");
         return;
     }
 
@@ -85,20 +95,20 @@ public async void FetchBalance()
 
         if (balance == null)
         {
-            Debug.LogError("[shards] Fetched balance is null.");
+            Debug.LogError("[Stardust] Fetched balance is null.");
             return;
         }
 
         // Trigger the balance animation with the new balance
         AnimateBalanceUpdate(balance);
 
-        if (ShardsPanel == null)
+        if (StardustPanel == null)
         {
-            Debug.LogError("[shards] Panel Animator is not assigned.");
+            Debug.LogError("[Stardust] Panel Animator is not assigned.");
         }
         else
         {
-            ShardsPanel.Play("TokenPanelRefresh", -1, 0f);
+            StardustPanel.Play("TokenPanelRefresh", -1, 0f);
         }
     }
     catch (Exception ex)
@@ -106,7 +116,7 @@ public async void FetchBalance()
         Debug.LogError($"Error fetching balance: {ex.Message}");
     }
 
-    Debug.Log($"[shards] Fetched balance: {CurrentBalance}");
+    Debug.Log($"[Stardust] Fetched balance: {CurrentBalance}");
 }
 
 
@@ -134,7 +144,7 @@ public async void FetchBalance()
             SetTransferStatus("Sending...");
             LoadingPanel.Instance.ActiveLoadingPanel();
 
-            TransferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt), "Shards");
+            TransferTokens(principalInputField.text, UnboundedUInt.FromBigInteger(tokenAmountBigInt), "Stardust");
         }
 
         private BigInteger ConvertToBigInteger(decimal value)
@@ -252,7 +262,7 @@ public async void TransferTokens(string recipientPrincipalId, UnboundedUInt toke
 
         public void OnUpdateTokenPanelClick()
         {
-            UpdateTokenPanel("Shards", referenceImage);
+            UpdateTokenPanel("Stardust", referenceImage);
         }
     }
 }
