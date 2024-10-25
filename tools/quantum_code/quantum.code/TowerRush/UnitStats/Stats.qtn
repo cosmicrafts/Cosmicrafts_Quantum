@@ -1,0 +1,30 @@
+﻿component UnitStats
+{
+	[ExcludeFromPrototype] byte                      Flags;
+	[ExcludeFromPrototype] dictionary<int, UnitStat> StatDictionary;
+}
+
+struct UnitStat
+{
+	byte Flags;
+	FP   FinalValue;
+	FP   BaseValue;
+	FP   MaxValue;
+
+	list<StatModifier> StatModifiers;
+}
+
+struct StatModifier
+{
+	[ExcludeFromPrototype] EntityRef Owner;
+	                       FP        AbsoluteValue;
+	                       FP        PercentValue;
+}
+
+enum EStatType : Byte
+{
+	AttackSpeed          = 1,
+	MovementSpeed        = 2,
+}
+
+signal StatsUpdated(EntityRef entity, long changedMask);

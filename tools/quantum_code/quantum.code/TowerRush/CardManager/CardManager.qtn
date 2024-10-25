@@ -1,0 +1,45 @@
+﻿asset CardSettings;
+
+[ExcludeFromPrototype]
+component CardManager
+{
+	Byte           EmptySlots;
+	Byte           QueueHeadIndex;
+	Byte           QueueTailIndex;
+	FP             CurrentEnergy;
+	FP             EnergyFillRate;
+	FP             MaxEnergy;
+	FP             NextFillTime;
+	list<CardInfo> CardQueue;
+	list<CardInfo> AvailableCards;
+}
+
+struct CardInfo
+{
+	AssetRefCardSettings CardSettings;
+	Byte                 Level;
+    FP                   BaseHealth;
+    FP                   Damage;
+    int                  TokenID;
+}
+
+[PreserveInPrototype]
+enum ERarity : byte
+{
+	Common,
+	Uncommon,
+	Rare,
+	Epic,
+	Legendary,
+}
+
+synced event CardsChanged
+{
+	EntityRef Entity;
+}
+synced event CardSpawned
+{
+    PlayerRef Owner; // El propietario de la unidad destruida
+    int CardTokenID;
+    AssetRefCardSettings assetRefCardSettings;
+}

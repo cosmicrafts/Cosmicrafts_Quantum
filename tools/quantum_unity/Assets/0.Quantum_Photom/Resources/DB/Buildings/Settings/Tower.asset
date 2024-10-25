@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
+  m_Name: Tower
+  m_EditorClassIdentifier: 
+  GhostPrefab: {fileID: 0}
+  prevUIPrefab: {fileID: 0}
+  Sprite: {fileID: 0}
+  DisplayName: 
+  Settings:
+    Identifier:
+      Path: 0.Quantum_Photom/Resources/DB/Buildings/Settings/Tower
+      Guid:
+        Value: 808473716126815469
+    Prefab:
+      Id:
+        Value: 2714002123996110802
+    Rarity: 0
+    EnergyCost: 0
+    ActivationDelay:
+      RawValue: 0
+    UnitCount: 1
+    UnitBehaviors: []
+    BaseHealth:
+      RawValue: 9830400
+    BaseShield:
+      RawValue: 9830400
+    HealthPerLevelPercent:
+      RawValue: 655360
+    DestroyOnDeath: 0
+    Critic:
+      RawValue: 0
+    Evasion:
+      RawValue: 0
+    TargetType: 1
+    UnitSize:
+      RawValue: 131072
+    AttackTarget: -1
+    WeaponBehavior:
+      _field_used_: PROJECTILE
+      SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 0
+        Damage:
+          RawValue: 0
+        DamagePerLevelPercent:
+          RawValue: 0
+      Projectile:
+        Prototype:
+          Id:
+            Value: 215130353549231272
+        Speed:
+          RawValue: 786432
+        Behavior:
+          _field_used_: SINGLETARGET
+          SingleTarget:
+            Prototype:
+              Id:
+                Value: 3787405658912955983
+            Damage:
+              RawValue: 1310720
+            DamagePerLevelPercent:
+              RawValue: 655360
+          AoE:
+            Prototype:
+              Id:
+                Value: 0
+            Radius:
+              RawValue: 0
+            Damage:
+              RawValue: 0
+            DamagePerLevelPercent:
+              RawValue: 0
+    AttackRange:
+      RawValue: 524288
+    AttackSpeed:
+      RawValue: 78643
+    StartAttackDelay:
+      RawValue: 0
+    MovementSpeed:
+      RawValue: 0

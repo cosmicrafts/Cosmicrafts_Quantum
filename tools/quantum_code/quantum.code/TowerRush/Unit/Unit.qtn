@@ -1,0 +1,45 @@
+﻿component Unit
+{
+	[ExcludeFromPrototype] Byte                 Level;
+	[ExcludeFromPrototype] PlayerRef            Owner;
+    [ExcludeFromPrototype] int                  TokenID;
+
+    [ExcludeFromPrototype] FP                   Critic;
+    [ExcludeFromPrototype] FP                   Evasion;
+
+	[ExcludeFromPrototype] bool                 DestroyOnDeath;
+	[ExcludeFromPrototype] AssetRefCardSettings Settings;
+	[ExcludeFromPrototype] FP                   ActivationDelay;
+	[ExcludeFromPrototype] list<UnitBehavior>   Behaviors;
+
+    FPVector2     Cannon;
+}
+
+union UnitBehavior
+{
+	UnitBehavior_Spawner      Spawner;
+	UnitBehavior_Lifetime     Lifetime;
+	UnitBehavior_SpawnOnDeath SpawnOnDeath;
+}
+
+struct UnitBehavior_Spawner
+{
+	[ExcludeFromPrototype] FP                   RemainingSpawnTime;
+	                       AssetRefCardSettings Card;
+	                       FP                   SpawnTime;
+	                       FPVector2            Offset;
+}
+
+struct UnitBehavior_SpawnOnDeath
+{
+	AssetRefCardSettings Card;
+	FPVector2            Offset;
+}
+
+struct UnitBehavior_Lifetime
+{
+	[ExcludeFromPrototype] FP                   RemainingTime;
+	[ExcludeFromPrototype] FP                   TickTime;
+	                       FP                   Duration;
+	                       bool                 RemoveHealth;
+}

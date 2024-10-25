@@ -1,0 +1,478 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dd8e95ae0daaec4496511105240e8a3, type: 3}
+  m_Name: AssetResources
+  m_EditorClassIdentifier: 
+  AssetBundlesGroup:
+    _resources: []
+  ResourcesGroup:
+    _resources:
+    - Path: 0.Quantum_Photom/Resources/DB/Configs/DefaultPhysicsMaterial
+      AssetRef:
+        Id:
+          Value: 1
+      ResourcePath: DB/Configs/DefaultPhysicsMaterial
+    - Path: 0.Quantum_Photom/Resources/DB/Configs/DefaultNavMeshAgentConfig
+      AssetRef:
+        Id:
+          Value: 2
+      ResourcePath: DB/Configs/DefaultNavMeshAgentConfig
+    - Path: 0.Quantum_Photom/Resources/DB/Configs/DefaultCharacterController2D
+      AssetRef:
+        Id:
+          Value: 3
+      ResourcePath: DB/Configs/DefaultCharacterController2D
+    - Path: 0.Quantum_Photom/Resources/DB/Configs/DefaultCharacterController3D
+      AssetRef:
+        Id:
+          Value: 4
+      ResourcePath: DB/Configs/DefaultCharacterController3D
+    - Path: 0.Quantum_Photom/Resources/DB/Configs/SimulationConfig
+      AssetRef:
+        Id:
+          Value: 5
+      ResourcePath: DB/Configs/SimulationConfig
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Predator
+      AssetRef:
+        Id:
+          Value: 13105107224822741
+      ResourcePath: DB/Units/Settings/Card_Predator
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/TigerShark|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 41749797434438980
+      ResourcePath: DB/Units/Prefabs/TigerShark
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Settings/Card_SpeedArea
+      AssetRef:
+        Id:
+          Value: 86228273508160932
+      ResourcePath: DB/EffectAreas/Settings/Card_SpeedArea
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Tower_Backup|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 111315505111813304
+      ResourcePath: DB/Buildings/Prefabs/Tower_Backup
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Pulverizer|EntityView
+      AssetRef:
+        Id:
+          Value: 169956291882164638
+      ResourcePath: DB/Units/Prefabs/Pulverizer
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Fireball_Tower|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 215130353549231272
+      ResourcePath: DB/Projectiles/Fireball_Tower
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Fireball|EntityView
+      AssetRef:
+        Id:
+          Value: 226870902100150345
+      ResourcePath: DB/Projectiles/Fireball
+    - Path: 0.Quantum_Photom/Resources/DB/GameScene_mesh
+      AssetRef:
+        Id:
+          Value: 267896059314370836
+      ResourcePath: DB/GameScene_mesh
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Pulverizer|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 287906476713270138
+      ResourcePath: DB/Units/Prefabs/Pulverizer
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/Impact 2|EntityView
+      AssetRef:
+        Id:
+          Value: 339236343086106580
+      ResourcePath: DB/EffectAreas/Prefabs/Impact 2
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Castle|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 431490446446906027
+      ResourcePath: DB/Buildings/Prefabs/Castle
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Fireball|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 446631643286641162
+      ResourcePath: DB/Projectiles/Fireball
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Type1|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 672910201461137776
+      ResourcePath: DB/Units/Prefabs/Type1
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Knight|EntityView
+      AssetRef:
+        Id:
+          Value: 736954262691881257
+      ResourcePath: DB/Units/Prefabs/Knight
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Tower|EntityView
+      AssetRef:
+        Id:
+          Value: 784773489748700983
+      ResourcePath: DB/Buildings/Prefabs/Tower
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Settings/Tower
+      AssetRef:
+        Id:
+          Value: 808473716126815469
+      ResourcePath: DB/Buildings/Settings/Tower
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Warhawk|EntityView
+      AssetRef:
+        Id:
+          Value: 857484779119771026
+      ResourcePath: DB/Units/Prefabs/Warhawk
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/MrPumpkin|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 870236598288260303
+      ResourcePath: DB/Units/Prefabs/MrPumpkin
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Barracuda|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 871962454678939545
+      ResourcePath: DB/Units/Prefabs/Barracuda
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_MrPumpkin
+      AssetRef:
+        Id:
+          Value: 930380597228448024
+      ResourcePath: DB/Units/Settings/Card_MrPumpkin
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Barracuda|EntityView
+      AssetRef:
+        Id:
+          Value: 1149387694384052239
+      ResourcePath: DB/Units/Prefabs/Barracuda
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Wizard
+      AssetRef:
+        Id:
+          Value: 1275259251633500899
+      ResourcePath: DB/Units/Settings/Card_Wizard
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/BlackBird|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 1340357768632712773
+      ResourcePath: DB/Units/Prefabs/BlackBird
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Melee|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 1343588376311841487
+      ResourcePath: DB/Projectiles/Melee
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Archer|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 1351173296029426079
+      ResourcePath: DB/Units/Prefabs/Archer
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Melee|EntityView
+      AssetRef:
+        Id:
+          Value: 1470898915092586689
+      ResourcePath: DB/Projectiles/Melee
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Devastator|EntityView
+      AssetRef:
+        Id:
+          Value: 1480537384374862416
+      ResourcePath: DB/Units/Prefabs/Devastator
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Farragut
+      AssetRef:
+        Id:
+          Value: 1494247296560875294
+      ResourcePath: DB/Units/Settings/Card_Farragut
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/SmallSkeleton|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 1505107370595890116
+      ResourcePath: DB/Units/Prefabs/SmallSkeleton
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Wizard|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 1506629648492590037
+      ResourcePath: DB/Units/Prefabs/Wizard
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Predator|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 1583281018997732579
+      ResourcePath: DB/Units/Prefabs/Predator
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Barracuda
+      AssetRef:
+        Id:
+          Value: 1724645512975723239
+      ResourcePath: DB/Units/Settings/Card_Barracuda
+    - Path: 0.Quantum_Photom/Resources/DB/Settings/DefaultGameplay
+      AssetRef:
+        Id:
+          Value: 1742261733388163061
+      ResourcePath: DB/Settings/DefaultGameplay
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Graveyard
+      AssetRef:
+        Id:
+          Value: 1795863368017165089
+      ResourcePath: DB/Units/Settings/Card_Graveyard
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_BlackBird
+      AssetRef:
+        Id:
+          Value: 1865065108031479822
+      ResourcePath: DB/Units/Settings/Card_BlackBird
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/MrPumpkin|EntityView
+      AssetRef:
+        Id:
+          Value: 1950951406771518703
+      ResourcePath: DB/Units/Prefabs/MrPumpkin
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Farragut|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 1966959409311960491
+      ResourcePath: DB/Units/Prefabs/Farragut
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Graveyard|EntityView
+      AssetRef:
+        Id:
+          Value: 2039827850077526241
+      ResourcePath: DB/Units/Prefabs/Graveyard
+    - Path: 0.Quantum_Photom/Resources/DB/Buffs/SpeedBuff|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 2115979681601561557
+      ResourcePath: DB/Buffs/SpeedBuff
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Archer
+      AssetRef:
+        Id:
+          Value: 2157618657166198391
+      ResourcePath: DB/Units/Settings/Card_Archer
+    - Path: 0.Quantum_Photom/Resources/DB/GameScene
+      AssetRef:
+        Id:
+          Value: 2177321242012577863
+      ResourcePath: DB/GameScene
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/NecromancerBolt|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 2210417644035088212
+      ResourcePath: DB/Projectiles/NecromancerBolt
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Tower_Backup|EntityView
+      AssetRef:
+        Id:
+          Value: 2221845760260980837
+      ResourcePath: DB/Buildings/Prefabs/Tower_Backup
+    - Path: 0.Quantum_Photom/Resources/DB/GameScene_NavMesh_data
+      AssetRef:
+        Id:
+          Value: 2337946178983859549
+      ResourcePath: DB/GameScene_NavMesh_data
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Warhawk
+      AssetRef:
+        Id:
+          Value: 2449142457619551187
+      ResourcePath: DB/Units/Settings/Card_Warhawk
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Necromancer
+      AssetRef:
+        Id:
+          Value: 2498436911070262716
+      ResourcePath: DB/Units/Settings/Card_Necromancer
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/PoisonArea|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 2508996918052213314
+      ResourcePath: DB/EffectAreas/Prefabs/PoisonArea
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Type1|EntityView
+      AssetRef:
+        Id:
+          Value: 2593501611472079168
+      ResourcePath: DB/Units/Prefabs/Type1
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Devastator|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 2599064263517752003
+      ResourcePath: DB/Units/Prefabs/Devastator
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_SkeletonArmy
+      AssetRef:
+        Id:
+          Value: 2687644677085913692
+      ResourcePath: DB/Units/Settings/Card_SkeletonArmy
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/Impact|EntityView
+      AssetRef:
+        Id:
+          Value: 2709210182919863964
+      ResourcePath: DB/EffectAreas/Prefabs/Impact
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Tower|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 2714002123996110802
+      ResourcePath: DB/Buildings/Prefabs/Tower
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Settings/Card_PosionArea
+      AssetRef:
+        Id:
+          Value: 2761424710693981045
+      ResourcePath: DB/EffectAreas/Settings/Card_PosionArea
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/SpeedArea|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 2867976968352079687
+      ResourcePath: DB/EffectAreas/Prefabs/SpeedArea
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Predator|EntityView
+      AssetRef:
+        Id:
+          Value: 2875757570261730152
+      ResourcePath: DB/Units/Prefabs/Predator
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Arrow|EntityView
+      AssetRef:
+        Id:
+          Value: 2898734552399325051
+      ResourcePath: DB/Projectiles/Arrow
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/SpeedArea|EntityView
+      AssetRef:
+        Id:
+          Value: 3046635133022587861
+      ResourcePath: DB/EffectAreas/Prefabs/SpeedArea
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Army_TigerShark
+      AssetRef:
+        Id:
+          Value: 3103776340019565811
+      ResourcePath: DB/Units/Settings/Card_Army_TigerShark
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Castle|EntityView
+      AssetRef:
+        Id:
+          Value: 3138079878709146715
+      ResourcePath: DB/Buildings/Prefabs/Castle
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Minion_NecromancerSkeleton
+      AssetRef:
+        Id:
+          Value: 3138514180479730506
+      ResourcePath: DB/Units/Settings/Minion_NecromancerSkeleton
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Archer|EntityView
+      AssetRef:
+        Id:
+          Value: 3182283285334323562
+      ResourcePath: DB/Units/Prefabs/Archer
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/NecromancerBolt|EntityView
+      AssetRef:
+        Id:
+          Value: 3195530318100690809
+      ResourcePath: DB/Projectiles/NecromancerBolt
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Necromancer|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 3270313526079419367
+      ResourcePath: DB/Units/Prefabs/Necromancer
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Graveyard|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 3388195211426765328
+      ResourcePath: DB/Units/Prefabs/Graveyard
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Fireball_Tower|EntityView
+      AssetRef:
+        Id:
+          Value: 3447325612080688404
+      ResourcePath: DB/Projectiles/Fireball_Tower
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Settings/Castle
+      AssetRef:
+        Id:
+          Value: 3471580851069275808
+      ResourcePath: DB/Buildings/Settings/Castle
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Farragut|EntityView
+      AssetRef:
+        Id:
+          Value: 3508297839102283035
+      ResourcePath: DB/Units/Prefabs/Farragut
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Necromancer|EntityView
+      AssetRef:
+        Id:
+          Value: 3622157843430443024
+      ResourcePath: DB/Units/Prefabs/Necromancer
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Minion_GraveyardSkeleton
+      AssetRef:
+        Id:
+          Value: 3710764512078469461
+      ResourcePath: DB/Units/Settings/Minion_GraveyardSkeleton
+    - Path: 0.Quantum_Photom/Resources/DB/Projectiles/Arrow|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 3715970747543238441
+      ResourcePath: DB/Projectiles/Arrow
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Knight|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 3747775972399437701
+      ResourcePath: DB/Units/Prefabs/Knight
+    - Path: 0.Quantum_Photom/Resources/DB/GameScene_NavMesh
+      AssetRef:
+        Id:
+          Value: 3776961685241929006
+      ResourcePath: DB/GameScene_NavMesh
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/Impact|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 3787405658912955983
+      ResourcePath: DB/EffectAreas/Prefabs/Impact
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/PoisonArea|EntityView
+      AssetRef:
+        Id:
+          Value: 3800401031338235878
+      ResourcePath: DB/EffectAreas/Prefabs/PoisonArea
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Knight
+      AssetRef:
+        Id:
+          Value: 3837786326293357903
+      ResourcePath: DB/Units/Settings/Card_Knight
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/BlackBird|EntityView
+      AssetRef:
+        Id:
+          Value: 3866700664730825365
+      ResourcePath: DB/Units/Prefabs/BlackBird
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Castle_backup|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 3922418701839659603
+      ResourcePath: DB/Buildings/Prefabs/Castle_backup
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Wizard|EntityView
+      AssetRef:
+        Id:
+          Value: 3999221625997148614
+      ResourcePath: DB/Units/Prefabs/Wizard
+    - Path: 0.Quantum_Photom/Resources/DB/Configs/NavMesh Ships/NavMeshAgent_Farragut
+      AssetRef:
+        Id:
+          Value: 4182503414570251184
+      ResourcePath: DB/Configs/NavMesh Ships/NavMeshAgent_Farragut
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Pulverizer
+      AssetRef:
+        Id:
+          Value: 4191418444106479073
+      ResourcePath: DB/Units/Settings/Card_Pulverizer
+    - Path: 0.Quantum_Photom/Resources/DB/Buildings/Prefabs/Castle_backup|EntityView
+      AssetRef:
+        Id:
+          Value: 4391325444729764113
+      ResourcePath: DB/Buildings/Prefabs/Castle_backup
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/Warhawk|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 4487641621984483208
+      ResourcePath: DB/Units/Prefabs/Warhawk
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Devastator
+      AssetRef:
+        Id:
+          Value: 4505824318026988458
+      ResourcePath: DB/Units/Settings/Card_Devastator
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/TigerShark|EntityView
+      AssetRef:
+        Id:
+          Value: 4520165963754969249
+      ResourcePath: DB/Units/Prefabs/TigerShark
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Type1
+      AssetRef:
+        Id:
+          Value: 4520339670558015401
+      ResourcePath: DB/Units/Settings/Card_Type1
+    - Path: 0.Quantum_Photom/Resources/DB/EffectAreas/Prefabs/Impact 2|EntityPrototype
+      AssetRef:
+        Id:
+          Value: 4521161159836074406
+      ResourcePath: DB/EffectAreas/Prefabs/Impact 2
+    - Path: 0.Quantum_Photom/Resources/DB/Units/Prefabs/SmallSkeleton|EntityView
+      AssetRef:
+        Id:
+          Value: 4530217054363994710
+      ResourcePath: DB/Units/Prefabs/SmallSkeleton

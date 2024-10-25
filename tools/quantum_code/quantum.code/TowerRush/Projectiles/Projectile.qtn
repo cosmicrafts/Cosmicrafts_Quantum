@@ -1,0 +1,31 @@
+﻿component Projectile
+{
+	[ExcludeFromPrototype] PlayerRef          Owner;
+	[ExcludeFromPrototype] EntityRef          SourceEntity;
+	[ExcludeFromPrototype] EntityRef          TargetEntity;
+	[ExcludeFromPrototype] FPVector2          TargetPosition;
+	[ExcludeFromPrototype] FP                 Speed;
+	[ExcludeFromPrototype] ProjectileBehavior Behavior;
+	[ExcludeFromPrototype] byte               Level;
+}
+
+union ProjectileBehavior
+{
+	ProjectileBehavior_SingleTarget SingleTarget;
+	ProjectileBehavior_AoE          AoE;
+}
+
+struct ProjectileBehavior_SingleTarget
+{
+    AssetRefEntityPrototype Prototype;
+	FP Damage;
+	FP DamagePerLevelPercent;
+}
+
+struct ProjectileBehavior_AoE
+{
+	AssetRefEntityPrototype Prototype;
+	FP                      Radius;
+	FP                      Damage;
+	FP                      DamagePerLevelPercent;
+}

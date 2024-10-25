@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
+  m_Name: Card_Warhawk
+  m_EditorClassIdentifier: 
+  GhostPrefab: {fileID: 362176384911509551, guid: 57b696bd4ece5f747aa73bf51e5eceed,
+    type: 3}
+  prevUIPrefab: {fileID: 362176384911509551, guid: 8d472dff72f40ad47be2c90efb58ddca,
+    type: 3}
+  Sprite: {fileID: 21300000, guid: a1bd9480319b37a40ac7296373578505, type: 3}
+  DisplayName: Warhawk
+  Settings:
+    Identifier:
+      Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Warhawk
+      Guid:
+        Value: 2449142457619551187
+    Prefab:
+      Id:
+        Value: 4487641621984483208
+    Rarity: 2
+    EnergyCost: 1
+    ActivationDelay:
+      RawValue: 65536
+    UnitCount: 1
+    UnitBehaviors: []
+    BaseHealth:
+      RawValue: 13198950
+    BaseShield:
+      RawValue: 3276800
+    HealthPerLevelPercent:
+      RawValue: 655360
+    DestroyOnDeath: 1
+    Critic:
+      RawValue: 786432
+    Evasion:
+      RawValue: 131072
+    TargetType: 2
+    UnitSize:
+      RawValue: 39321
+    AttackTarget: -1
+    WeaponBehavior:
+      _field_used_: PROJECTILE
+      SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 0
+        Damage:
+          RawValue: 0
+        DamagePerLevelPercent:
+          RawValue: 0
+      Projectile:
+        Prototype:
+          Id:
+            Value: 215130353549231272
+        Speed:
+          RawValue: 786432
+        Behavior:
+          _field_used_: AOE
+          SingleTarget:
+            Prototype:
+              Id:
+                Value: 0
+            Damage:
+              RawValue: 0
+            DamagePerLevelPercent:
+              RawValue: 0
+          AoE:
+            Prototype:
+              Id:
+                Value: 4521161159836074406
+            Radius:
+              RawValue: 131072
+            Damage:
+              RawValue: 655360
+            DamagePerLevelPercent:
+              RawValue: 655360
+    AttackRange:
+      RawValue: 65536
+    AttackSpeed:
+      RawValue: 32768
+    StartAttackDelay:
+      RawValue: 0
+    MovementSpeed:
+      RawValue: 81920

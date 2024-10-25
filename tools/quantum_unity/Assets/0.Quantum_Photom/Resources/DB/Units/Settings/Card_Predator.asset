@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e0402d15e982e46a2ca8f7b93bda0a, type: 3}
+  m_Name: Card_Predator
+  m_EditorClassIdentifier: 
+  GhostPrefab: {fileID: 5764897130219458937, guid: 16233d0cc593d9449a10f0080ea3e0b9,
+    type: 3}
+  prevUIPrefab: {fileID: 5764897130219458937, guid: 55a3ca548f8956a4eb9a2225d3e24377,
+    type: 3}
+  Sprite: {fileID: 21300000, guid: d8222d45ddc42124f85c0c7e66561bf7, type: 3}
+  DisplayName: Predator
+  Settings:
+    Identifier:
+      Path: 0.Quantum_Photom/Resources/DB/Units/Settings/Card_Predator
+      Guid:
+        Value: 13105107224822741
+    Prefab:
+      Id:
+        Value: 1583281018997732579
+    Rarity: 4
+    EnergyCost: 1
+    ActivationDelay:
+      RawValue: 65536
+    UnitCount: 1
+    UnitBehaviors: []
+    BaseHealth:
+      RawValue: 13290045
+    BaseShield:
+      RawValue: 3276800
+    HealthPerLevelPercent:
+      RawValue: 655360
+    DestroyOnDeath: 1
+    Critic:
+      RawValue: 1638400
+    Evasion:
+      RawValue: 196608
+    TargetType: 2
+    UnitSize:
+      RawValue: 65536
+    AttackTarget: -1
+    WeaponBehavior:
+      _field_used_: PROJECTILE
+      SingleTarget:
+        PrototypeImpact:
+          Id:
+            Value: 0
+        Damage:
+          RawValue: 0
+        DamagePerLevelPercent:
+          RawValue: 0
+      Projectile:
+        Prototype:
+          Id:
+            Value: 2210417644035088212
+        Speed:
+          RawValue: 786432
+        Behavior:
+          _field_used_: AOE
+          SingleTarget:
+            Prototype:
+              Id:
+                Value: 0
+            Damage:
+              RawValue: 0
+            DamagePerLevelPercent:
+              RawValue: 0
+          AoE:
+            Prototype:
+              Id:
+                Value: 2867976968352079687
+            Radius:
+              RawValue: 98304
+            Damage:
+              RawValue: 983040
+            DamagePerLevelPercent:
+              RawValue: 655360
+    AttackRange:
+      RawValue: 262144
+    AttackSpeed:
+      RawValue: 98304
+    StartAttackDelay:
+      RawValue: 65536
+    MovementSpeed:
+      RawValue: 49152

@@ -1,0 +1,48 @@
+﻿component Health
+{
+	[ExcludeFromPrototype] byte Flags;
+	[ExcludeFromPrototype] FP   CurrentHealth;
+	[ExcludeFromPrototype] FP   MaxHealth;
+    [ExcludeFromPrototype] FP   CurrentShield;
+	[ExcludeFromPrototype] FP   MaxShield;
+}
+
+struct HealthData
+{
+	FP            Value;
+    FP            ValueRefOriginal;
+	EntityRef     Target;
+    int           TargetTokenID;
+    PlayerRef     TargetOwner;
+	EntityRef     Source;
+    int           SourceTokenID;
+	EHealthAction Action;
+    EAttackMode   AttackMode;
+    bool     HideToStats;
+}
+
+enum EHealthAction : Byte
+{
+	None,
+	Add,
+	Remove,
+}
+enum EAttackMode : Byte
+{
+	None,
+	Critic,
+	Evasion,
+}
+
+signal OnDeath(EntityRef entity, EntityRef killer);
+
+synced event Death
+{
+	EntityRef Entity;
+}
+
+synced event OnHealthChanged
+{
+	HealthData Data;
+}
+

@@ -1,0 +1,290 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6909499226400030376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6909499226400030357}
+  - component: {fileID: 6909499226400030378}
+  - component: {fileID: 6909499226400030379}
+  m_Layer: 0
+  m_Name: SpeedBuff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6909499226400030357
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6909499226400030376}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6909499226400030378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6909499226400030376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransformMode: 0
+  Transform2DVertical:
+    IsEnabled: 0
+    Height:
+      RawValue: 0
+    PositionOffset:
+      RawValue: 0
+  PhysicsCollider:
+    IsTrigger: 0
+    Material:
+      Id:
+        Value: 0
+    SourceCollider: {fileID: 0}
+    IsEnabled: 0
+    Shape2D:
+      ShapeType: 0
+      PolygonCollider:
+        Id:
+          Value: 0
+      CircleRadius:
+        RawValue: 0
+      EdgeExtent:
+        RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      RotationOffset:
+        RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+      IsSetFromSourceCollider: 0
+    Shape3D:
+      ShapeType: 0
+      SphereRadius:
+        RawValue: 0
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      RotationOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+      IsSetFromSourceCollider: 0
+    Layer: 0
+    CallbackFlags:
+      Value: 0
+  PhysicsBody:
+    IsEnabled: 0
+    Version2D: 0
+    Version3D: 0
+    Config2D: 116
+    Config3D: 58
+    RotationFreeze: 0
+    Mass:
+      RawValue: 65536
+    Drag:
+      RawValue: 32768
+    AngularDrag:
+      RawValue: 32768
+    CenterOfMass2D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CenterOfMass3D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+    GravityScale:
+      _hasValue: 0
+      _value:
+        RawValue: 65536
+  NavMeshPathfinder:
+    IsEnabled: 0
+    NavMeshAgentConfig:
+      Id:
+        Value: 0
+    InitialTarget:
+      IsEnabled: 0
+      Target: {fileID: 0}
+      Position:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      NavMesh:
+        Reference: {fileID: 0}
+        Asset:
+          Id:
+            Value: 0
+        Name: 
+  NavMeshSteeringAgent:
+    IsEnabled: 0
+    MaxSpeed:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+    Acceleration:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+  NavMeshAvoidanceAgent:
+    IsEnabled: 0
+  View:
+    Id:
+      Value: 0
+--- !u!114 &6909499226400030379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6909499226400030376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df36f6c8e46e5f40ac7407e6be37b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Behaviors:
+    - _field_used_: STATS
+      Duration:
+        MaxDuration:
+          RawValue: 0
+        DurationPerLevelIncrease:
+          RawValue: 0
+      HealthOverTime:
+        ValuePerTick:
+          RawValue: 0
+        ValuePerLevelIncrease:
+          RawValue: 0
+        Action:
+          Value: 0
+        TickTime:
+          RawValue: 0
+        TickCount: 0
+      Stats:
+        StatType:
+          Value: 1
+        AbsoluteValue:
+          RawValue: 0
+        PercentValue:
+          RawValue: 3276800
+        ValuePerLevelIncrease:
+          RawValue: 0
+    - _field_used_: STATS
+      Duration:
+        MaxDuration:
+          RawValue: 0
+        DurationPerLevelIncrease:
+          RawValue: 0
+      HealthOverTime:
+        ValuePerTick:
+          RawValue: 0
+        ValuePerLevelIncrease:
+          RawValue: 0
+        Action:
+          Value: 0
+        TickTime:
+          RawValue: 0
+        TickCount: 0
+      Stats:
+        StatType:
+          Value: 2
+        AbsoluteValue:
+          RawValue: 0
+        PercentValue:
+          RawValue: 3276800
+        ValuePerLevelIncrease:
+          RawValue: 0
+    - _field_used_: DURATION
+      Duration:
+        MaxDuration:
+          RawValue: 65536
+        DurationPerLevelIncrease:
+          RawValue: 0
+      HealthOverTime:
+        ValuePerTick:
+          RawValue: 0
+        ValuePerLevelIncrease:
+          RawValue: 0
+        Action:
+          Value: 0
+        TickTime:
+          RawValue: 0
+        TickCount: 0
+      Stats:
+        StatType:
+          Value: 2
+        AbsoluteValue:
+          RawValue: 0
+        PercentValue:
+          RawValue: 32768000
+        ValuePerLevelIncrease:
+          RawValue: 0
+--- !u!114 &-6152147403857269453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0120b722c3ca5454da1240b65656905f, type: 3}
+  m_Name: SpeedBuffEntityPrototype
+  m_EditorClassIdentifier: 
+  Settings:
+    Identifier:
+      Path: 0.Quantum_Photom/Resources/DB/Buffs/SpeedBuff|EntityPrototype
+      Guid:
+        Value: 2115979681601561557
+  Parent: {fileID: 6909499226400030378}

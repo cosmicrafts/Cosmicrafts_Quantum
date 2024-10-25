@@ -1,0 +1,99 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/ee78dw587/CSharpServer/ProxyServer/ProxyServer.csproj": {}
+  },
+  "projects": {
+    "/home/ee78dw587/CSharpServer/ProxyServer/ProxyServer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/ee78dw587/CSharpServer/ProxyServer/ProxyServer.csproj",
+        "projectName": "ProxyServer",
+        "projectPath": "/home/ee78dw587/CSharpServer/ProxyServer/ProxyServer.csproj",
+        "packagesPath": "/home/ee78dw587/.nuget/packages/",
+        "outputPath": "/home/ee78dw587/CSharpServer/ProxyServer/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/ee78dw587/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Dahomey.Cbor": {
+              "target": "Package",
+              "version": "[1.24.3, )"
+            },
+            "EdjCase.ICP.Agent": {
+              "target": "Package",
+              "version": "[6.2.0, )"
+            },
+            "EdjCase.ICP.WebSockets": {
+              "target": "Package",
+              "version": "[6.2.0, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "OpenCvSharp4": {
+              "target": "Package",
+              "version": "[4.10.0.20240616, )"
+            },
+            "System.Text.Json": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.427/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
