@@ -1,0 +1,44 @@
+namespace = "Sample.Shared"
+output-directory = "C:/Git/ICP.NET/samples/Sample.Shared"
+#url = "https://localhost:8000"
+feature-nullable = true
+
+[[clients]]
+name = "Dex"
+type = "file"
+file-path = "ServiceDefinitions/Dex.did"
+variants-use-properties = true
+override-optional-value = true
+
+[[clients]]
+name = "ICRC1Ledger"
+type = "canister"
+canister-id = "mxzaz-hqaaa-aaaar-qaada-cai"
+
+[[clients]]
+name = "AddressBook"
+type = "file"
+file-path = "ServiceDefinitions/AddressBook.did"
+output-directory = "Address" # override
+no-folders = true
+keep-candid-case = true
+
+[[clients]]
+name = "Governance"
+type = "canister"
+canister-id = "rrkah-fqaaa-aaaaa-aaaaq-cai"
+[clients.types.AccountIdentifier] 
+name = "AccountId"
+[clients.types.AccountIdentifier.fields.hash] 
+representation = "Array"
+ 
+[clients.types.Governance.fields.default_followees] 
+representation = "List"
+
+
+[clients.types.Action.fields.RegisterKnownNeuron]
+name = "RegisterNeuron" # Rename RegisterKnownNeuron -> RegisterNeuron
+[clients.types.Action.fields.RegisterKnownNeuron.fields.id]
+name = "ID"
+[clients.types.Action.fields.RegisterKnownNeuron.fields.id.innerType.fields.id]
+name = "ID"

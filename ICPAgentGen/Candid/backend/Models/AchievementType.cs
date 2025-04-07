@@ -1,0 +1,34 @@
+namespace Cosmicrafts.backend.Models
+{
+	public enum AchievementType
+	{
+		AchievementsUnlocked,
+		ChestsMinted,
+		ChestsOpened,
+		Customization,
+		DailyMissionsCompleted,
+		DamageDealt,
+		DamageTaken,
+		EnergyUsed,
+		FluxMinted,
+		FriendsAdded,
+		GameModePlayed,
+		GamesCompleted,
+		GamesPlayed,
+		GamesWithCharacter,
+		GamesWithFaction,
+		GamesWon,
+		Kills,
+		LevelReached,
+		NFTsMinted,
+		RewardsClaimed,
+		ShardsMinted,
+		Social,
+		TimePlayed,
+		UnitsDeployed,
+		UpgradeNFT,
+		UserMissionsCompleted,
+		WeeklyMissionsCompleted,
+		XPEarned
+	}
+}

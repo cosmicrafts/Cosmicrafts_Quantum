@@ -1,0 +1,52 @@
+name: Publish Release
+
+on:
+  release:
+    types: [published]
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Pack Candid
+        run: dotnet pack src/Candid/EdjCase.ICP.Candid.csproj --configuration Release /p:Version=${{ github.event.release.tag_name }} --output . --include-symbols --include-source
+
+      - name: Push Candid
+        run: dotnet nuget push EdjCase.ICP.Candid.${{ github.event.release.tag_name }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Pack BLS
+        run: dotnet pack src/BLS/EdjCase.ICP.BLS.csproj --configuration Release /p:Version=${{ github.event.release.tag_name }} --output . --include-symbols --include-source
+
+      - name: Push BLS
+        run: dotnet nuget push EdjCase.ICP.BLS.${{ github.event.release.tag_name }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Pack Agent
+        run: dotnet pack src/Agent/EdjCase.ICP.Agent.csproj --configuration Release /p:Version=${{ github.event.release.tag_name }} --output . --include-symbols --include-source
+
+      - name: Push Agent
+        run: dotnet nuget push EdjCase.ICP.Agent.${{ github.event.release.tag_name }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Pack PocketIC
+        run: dotnet pack src/PocketIC/EdjCase.ICP.PocketIC.csproj --configuration Release /p:Version=${{ github.event.release.tag_name }} --output . --include-symbols --include-source
+
+      - name: Push PocketIC
+        run: dotnet nuget push EdjCase.ICP.PocketIC.${{ github.event.release.tag_name }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Pack WebSockets
+        run: dotnet pack src/WebSockets/EdjCase.ICP.WebSockets.csproj --configuration Release /p:Version=${{ github.event.release.tag_name }} --output . --include-symbols --include-source
+
+      - name: Push WebSockets
+        run: dotnet nuget push EdjCase.ICP.WebSockets.${{ github.event.release.tag_name }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
+      - name: Pack Client Generator
+        run: dotnet pack src/ClientGenerator/EdjCase.ICP.ClientGenerator.csproj --configuration Release /p:Version=${{ github.event.release.tag_name }} --output . --include-symbols --include-source
+
+      - name: Push Client Generator
+        run: dotnet nuget push EdjCase.ICP.ClientGenerator.${{ github.event.release.tag_name }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

@@ -1,0 +1,16 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Sample.RestAPI",
+			"type": "dotnet",
+			"request": "launch",
+			"projectPath": "${workspaceFolder}/samples/Sample.RestAPI/Sample.RestAPI.csproj"
+		},
+		{
+			"name": ".NET Core Attach",
+			"type": "coreclr",
+			"request": "attach"
+		}
+	]
+}
