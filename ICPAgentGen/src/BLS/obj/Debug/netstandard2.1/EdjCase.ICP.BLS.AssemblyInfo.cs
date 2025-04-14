@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Edjcase")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f847f4555732db2c6e7e9a6eedd9825e503ae03")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+62da4623a1704b20fd98041c4d3dc7d0da2cfb88")]
 [assembly: System.Reflection.AssemblyProductAttribute("EdjCase.ICP.BLS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EdjCase.ICP.BLS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

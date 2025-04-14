@@ -27,7 +27,7 @@ namespace EPOOutline
 #if UNITY_2019_3_OR_NEWER
                 var pipeline = QualitySettings.renderPipeline;
                 if (pipeline == null)
-                    pipeline = GraphicsSettings.renderPipelineAsset;
+                    pipeline = GraphicsSettings.defaultRenderPipeline;
 #else
                     var pipeline = GraphicsSettings.renderPipelineAsset;
 #endif
@@ -55,8 +55,8 @@ namespace EPOOutline
             {
                 var set = new HashSet<RenderPipelineAsset>();
 
-                if (GraphicsSettings.renderPipelineAsset != null)
-                    set.Add(GraphicsSettings.renderPipelineAsset);
+                if (GraphicsSettings.defaultRenderPipeline != null)
+                    set.Add(GraphicsSettings.defaultRenderPipeline);
 
 #if UNITY_2019_3_OR_NEWER
                 var qualitySettingNames = QualitySettings.names;

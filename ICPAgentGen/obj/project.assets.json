@@ -1,8 +1,8 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {
-      "BouncyCastle.Cryptography/2.1.1": {
+    "net9.0": {
+      "BouncyCastle.Cryptography/2.4.0": {
         "type": "package",
         "compile": {
           "lib/net6.0/BouncyCastle.Cryptography.dll": {
@@ -15,13 +15,13 @@
           }
         }
       },
-      "EdjCase.ICP.Agent/5.1.0": {
+      "EdjCase.ICP.Agent/7.0.2": {
         "type": "package",
         "dependencies": {
-          "BouncyCastle.Cryptography": "2.1.1",
-          "EdjCase.ICP.BLS": "5.1.0",
-          "EdjCase.ICP.Candid": "5.1.0",
-          "System.Formats.Cbor": "7.0.0"
+          "BouncyCastle.Cryptography": "2.4.0",
+          "EdjCase.ICP.BLS": "7.0.2",
+          "EdjCase.ICP.Candid": "7.0.2",
+          "System.Formats.Cbor": "8.0.0"
         },
         "compile": {
           "lib/netstandard2.1/EdjCase.ICP.Agent.dll": {}
@@ -30,11 +30,8 @@
           "lib/netstandard2.1/EdjCase.ICP.Agent.dll": {}
         }
       },
-      "EdjCase.ICP.BLS/5.1.0": {
+      "EdjCase.ICP.BLS/7.0.2": {
         "type": "package",
-        "dependencies": {
-          "Wasmtime": "8.0.1"
-        },
         "compile": {
           "lib/netstandard2.1/EdjCase.ICP.BLS.dll": {}
         },
@@ -42,12 +39,12 @@
           "lib/netstandard2.1/EdjCase.ICP.BLS.dll": {}
         }
       },
-      "EdjCase.ICP.Candid/5.1.0": {
+      "EdjCase.ICP.Candid/8.0.0-pre.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Bcl.HashCode": "1.1.1",
-          "System.Formats.Asn1": "7.0.0",
-          "System.Memory": "4.5.5"
+          "Microsoft.Bcl.HashCode": "6.0.0",
+          "System.Formats.Asn1": "9.0.2",
+          "System.Memory": "4.6.0"
         },
         "compile": {
           "lib/netstandard2.1/EdjCase.ICP.Candid.dll": {}
@@ -56,26 +53,15 @@
           "lib/netstandard2.1/EdjCase.ICP.Candid.dll": {}
         }
       },
-      "Microsoft.Bcl.HashCode/1.1.1": {
+      "Microsoft.Bcl.HashCode/6.0.0": {
         "type": "package",
         "compile": {
-          "ref/netcoreapp2.1/Microsoft.Bcl.HashCode.dll": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.1/Microsoft.Bcl.HashCode.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "System.Formats.Asn1/7.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net7.0/System.Formats.Asn1.dll": {
+          "lib/net6.0/Microsoft.Bcl.HashCode.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net7.0/System.Formats.Asn1.dll": {
+          "lib/net6.0/Microsoft.Bcl.HashCode.dll": {
             "related": ".xml"
           }
         },
@@ -83,15 +69,31 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.Formats.Cbor/7.0.0": {
+      "System.Formats.Asn1/9.0.2": {
         "type": "package",
         "compile": {
-          "lib/net7.0/System.Formats.Cbor.dll": {
+          "lib/net9.0/System.Formats.Asn1.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net7.0/System.Formats.Cbor.dll": {
+          "lib/net9.0/System.Formats.Asn1.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "System.Formats.Cbor/8.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/System.Formats.Cbor.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.Formats.Cbor.dll": {
             "related": ".xml"
           }
         },
@@ -99,63 +101,28 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.Memory/4.5.5": {
+      "System.Memory/4.6.0": {
         "type": "package",
         "compile": {
-          "ref/netcoreapp2.1/_._": {}
+          "lib/netcoreapp2.1/_._": {}
         },
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
-        }
-      },
-      "Wasmtime/8.0.1": {
-        "type": "package",
-        "compile": {
-          "lib/net7.0/Wasmtime.Dotnet.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/Wasmtime.Dotnet.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/linux-arm64/native/libwasmtime.so": {
-            "assetType": "native",
-            "rid": "linux-arm64"
-          },
-          "runtimes/linux-x64/native/libwasmtime.so": {
-            "assetType": "native",
-            "rid": "linux-x64"
-          },
-          "runtimes/osx-arm64/native/libwasmtime.dylib": {
-            "assetType": "native",
-            "rid": "osx-arm64"
-          },
-          "runtimes/osx-x64/native/libwasmtime.dylib": {
-            "assetType": "native",
-            "rid": "osx-x64"
-          },
-          "runtimes/win-x64/native/wasmtime.dll": {
-            "assetType": "native",
-            "rid": "win-x64"
-          }
         }
       }
     }
   },
   "libraries": {
-    "BouncyCastle.Cryptography/2.1.1": {
-      "sha512": "NNQaa4eyf5YjSdLKUWGPzq5HXZQc3yGybfIOkR6UY1C/rRFWdo0UhSzBqqnxwGnq3ie4vkN0JlzhhANjfTIJIQ==",
+    "BouncyCastle.Cryptography/2.4.0": {
+      "sha512": "SwXsAV3sMvAU/Nn31pbjhWurYSjJ+/giI/0n6tCrYoupEK34iIHCuk3STAd9fx8yudM85KkLSVdn951vTng/vQ==",
       "type": "package",
-      "path": "bouncycastle.cryptography/2.1.1",
+      "path": "bouncycastle.cryptography/2.4.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE.md",
         "README.md",
-        "bouncycastle.cryptography.2.1.1.nupkg.sha512",
+        "bouncycastle.cryptography.2.4.0.nupkg.sha512",
         "bouncycastle.cryptography.nuspec",
         "lib/net461/BouncyCastle.Cryptography.dll",
         "lib/net461/BouncyCastle.Cryptography.xml",
@@ -166,112 +133,111 @@
         "packageIcon.png"
       ]
     },
-    "EdjCase.ICP.Agent/5.1.0": {
-      "sha512": "G1wEtZ9N+8QtHciBDs4+vtE01fSrYy46twU7O+aPFG+Ymu099aTDBdaUqB+dpvHCWYtQxfP+OB1MZMEVjs9w1Q==",
+    "EdjCase.ICP.Agent/7.0.2": {
+      "sha512": "1QkeijVu7SvPEDmLnZK0AQZY1ZZ++IhV0nyU6Iyl2Kgj0ufe+DB6CFxi1QdN/ll9wgp00ns8Wq8rr+zoT4gtmg==",
       "type": "package",
-      "path": "edjcase.icp.agent/5.1.0",
+      "path": "edjcase.icp.agent/7.0.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "edjcase.icp.agent.5.1.0.nupkg.sha512",
+        "edjcase.icp.agent.7.0.2.nupkg.sha512",
         "edjcase.icp.agent.nuspec",
         "lib/netstandard2.1/API.xml",
         "lib/netstandard2.1/EdjCase.ICP.Agent.dll"
       ]
     },
-    "EdjCase.ICP.BLS/5.1.0": {
-      "sha512": "Pg4X35cXzxS+Z7YDF8Edz4H+8uNGeganx7rj6ZL3q7ba/xPSHDGoDNd+/y9jbHzep/K2y8uEYU8qeYtFFlzg5g==",
+    "EdjCase.ICP.BLS/7.0.2": {
+      "sha512": "sW7OgYXsrcRApW1U3T3msxJ4w+1g/CiYczgZj2i6Ns+HNpd2oYi+lOPFpW/lgOID03+XOkQUK1I9oIxkh55HWA==",
       "type": "package",
-      "path": "edjcase.icp.bls/5.1.0",
+      "path": "edjcase.icp.bls/7.0.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "edjcase.icp.bls.5.1.0.nupkg.sha512",
+        "edjcase.icp.bls.7.0.2.nupkg.sha512",
         "edjcase.icp.bls.nuspec",
         "lib/netstandard2.1/API.xml",
         "lib/netstandard2.1/EdjCase.ICP.BLS.dll"
       ]
     },
-    "EdjCase.ICP.Candid/5.1.0": {
-      "sha512": "7RaEKQ4ryz34l98jl9yqTWUDqNuejgpuRuczToOOFc2/BwGvyqPfjzAqgS2KIreImIW9AiHXPkSaLlSJuT7/KQ==",
+    "EdjCase.ICP.Candid/8.0.0-pre.1": {
+      "sha512": "1mmq2JEFGcJ4XjK76vcmU5klesjAdDakjn9bSBRsSwSw/85UR2zCr7J/gRfE9yks6MuwzgoTOxfoR42zSqTmCg==",
       "type": "package",
-      "path": "edjcase.icp.candid/5.1.0",
+      "path": "edjcase.icp.candid/8.0.0-pre.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "edjcase.icp.candid.5.1.0.nupkg.sha512",
+        "edjcase.icp.candid.8.0.0-pre.1.nupkg.sha512",
         "edjcase.icp.candid.nuspec",
         "lib/netstandard2.1/API.xml",
         "lib/netstandard2.1/EdjCase.ICP.Candid.dll"
       ]
     },
-    "Microsoft.Bcl.HashCode/1.1.1": {
-      "sha512": "MalY0Y/uM/LjXtHfX/26l2VtN4LDNZ2OE3aumNOHDLsT4fNYy2hiHXI4CXCqKpNUNm7iJ2brrc4J89UdaL56FA==",
+    "Microsoft.Bcl.HashCode/6.0.0": {
+      "sha512": "GI4jcoi6eC9ZhNOQylIBaWOQjyGaR8T6N3tC1u8p3EXfndLCVNNWa+Zp+ocjvvS3kNBN09Zma2HXL0ezO0dRfw==",
       "type": "package",
-      "path": "microsoft.bcl.hashcode/1.1.1",
+      "path": "microsoft.bcl.hashcode/6.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "LICENSE.TXT",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/net461/Microsoft.Bcl.HashCode.dll",
-        "lib/net461/Microsoft.Bcl.HashCode.xml",
-        "lib/netcoreapp2.1/Microsoft.Bcl.HashCode.dll",
-        "lib/netcoreapp2.1/Microsoft.Bcl.HashCode.xml",
+        "PACKAGE.md",
+        "buildTransitive/net461/Microsoft.Bcl.HashCode.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Bcl.HashCode.targets",
+        "lib/net462/Microsoft.Bcl.HashCode.dll",
+        "lib/net462/Microsoft.Bcl.HashCode.xml",
+        "lib/net6.0/Microsoft.Bcl.HashCode.dll",
+        "lib/net6.0/Microsoft.Bcl.HashCode.xml",
         "lib/netstandard2.0/Microsoft.Bcl.HashCode.dll",
         "lib/netstandard2.0/Microsoft.Bcl.HashCode.xml",
         "lib/netstandard2.1/Microsoft.Bcl.HashCode.dll",
         "lib/netstandard2.1/Microsoft.Bcl.HashCode.xml",
-        "microsoft.bcl.hashcode.1.1.1.nupkg.sha512",
-        "microsoft.bcl.hashcode.nuspec",
-        "ref/net461/Microsoft.Bcl.HashCode.dll",
-        "ref/netcoreapp2.1/Microsoft.Bcl.HashCode.dll",
-        "ref/netstandard2.0/Microsoft.Bcl.HashCode.dll",
-        "ref/netstandard2.1/Microsoft.Bcl.HashCode.dll",
-        "useSharedDesignerContext.txt",
-        "version.txt"
+        "microsoft.bcl.hashcode.6.0.0.nupkg.sha512",
+        "microsoft.bcl.hashcode.nuspec"
       ]
     },
-    "System.Formats.Asn1/7.0.0": {
-      "sha512": "+nfpV0afLmvJW8+pLlHxRjz3oZJw4fkyU9MMEaMhCsHi/SN9bGF9q79ROubDiwTiCHezmK0uCWkPP7tGFP/4yg==",
+    "System.Formats.Asn1/9.0.2": {
+      "sha512": "OKWHCPYQr/+cIoO8EVjFn7yFyiT8Mnf1wif/5bYGsqxQV6PrwlX2HQ9brZNx57ViOvRe4ing1xgHCKl/5Ko8xg==",
       "type": "package",
-      "path": "system.formats.asn1/7.0.0",
+      "path": "system.formats.asn1/9.0.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LICENSE.TXT",
+        "PACKAGE.md",
         "THIRD-PARTY-NOTICES.TXT",
         "buildTransitive/net461/System.Formats.Asn1.targets",
         "buildTransitive/net462/_._",
-        "buildTransitive/net6.0/_._",
+        "buildTransitive/net8.0/_._",
         "buildTransitive/netcoreapp2.0/System.Formats.Asn1.targets",
         "lib/net462/System.Formats.Asn1.dll",
         "lib/net462/System.Formats.Asn1.xml",
-        "lib/net6.0/System.Formats.Asn1.dll",
-        "lib/net6.0/System.Formats.Asn1.xml",
-        "lib/net7.0/System.Formats.Asn1.dll",
-        "lib/net7.0/System.Formats.Asn1.xml",
+        "lib/net8.0/System.Formats.Asn1.dll",
+        "lib/net8.0/System.Formats.Asn1.xml",
+        "lib/net9.0/System.Formats.Asn1.dll",
+        "lib/net9.0/System.Formats.Asn1.xml",
         "lib/netstandard2.0/System.Formats.Asn1.dll",
         "lib/netstandard2.0/System.Formats.Asn1.xml",
-        "system.formats.asn1.7.0.0.nupkg.sha512",
+        "system.formats.asn1.9.0.2.nupkg.sha512",
         "system.formats.asn1.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.Formats.Cbor/7.0.0": {
-      "sha512": "2DvlHGwr0hEXXRv/8j9x4fw9yqJ7638qusWsf3iruVUmRb+mWl5ODSZRtXe5ZH62/0R6qf/QxA8JTrhIRvWlXw==",
+    "System.Formats.Cbor/8.0.0": {
+      "sha512": "pOFOuygoSX5Tj82uaDTFQ8ipVOKJWSZtgSdR/uCvvXtnV5z6UbbUWFsaQ/8sBerEstvVjX1DyPcVM7ua7GWHqw==",
       "type": "package",
-      "path": "system.formats.cbor/7.0.0",
+      "path": "system.formats.cbor/8.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LICENSE.TXT",
+        "PACKAGE.md",
         "THIRD-PARTY-NOTICES.TXT",
         "buildTransitive/net461/System.Formats.Cbor.targets",
         "buildTransitive/net462/_._",
@@ -283,87 +249,73 @@
         "lib/net6.0/System.Formats.Cbor.xml",
         "lib/net7.0/System.Formats.Cbor.dll",
         "lib/net7.0/System.Formats.Cbor.xml",
+        "lib/net8.0/System.Formats.Cbor.dll",
+        "lib/net8.0/System.Formats.Cbor.xml",
         "lib/netstandard2.0/System.Formats.Cbor.dll",
         "lib/netstandard2.0/System.Formats.Cbor.xml",
-        "system.formats.cbor.7.0.0.nupkg.sha512",
+        "system.formats.cbor.8.0.0.nupkg.sha512",
         "system.formats.cbor.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.Memory/4.5.5": {
-      "sha512": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
+    "System.Memory/4.6.0": {
+      "sha512": "OEkbBQoklHngJ8UD8ez2AERSk2g+/qpAaSWWCBFbpH727HxDq5ydVkuncBaKcKfwRqXGWx64dS6G1SUScMsitg==",
       "type": "package",
-      "path": "system.memory/4.5.5",
+      "path": "system.memory/4.6.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "LICENSE.TXT",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/net461/System.Memory.dll",
-        "lib/net461/System.Memory.xml",
+        "Icon.png",
+        "PACKAGE.md",
+        "buildTransitive/net461/System.Memory.targets",
+        "buildTransitive/net462/_._",
+        "lib/net462/System.Memory.dll",
+        "lib/net462/System.Memory.xml",
         "lib/netcoreapp2.1/_._",
-        "lib/netstandard1.1/System.Memory.dll",
-        "lib/netstandard1.1/System.Memory.xml",
         "lib/netstandard2.0/System.Memory.dll",
         "lib/netstandard2.0/System.Memory.xml",
-        "ref/netcoreapp2.1/_._",
-        "system.memory.4.5.5.nupkg.sha512",
-        "system.memory.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
-      ]
-    },
-    "Wasmtime/8.0.1": {
-      "sha512": "erxCx7kWqnVstw8KBvGnrIEXJSDW4CKKED5mNhJAL9dw3xK8bMbUdamfOchsNEweWwuuyHwjS2KSr1SQ+HNEpg==",
-      "type": "package",
-      "path": "wasmtime/8.0.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "lib/net7.0/Wasmtime.Dotnet.dll",
-        "lib/net7.0/Wasmtime.Dotnet.xml",
-        "lib/netstandard2.1/Wasmtime.Dotnet.dll",
-        "lib/netstandard2.1/Wasmtime.Dotnet.xml",
-        "runtimes/linux-arm64/native/libwasmtime.so",
-        "runtimes/linux-x64/native/libwasmtime.so",
-        "runtimes/osx-arm64/native/libwasmtime.dylib",
-        "runtimes/osx-x64/native/libwasmtime.dylib",
-        "runtimes/win-x64/native/wasmtime.dll",
-        "wasmtime.8.0.1.nupkg.sha512",
-        "wasmtime.nuspec"
+        "system.memory.4.6.0.nupkg.sha512",
+        "system.memory.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
-    "net8.0": [
-      "EdjCase.ICP.Agent >= 5.1.0"
+    "net9.0": [
+      "EdjCase.ICP.Agent >= 7.0.2",
+      "EdjCase.ICP.Candid >= 8.0.0-pre.1"
     ]
   },
   "packageFolders": {
-    "/home/bizkit/.nuget/packages/": {}
+    "C:\\Users\\ramo8\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/bizkit/GitHub/Cosmicrafts_Quantum/ICPAgentGen/ICPAgentGen.csproj",
+      "projectUniqueName": "C:\\Users\\ramo8\\OneDrive\\Desktop\\Github\\Cosmicrafts_Quantum\\ICPAgentGen\\ICPAgentGen.csproj",
       "projectName": "ICPAgentGen",
-      "projectPath": "/home/bizkit/GitHub/Cosmicrafts_Quantum/ICPAgentGen/ICPAgentGen.csproj",
-      "packagesPath": "/home/bizkit/.nuget/packages/",
-      "outputPath": "/home/bizkit/GitHub/Cosmicrafts_Quantum/ICPAgentGen/obj/",
+      "projectPath": "C:\\Users\\ramo8\\OneDrive\\Desktop\\Github\\Cosmicrafts_Quantum\\ICPAgentGen\\ICPAgentGen.csproj",
+      "packagesPath": "C:\\Users\\ramo8\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ramo8\\OneDrive\\Desktop\\Github\\Cosmicrafts_Quantum\\ICPAgentGen\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/bizkit/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\ramo8\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net8.0"
+        "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "targetAlias": "net9.0",
           "projectReferences": {}
         }
       },
@@ -371,15 +323,25 @@
         "warnAsError": [
           "NU1605"
         ]
-      }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
-      "net8.0": {
-        "targetAlias": "net8.0",
+      "net9.0": {
+        "targetAlias": "net9.0",
         "dependencies": {
           "EdjCase.ICP.Agent": {
             "target": "Package",
-            "version": "[5.1.0, )"
+            "version": "[7.0.2, )"
+          },
+          "EdjCase.ICP.Candid": {
+            "target": "Package",
+            "version": "[8.0.0-pre.1, )"
           }
         },
         "imports": [
@@ -393,18 +355,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.1, 8.0.1]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
