@@ -52,9 +52,9 @@
 
         protected override void FixedUpdate()
         {
-            if (MyRb.velocity.magnitude > MaxSpeed + 1f)
+            if (MyRb.linearVelocity.magnitude > MaxSpeed + 1f)
             {
-                MyRb.velocity = MyRb.velocity.normalized * (MaxSpeed + 1f);
+                MyRb.linearVelocity = MyRb.linearVelocity.normalized * (MaxSpeed + 1f);
             }
             if (MyRb.angularVelocity.magnitude > 0.5f)
             {

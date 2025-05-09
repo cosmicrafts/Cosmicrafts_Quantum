@@ -1,6 +1,5 @@
 ﻿namespace CosmicraftsSP {
 using UnityEngine;
-using EPOOutline;
 
 /*
  * This script controls and validates the draging cards to deploy them (in-game)
@@ -16,7 +15,6 @@ public class DragUnitCtrl : MonoBehaviour
     //The preview 3d model and effects of the card to deploy
     public MeshRenderer MyMesh;
     public MeshFilter MyMeshFilter;
-   public Outlinable Outline;
     GameObject currentPreview;
 
     //The energy cost of the current draging card
@@ -32,7 +30,6 @@ public class DragUnitCtrl : MonoBehaviour
     {
         //Initialize variables
         areas = 0;
-       // SetStatusColor(Color.red);
         target = GameMng.GM.GetDefaultTargetPosition(GameMng.P.MyTeam);
         DefaultColor = Color.green;
         player = GameMng.P;
@@ -40,9 +37,6 @@ public class DragUnitCtrl : MonoBehaviour
 
     private void Update()
     {
-        //Update the outline color (green when the draging card can be deployed on the current position)
-       // DefaultColor = TargetCost > player.CurrentEnergy ? Color.blue : Color.green;
-       // SetStatusColor(areas > 0 ? DefaultColor : Color.red);
     }
 
     private void FixedUpdate()
@@ -79,7 +73,6 @@ public class DragUnitCtrl : MonoBehaviour
     //Set the current draging status color
     void SetStatusColor(Color color)
     {
-       Outline.OutlineParameters.Color = color;
     }
 
     //Set the current preview from a mesh and material

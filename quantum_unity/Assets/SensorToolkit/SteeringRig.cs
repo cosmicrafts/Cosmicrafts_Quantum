@@ -236,9 +236,9 @@ namespace SensorToolkit
             // Only seek with forces if we are seeking and we have a non-kinematic rigid body
             if (!IsSeeking)
             {
-                if (RB.velocity.magnitude > 0)
+                if (RB.linearVelocity.magnitude > 0)
                 {
-                    RB.velocity += RB.velocity.normalized * Time.deltaTime * -StopSpeed;
+                    RB.linearVelocity += RB.linearVelocity.normalized * Time.deltaTime * -StopSpeed;
                 }
                 return;
             }

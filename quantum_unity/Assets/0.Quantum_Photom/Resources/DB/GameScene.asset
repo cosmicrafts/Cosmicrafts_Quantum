@@ -57,12 +57,7 @@ MonoBehaviour:
     Projectile: []
     Target:
     - _empty_prototype_dummy_field_: 0
-    Unit:
-    - Cannon:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 131072
+    Unit: []
     UnitAI:
     - _empty_prototype_dummy_field_: 0
     UnitStats:
@@ -105,12 +100,7 @@ MonoBehaviour:
     Projectile: []
     Target:
     - _empty_prototype_dummy_field_: 0
-    Unit:
-    - Cannon:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 131072
+    Unit: []
     UnitAI:
     - _empty_prototype_dummy_field_: 0
     UnitStats:
@@ -153,12 +143,7 @@ MonoBehaviour:
     Projectile: []
     Target:
     - _empty_prototype_dummy_field_: 0
-    Unit:
-    - Cannon:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 131072
+    Unit: []
     UnitAI:
     - _empty_prototype_dummy_field_: 0
     UnitStats:
@@ -201,12 +186,7 @@ MonoBehaviour:
     Projectile: []
     Target:
     - _empty_prototype_dummy_field_: 0
-    Unit:
-    - Cannon:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 131072
+    Unit: []
     UnitAI:
     - _empty_prototype_dummy_field_: 0
     UnitStats:
@@ -249,12 +229,7 @@ MonoBehaviour:
     Projectile: []
     Target:
     - _empty_prototype_dummy_field_: 0
-    Unit:
-    - Cannon:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 131072
+    Unit: []
     UnitAI:
     - _empty_prototype_dummy_field_: 0
     UnitStats:
@@ -297,12 +272,7 @@ MonoBehaviour:
     Projectile: []
     Target:
     - _empty_prototype_dummy_field_: 0
-    Unit:
-    - Cannon:
-        X:
-          RawValue: 0
-        Y:
-          RawValue: 131072
+    Unit: []
     UnitAI:
     - _empty_prototype_dummy_field_: 0
     UnitStats:
@@ -337,127 +307,7 @@ MonoBehaviour:
   - Buff: []
     Buffs: []
     EffectArea: []
-    Gameplay:
-    - AlphaScore: 0
-      BetaScore: 0
-      AlphaCastle:
-        SceneIndexPlusOne: 3
-      BetaCastle:
-        SceneIndexPlusOne: 6
-      AlphaTowers:
-      - SceneIndexPlusOne: 1
-      - SceneIndexPlusOne: 2
-      BetaTowers:
-      - SceneIndexPlusOne: 4
-      - SceneIndexPlusOne: 5
-      AlphaArea:
-        MinX: -9
-        MaxX: 9
-        MinY: -16
-        MaxY: 16
-        BlockedAreas:
-        - Entity:
-            SceneIndexPlusOne: 0
-          MinX: 7
-          MaxX: 9
-          MinY: -1
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 0
-          MinX: -9
-          MaxX: -7
-          MinY: -1
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 0
-          MinX: -6
-          MaxX: 6
-          MinY: -1
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 4
-          MinX: -9
-          MaxX: 0
-          MinY: -6
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 5
-          MinX: 0
-          MaxX: 9
-          MinY: -6
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 6
-          MinX: -9
-          MaxX: 9
-          MinY: -16
-          MaxY: -6
-          Enabled:
-            Value: 1
-      BetaArea:
-        MinX: -9
-        MaxX: 9
-        MinY: -16
-        MaxY: 16
-        BlockedAreas:
-        - Entity:
-            SceneIndexPlusOne: 0
-          MinX: -9
-          MaxX: -7
-          MinY: -1
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 0
-          MinX: 7
-          MaxX: 9
-          MinY: -1
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 0
-          MinX: -6
-          MaxX: 6
-          MinY: -1
-          MaxY: 1
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 1
-          MinX: -9
-          MaxX: 0
-          MinY: -1
-          MaxY: 6
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 2
-          MinX: 0
-          MaxX: 9
-          MinY: -1
-          MaxY: 6
-          Enabled:
-            Value: 1
-        - Entity:
-            SceneIndexPlusOne: 2
-          MinX: -9
-          MaxX: 9
-          MinY: 6
-          MaxY: 16
-          Enabled:
-            Value: 1
+    Gameplay: []
     Health: []
     Movement: []
     Projectile: []

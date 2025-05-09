@@ -143,10 +143,6 @@ public class UIMainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (GlobalManager.GMD.IsProductionWeb())
-        {
-            GameNetwork.JSDashboardStarts();
-        }
 
         //Fill dropdown with bot names
         /*botMode.ClearOptions();

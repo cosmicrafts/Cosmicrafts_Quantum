@@ -4,7 +4,6 @@ using Unity.Burst;
 using UnityEngine;
 using System.Linq;
 using System.Collections;
-using EPOOutline;
 using System;
 
 namespace CosmicraftsSP
@@ -75,7 +74,6 @@ namespace CosmicraftsSP
         public GameObject Portal;
         public GameObject ShieldGameObject;
         public UIUnit UI;
-        protected Outlinable MyOutline;
         [SerializeField]
         protected Animator MyAnim;
         protected AnimationClip[] MyClips;
@@ -97,13 +95,11 @@ namespace CosmicraftsSP
             MaxHp = HitPoints;
             Level = Mathf.Clamp(Level, 1, 999);
             MyRb = GetComponent<Rigidbody>();
-            MyOutline = Mesh.GetComponent<Outlinable>();
             TrigerBase = GetComponent<SphereCollider>();
             SolidBase = Mesh.GetComponent<SphereCollider>();
 
             UI.Init(MaxHp - 1, MaxShield - 1);
             UI.SetColorBars(!IsMyTeam(GameMng.P.MyTeam));
-            MyOutline.OutlineParameters.Color = GameMng.GM.GetColorUnit(MyTeam, PlayerId);
             TrigerBase.radius = SolidBase.radius;
             transform.localScale = new Vector3(Size, Size, Size);
             MyAnim = Mesh.GetComponent<Animator>();
@@ -146,9 +142,9 @@ namespace CosmicraftsSP
 
         protected virtual void FixedUpdate()
         {
-            if (MyRb.velocity.magnitude > 0f)
+            if (MyRb.linearVelocity.magnitude > 0f)
             {
-                MyRb.velocity = Vector3.zero;
+                MyRb.linearVelocity = Vector3.zero;
             }
             if (MyRb.angularVelocity.magnitude > 0.5f)
             {

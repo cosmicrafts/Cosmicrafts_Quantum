@@ -57,7 +57,7 @@ public class UIVsPInfo : MonoBehaviour
                     mytext.text = $"{user.Xp} {Lang.GetText("mn_xp")}";
                 }
                 break;
-            case PlayerProperty.Character:
+            /*case PlayerProperty.Character:
                 {
                     NFTsCharacter character = GameNetwork.GetVSnftCharacter();
                     //UserGeneral user = GlobalManager.GMD.GetVsUser();
@@ -67,7 +67,7 @@ public class UIVsPInfo : MonoBehaviour
                         myimage.sprite = ResourcesServices.LoadCharacterIcon(character.KeyId);
                     }
                 }
-                break;
+                break;*/
             case PlayerProperty.Avatar:
                 {
                     UserGeneral user = GlobalManager.GMD.GetVsUser();

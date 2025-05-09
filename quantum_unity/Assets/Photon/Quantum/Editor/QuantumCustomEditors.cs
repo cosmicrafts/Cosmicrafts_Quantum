@@ -1186,14 +1186,14 @@ namespace Quantum.Editor {
                 data.RegionDetectionMargin = Mathf.Max(data.RegionDetectionMargin, 0.0f);
                 EditorGUILayout.LabelField(new GUIContent("Convert Unity Areas To Quantum Region:", "Select what Unity NavMesh areas are used to generated Quantum regions. At least one must be selected."));
                 EditorGUI.indentLevel++;
-                var names = new List<string>(GameObjectUtility.GetNavMeshAreaNames());
+                var names = new List<string>(UnityEngine.AI.NavMesh.GetAreaNames());
                 if (data.RegionAreaIds == null) {
                   data.RegionAreaIds = new List<int>();
                 }
 
                 for (int i = 0; i < data.RegionAreaIds.Count; i++) {
                   var areaId = data.RegionAreaIds[i];
-                  var areaName = GameObjectUtility.GetNavMeshAreaNames().FirstOrDefault(name => GameObjectUtility.GetNavMeshAreaFromName(name) == areaId);
+                  var areaName = UnityEngine.AI.NavMesh.GetAreaNames().FirstOrDefault(name => UnityEngine.AI.NavMesh.GetAreaFromName(name) == areaId);
                   if (string.IsNullOrEmpty(areaName)) {
                     areaName = "missing Unity NavMesh area";
                   }
@@ -1209,7 +1209,7 @@ namespace Quantum.Editor {
                 if (names.Count > 0) {
                   var newName = EditorGUILayout.Popup("Add New Area", -1, names.ToArray());
                   if (newName >= 0) {
-                    var areaId = GameObjectUtility.GetNavMeshAreaFromName(names[newName]);
+                    var areaId = UnityEngine.AI.NavMesh.GetAreaFromName(names[newName]);
                     data.RegionAreaIds.Add(areaId);
                   }
                 }
@@ -1843,7 +1843,7 @@ namespace Quantum.Editor {
 
             EditorGUILayout.LabelField(new GUIContent("Convert Unity Areas To Quantum Region:", "Select what Unity NavMesh areas are used to generated Quantum toggleable regions. At least one must be selected if import regions is enabled. Walkable region is not possible to be selected as it is converted to the default (non-toggleable) part of the navmesh."));
             EditorGUI.indentLevel++;
-            var names = new List<string>(GameObjectUtility.GetNavMeshAreaNames());
+            var names = new List<string>(UnityEngine.AI.NavMesh.GetAreaNames());
             names.Remove("Walkable");
             names.Remove("Not Walkable");
             if (data.RegionAreaIds == null) {
@@ -1852,7 +1852,7 @@ namespace Quantum.Editor {
 
             for (int i = 0; i < data.RegionAreaIds.Count; i++) {
               var areaId = data.RegionAreaIds[i];
-              var areaName = GameObjectUtility.GetNavMeshAreaNames().FirstOrDefault(name => GameObjectUtility.GetNavMeshAreaFromName(name) == areaId);
+              var areaName = UnityEngine.AI.NavMesh.GetAreaNames().FirstOrDefault(name => UnityEngine.AI.NavMesh.GetAreaFromName(name) == areaId);
               if (string.IsNullOrEmpty(areaName)) {
                 areaName = "Unity NavMesh Area Name Is Missing";
               }
@@ -1874,7 +1874,7 @@ namespace Quantum.Editor {
             if (names.Count > 0) {
               var newName = EditorGUILayout.Popup("Add New Area", -1, names.ToArray());
               if (newName >= 0) {
-                var areaId = GameObjectUtility.GetNavMeshAreaFromName(names[newName]);
+                var areaId = UnityEngine.AI.NavMesh.GetAreaFromName(names[newName]);
                 data.RegionAreaIds.Add(areaId);
               }
             }
@@ -1991,11 +1991,11 @@ namespace Quantum.Editor {
               using (new EditorGUI.DisabledGroupScope(true)) {
                 EditorGUILayout.Toggle("Override Area", (bool)NavMeshModifierType.GetField("m_OverrideArea", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(modifier));
                 unityAreaId = (int)NavMeshModifierType.GetField("m_Area", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(modifier);
-                var map = GameObjectUtility.GetNavMeshAreaNames();
+                var map = UnityEngine.AI.NavMesh.GetAreaNames();
                 var currentIndex = GetNavMeshAreaIndex(unityAreaId);
                 var newIndex = EditorGUILayout.Popup("Area", currentIndex, map);
                 if (currentIndex != newIndex) {
-                  unityAreaId = GameObjectUtility.GetNavMeshAreaFromName(map[newIndex]);
+                  unityAreaId = UnityEngine.AI.NavMesh.GetAreaFromName(map[newIndex]);
                   GameObjectUtility.SetNavMeshArea(data.gameObject, unityAreaId);
                 }
               }
@@ -2007,11 +2007,11 @@ namespace Quantum.Editor {
           else {
             unityAreaId = GameObjectUtility.GetNavMeshArea(data.gameObject);
 
-            var map = GameObjectUtility.GetNavMeshAreaNames();
+            var map = UnityEngine.AI.NavMesh.GetAreaNames();
             var currentIndex = GetNavMeshAreaIndex(unityAreaId);
             var newIndex = EditorGUILayout.Popup("Unity NavMesh Area", currentIndex, map);
             if (currentIndex != newIndex) {
-              unityAreaId = GameObjectUtility.GetNavMeshAreaFromName(map[newIndex]);
+              unityAreaId = UnityEngine.AI.NavMesh.GetAreaFromName(map[newIndex]);
               GameObjectUtility.SetNavMeshArea(data.gameObject, unityAreaId);
             }
 
@@ -2036,10 +2036,10 @@ namespace Quantum.Editor {
     }
 
     private static int GetNavMeshAreaIndex(int areaId) {
-      var map = GameObjectUtility.GetNavMeshAreaNames();
+      var map = UnityEngine.AI.NavMesh.GetAreaNames();
       var index = 0;
       for (index = 0; index < map.Length;) {
-        if (GameObjectUtility.GetNavMeshAreaFromName(map[index]) == areaId)
+        if (UnityEngine.AI.NavMesh.GetAreaFromName(map[index]) == areaId)
           break;
         index++;
       }
