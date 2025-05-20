@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Runtime.InteropServices;
+using Cysharp.Threading.Tasks;
 
 namespace Cosmicrafts.ICP
 {
@@ -42,7 +43,10 @@ namespace Cosmicrafts.ICP
             
             if (ICPManager.Instance != null)
             {
-                ICPManager.Instance.CreateAgentFromWeb(identityJson).Forget();
+                UniTask.Void(async () => 
+                {
+                    await ICPManager.Instance.CreateAgentFromWeb(identityJson);
+                });
             }
             else
             {
@@ -59,7 +63,10 @@ namespace Cosmicrafts.ICP
             
             if (ICPManager.Instance != null)
             {
-                ICPManager.Instance.CreateRandomAgentForTesting().Forget();
+                UniTask.Void(async () => 
+                {
+                    await ICPManager.Instance.CreateRandomAgentForTesting();
+                });
             }
             else
             {

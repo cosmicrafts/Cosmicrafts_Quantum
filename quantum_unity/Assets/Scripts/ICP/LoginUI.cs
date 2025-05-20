@@ -20,7 +20,7 @@ namespace Cosmicrafts.ICP
         [SerializeField] public TMP_Text statusText;
         [SerializeField] public TMP_Text usernameText;
         
-        private void Awake()
+        private async void Awake()
         {
             Debug.Log("[LoginUI] Awake called");
             
@@ -35,6 +35,35 @@ namespace Cosmicrafts.ICP
             
             // Show loading by default
             ShowLoading("Initializing...");
+
+            await WaitForCandidApiInitialization();
+            await InitializeLogin();
+        }
+        
+        private async UniTask WaitForCandidApiInitialization()
+        {
+            Debug.Log("[LoginUI] Waiting for ICPManager initialization...");
+
+            while (ICPManager.Instance == null || ICPManager.Instance.MainCanister == null)
+            {
+                await UniTask.Yield();
+            }
+
+            Debug.Log("[LoginUI] ICPManager initialized");
+        }
+
+        private async UniTask InitializeLogin()
+        {
+            // Check if we should try auto-login
+            if (ICPManager.Instance != null)
+            {
+                await ICPManager.Instance.TryAutoLogin();
+            }
+            else
+            {
+                Debug.LogError("[LoginUI] ICPManager.Instance is null in InitializeLogin");
+                ShowLogin("Error: ICP Manager not found");
+            }
         }
         
         private void Start()
@@ -116,7 +145,10 @@ namespace Cosmicrafts.ICP
             // Use ICPManager to create a random agent for testing
             if (ICPManager.Instance != null)
             {
-                ICPManager.Instance.CreateRandomAgentForTesting().Forget();
+                UniTask.Void(async () => 
+                {
+                    await ICPManager.Instance.CreateRandomAgentForTesting();
+                });
             }
             else
             {

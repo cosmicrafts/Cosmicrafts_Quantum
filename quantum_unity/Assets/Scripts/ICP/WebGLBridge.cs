@@ -138,7 +138,10 @@ namespace Cosmicrafts.ICP
             // Forward to the ICP Manager
             if (ICPManager.Instance != null)
             {
-                ICPManager.Instance.CreateAgentFromWeb(identityJson).Forget();
+                UniTask.Void(async () => 
+                {
+                    await ICPManager.Instance.CreateAgentFromWeb(identityJson);
+                });
             }
             else
             {

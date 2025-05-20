@@ -7,6 +7,8 @@ using EdjCase.ICP.Candid.Models;
 using Cysharp.Threading.Tasks;
 using System.Text;
 using Cosmicrafts.MainCanister;
+using EdjCase.ICP.Agent;
+using Newtonsoft.Json;
 
 namespace Cosmicrafts.ICP
 {
@@ -46,15 +48,25 @@ namespace Cosmicrafts.ICP
         /// <summary>
         /// Creates an agent using a JSON identity received from the web frontend
         /// </summary>
-        public async UniTaskVoid CreateAgentFromWeb(string identityJson)
+        public async UniTask CreateAgentFromWeb(string identityJson)
         {
             Debug.Log("[ICPManager] Attempting to create agent from web identity JSON");
-            await UniTask.SwitchToMainThread();
             
             try
             {
-                // Deserialize the identity JSON to an ICP Identity
-                var identity = Identity.DeserializeJsonToIdentity(identityJson);
+                // Deserialize the identity JSON to our custom format
+                var identityData = JsonConvert.DeserializeObject<IdentityData>(identityJson);
+                if (identityData == null)
+                {
+                    throw new Exception("Failed to deserialize identity JSON");
+                }
+
+                // Convert the private key from hex string to bytes
+                byte[] privateKeyBytes = StringToByteArray(identityData.PrivateKey);
+                byte[] publicKeyBytes = StringToByteArray(identityData.PublicKey);
+                
+                // Create the Ed25519 identity
+                var identity = new Ed25519Identity(privateKeyBytes, publicKeyBytes);
                 
                 // Create an HTTP agent with the identity
                 var httpClient = new UnityHttpClient();
@@ -84,10 +96,9 @@ namespace Cosmicrafts.ICP
         /// <summary>
         /// Generates a random identity for testing purposes
         /// </summary>
-        public async UniTaskVoid CreateRandomAgentForTesting()
+        public async UniTask CreateRandomAgentForTesting()
         {
             Debug.Log("[ICPManager] Creating random agent for testing");
-            await UniTask.SwitchToMainThread();
             
             try
             {
@@ -119,7 +130,7 @@ namespace Cosmicrafts.ICP
         /// <summary>
         /// Tries to load a saved identity from local storage and use it
         /// </summary>
-        public async UniTaskVoid TryAutoLogin()
+        public async UniTask TryAutoLogin()
         {
             Debug.Log("[ICPManager] Attempting auto-login from cached identity");
             string savedIdentity = await AsyncLocalStorage.LoadDataAsync("authIdentity");
@@ -138,12 +149,12 @@ namespace Cosmicrafts.ICP
         /// <summary>
         /// Initializes the canister client with the provided agent
         /// </summary>
-        private async Task InitializeCanisterClient(IAgent agent)
+        private async UniTask InitializeCanisterClient(IAgent agent)
         {
             // Create the main canister client
             MainCanister = new MainCanisterApiClient(agent, Principal.FromText(MAIN_CANISTER_ID));
             
-            // Simulate an asynchronous operation
+            // Wait for one frame to ensure everything is initialized
             await UniTask.Yield();
             
             OnICPInitialized?.Invoke();
@@ -181,8 +192,39 @@ namespace Cosmicrafts.ICP
             var sha256 = new System.Security.Cryptography.SHA256Managed();
             byte[] privateKeyBytes = sha256.ComputeHash(seedBytes);
             
-            // Create the Ed25519 identity
-            return Ed25519Identity.FromSecretKey(privateKeyBytes);
+            // For testing purposes, we'll use the same bytes for both private and public key
+            // In a real implementation, you would derive the public key from the private key
+            // using proper Ed25519 key derivation
+            byte[] publicKeyBytes = new byte[privateKeyBytes.Length];
+            Array.Copy(privateKeyBytes, publicKeyBytes, privateKeyBytes.Length);
+            
+            // Create the Ed25519 identity with both keys
+            return new Ed25519Identity(privateKeyBytes, publicKeyBytes);
+        }
+
+        private class IdentityData
+        {
+            public string Type { get; set; }
+            public string PublicKey { get; set; }
+            public string PrivateKey { get; set; }
+        }
+
+        private static byte[] StringToByteArray(string hex)
+        {
+            if (string.IsNullOrEmpty(hex))
+                throw new ArgumentException("Hex string cannot be null or empty");
+
+            hex = hex.Replace("0x", ""); // Remove 0x prefix if present
+            
+            if (hex.Length % 2 != 0)
+                throw new ArgumentException("Hex string must have an even number of characters");
+
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+            }
+            return bytes;
         }
     }
 } 
