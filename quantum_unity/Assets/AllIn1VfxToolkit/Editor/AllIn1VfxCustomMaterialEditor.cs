@@ -610,19 +610,19 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
 
     private void CopyShapeProperty(int propertyTo, int propertyFrom)
     {
-        if(matProperties[propertyTo].type == MaterialProperty.PropType.Float || matProperties[propertyTo].type == MaterialProperty.PropType.Range)
+        if(matProperties[propertyTo].propertyType == ShaderPropertyType.Float || matProperties[propertyTo].propertyType == ShaderPropertyType.Range)
         {
             matProperties[propertyTo].floatValue = matProperties[propertyFrom].floatValue;
         }
-        else if(matProperties[propertyTo].type == MaterialProperty.PropType.Vector)
+        else if(matProperties[propertyTo].propertyType == ShaderPropertyType.Vector)
         {
             matProperties[propertyTo].vectorValue = matProperties[propertyFrom].vectorValue;
         }
-        else if(matProperties[propertyTo].type == MaterialProperty.PropType.Color)
+        else if(matProperties[propertyTo].propertyType == ShaderPropertyType.Color)
         {
             matProperties[propertyTo].colorValue = matProperties[propertyFrom].colorValue;
         }
-        else if(matProperties[propertyTo].type == MaterialProperty.PropType.Texture)
+        else if(matProperties[propertyTo].propertyType == ShaderPropertyType.Texture)
         {
             matProperties[propertyTo].textureValue = matProperties[propertyFrom].textureValue;
             matProperties[propertyTo].textureScaleAndOffset = matProperties[propertyFrom].textureScaleAndOffset;
@@ -1120,19 +1120,19 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
     private void ResetProperty(MaterialProperty targetProperty)
     {
         if(originalMaterialCopy == null) originalMaterialCopy = new Material(targetMat.shader);
-        if(targetProperty.type == MaterialProperty.PropType.Float || targetProperty.type == MaterialProperty.PropType.Range)
+        if(targetProperty.propertyType == ShaderPropertyType.Float || targetProperty.propertyType == ShaderPropertyType.Range)
         {
             targetProperty.floatValue = originalMaterialCopy.GetFloat(targetProperty.name);
         }
-        else if(targetProperty.type == MaterialProperty.PropType.Vector)
+        else if(targetProperty.propertyType == ShaderPropertyType.Vector)
         {
             targetProperty.vectorValue = originalMaterialCopy.GetVector(targetProperty.name);
         }
-        else if(targetProperty.type == MaterialProperty.PropType.Color)
+        else if(targetProperty.propertyType == ShaderPropertyType.Color)
         {
             targetProperty.colorValue = originalMaterialCopy.GetColor(targetProperty.name);
         }
-        else if(targetProperty.type == MaterialProperty.PropType.Texture)
+        else if(targetProperty.propertyType == ShaderPropertyType.Texture)
         {
             targetProperty.textureValue = originalMaterialCopy.GetTexture(targetProperty.name);
             targetProperty.textureScaleAndOffset = new Vector4(1, 1, 0, 0);
